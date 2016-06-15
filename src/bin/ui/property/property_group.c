@@ -1434,29 +1434,30 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          property_entry_set(action->control, group_pd.group->name);
-         break;
+         return true;
       case ATTRIBUTE_STATE_NAME:
          str_val1 = eina_stringshare_printf("%s %.2f",
                                             _state_name_get(),
                                             _state_val_get());
          property_entry_set(action->control, str_val1);
          eina_stringshare_del(str_val1);
-         break;
+         return true;
       case ATTRIBUTE_PROGRAM_NAME:
          property_entry_set(action->control, PROGRAM_ARGS);
-         break;
+         return true;
       case ATTRIBUTE_PROGRAM_SCRIPT:
          code = edje_edit_script_program_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, code);
          free(code);
-         break;
+         return true;
       case ATTRIBUTE_PART_ITEM_NAME:
          property_entry_set(action->control, _item_name_get());
-         break;
+         return true;
       case ATTRIBUTE_STATE_IMAGE:
          str_val1 = edje_edit_state_image_get(EDIT_OBJ, STATE_ARGS);
          TODO("This case should not be called for non-image parts. Need to fix filters in genlist");
-         if (!str_val1) break;
+         if (!str_val1)
+           return true;
          if (!strcmp(str_val1, EFLETE_DUMMY_IMAGE_NAME))
            {
               edje_edit_string_free(str_val1);
@@ -1464,7 +1465,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            }
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_image_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          images_list = edje_edit_state_tweens_list_get(EDIT_OBJ, STATE_ARGS);
          property_image_tween_cleanup(action->control);
@@ -1473,526 +1474,534 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
               property_image_tween_append(action->control, eina_stringshare_add(str_val1));
            }
          edje_edit_string_list_free(images_list);
-         break;
+         return images_list == NULL;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return !int_val1;
       case ATTRIBUTE_GROUP_MIN_H:
          int_val1 = edje_edit_group_min_h_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return !int_val1;
       case ATTRIBUTE_GROUP_MAX_W:
          int_val1 = edje_edit_group_max_w_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return !int_val1;
       case ATTRIBUTE_GROUP_MAX_H:
          int_val1 = edje_edit_group_max_h_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return !int_val1;
       case ATTRIBUTE_PART_NAME:
          property_entry_set(action->control, PART_ARGS);
-         break;
+         return true;
       case ATTRIBUTE_GROUP_DATA_NAME:
          property_entry_set(action->control, GROUP_DATA_ARGS);
-         break;
+         return true;
       case ATTRIBUTE_GROUP_DATA_VALUE:
          str_val1 = edje_edit_group_data_value_get(EDIT_OBJ, GROUP_DATA_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return true;
       case ATTRIBUTE_PART_TYPE:
          elm_layout_text_set(action->control, NULL, gm_part_type_text_get(((Part *)group_pd.group->current_selected)->type));
-         break;
+         return true;
       case ATTRIBUTE_PROGRAM_ACTION:
          elm_layout_text_set(action->control, NULL, action_type[((Part *)group_pd.group->current_selected)->type]);
-         break;
+         return true;
       case ATTRIBUTE_PART_SCALE:
          bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_part_scale_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_MOUSE_EVENTS:
          bool_val1 = edje_edit_part_mouse_events_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_part_mouse_events_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_REPEAT_EVENTS:
          bool_val1 = edje_edit_part_repeat_events_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_part_repeat_events_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_CLIP_TO:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, PART_RECTANGLE | PART_IMAGE);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_clip_to_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_STATE_PROXY_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_proxy_source_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_proxy_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_ignore_flags_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_POINTER_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_pointer_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_SELECT_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_select_mode_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_select_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_ENTRY_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_entry_mode_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_entry_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_CURSOR_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_cursor_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_STATE_FILL_TYPE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_fill_type_get(EDIT_OBJ, STATE_ARGS));
-         break;
+         return editor_state_fill_type_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_TEXT_EFFECT:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS));
-         break;
+         return editor_part_text_effect_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
          /* shodow directions are shifted by 4 in enum */
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_text_shadow_direction_get(EDIT_OBJ, PART_ARGS)>>4);
-         break;
+         return editor_part_text_shadow_direction_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_X:
          int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_x_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_Y:
          int_val1 = edje_edit_part_drag_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_y_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_STEP_X:
          int_val1 = edje_edit_part_drag_step_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_step_x_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_STEP_Y:
          int_val1 = edje_edit_part_drag_step_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_step_y_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_COUNT_X:
          int_val1 = edje_edit_part_drag_count_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_count_x_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
          int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_drag_count_y_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_CONFINE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_confine_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_drag_confine_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_threshold_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_drag_threshold_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_EVENT:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_event_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_drag_event_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_GROUP_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_source_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_group_source_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_selection_under_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_selection_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_cursor_under_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_cursor_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_anchors_under_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_anchors_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_selection_over_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_selection_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_cursor_over_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_cursor_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_anchors_over_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_part_textblock_anchors_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_MULTILINE:
          bool_val1 = edje_edit_part_multiline_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_part_multiline_default_is(EDIT_OBJ, PART_ARGS);
 
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
          double_val1 = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_container_align_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
          double_val1 = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_container_align_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_CONTAINER_PADING_X:
          int_val1 = edje_edit_state_container_padding_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_container_padding_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
          int_val1 = edje_edit_state_container_padding_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_container_padding_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_CONTAINER_MIN_V:
          bool_val1 = edje_edit_state_container_min_v_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_container_min_v_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          bool_val1 = edje_edit_state_container_min_h_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_container_min_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS));
-         break;
+         return editor_state_table_homogeneous_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_ITEM_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
          _groups_combobox_fill(action->control, str_val1, false);
          edje_edit_string_free(str_val1);
-         break;
+         return true;
       case ATTRIBUTE_PART_ITEM_MIN_W:
          int_val1 = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_min_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MIN_H:
          int_val1 = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_min_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MAX_W:
          int_val1 = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_max_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MAX_H:
          int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_max_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PREFER_W:
          int_val1 = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_prefer_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PREFER_H:
          int_val1 = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_prefer_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
          double_val1 = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_part_item_weight_x_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
          double_val1 = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_part_item_weight_y_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
          double_val1 = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_part_item_align_x_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
          double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_part_item_align_y_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS));
-         break;
+         return editor_part_item_aspect_mode_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          ewe_combobox_select_item_set(action->control,
            (int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS));
          GENLIST_FILTER_APPLY(pd->genlist);
-         break;
+         return editor_program_transition_type_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
          int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_aspect_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
          int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_aspect_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
          int_val1 = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_spread_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
          int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_spread_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPAN_COL:
          ushort_val1 = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         break;
+         return editor_part_item_span_col_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPAN_ROW:
          ushort_val1 = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         break;
+         return editor_part_item_span_row_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
          ushort_val1 = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         break;
+         return editor_part_item_position_col_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
          ushort_val1 = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         break;
+         return editor_part_item_position_row_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_padding_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_part_item_padding_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H]);
+         return true;
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H]);
+         return true;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_text_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_text_text_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_STYLE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_style_get(EDIT_OBJ, STATE_ARGS);
          _styles_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_text_style_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_VISIBLE:
          bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_visible_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_SMOOTH:
          bool_val1 = edje_edit_state_fill_smooth_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_fill_smooth_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MIN_W:
          int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_min_w_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MIN_H:
          int_val1 = edje_edit_state_min_h_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_min_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MINMUL_W:
          int_val1 = edje_edit_state_minmul_w_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_minmul_w_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MINMUL_H:
          int_val1 = edje_edit_state_minmul_h_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_minmul_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FIXED_W:
          bool_val1 = edje_edit_state_fixed_w_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_fixed_w_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FIXED_H:
          bool_val1 = edje_edit_state_fixed_h_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_fixed_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAX_W:
          int_val1 = edje_edit_state_max_w_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_max_w_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAX_H:
          int_val1 = edje_edit_state_max_h_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_max_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ASPECT_MIN:
          double_val1 = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_aspect_min_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ASPECT_MAX:
          double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_aspect_max_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ASPECT_PREF:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS));
-         break;
+         return editor_state_aspect_pref_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ALIGN_X:
          double_val1 = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_align_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ALIGN_Y:
          double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_align_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_TO_X:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_rel1_to_x_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_rel1_to_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_TO_Y:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_rel1_to_y_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_rel1_to_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_RELATIVE_X:
          double_val1 = edje_edit_state_rel1_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel1_relative_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
          double_val1 = edje_edit_state_rel1_relative_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel1_relative_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_OFFSET_X:
          double_val1 = edje_edit_state_rel1_offset_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel1_offset_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_OFFSET_Y:
          double_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel1_offset_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_TO_X:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_rel2_to_x_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_rel2_to_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_TO_Y:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_rel2_to_y_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_rel2_to_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
          double_val1 = edje_edit_state_rel2_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel2_relative_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
          double_val1 = edje_edit_state_rel2_relative_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel2_relative_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_OFFSET_X:
          double_val1 = edje_edit_state_rel2_offset_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel2_offset_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          double_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_rel2_offset_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, &int_val1, NULL, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_image_border_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, &int_val1, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_image_border_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &int_val1, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H]);
+         return true;
       case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &int_val1);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H]);
+         return true;
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_image_border_fill_get(EDIT_OBJ, STATE_ARGS));
-         break;
+         return editor_state_image_border_fill_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_origin_relative_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
          double_val1 = edje_edit_state_fill_origin_relative_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_origin_relative_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
          double_val1 = edje_edit_state_fill_size_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_size_relative_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
          double_val1 = edje_edit_state_fill_size_relative_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_size_relative_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
          double_val1 = edje_edit_state_fill_origin_offset_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_origin_offset_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
          double_val1 = edje_edit_state_fill_origin_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_origin_offset_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
          double_val1 = edje_edit_state_fill_size_offset_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_size_offset_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
          double_val1 = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_fill_size_offset_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_COLOR:
          edje_edit_state_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         return editor_state_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
          edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         return editor_state_outline_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_SHADOW_COLOR:
          edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         return editor_state_shadow_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_color_class_get(EDIT_OBJ, STATE_ARGS);
          _color_classes_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_color_class_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT:
          str_val1 = edje_edit_state_text_get(EDIT_OBJ, STATE_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_text_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FONT:
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
          elm_object_disabled_set(action->control, !!str_val1);
@@ -2015,35 +2024,35 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_MIN_X:
          bool_val1 = edje_edit_state_text_min_x_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_min_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_MIN_Y:
          bool_val1 = edje_edit_state_text_min_y_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_min_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_MAX_X:
          bool_val1 = edje_edit_state_text_max_x_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_max_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
          bool_val1 = edje_edit_state_text_max_y_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_max_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
          double_val1 = edje_edit_state_text_align_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_text_align_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
          double_val1 = edje_edit_state_text_align_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_state_text_align_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_FIT_X:
          bool_val1 = edje_edit_state_text_fit_x_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_fit_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
          bool_val1 = edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_text_fit_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_SIZE:
          int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
@@ -2055,111 +2064,111 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            elm_spinner_value_set(action->control, edje_edit_state_text_size_get(EDIT_OBJ, STATE_SOURCE_ARGS));
 
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_text_size_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
          double_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          elm_object_disabled_set(action->control, double_val1 < 0);
          elm_check_state_set(pa->action1.control, double_val1 >= 0);
-         break;
+         return editor_state_text_elipsis_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
-         break;
+         return true;
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
          bool_val1 = edje_edit_program_transition_from_current_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_program_transition_from_current_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_SIGNAL:
          str_val1 = edje_edit_program_signal_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_program_signal_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
          str_val1 = edje_edit_program_emit_signal_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_program_emit_signal_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
          str_val1 = edje_edit_program_emit_source_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_program_emit_source_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_STATE:
          str_val1 = edje_edit_program_state_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_program_state_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_SOURCE:
          str_val1 = edje_edit_program_source_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_program_source_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_IN_FROM:
          double_val1 = edje_edit_program_in_from_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_in_from_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_in_range_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
          double_val1 = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_time_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
          double_val1 = edje_edit_program_transition_factor_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_factor_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
          double_val1 = edje_edit_program_transition_gradient_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_gradient_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
          double_val1 = edje_edit_program_transition_decay_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_decay_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
          double_val1 = edje_edit_program_transition_bounces_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_bounces_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
          double_val1 = edje_edit_program_transition_swings_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_swings_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
          double_val1 = edje_edit_program_transition_bezier_x1_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_bezier_x1_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
          double_val1 = edje_edit_program_transition_bezier_y1_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_bezier_y1_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
          double_val1 = edje_edit_program_transition_bezier_x2_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_bezier_x2_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
          double_val1 = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_transition_bezier_y2_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_drag_value_x_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
          double_val1 = edje_edit_program_drag_value_y_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_drag_value_y_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_VALUE:
          double_val1 = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         return editor_program_value_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_FILTER_PART:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
-         break;
+         return editor_program_filter_part_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_program_filter_state_get(EDIT_OBJ, PROGRAM_ARGS);
@@ -2167,81 +2176,88 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          _part_states_combobox_fill(action->control, str_val2, str_val1, true);
          edje_edit_string_free(str_val1);
          edje_edit_string_free(str_val2);
-         break;
+         return editor_program_filter_state_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_map_perspective_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_map_perspective_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_LIGHT:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_map_light_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_map_light_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ON:
          bool_val1 = edje_edit_state_map_on_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_map_on_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
          bool_val1 = edje_edit_state_map_perspective_on_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_map_perspective_on_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_SMOOTH:
          bool_val1 = edje_edit_state_map_smooth_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_map_smooth_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ALPHA:
          bool_val1 = edje_edit_state_map_alpha_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_map_alpha_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
          bool_val1 = edje_edit_state_map_backface_cull_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
-         break;
+         return editor_state_map_backface_cull_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
          int_val1 = edje_edit_state_map_perspective_focal_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_map_perspective_focal_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
          int_val1 = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         break;
+         return editor_state_map_perspective_zplane_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_map_rotation_center_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
-         break;
+         return editor_state_map_rotation_center_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &double_val1, NULL, NULL);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         TODO("replace this with _default_get when correct version will be available");
+         return double_val1 == 0;
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &double_val1, NULL);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         TODO("replace this with _default_get when correct version will be available");
+         return double_val1 == 0;
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &double_val1);
          elm_spinner_value_set(action->control, double_val1);
-         break;
+         TODO("replace this with _default_get when correct version will be available");
+         return double_val1 == 0;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         return editor_state_map_point_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 1, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         return editor_state_map_point_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 2, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
+         return editor_state_map_point_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 3, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
-         break;
+         /* updating two-item attribute: caption should be updated in first item */
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
+         return editor_state_map_point_color_default_is(EDIT_OBJ, STATE_ARGS);
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
