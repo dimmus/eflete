@@ -69,6 +69,7 @@ typedef struct
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
         Evas_Object *combobox;
+        Evas_Object *combobox_copy;
         Evas_Object *btn_add;
         Evas_Object *btn_cancel;
    } popup;
@@ -831,6 +832,7 @@ _job_popup_del(void *data)
    pl->popup.entry_name = NULL;
    evas_object_del(ap.popup);
    ap.popup = NULL;
+   elm_object_disabled_set(pl->popup.combobox, false);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
@@ -847,56 +849,69 @@ _popup_add_part_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *item;
+   Ewe_Combobox_Item *item, *item_copy;
    Edje_Part_Type type = EDJE_PART_TYPE_NONE;
    Part_List *pl = data;
-   const char *name;
+   const char *name, *copy_name;
    Eina_Stringshare *msg;
    Change *change;
 
    assert(pl != NULL);
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
-   item = ewe_combobox_select_item_get(pl->popup.combobox);
-   switch (item->index)
-     {
-      case 0:
-         type = EDJE_PART_TYPE_RECTANGLE;
-         break;
-      case 1:
-         type = EDJE_PART_TYPE_TEXT;
-         break;
-      case 2:
-         type = EDJE_PART_TYPE_IMAGE;
-         break;
-      case 3:
-         type = EDJE_PART_TYPE_SWALLOW;
-         break;
-      case 4:
-         type = EDJE_PART_TYPE_TEXTBLOCK;
-         break;
-      case 5:
-         type = EDJE_PART_TYPE_GROUP;
-         break;
-      case 6:
-         type = EDJE_PART_TYPE_BOX;
-         break;
-      case 7:
-         type = EDJE_PART_TYPE_TABLE;
-         break;
-      case 8:
-         type = EDJE_PART_TYPE_PROXY;
-         break;
-      case 9:
-         type = EDJE_PART_TYPE_SPACER;
-         break;
-     }
-   assert(type != EDJE_PART_TYPE_NONE);
 
-   name = elm_entry_entry_get(pl->popup.entry_name);
-   msg = eina_stringshare_printf(_("added new part \"%s\""), name);
-   change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, type));
+   item_copy = ewe_combobox_select_item_get(pl->popup.combobox_copy);
+   if (item_copy->index != 0)
+     {
+        name = item_copy->title;
+        copy_name = elm_entry_entry_get(pl->popup.entry_name);
+        msg = eina_stringshare_printf(_("copied new part \"%s\" from \"%s\""), name, copy_name);
+        change = change_add(msg);
+        CRIT_ON_FAIL(editor_part_copy(pl->group->edit_object, change, false, true, name, copy_name));
+     }
+   else
+     {
+        item = ewe_combobox_select_item_get(pl->popup.combobox);
+        switch (item->index)
+          {
+           case 0:
+              type = EDJE_PART_TYPE_RECTANGLE;
+              break;
+           case 1:
+              type = EDJE_PART_TYPE_TEXT;
+              break;
+           case 2:
+              type = EDJE_PART_TYPE_IMAGE;
+              break;
+           case 3:
+              type = EDJE_PART_TYPE_SWALLOW;
+              break;
+           case 4:
+              type = EDJE_PART_TYPE_TEXTBLOCK;
+              break;
+           case 5:
+              type = EDJE_PART_TYPE_GROUP;
+              break;
+           case 6:
+              type = EDJE_PART_TYPE_BOX;
+              break;
+           case 7:
+              type = EDJE_PART_TYPE_TABLE;
+              break;
+           case 8:
+              type = EDJE_PART_TYPE_PROXY;
+              break;
+           case 9:
+              type = EDJE_PART_TYPE_SPACER;
+              break;
+          }
+        assert(type != EDJE_PART_TYPE_NONE);
+
+        name = elm_entry_entry_get(pl->popup.entry_name);
+        msg = eina_stringshare_printf(_("added new part \"%s\""), name);
+        change = change_add(msg);
+        CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, type));
+     }
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -945,12 +960,31 @@ _combobox_collapsed(void *data,
 }
 
 static void
+_part_selected_cb(void *data,
+                  Evas_Object *obj,
+                  void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   Ewe_Combobox_Item *item;
+
+   assert(pl != NULL);
+
+   item = ewe_combobox_select_item_get(obj);
+   if (item->index != 0)
+     elm_object_disabled_set(pl->popup.combobox, true);
+   else
+     elm_object_disabled_set(pl->popup.combobox, false);
+}
+
+static void
 _on_menu_add_part_clicked(void *data __UNUSED__,
                           Evas_Object *obj,
                           void *ei __UNUSED__)
 {
    Edje_Part_Type type;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Eina_List *l;
+   Part *part;
 
    Eina_Stringshare *title;
    Evas_Object *box, *item;
@@ -990,6 +1024,18 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
+   elm_box_pack_end(box, item);
+
+   LAYOUT_PROP_ADD(box, _("Part copy:"), "popup", "1swallow")
+   EWE_COMBOBOX_ADD(item, pl->popup.combobox_copy)
+   ewe_combobox_item_add(pl->popup.combobox_copy, _("None"));
+   ewe_combobox_select_item_set(pl->popup.combobox_copy, 0);
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+     {
+        ewe_combobox_item_add(pl->popup.combobox_copy, part->name);
+     }
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox_copy);
+   evas_object_smart_callback_add(pl->popup.combobox_copy, "selected", _part_selected_cb, pl);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
