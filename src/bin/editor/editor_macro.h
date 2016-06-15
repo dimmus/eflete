@@ -186,7 +186,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true; \
 }
 
-#define EDITOR_STATE_STRING_WITH_FALLBACK(FUNC, ATTRIBUTE, FALLBACK_VAL) \
+#define EDITOR_STATE_STRING_WITH_FALLBACK(FUNC, ATTRIBUTE, FALLBACK_VAL, SAVE) \
 Eina_Bool \
 editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply, \
                             const char *part_name, const char *state_name, double state_val, const char *new_val) \
@@ -235,6 +235,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
             else \
               change_diff_add(change, diff); \
          } \
+       if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
      } \
