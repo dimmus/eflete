@@ -183,6 +183,7 @@ group { name: "elm/genlist/item/1swallow/property";
       item: "contents" "swallow.icon swallow.action1";
       item: "stacking" "above";
       item: "selectraise" "on";
+      item: "states" "default changed";
    }
    parts {
       part { name: "elm.swallow.pad";
@@ -239,6 +240,10 @@ group { name: "elm/genlist/item/1swallow/property";
                to_x: "text.action1.name";
             }
          }
+         description { state: "changed" 0.0;
+            inherit: "default" 0.0;
+            text.font: FN_B;
+         }
       }
       part { name: "text.action1.name";
          type: TEXT;
@@ -280,6 +285,20 @@ group { name: "elm/genlist/item/1swallow/property";
          }
       }
    }
+   programs {
+      program { name: "state,default";
+         signal: "elm,state,default,active";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "text.item.name";
+      }
+      program { name: "state,changed";
+         signal: "elm,state,changed,active";
+         source: "elm";
+         action: STATE_SET "changed" 0.00;
+         target: "text.item.name";
+      }
+   }
 }
 
 group { name: "elm/genlist/item/2swallow/property";
@@ -289,6 +308,7 @@ group { name: "elm/genlist/item/2swallow/property";
       item: "contents" "swallow.icon swallow.action1 swallow.action2";
       item: "stacking" "above";
       item: "selectraise" "on";
+      item: "states" "default changed";
    }
    parts {
       part { name: "elm.swallow.pad";
@@ -341,6 +361,10 @@ group { name: "elm/genlist/item/2swallow/property";
                offset: -7 -1;
                to_x: "text.action1.name";
             }
+         }
+         description { state: "changed" 0.0;
+            inherit: "default" 0.0;
+            text.font: FN_B;
          }
       }
       part { name: "text.action1.name";
@@ -454,6 +478,20 @@ group { name: "elm/genlist/item/2swallow/property";
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }
+      }
+   }
+   programs {
+      program { name: "state,default";
+         signal: "elm,state,default,active";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "text.item.name";
+      }
+      program { name: "state,changed";
+         signal: "elm,state,changed,active";
+         source: "elm";
+         action: STATE_SET "changed" 0.00;
+         target: "text.item.name";
       }
    }
 }
