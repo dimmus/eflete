@@ -798,9 +798,9 @@ group { name: "elm/win/inwin/splash";
          target: "label.info";
          target: "clipper.area.info";
          after: "anim";
-         after: "emit_start";
       }
       program { name: "emit_start";
+         signal: "load";
          action: SIGNAL_EMIT "setup" "eflete";
       }
       program { name: "teardown";

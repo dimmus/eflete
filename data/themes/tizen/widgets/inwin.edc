@@ -470,7 +470,6 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "visible" 0.00;
          target: "label.info";
          target: "clipper.area.info";
-         after: "emit_start";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,*";
@@ -487,6 +486,7 @@ group { name: "elm/win/inwin/splash";
          after: "emit_teardown";
       }
       program { name: "emit_start";
+         signal: "load";
          action: SIGNAL_EMIT "setup" "eflete";
       }
       program { name: "emit_teardown";
