@@ -518,6 +518,9 @@ Eina_Bool
 editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                 const char *part_name, Edje_Part_Type type) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
+editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                 const char *part_name, const char *part_name_copy) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
 editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                 const char *part_name) EINA_WARN_UNUSED_RESULT;
 Eina_Bool

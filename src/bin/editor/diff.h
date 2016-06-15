@@ -33,6 +33,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT,
    FUNCTION_TYPE_STRING_STRING_DOUBLE_UCHAR,
    FUNCTION_TYPE_STRING_EDJEPARTTYPE,
+   FUNCTION_TYPE_STRING_EDJEPARTCOPY,
    FUNCTION_TYPE_STRING_EDJETEXTEFFECT,
    FUNCTION_TYPE_STRING_EVASEVENTFLAGS,
    FUNCTION_TYPE_STRING_BOOL,
@@ -114,6 +115,10 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          Edje_Part_Type ept2;
       } type_sept;
+      struct {
+         Eina_Stringshare *s1;
+         Eina_Stringshare *s2;
+      } type_sepc;
       struct {
          Eina_Stringshare *s1;
          Edje_Text_Effect ete2;

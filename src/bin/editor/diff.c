@@ -54,6 +54,8 @@ typedef Eina_Bool (* function_type_string_string_edjeaspectcontrol) (Evas_Object
                                                                      const char *, const char *, Edje_Aspect_Control);
 typedef Eina_Bool (* function_type_string_edjeparttype) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                          const char *, Edje_Part_Type);
+typedef Eina_Bool (* function_type_string_edjepartcopy) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
+                                                         const char *, const char *);
 typedef Eina_Bool (* function_type_string_string_double) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, double);
 typedef Eina_Bool (* function_type_string_string_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
@@ -116,6 +118,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_EDJEPARTTYPE:
          return ((function_type_string_edjeparttype)fi->function)(obj, NULL, false, true,
                   fi->args.type_sept.s1, fi->args.type_sept.ept2);
+      case FUNCTION_TYPE_STRING_EDJEPARTCOPY:
+         return ((function_type_string_edjepartcopy)fi->function)(obj, NULL, false, true,
+                  fi->args.type_sepc.s1, fi->args.type_sepc.s2);
       case FUNCTION_TYPE_STRING_EDJETEXTEFFECT:
          return ((function_type_string_edjetexteffect)fi->function)(obj, NULL, false, true,
                   fi->args.type_sete.s1, fi->args.type_sete.ete2);
@@ -268,6 +273,12 @@ diff_update(Diff *diff, Diff *new_diff)
       case FUNCTION_TYPE_STRING_EDJEPARTTYPE:
          eina_stringshare_del(diff->redo.args.type_sept.s1);
          eina_stringshare_ref(new_diff->redo.args.type_sept.s1);
+         break;
+      case FUNCTION_TYPE_STRING_EDJEPARTCOPY:
+         eina_stringshare_del(diff->redo.args.type_sepc.s1);
+         eina_stringshare_del(diff->redo.args.type_sepc.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_sepc.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_sepc.s2);
          break;
       case FUNCTION_TYPE_STRING_EDJETEXTEFFECT:
          eina_stringshare_del(diff->redo.args.type_sete.s1);
@@ -428,6 +439,10 @@ diff_free(Diff *diff)
          break;
       case FUNCTION_TYPE_STRING_EDJEPARTTYPE:
          eina_stringshare_del(diff->redo.args.type_sept.s1);
+         break;
+      case FUNCTION_TYPE_STRING_EDJEPARTCOPY:
+         eina_stringshare_del(diff->redo.args.type_sepc.s1);
+         eina_stringshare_del(diff->redo.args.type_sepc.s2);
          break;
       case FUNCTION_TYPE_STRING_EDJETEXTEFFECT:
          eina_stringshare_del(diff->redo.args.type_sete.s1);
