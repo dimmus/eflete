@@ -313,7 +313,7 @@ _btn_del_cb(void *data __UNUSED__,
 
    if (!glit_parent)
      {
-        style_name = elm_object_item_part_text_get(glit, "elm.text");
+        style_name = elm_object_item_data_get(glit);
         request.resource_type = RESOURCE_TYPE_STYLE;
         request.name = style_name;
         res = resource_get(ap.project->styles, &request);
@@ -322,8 +322,8 @@ _btn_del_cb(void *data __UNUSED__,
      }
    else
      {
-        style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
-        tag = elm_object_item_part_text_get(glit, "elm.text");
+        style_name = elm_object_item_data_get(glit_parent);
+        tag = elm_object_item_data_get(glit);
         edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
 

@@ -75,6 +75,13 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 /* do not allow unsafe sprintf. use snprintf instead */
 #pragma GCC poison sprintf
+/* because this function works only with realized items,
+ * we can't use this function with entire genlist list.
+ * for working with items use elm_object_item_data_get only!
+ */
+#undef elm_object_item_text_get
+#define elm_object_item_text_get 0_NO_DO_NOT_USE_POISONED
+#pragma GCC poison elm_object_item_part_text_get
 
 #include <Elementary.h>
 #include "logger.h"
