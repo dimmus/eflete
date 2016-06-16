@@ -217,6 +217,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      { \
        if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
          { \
+            TODO("i'm not sure that fallback is setted correctly, need to check") \
             if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, FALLBACK_VAL)) \
               { \
                  if (diff) diff_free(diff); \
@@ -238,6 +239,16 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+     } \
+   else \
+     { \
+       if (change) /* we should add diff only after all changes to it */\
+         { \
+            if (merge) \
+              change_diff_merge_add(change, diff); \
+            else \
+              change_diff_add(change, diff); \
+         } \
      } \
    return true; \
 }
