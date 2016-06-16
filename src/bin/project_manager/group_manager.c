@@ -332,10 +332,10 @@ gm_group_used_styles_edj_get(const char *edj, const char *group)
    return _strings_list_duplicates_del(styles);
 }
 
-Eina_List *
+static Eina_List *
 _style_font_get(Evas_Object *obj, const char *style)
 {
-   Eina_List *fonts = fonts;
+   Eina_List *fonts = NULL;
    Eina_List *tags, *l;
    Eina_Stringshare *font, *tag_value;
    char *pch;
