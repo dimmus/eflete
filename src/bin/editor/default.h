@@ -23,6 +23,9 @@
 #include "eflete.h"
 
 Eina_Bool
+editor_group_reset(Evas_Object *obj, Change *change, Eina_Bool apply);
+
+Eina_Bool
 editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool apple,
       const char *part_name, const char *state_name, double state_val);
 Eina_Bool

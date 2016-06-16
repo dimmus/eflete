@@ -22,7 +22,10 @@
 #include "diff.h"
 #include "change.h"
 
+#include "editor_private.h"
+
 extern int _editor_signals_blocked;
+
 Eina_Bool
 editor_group_add(Evas_Object *obj, const char *name)
 {
@@ -78,6 +81,32 @@ editor_group_del(Evas_Object *obj, const char *name)
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
+   return true;
+}
+
+Eina_Bool
+editor_group_reset(Evas_Object *obj, Change *change, Eina_Bool apply)
+{
+   Eina_List *programs, *parts, *l;
+   Eina_Stringshare *data;
+
+   assert(obj != NULL);
+
+   programs = edje_edit_programs_list_get(obj);
+   parts = edje_edit_parts_list_get(obj);
+
+   EINA_LIST_FOREACH(programs, l, data)
+      CRIT_ON_FAIL(editor_program_reset(obj, change, apply, data));
+   EINA_LIST_FOREACH(parts, l, data)
+      CRIT_ON_FAIL(editor_part_reset(obj, change, apply, data));
+   EINA_LIST_FOREACH(programs, l, data)
+      CRIT_ON_FAIL(_editor_program_del(obj, change, false, apply, false, data));
+   EINA_LIST_FOREACH(parts, l, data)
+      CRIT_ON_FAIL(_editor_part_del(obj, change, false, apply, false, data));
+
+   edje_edit_string_list_free(programs);
+   edje_edit_string_list_free(parts);
+
    return true;
 }
 
