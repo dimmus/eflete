@@ -65,7 +65,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Add data directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
-      ECORE_GETOPT_APPEND_METAVAR('w', "widget", "Add widget to new project or import edj-file. Add its styles if the style names are added", "WIDGET_NAME[:STYLE_NAME, ...]", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('w', "widget", "Add widget to new project or import edj-file. Add its styles if the style names are added. Copy its styles if the copy style names are added", "WIDGET:STYLE[COPY_STYLE,..],..", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),

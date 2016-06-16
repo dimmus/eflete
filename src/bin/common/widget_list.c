@@ -250,7 +250,7 @@ option_widget_name_get(const char *str, Eina_List **style_list)
    char widget[32], style[256];
    Eina_List *list = NULL;
    int i, first = 0;
-   Eina_Bool is_style = EINA_FALSE;
+   Eina_Bool is_style = EINA_FALSE, copying = EINA_FALSE;
 
    for (i = 0; i < len; i++)
      {
@@ -268,7 +268,12 @@ option_widget_name_get(const char *str, Eina_List **style_list)
           }
         else
           {
-             if (str[i] == ',')
+             if (str[i] == '[')
+               copying = EINA_TRUE;
+             else if (str[i] == ']')
+               copying = EINA_FALSE;
+
+             if (!copying && str[i] == ',')
                {
                   style[i - first] = '\0';
                   list = eina_list_append(list, strdup(style));
@@ -290,4 +295,86 @@ option_widget_name_get(const char *str, Eina_List **style_list)
    *style_list = list;
 
    return strdup(widget);
+}
+
+const char *
+option_style_name_get(const char *str, Eina_List **cp_style_list)
+{
+   int len = strlen(str);
+   char style[32], cp_style[256];
+   Eina_List *list = NULL;
+   int i, first = 0;
+   Eina_Bool is_cp_style = EINA_FALSE;
+
+   for (i = 0; i < len; i++)
+     {
+        if (str[i] == '[')
+          {
+             is_cp_style = EINA_TRUE;
+             style[i] = '\0';
+             first = i + 1;
+             continue;
+          }
+        else if (str[i] == ']')
+          break;
+
+        if (!is_cp_style)
+          {
+             style[i] = str[i];
+          }
+        else
+          {
+             if (str[i] == ',')
+               {
+                  cp_style[i - first] = '\0';
+                  list = eina_list_append(list, strdup(cp_style));
+                  first = i + 1;
+                  continue;
+               }
+               cp_style[i - first] = str[i];
+          }
+     }
+
+   if (!is_cp_style)
+      style[i] = '\0';
+   else
+     {
+        cp_style[i - first] = '\0';
+        list = eina_list_append(list, strdup(cp_style));
+     }
+
+   *cp_style_list = list;
+
+   return strdup(style);
+}
+
+Eina_List *
+widget_prefix_list_get(Eina_List *collections, const char *widget_name, const char *style_name)
+{
+   Eina_List *l, *list = NULL;
+   Eina_Stringshare *group_name;
+   char prefix[1024];
+   const char *widget = NULL;
+   const char *style = NULL;
+   int i, end = 0;
+
+   EINA_LIST_FOREACH(collections, l, group_name)
+     {
+        widget = widget_name_get(group_name);
+
+        if (widget && !strcmp(widget, widget_name))
+          {
+             style = style_name_get(group_name);
+             if (style && !strcmp(style, style_name))
+               {
+                  end = strlen(group_name) - strlen(strrchr(group_name, '/')) + 1;
+                  for (i = 0; i < end; i++)
+                    prefix[i] = group_name[i];
+                  prefix[i] = '\0';
+
+                  list = eina_list_append(list, strdup(prefix));
+               }
+          }
+     }
+   return list;
 }

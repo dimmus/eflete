@@ -787,6 +787,7 @@ _is_checked(Eina_List *widgets)
         EINA_LIST_FOREACH(widget->list, ll, style)
           {
              if (style->check) return EINA_TRUE;
+             if (style->copy) return EINA_TRUE;
              EINA_LIST_FOREACH(style->list, lll, item_style)
                if (item_style->check) return EINA_TRUE;
           }

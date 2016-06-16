@@ -446,7 +446,7 @@ _template_theme_changed(void *data __UNUSED__,
 }
 
 static void
-_progress_end(void *data, PM_Project_Result result)
+_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
 {
    if (PM_PROJECT_SUCCESS == result)
      {
@@ -459,7 +459,7 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_edj.meta.comment, N_("Created with Eflete!"));
      }
 
-   _tabs_progress_end(data, result);
+   _tabs_progress_end(data, result, widgets);
 }
 
 static Eina_Bool
@@ -645,6 +645,7 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
 {
    const Eina_List *l, *wl, *wll, *wlll, *wllll;
    Eina_List *style_list = NULL;
+   Eina_List *cp_style_list = NULL;
    const char *str, *widget_name, *style_name;
    Eina_Strbuf *buf = eina_strbuf_new();
    Eina_Bool first_not_found = true;
@@ -685,15 +686,21 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
                     {
                        EINA_LIST_FOREACH(style_list, wlll, style_name)
                          {
+                            style_name = option_style_name_get(style_name, &cp_style_list);
+
                             EINA_LIST_FOREACH(widget->list, wll, style)
                               {
                                  if (!strcasecmp(style_name, style->name))
                                    {
-                                      EINA_LIST_FOREACH(style->list, wllll, item_style)
+                                      style->copy = cp_style_list;
+                                      if (!(style->copy))
                                         {
-                                           item_style->check = true;
+                                           EINA_LIST_FOREACH(style->list, wllll, item_style)
+                                             {
+                                                item_style->check = true;
+                                             }
+                                           style->check = true;
                                         }
-                                      style->check = true;
                                       break;
                                    }
                               }

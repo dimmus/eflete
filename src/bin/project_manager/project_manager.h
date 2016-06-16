@@ -182,7 +182,7 @@ typedef Eina_Bool
  * @ingroup ProjectManager
  */
 typedef void
-(* PM_Project_End_Cb)(void *data, PM_Project_Result result);
+(* PM_Project_End_Cb)(void *data, PM_Project_Result result, Eina_List *widgets);
 
 /**
  * Free the Project Thread object.

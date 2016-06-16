@@ -23,6 +23,7 @@
 #include "project_navigator.h"
 #include "config.h"
 #include "project_common.h"
+#include "widget_list.h"
 
 void
 meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)
@@ -90,8 +91,41 @@ entry_path_set(void *data,
    return true;
 }
 
+_group_copy(Project *pro, Eina_List *widgets)
+{
+   Eina_List *collections, *prefixs, *wl, *sl, *cl, *gl;
+   Tree_Item_Data *widget, *style;
+   char *cp_style_name = NULL;
+   char *prefix = NULL;
+   char group_name[1024];
+   char cp_group_name[1024];
+
+   collections = edje_file_collection_list(pro->dev);
+
+   EINA_LIST_FOREACH(widgets, wl, widget)
+     {
+        EINA_LIST_FOREACH(widget->list, sl, style)
+          {
+             if (style->copy)
+               {
+                  prefixs = widget_prefix_list_get(collections, widget->name, style->name);
+                  EINA_LIST_FOREACH(style->copy, cl, cp_style_name)
+                    {
+                       EINA_LIST_FOREACH(prefixs, gl, prefix)
+                         {
+                            snprintf(group_name, strlen(prefix) + strlen(style->name) + 1, "%s%s", prefix, style->name);
+                            snprintf(cp_group_name, strlen(prefix) + strlen(cp_style_name) + 1, "%s%s", prefix, cp_style_name);
+                            CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, group_name, cp_group_name));
+                            gm_group_add(ap.project, cp_group_name);
+                         }
+                    }
+               }
+          }
+     }
+}
+
 void
-_tabs_progress_end(void *data, PM_Project_Result result)
+_tabs_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
 {
    Meta_Data_Controls *meta = (Meta_Data_Controls *)data;
 
@@ -119,6 +153,8 @@ _tabs_progress_end(void *data, PM_Project_Result result)
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
    project_navigator_project_set();
    //tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
+
+   _group_copy(ap.project, widgets);
 
    config_recent_add(ap.project->name, ap.project->pro_path);
    _tab_open_project_recents_update();

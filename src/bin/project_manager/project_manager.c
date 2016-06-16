@@ -229,13 +229,15 @@ _end_send(void *data __UNUSED__)
    PM_Project_End_Cb func;
    PM_Project_Result result;
    void *udata;
+   Eina_List *widgets = NULL;
 
    /** Copy the links to callback and meesage, to fast release worker resource. */
    worker.func_progress = NULL;
    func = worker.func_end;
    result = worker.result;
    udata = worker.data;
-   func(udata, result);
+   widgets = worker.widgets;
+   func(udata, result, widgets);
 }
 
 static Eina_Bool
