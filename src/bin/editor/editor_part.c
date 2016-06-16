@@ -596,7 +596,7 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 
 static Eina_Bool _part_item_restacking;
 Eina_Bool
-editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                        const char *part_name, const char *item_name)
 {
    Eina_Bool res = true;
@@ -706,7 +706,7 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    if (change)
      {
         source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);
-        if (!editor_part_item_reset(edit_object, change, false, apply, part_name, item_name))
+        if (!editor_part_item_reset(edit_object, change, apply, part_name, item_name))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING;
@@ -738,7 +738,7 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 }
 
 Eina_Bool
-editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                   const char *part_name)
 {
    Eina_Bool res = true;
@@ -786,14 +786,15 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    res = res && editor_part_drag_threshold_reset(edit_object, change, apply, part_name);
    res = res && editor_part_drag_event_reset(edit_object, change, apply, part_name);
    res = res && editor_part_pointer_mode_reset(edit_object, change, apply, part_name);
-   res = res && editor_part_restack(edit_object, change, apply, false, part_name, NULL);
+
+   res = res && editor_part_restack(edit_object, change, false, apply, part_name, NULL);
 
    states = edje_edit_part_states_list_get(edit_object, part_name);
    assert(states != NULL);
 
    /* Removing states. Default state can only be reseted */
    res = res && editor_part_selected_state_set(edit_object, change, false, apply, part_name, "default", 0.0);
-   res = res && editor_state_reset(edit_object, change, false, apply, part_name, "default", 0.0);
+   res = res && editor_state_reset(edit_object, change, apply, part_name, "default", 0.0);
    EINA_LIST_FOREACH(eina_list_next(states), l, state)
      {
         state_name_split(state, &name, &state_val);
@@ -904,7 +905,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
              edje_edit_state_box_layout_set(edit_object, part_name, "default", 0.0, "horizontal");
 
         /* apply our default values */
-        if (!editor_part_reset(edit_object, NULL, false, apply, part_name))
+        if (!editor_part_reset(edit_object, NULL, apply, part_name))
           return false;
 
         event_info = eina_stringshare_add(part_name);
@@ -967,7 +968,7 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    if (change)
      {
         type = edje_edit_part_type_get(edit_object, part_name);
-        if (!editor_part_reset(edit_object, change, false, apply, part_name))
+        if (!editor_part_reset(edit_object, change, apply, part_name))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;

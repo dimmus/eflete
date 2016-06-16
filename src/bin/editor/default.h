@@ -23,14 +23,17 @@
 #include "eflete.h"
 
 Eina_Bool
-editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apple,
+editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool apple,
       const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name, const char *item_name);
 Eina_Bool
-editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name);
+Eina_Bool
+editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *program_name);
 
 Eina_Bool
 editor_state_rel1_relative_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);

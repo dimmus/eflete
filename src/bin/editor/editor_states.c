@@ -584,7 +584,7 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
 }
 
 Eina_Bool
-editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                    const char *part_name, const char *state_name, double state_val)
 {
    Eina_Bool res = true;
@@ -754,7 +754,7 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
           edje_edit_state_box_layout_set(edit_object, part_name, state_name, state_val, "horizontal");
 
         /* apply our default values */
-        if (!editor_state_reset(edit_object, NULL, false, apply, part_name, state_name, state_val))
+        if (!editor_state_reset(edit_object, NULL, apply, part_name, state_name, state_val))
           return false;
 
         _editor_project_changed();
@@ -826,7 +826,7 @@ editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DELETED, (void *)&event_info);
    if (change)
      {
-        if (!editor_state_reset(edit_object, change, false, apply, part_name, state_name, state_val))
+        if (!editor_state_reset(edit_object, change, apply, part_name, state_name, state_val))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;

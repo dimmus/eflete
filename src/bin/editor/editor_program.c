@@ -701,7 +701,7 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
 }
 
 Eina_Bool
-editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                      const char *program_name)
 {
    Eina_Bool res = true;
@@ -856,7 +856,7 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    if (change)
      {
         Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
-        if (!editor_program_reset(edit_object, change, false, apply, program_name))
+        if (!editor_program_reset(edit_object, change, apply, program_name))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
