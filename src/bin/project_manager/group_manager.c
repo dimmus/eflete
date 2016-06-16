@@ -276,8 +276,11 @@ gm_group_used_color_classes_edj_get(const char *edj, const char *group)
           {
              state_name_split(state, &pstate, &pvalue);
              color_c = edje_edit_state_color_class_get(obj, part, pstate, pvalue);
-             color_classes = eina_list_sorted_insert(color_classes, sort_cb, eina_stringshare_add(color_c));
-             eina_stringshare_del(color_c);
+             if (color_c)
+               {
+                  color_classes = eina_list_sorted_insert(color_classes, sort_cb, eina_stringshare_add(color_c));
+                  eina_stringshare_del(color_c);
+               }
              eina_stringshare_del(pstate);
           }
      }
@@ -341,6 +344,7 @@ _style_font_get(Evas_Object *obj, const char *style)
    EINA_LIST_FOREACH(tags, l, tag_value)
      {
         pch = strstr(tag_value, "font");
+        if (!pch) continue;
         pch += strlen("font");
         pch = strtok(pch, " ");
         font = edje_edit_font_path_get(obj, pch);
@@ -386,18 +390,25 @@ gm_group_used_fonts_edj_get(const char *edj, const char *group)
                   if (font)
                     {
                        real_font = edje_edit_font_path_get(obj, font);
-                       fonts = eina_list_sorted_insert(fonts, sort_cb, eina_stringshare_add(real_font));
+                       if (real_font)
+                         {
+                            fonts = eina_list_sorted_insert(fonts, sort_cb, eina_stringshare_add(real_font));
+                            eina_stringshare_del(real_font);
+                         }
                        eina_stringshare_del(font);
-                       eina_stringshare_del(real_font);
                     }
                }
              if (EDJE_PART_TYPE_TEXTBLOCK == type)
                {
                   style = edje_edit_state_text_style_get(obj, part, pstate, pvalue);
+                  /* sometimes I hate the edje_edit.  */
                   if (style)
                     {
                        style_fonts = _style_font_get(obj, style);
-                       fonts = eina_list_sorted_merge(fonts, style_fonts, sort_cb);
+                       if (!style_fonts)
+                         {
+                            fonts = eina_list_sorted_merge(fonts, style_fonts, sort_cb);
+                         }
                        eina_stringshare_del(style);
                        edje_edit_string_list_free(style_fonts);
                     }
