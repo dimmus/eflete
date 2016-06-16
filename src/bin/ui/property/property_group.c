@@ -686,6 +686,25 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
 }
 
 static void
+_ccl_control_free(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj,
+                  void *event_info __UNUSED__)
+{
+   Evas_Object *color = NULL;
+
+   color = evas_object_data_del(obj, "color1");
+   evas_object_del(color);
+
+   color = evas_object_data_del(obj, "color2");
+   evas_object_del(color);
+
+   color = evas_object_data_del(obj, "color3");
+   evas_object_del(color);
+}
+
+
+static void
 _color_class_colors_fill(void *data __UNUSED__,
                          Evas_Object *combo,
                          void *event_info __UNUSED__)
@@ -1005,6 +1024,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_content_set(action->control, "swallow.color3", color);
          evas_object_data_set(action->control, "color3", color);
 
+         evas_object_event_callback_add(action->control, EVAS_CALLBACK_FREE, _ccl_control_free, NULL);
          evas_object_smart_callback_add(action->control, "expanded", _color_class_colors_fill, NULL);
          break;
       default:
