@@ -81,8 +81,47 @@ EDITOR_STATE_BOOL(text_min_y, ATTRIBUTE_STATE_TEXT_MIN_Y)
 
 EDITOR_STATE_STRING(text_source, ATTRIBUTE_STATE_TEXT_SOURCE, true)
 EDITOR_STATE_STRING(text_text_source, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE, true)
-EDITOR_STATE_STRING(text, ATTRIBUTE_STATE_TEXT, true)
 
 EDITOR_STATE_STRING_WITH_FALLBACK(font, ATTRIBUTE_STATE_FONT, NULL, false)
 TODO("Add style fallback here")
 EDITOR_STATE_STRING_WITH_FALLBACK(text_style, ATTRIBUTE_STATE_TEXT_STYLE, NULL, true)
+
+Eina_Bool
+editor_state_text_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                      const char *part_name, const char *state_name, double state_val, const char *new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   if (change)
+     {
+        Eina_Stringshare *old_value = edje_edit_state_text_get(edit_object, part_name, state_name, state_val);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING;
+        diff->redo.function = editor_state_text_set;
+        diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssds.d3 = state_val;
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING;
+        diff->undo.function = editor_state_text_set;
+        diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssds.d3 = state_val;
+        diff->undo.args.type_ssds.s4 = old_value; /* assuming that getter returned stringshare */
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+       if (!edje_edit_state_text_set(edit_object, part_name, state_name, state_val, new_val ? new_val : ""))
+         return false;
+       _editor_project_changed();
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
+   return true;
+}
