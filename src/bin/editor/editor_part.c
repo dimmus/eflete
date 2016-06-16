@@ -953,8 +953,8 @@ editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 }
 
 Eina_Bool
-editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
-                const char *part_name)
+_editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+                 const char *part_name)
 {
    Diff *diff;
    Eina_Stringshare *event_info;
@@ -968,8 +968,9 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    if (change)
      {
         type = edje_edit_part_type_get(edit_object, part_name);
-        if (!editor_part_reset(edit_object, change, apply, part_name))
-          return false;
+        if (reset)
+          if (!editor_part_reset(edit_object, change, apply, part_name))
+            return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
         diff->redo.function = editor_part_del;
@@ -993,6 +994,13 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
         _editor_project_changed();
      }
    return true;
+}
+
+Eina_Bool
+editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                const char *part_name)
+{
+   return _editor_part_del(edit_object, change, merge, apply, true, part_name);
 }
 
 Eina_Bool

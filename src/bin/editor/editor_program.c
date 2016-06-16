@@ -842,8 +842,8 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 }
 
 Eina_Bool
-editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
-                const char *program_name)
+_editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+                    const char *program_name)
 {
    Diff *diff;
    Eina_Stringshare *event_info;
@@ -856,8 +856,9 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    if (change)
      {
         Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
-        if (!editor_program_reset(edit_object, change, apply, program_name))
-          return false;
+        if (reset)
+          if (!editor_program_reset(edit_object, change, apply, program_name))
+            return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
         diff->redo.function = editor_program_del;
@@ -881,4 +882,11 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
         _editor_project_changed();
      }
    return true;
+}
+
+Eina_Bool
+editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                   const char *program_name)
+{
+   return _editor_program_del(edit_object, change, merge, apply, true, program_name);
 }
