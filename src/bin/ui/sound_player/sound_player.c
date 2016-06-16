@@ -338,10 +338,12 @@ sound_player_sound_set(Sound_Data *sound)
 void
 sound_player_sound_unset(void)
 {
+#ifdef HAVE_AUDIO
    ecore_audio_obj_paused_set(in, true);
    ecore_timer_freeze(timer);
 
    _play_finished_cb(NULL, NULL);
+#endif
 }
 
 Evas_Object *
