@@ -932,7 +932,7 @@ editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
         diff->redo.args.type_sepc.s2 = eina_stringshare_add(part_name_copy);
         diff->undo.type = FUNCTION_TYPE_STRING;
         diff->undo.function = editor_part_del;
-        diff->undo.args.type_s.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_s.s1 = eina_stringshare_add(part_name_copy);
 
         change_diff_add(change, diff);
      }
