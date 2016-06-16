@@ -1826,10 +1826,20 @@ Eina_Bool
 pm_project_group_import(Project *project, const char *edj, const char *group)
 {
    Change *change;
-   Evas_Object *obj, *win;
+   Evas_Object *obj, *win, *img;
    Evas *e;
-   Eina_List *parts, *l;
-   Eina_Stringshare *part;
+   Eina_List *resources, *resources1, *l, *l1;
+   Eina_Stringshare *data, *data1, *source, *res_file, *res_dir;
+   External_Resource *res;
+   int id, size;
+   int c1_r, c1_g, c1_b, c1_a,
+       c2_r, c2_g, c2_b, c2_a,
+       c3_r, c3_g, c3_b, c3_a;
+   FILE *f;
+   Eina_Binbuf *sound_bin;
+   void *font;
+   Eet_File *ef;
+   Resource request;
 
    assert(edj != NULL);
    assert(group != NULL);
@@ -1841,25 +1851,241 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    obj = edje_edit_object_add(e);
    edje_object_file_set(obj, edj, group);
 
+   /* import group dependencies */
+   resources = gm_group_used_groups_edj_get(edj, group);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        pm_project_group_import(project, edj, data);
+     }
+   /* import images */
+   resources = gm_group_used_images_edj_get(edj, group);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        if (project->images)
+          {
+             /* if images list is not empty get from first item the path to
+              * resource folder, in currect case - path to folder with images */
+             res = eina_list_data_get(project->images);
+             res_dir = ecore_file_dir_get(res->source);
+             request.resource_type = RESOURCE_TYPE_IMAGE;
+             request.name = data;
+             res = (External_Resource *)resource_get(project->images, &request);
+             if ((res) &&
+                 ((res->name == data) || (!strcmp(res->name, data))))
+               {
+                  TODO("implement resource replacing while importing, see comment bellow")
+                  /* when efl merge window will be opened need to add logic for
+                   * replace any resource. Now we can do it only for images, because
+                   * edje_edit has a API for replace one image to enother, but for
+                   * sounds, fonts, color_classes and styles API is missing. So
+                   * be better if replacing functional been implemented for all
+                   * resource type at the same time */
+                  continue;
+               }
+          }
+        else
+          {
+             res_dir = eina_stringshare_printf("%s/images", project->develop_path);
+          }
+        img = evas_object_image_add(e);
+        id = edje_edit_image_id_get(obj, data);
+        if (id < 0)
+          {
+             WARN("Image %s coudn't be exported", data);
+             continue;
+          }
+        /* save image, it's need for insert to project dev file */
+        source = eina_stringshare_printf("edje/images/%i", id);
+        evas_object_image_file_set(img, edj, source);
+        res_file = eina_stringshare_printf("%s/%s", res_dir, data);
+        evas_object_image_save(img, res_file, NULL, NULL);
+        evas_object_del(img);
+
+        CRIT_ON_FAIL(edje_edit_image_add(project->global_object, res_file));
+        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_IMAGE);
+        res->source = eina_stringshare_add(data);
+        resource_insert(&project->images, (Resource *)res);
+
+        eina_stringshare_del(source);
+        eina_stringshare_del(res_file);
+        eina_stringshare_del(res_dir);
+     }
+   /* images imported */
+
+   /* import sound */
+   resources = gm_group_used_sample_edj_get(edj, group);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        if (project->sounds)
+          {
+             res = eina_list_data_get(project->sounds);
+             res_dir = ecore_file_dir_get(res->source);
+             request.resource_type = RESOURCE_TYPE_SOUND;
+             request.name = data;
+             res = (External_Resource *)resource_get(project->sounds, &request);
+             if ((res) &&
+                 ((res->name == data) || (!strcmp(res->name, data))))
+               {
+                  TODO("implement resource replacing")
+                  continue;
+               }
+          }
+        else
+          {
+             res_dir = eina_stringshare_printf("%s/sounds", project->develop_path);
+          }
+        sound_bin = edje_edit_sound_samplebuffer_get(obj, data);
+        res_file = eina_stringshare_printf("%s/%s", res_dir, data);
+        if (!(f = fopen(res_file, "wb")))
+          {
+             ERR("Could not open file: %s", res_file);
+             continue;
+          }
+        if (fwrite(eina_binbuf_string_get(sound_bin),
+                   eina_binbuf_length_get(sound_bin), 1, f) != 1)
+          ERR("Could not write sound: %s", strerror(errno));
+        if (f) fclose(f);
+        eina_binbuf_free(sound_bin);
+
+        CRIT_ON_FAIL(edje_edit_sound_sample_add(project->global_object, data, res_file));
+        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_SOUND);
+        res->source = eina_stringshare_add(res_file);
+        resource_insert(&project->sounds, (Resource *)res);
+
+        eina_stringshare_del(res_file);
+     }
+   /* sounds imported */
+
+   /* import fonts */
+   resources = gm_group_used_fonts_edj_get(edj, group);
+   ef = eet_open(edj, EET_FILE_MODE_READ);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        if (project->fonts)
+          {
+             res = eina_list_data_get(project->fonts);
+             res_dir = ecore_file_dir_get(res->source);
+             request.resource_type = RESOURCE_TYPE_FONT;
+             request.name = data;
+             res = (External_Resource *)resource_get(project->fonts, &request);
+             if ((res) &&
+                 ((res->name == data) || (!strcmp(res->name, data))))
+               {
+                  TODO("implement resource replacing")
+                  continue;
+               }
+          }
+        else
+          {
+             res_dir = eina_stringshare_printf("%s/fonts", project->develop_path);
+          }
+        source = eina_stringshare_printf("edje/fonts/%s", data);
+        font = eet_read(ef, source, &size);
+        res_file = eina_stringshare_printf("%s/%s", res_dir, data);
+        if (!font) continue;
+        if (!(f = fopen(res_file, "wb")))
+          {
+             ERR("Could not open file: %s", res_file);
+             continue;
+          }
+        if (fwrite(font, size, 1, f) != 1)
+          ERR("Could not write font: %s", strerror(errno));
+        if (f) fclose(f);
+        free(font);
+        eina_stringshare_del(source);
+
+        edje_edit_font_add(project->global_object, res_file, data);
+        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_FONT);
+        res->source = eina_stringshare_add(res_file);
+        resource_insert(&project->fonts, (Resource *)res);
+
+        eina_stringshare_del(res_file);
+     }
+   eet_close(ef);
+   /* fonts imported */
+
+   /* import color_classes */
+   resources = gm_group_used_color_classes_edj_get(edj, group);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        request.resource_type = RESOURCE_TYPE_COLORCLASS;
+        request.name = data;
+        res = (External_Resource *)resource_get(project->colorclasses, &request);
+        if ((res) &&
+            ((res->name == data) || (!strcmp(res->name, data))))
+          {
+             TODO("implement resource replacing")
+             continue;
+          }
+        edje_edit_color_class_colors_get(obj, data,
+                                         &c1_r, &c1_g, &c1_b, &c1_a,
+                                         &c2_r, &c2_g, &c2_b, &c2_a,
+                                         &c3_r, &c3_g, &c3_b, &c3_a);
+        CRIT_ON_FAIL(edje_edit_color_class_add(project->global_object, data));
+        CRIT_ON_FAIL(edje_edit_color_class_colors_set(project->global_object, data,
+                                                      c1_r, c1_g, c1_b, c1_a,
+                                                      c2_r, c2_g, c2_b, c2_a,
+                                                      c3_r, c3_g, c3_b, c3_a));
+        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_COLORCLASS);
+        resource_insert(&project->colorclasses, (Resource *)res);
+     }
+   /* color_classes imported */
+
+   /* import styles */
+   resources = gm_group_used_styles_edj_get(edj, group);
+   EINA_LIST_FOREACH(resources, l, data)
+     {
+        request.resource_type = RESOURCE_TYPE_STYLE;
+        request.name = data;
+        res = (External_Resource *)resource_get(project->styles, &request);
+        if ((res) &&
+            ((res->name == data) || (!strcmp(res->name, data))))
+          {
+             TODO("implement resource replacing")
+             continue;
+          }
+        edje_edit_style_add(project->global_object, data);
+        resources1 = edje_edit_style_tags_list_get(obj, data);
+        EINA_LIST_FOREACH(resources1, l1, data1)
+          {
+             source = edje_edit_style_tag_value_get(obj, data, data1);
+             CRIT_ON_FAIL(edje_edit_style_tag_add(project->global_object, data, data1));
+             CRIT_ON_FAIL(edje_edit_style_tag_value_set(project->global_object, data, data1, source));
+             eina_stringshare_del(source);
+          }
+        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_STYLE);
+        resource_insert(&project->styles, (Resource *)res);
+     }
+   /* styles imported */
+
    change = change_add(NULL);
 
-   parts = edje_edit_parts_list_get(obj);
+   /* add fake change for min/max group attributes.
+    * Try to set the default values */
+   CRIT_ON_FAIL(editor_group_max_h_set(obj, change, true, false, 0));
+   CRIT_ON_FAIL(editor_group_max_w_set(obj, change, true, false, 0));
+   CRIT_ON_FAIL(editor_group_min_h_set(obj, change, true, false, 0));
+   CRIT_ON_FAIL(editor_group_min_w_set(obj, change, true, false, 0));
+
    you_shall_not_pass_editor_signals(NULL);
-   EINA_LIST_FOREACH(parts, l, part)
-     {
-        if (!editor_part_del(obj, change, true, false, part))
-          ERR("Ohhh, fuck, cann't do fake deletion of part '%s'", part);
-     }
-   edje_edit_string_list_free(parts);
+   /* fake changes for imported group
+    * reset all attributes for program and parts, for avoid errors in case
+    * cycled dependencies;
+    */
+   editor_group_reset(obj, change, false);
 
+   /* apply group to project */
    CRIT_ON_FAIL(editor_group_add(project->global_object, group));
-   CRIT_ON_FAIL(editor_save(project->global_object));
-
+   CRIT_ON_FAIL(editor_save_all(project->global_object));
    obj = edje_edit_object_add(e);
    edje_object_file_set(obj, project->dev, group);
 
    change_undo(obj, change);
-   CRIT_ON_FAIL(editor_save(obj));
+   CRIT_ON_FAIL(editor_save_all(obj));
+   /* reload file after group add */
+   pm_dev_file_reload(project);
+   /* add group to project structures */
+   gm_group_add(project, group);
 
    evas_object_del(win);
    you_shall_pass_editor_signals(NULL);
