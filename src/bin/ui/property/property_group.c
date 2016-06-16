@@ -423,7 +423,7 @@ _filter_cb(Property_Attribute *pa)
 static Eina_Bool
 _transition_filter_cb(Property_Attribute *pa)
 {
-   if (group_pd.group->current_selected) return false;
+   if (!group_pd.group->current_selected) return false;
    if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return false;
    if (((Program *)group_pd.group->current_selected)->type != EDJE_ACTION_TYPE_STATE_SET) return false;
 
