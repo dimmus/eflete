@@ -106,7 +106,7 @@ _selected(void *data __UNUSED__,
    const char *selected = event_info;
    char *p = strrchr(selected, '.');
 
-   if ((!p) && (strcmp(p, "pro")))
+   if ((!p) || (strcmp(p, ".pro")))
      elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
    else
      elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), false);
