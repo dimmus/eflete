@@ -779,8 +779,27 @@ group { name: "elm/hover/base/main_menu_submenu/default";
    alias: "elm/hover/base/menu/default";
    images {
       image: "bg_tip_popup.png" COMP;
+      image: "shadow.png" COMP;
    }
    parts {
+      part { name: "shadow";
+         insert_before: "bg0";
+          type: IMAGE;
+          description { state: "default" 0.0;
+             image {
+                normal: "shadow.png";
+                border: 20 20 20 20;
+             }
+             rel1 {
+                offset: -7 -7;
+                to: "bg0";
+             }
+             rel2 {
+                offset: 9 9;
+                to: "bg0";
+             }
+          }
+       }
       part { name: "base";
          type: RECT;
          repeat_events: 1;
