@@ -56,7 +56,8 @@ static Eina_Bool res;
 
 static void
 _end_cb(void *data __UNUSED__,
-        PM_Project_Result result __UNUSED__)
+        PM_Project_Result result __UNUSED__,
+        Eina_List *widgets __UNUSED__)
 {
    ecore_main_loop_quit();
 }
@@ -160,7 +161,8 @@ END_TEST
  */
 static void
 _test_end_cb(void *data __UNUSED__,
-             PM_Project_Result result)
+             PM_Project_Result result,
+             Eina_List *widgets __UNUSED__)
 {
    if (result == PM_PROJECT_SUCCESS)
      res = EINA_TRUE;

@@ -27,6 +27,6 @@ Eina_Bool
 progress_print(void *data, Eina_Stringshare *progress_string);
 
 void
-progress_end(void *data, PM_Project_Result result);
+progress_end(void *data, PM_Project_Result result, Eina_List *widgets);
 
 #endif /* PROJECT_COMMON_H */

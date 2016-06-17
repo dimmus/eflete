@@ -91,6 +91,7 @@ entry_path_set(void *data,
    return true;
 }
 
+void
 _group_copy(Project *pro, Eina_List *widgets)
 {
    Eina_List *collections, *prefixs, *wl, *sl, *cl, *gl;
@@ -131,13 +132,13 @@ _tabs_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
 
    if (PM_PROJECT_LOCKED == result)
      {
-        progress_end(data, result);
+        progress_end(data, result, NULL);
         popup_want_action(_("File is locked"), _("File locked by another application"), NULL, NULL, BTN_OK, NULL, NULL);
         return;
      }
    if (PM_PROJECT_ERROR == result)
      {
-        progress_end(data, result);
+        progress_end(data, result, NULL);
         popup_want_action(_("File opening error"), _("Unknown problem with file appeared.<br>"
                                                      "(wrong file, filesystem error, no memory, etc)"), NULL, NULL, BTN_OK, NULL, NULL);
         return;
@@ -160,7 +161,7 @@ _tabs_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
    _tab_open_project_recents_update();
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
 
-   progress_end(data, result);
+   progress_end(data, result, NULL);
 }
 
 void
