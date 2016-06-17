@@ -126,12 +126,12 @@ class Ewe.Combobox (Elm.Widget)
    implements {
       class.constructor;
       Eo.Base.constructor;
-      Evas.Object.Smart.del;
-      Evas.Object.Smart.add;
-      Evas.Object.Smart.resize;
-      Evas.Object.Smart.move;
-      Evas.Object.Smart.show;
-      Evas.Object.Smart.hide;
+      Efl.Canvas.Group.group_del;
+      Efl.Canvas.Group.group_add;
+      Efl.Canvas.Group.group_resize;
+      Efl.Canvas.Group.group_move;
+      Efl.Canvas.Group.group_show;
+      Efl.Canvas.Group.group_hide;
       Elm.Widget.disable;
    }
    events {

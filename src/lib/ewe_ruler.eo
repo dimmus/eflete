@@ -265,13 +265,13 @@ class Ewe.Ruler (Elm.Widget)
    implements {
       class.constructor;
       Eo.Base.constructor;
-      Evas.Object.Smart.add;
-      Evas.Object.Smart.del;
-      Evas.Object.Smart.resize;
-      Evas.Object.Smart.calculate;
-      Evas.Object.Smart.move;
-      Evas.Object.Smart.show;
-      Evas.Object.Smart.hide;
+      Efl.Canvas.Group.group_add;
+      Efl.Canvas.Group.group_del;
+      Efl.Canvas.Group.group_resize;
+      Efl.Canvas.Group.group_calculate;
+      Efl.Canvas.Group.group_move;
+      Efl.Canvas.Group.group_show;
+      Efl.Canvas.Group.group_hide;
       Elm.Widget.theme_apply;
    }
    events {

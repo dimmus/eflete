@@ -725,9 +725,9 @@ _ewe_ruler_marker_style_get(Eo *obj EINA_UNUSED,
 /*------------------------Smart functions ----------------------------*/
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
+_ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
-   evas_obj_smart_add(eo_super(obj, MY_CLASS));
+   efl_canvas_group_add(eo_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 
    sd->obj = obj;
@@ -750,7 +750,7 @@ _ewe_ruler_evas_object_smart_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_del(Eo *obj,
+_ewe_ruler_efl_canvas_group_group_del(Eo *obj,
                                  Ewe_Ruler_Smart_Data *sd)
 {
    Ewe_Ruler_Scale *scale;
@@ -771,7 +771,7 @@ _ewe_ruler_evas_object_smart_del(Eo *obj,
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_show(Eo* obj EINA_UNUSED, Ewe_Ruler_Smart_Data *sd)
+_ewe_ruler_efl_canvas_group_group_show(Eo* obj EINA_UNUSED, Ewe_Ruler_Smart_Data *sd)
 {
    if (sd->ruler_visible) return;
    Ewe_Ruler_Scale *scale;
@@ -806,10 +806,10 @@ _ewe_ruler_evas_object_smart_show(Eo* obj EINA_UNUSED, Ewe_Ruler_Smart_Data *sd)
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
+_ewe_ruler_efl_canvas_group_group_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 {
    if (!sd->ruler_visible) return;
-   evas_obj_smart_hide(eo_super(obj, MY_CLASS));
+   efl_canvas_group_hide(eo_super(obj, MY_CLASS));
    Ewe_Ruler_Scale *scale;
    Ewe_Ruler_Marker *marker;
    Eina_List *ls, *l;
@@ -832,13 +832,13 @@ _ewe_ruler_evas_object_smart_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_move(Eo *obj,
+_ewe_ruler_efl_canvas_group_group_move(Eo *obj,
                                   Ewe_Ruler_Smart_Data *sd,
                                   Evas_Coord x,
                                   Evas_Coord y)
 {
 
-   evas_obj_smart_move(eo_super(obj, MY_CLASS), x, y);
+   efl_canvas_group_move(eo_super(obj, MY_CLASS), x, y);
 
    evas_object_move(sd->clip, x, y);
    evas_object_move(sd->bg, x, y);
@@ -850,7 +850,7 @@ _ewe_ruler_evas_object_smart_move(Eo *obj,
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_resize(Eo *obj,
+_ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
                                     Ewe_Ruler_Smart_Data *sd,
                                     Evas_Coord w,
                                     Evas_Coord h)
@@ -861,7 +861,7 @@ _ewe_ruler_evas_object_smart_resize(Eo *obj,
    sd->geometry.width = w;
    sd->geometry.height = h;
 
-   evas_obj_smart_resize(eo_super(obj, MY_CLASS), w, h);
+   efl_canvas_group_resize(eo_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
 
@@ -869,7 +869,7 @@ _ewe_ruler_evas_object_smart_resize(Eo *obj,
 }
 
 EOLIAN static void
-_ewe_ruler_evas_object_smart_calculate(Eo *obj EINA_UNUSED,
+_ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
                                        Ewe_Ruler_Smart_Data *sd)
 {
    Eina_List *ls;
@@ -960,8 +960,7 @@ _ewe_ruler_eo_base_constructor(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
    obj = eo_constructor(eo_super(obj, MY_CLASS));
    sd->obj = obj;
-   evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY);
-   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
+   evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    return obj;
 }
 
