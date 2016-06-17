@@ -232,8 +232,8 @@ resource_insert_after(Eina_List **list, const Resource *after, const Resource *r
 void
 resource_used_in_add(Resource *res, const Resource *used_in)
 {
-   assert(res != NULL);
-   assert(used_in != NULL);
+   if (!res) return;
+   if (!used_in) return;
 
    res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, used_in);
 }
