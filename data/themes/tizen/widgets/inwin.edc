@@ -283,9 +283,27 @@ group { name: "elm/win/inwin/splash";
      image: "splash/Comp 1_00000_00043.png" COMP;
      image: "splash/Comp 1_00000_00044.png" COMP;
      image: "cd_splash_img.png" COMP;
+     image: "shadow.png" COMP;
    }
    broadcast_signal: 0;
    parts {
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "shadow.png";
+               border: 20 20 20 20;
+            }
+            rel1 {
+               offset: -7 -7;
+               to: "border";
+            }
+            rel2 {
+               offset: 9 9;
+               to: "border";
+            }
+         }
+      }
       part { name: "border";
          type: RECT;
          description { state: "default" 0.0;
