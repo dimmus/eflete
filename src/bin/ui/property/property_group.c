@@ -4347,28 +4347,28 @@ _init_items()
            case PROPERTY_GROUP_ITEM_GROUP_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME,
-                       _("The name that will be used by the application<br>"
+                       _("The name to be used by the application<br>"
                          "to load the resulting Edje object and to identify<br>"
                          "the group to swallow in a GROUP part."));
-              break;
+             break;
            case PROPERTY_GROUP_ITEM_GROUP_MIN:
               IT.name = "Min";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W,
                        _("The minimum width for the container defined by<br>"
-                         "the composition of the parts. It is not enforced."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H,
+                         "the composition of the parts. This value is not enforced."));
+             _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H,
                        _("The minimum height for the container defined by<br>"
-                         "the composition of the parts. It is not enforced."));
-               break;
+                         "the composition of the parts. This value is not enforced."));
+              break;
            case PROPERTY_GROUP_ITEM_GROUP_MAX:
               IT.name = "Max";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W,
                        _("The maximum width for the container defined by<br>"
-                         "the composition of the parts. It is not enforced."));
-               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H,
+                         "the composition of the parts. This value is not enforced."));
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H,
                         _("The maximum height for the container defined by<br>"
-                         "the composition of the parts. It is not enforced."));
-              break;
+                          "the composition of the parts. This value is not enforced."));
+             break;
 
               /* part block */
            case PROPERTY_GROUP_ITEM_PART_TITLE:
@@ -4380,10 +4380,10 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME,
-                       _("The part's name will be used as reference in the theme's<br>"
-                         "relative positioning system, by programs and in some cases<br>"
-                         "by the application. It must be unique within the group."));
-              break;
+                       _("The part name is used as a reference in the relative<bt>"
+                         "positioning system of the theme, by programs and in some<br>"
+                         "cases by the application. It must be unique within the group."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TYPE:
               IT.name = "Type";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE, NULL);
@@ -4391,60 +4391,64 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_SCALE:
               IT.name = "Scale";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE,
-                       _("Specifies whether the part will scale its size with an<br>"
-                         "edje scaling factor. By default scale is off and the<br>"
+                       _("Specifies whether the part scales its size with an<br>"
+                         "Edje scaling factor. By default, the scale is off and the<br>"
                          "default scale factor is 1.0 - that means no scaling.<br>"
-                         "This would be used to scale properties such as font size,<br>"
-                         "min/max size of the part, and possibly can be used to scale<br>"
-                         "based on DPI of the target device. The reason to be selective<br>"
-                         "is that some things work well being scaled, others do not,<br>"
-                         "so the designer gets to choose what works best."));
-              break;
+                         "This is used to scale properties, such as font size,<br>"
+                         "and minimum and maximum size of the part. It can also<br>"
+                         "be used to scale based on the DPI of the target device.<br>"
+                         "The reason to be selective is that some things work well<br>"
+                         "being scaled, and others do not, so the designer gets<br>"
+                         "to choose what works best."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_MOUSE_EVENTS:
               IT.name = "Mouse events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS,
-                       _("Specifies whether the part will emit signals,<br>"
-                         "disabling it will prevent the part from emitting<br>"
+                       _("Specifies whether the part emits signals.<br>"
+                         "Disabling it prevents the part from emitting<br>"
                          "any type of signal at all."));
-              break;
+             break;
            case PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS:
               IT.name = "Repeat events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS,
-                       _("Specifies whether a part echoes a mouse event to other<br>"
-                         "parts below the pointer if enabled, or not if turned off."));
-              break;
+                       _("Specifies whether a part echoes a mouse event<br>"
+                         "to other parts below the pointer."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_CLIP_TO:
               IT.name = "Clip to";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO,
-                       _("Only renders the area of part that coincides with<br>"
-                         "another part's container. Overflowing content will<br>"
-                         "not be displayed. Note that the part being clipped<br>"
-                         "to can only be a rectangle part."));
+                       _("Only renders the area of the part that coincides with<br>"
+                         "another part's container. The overflowing content is<br>"
+                         "not displayed. Note that the part being clipped to can"
+                         "be a rectangle or image part."));
               break;
            case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
               IT.name = "Ignore flags";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS,
-                       _("Specifies whether events with the given flags should<br>"
-                         "be ignored, i.e., will not have the signals emitted to the parts."));
-              break;
+                       _("Specifies whether events with the given flags<br>"
+                         "must be ignored. These events do not have their<br>"
+                         "signals emitted to the parts."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
               IT.name = "Pointer mode";
               IT.filter_data.part_types &= ~PART_SPACER;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE,
-                       _("Sets the mouse pointer behavior for a given part.<br>"
-                         "The default value is AUTOGRAB. Aviable modes:<br>"
-                         " *  AUTOGRAB, when the part is clicked and the button<br>"
-                         "    remains pressed, the part will be the source of all<br>"
-                         "    future mouse signals emitted, even outside the object,<br>"
-                         "    until the button is released.<br>"
-                         " *  NOGRAB, the effect will be limited to the part's container."));
+                       _("Sets the mouse pointer behavior for the part.<br>"
+                         "The default value is AUTOGRAB. The following modes are available:<br>"
+                         " * AUTOGRAB, when the part is clicked and the button<br>"
+                         "   remains pressed, the part is the source of all future<br>"
+                         "   mouse signals emitted, even outside the object, until<br>"
+                         "   the button is  released.<br>"
+                         " * NOGRAB, the effect is limited to the part's container."));
               break;
            case PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE:
               IT.name = "Source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE,
-                       _("Swallows the specified group into the part's container<br>"
-                         "if a GROUP. If TEXTBLOCK it is used for the group to be<br>"
-                         "loaded and used for selection display UNDER the selected text."));
+                       _("The meaning of this parameter varies depending on the type of the part.<br>"
+                         " * For GROUP parts, it's the name of another group in the Edje<br>"
+                         "   file which is autoloaded and swallowed on this part.<br>"
+                         " * For TEXTBLOCK parts, it's the name of a group is used for<br>"
+                         "   selection display under the text."));
               IT.filter_data.part_types = PART_GROUP;
               break;
 
@@ -4458,27 +4462,25 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
               IT.name = "Enable";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X,
-                       _("Used to setup dragging events for the X axis. Enable<br>"
-                         "or disable dragging along the axis. When enabled,<br>"
-                         "1 will set the starting point at 0.0 and -1 at 1.0."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y,
-                       _("Used to setup dragging events for the Y axis. Enable<br>"
-                         "or disable dragging along the axis. When enabled,<br>"
-                         "1 will set the starting point at 0.0 and -1 at 1.0."));
-               break;
+                       _("Enables or disables dragging along the X axis.<br>"
+                         "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
+             _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y,
+                       _("Enables or disables dragging along the Y axis.<br>"
+                         "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
+              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP:
               IT.name = "Step";
               _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X,
-                       _("This parameter takes any integer and will limit<br>"
-                         "movement to values divisible by it, causing the part<br>"
-                         "to jump from position to position. If step is set to 0<br>"
-                         "it is calculated as width of confine part divided by count."));
-              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y,
-                       _("This parameter takes any integer and will limit<br>"
-                         "movement to values divisible by it, causing the part<br>"
-                         "to jump from position to position. If step is set to 0<br>"
-                         "it is calculated as width of confine part divided by count."));
-               break;
+                       _("This parameter takes any integer and limits movement<br>"
+                         "to values divisible by it, causing the part to jump from<br>"
+                         "position to position. If the step is set to 0, it is<br>"
+                         "calculated as the width of the confined part divided by count."));
+             _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y,
+                       _("This parameter takes any integer and limits movement<br>"
+                         "to values divisible by it, causing the part to jump from<br>"
+                         "position to position. If the step is set to 0, it is<br>"
+                         "calculated as the width of the confined part divided by count."));
+              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT:
               IT.name = "Count";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X, NULL);
@@ -4487,24 +4489,24 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
               IT.name = "Confine";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE,
-                       _("When set, limits the movement of the dragged part to<br>"
-                         "another part's container. When you use confine don't<br>"
-                         "forget to set a min size for the part, or the draggie<br>"
-                         "will not show up."));
-              break;
+                       _("When set, limits the movement of the movable part<br>"
+                         "to another part's container. When you use the confine option,<br>"
+                         "do not forget to set a minimum size for the part,<br>"
+                         "or the movable part does not show up."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD:
               IT.name = "Threshold";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD,
-                       _("When set, the movement of the dragged part can only<br>"
-                         "start when it get moved enough to be outside of the<br>"
-                         "threshold part."));
-              break;
+                       _("When set, the movement of the dragged part<br>"
+                         "can only start when it gets moved enough to be outside<br>"
+                         "of the threshold part."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
               IT.name = "Events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT,
-                       _("It causes the part to forward the drag events to<br>"
-                         "another part, thus ignoring them for itself."));
-              break;
+                       _("Causes the part to forward the drag events<br>"
+                         "to another part, thus ignoring them for itself."));
+             break;
 
               /* state block */
            case PROPERTY_GROUP_ITEM_STATE_TITLE:
@@ -4516,18 +4518,18 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME,
-                       _("A name used to identify a description inside a<br>"
-                         "given part. Multiple descriptions are used to declare<br>"
-                         "different states of the same part, like \"clicked\"<br>"
-                         "or \"invisible\". All states declarations are also<br>"
-                         "coupled with an index number between 0.0 and 1.0."));
-              break;
+                       _("A name used to identify a description inside a given part.<br>"
+                         "Multiple descriptions are used to declare different states<br>"
+                         "of the same part, such as \"clicked\" or \"invisible\".<br>"
+                         "All state declarations are also coupled with an index number<br>"
+                         "between 0.0 and 1.0."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_VISIBLE:
               IT.name = "Visible";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE,
-                       _("Takes a boolean state specifying whether part is<br>"
-                         "visible or not. Non-visible parts do not emit signals."));
-              break;
+                       _("Takes a boolean state specifying whether the part is<br>"
+                         "visible or not. Invisible parts do not emit signals."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE:
               IT.name = "Proxy source";
               IT.filter_data.part_types = PART_PROXY;
@@ -4546,38 +4548,38 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MIN:
               IT.name = "Min";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W,
-                       _("Sets the minimum width size for this state."));
+                       _("Sets the minimum width for this state."));
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H,
-                       _("Sets the minimum height size for this state."));
+                       _("Sets the minimum height for this state."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MAX:
               IT.name = "Max";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W,
-                       _("Sets the maximum width size for this state."));
+                       _("Sets the maximum width for this state."));
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H,
-                       _("Sets the maximum height size for this state."));
+                       _("Sets the maximum height for this state."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL:
               IT.name = "Minmul";
               _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W,
-                       _("A width multiplier FORCIBLY applied to whatever<br>"
+                       _("A width multiplier forcibly applied to whatever the<br>"
                          "minimum size is only during minimum size calculation."));
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H,
-                        _("A height multiplier FORCIBLY applied to whatever<br>"
+                       _("A height multiplier forcibly applied to whatever the<br>"
                          "minimum size is only during minimum size calculation."));
-              break;
+             break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED:
               IT.name = "Fixed";
               _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W,
-                       _("This tells the min size calculation routine that this<br>"
-                         "part does not change size in width. On for it doesn't,<br>"
-                         "off for it does. So the routine should not try and<br>"
-                         "expand or contract the part."));
+                       _("Tells the minimum size calculation routine that this<br>"
+                         "part does not change size in width. ON for enabled<br>"
+                         "OFF for disabled. When enabled, the routine does not try<br>"
+                         "and expand or contract the part."));
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H,
-                        _("This tells the min size calculation routine that this<br>"
-                         "part does not change size in height. On for it doesn't,<br>"
-                         "off for it does. So the routine should not try and<br>"
-                         "expand or contract the part."));
+                        _("Tells the minimum size calculation routine that this<br>"
+                          "part does not change size in height. ON for enabled<br>"
+                          "OFF for disabled. When enabled, the routine does not try<br>"
+                          "and expand or contract the part."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF:
               IT.name = "Aspect preference";
@@ -4587,13 +4589,13 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
               IT.name = "Aspect";
               _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN,
-                       _("Normally width and height can be resized to any values<br>"
-                         "independently. The aspect property forces the width to<br>"
-                         "height ratio to be kept from the minimum."));
+                       _("Normally the width and height can be resized to any values<br>"
+                         "independently. The aspect property forces the width to height<br>"
+                         "ratio to be kept from the minimum."));
               _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX,
-                       _("Normally width and height can be resized to any values<br>"
-                         "independently. The aspect property forces the width to<br>"
-                         "height ratio to be kept to the maximum."));
+                       _("Normally the width and height can be resized to any values<br>"
+                         "independently. The aspect property forces the width to height<br>"
+                         "ratio to be kept to the maximum."));
                break;
 
            case PROPERTY_GROUP_ITEM_STATE_MAP:
@@ -4605,20 +4607,20 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_MAP_ON:
               IT.name = "Map on:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ON,
-                       _("Enable or disable mapping for the part"));
+                       _("Enables or disables mapping for the part."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ON:
               IT.name = "Perspective on:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON,
-                       _("Enable or disable perspective when rotating."));
+                       _("Enables or disables perspective when rotating."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH:
               IT.name = "Smooth:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_SMOOTH,
-                       _("Enable or disable smooth map rendering.<br>"
-                         "This may be linear interpolation, anisotropic<br>"
-                         "filtering or anything the engine decides is \"smooth\""));
-              break;
+                       _("Enables or disables smooth map rendering.<br>"
+                         "This can be linear interpolation, anisotropic filtering,<br>"
+                         "or anything the engine decides is \"smooth\"."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA:
               IT.name = "Alpha:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ALPHA,
