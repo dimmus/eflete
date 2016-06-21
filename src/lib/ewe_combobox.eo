@@ -119,7 +119,7 @@ class Ewe.Combobox (Elm.Widget)
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
             @in part: Eina.Stringshare*; [[Part name]]
-            @in content: Evas.Object; [[A swallowed content]]
+            @in content: Efl.Canvas.Object; [[A swallowed content]]
          }
       }
    }
