@@ -1136,8 +1136,8 @@ _on_menu_add_group_data_clicked(void *data __UNUSED__,
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
-   evas_object_show(ap.popup);
    elm_object_focus_set(pl->popup.entry_name, true);
+   evas_object_show(ap.popup);
 }
 
 static void
@@ -1297,9 +1297,8 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_show(ap.popup);
    elm_object_focus_set(pl->popup.entry_name, true);
-
+   evas_object_show(ap.popup);
 }
 
 static void
@@ -1420,8 +1419,8 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_show(ap.popup);
    elm_object_focus_set(pl->popup.entry_name, true);
+   evas_object_show(ap.popup);
 }
 
 static void
@@ -1538,8 +1537,8 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_show(ap.popup);
    elm_object_focus_set(pl->popup.entry_name, true);
+   evas_object_show(ap.popup);
 }
 
 void
