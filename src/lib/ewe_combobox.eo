@@ -23,7 +23,7 @@ class Ewe.Combobox (Elm.Widget)
          ]]
          return: Ewe_Combobox_Item *; [[The new combobox item object or NULL if it cannot be created]]
          params {
-            @in title: Eina.Stringshare*; [[New items title]]
+            @in title: stringshare; [[New items title]]
          }
       }
       item_del {
@@ -51,14 +51,14 @@ class Ewe.Combobox (Elm.Widget)
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
             @in index: int; [[Combobox item index]]
-            @in title: Eina.Stringshare*; [[New items title]]
+            @in title: stringshare; [[New items title]]
          }
       }
       item_title_get {
          [[
           Get title of the combobox item.
          ]]
-         return: Eina.Stringshare *; [[items title on success, NULL otherwise]]
+         return: stringshare; [[items title on success, NULL otherwise]]
          params {
             @in index: const(int); [[Combobox item index]]
          }
@@ -90,7 +90,7 @@ class Ewe.Combobox (Elm.Widget)
          ]]
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
-            @in title: Eina.Stringshare*; [[New items title]]
+            @in title: stringshare; [[New items title]]
          }
       }
       item_style_set {
@@ -100,7 +100,7 @@ class Ewe.Combobox (Elm.Widget)
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
             @in item: Ewe_Combobox_Item*; [[The combobox item]]
-            @in style: Eina.Stringshare*; [[New items style]]
+            @in style: stringshare; [[New items style]]
          }
       }
       style_set {
@@ -109,7 +109,7 @@ class Ewe.Combobox (Elm.Widget)
          ]]
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
-            @in style: Eina.Stringshare*; [[New combobox style]]
+            @in style: stringshare; [[New combobox style]]
          }
       }
       content_set {
@@ -118,7 +118,7 @@ class Ewe.Combobox (Elm.Widget)
          ]]
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
-            @in part: Eina.Stringshare*; [[Part name]]
+            @in part: stringshare; [[Part name]]
             @in content: Efl.Canvas.Object; [[A swallowed content]]
          }
       }
