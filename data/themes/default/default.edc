@@ -4,6 +4,7 @@ collections {
    #include "../../macros.edc"
    #include "widgets/styles.edc"
    #include "widgets/bg.edc"
+   #include "widgets/combobox.edc"
    #include "widgets/panes.edc"
    #include "widgets/frame.edc"
    #include "widgets/scroller.edc"
