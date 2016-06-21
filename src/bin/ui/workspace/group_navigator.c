@@ -993,17 +993,17 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_printf(_("Add new part to group \"%s\""), pl->group->name);
+   title = eina_stringshare_printf(_("Add New Part to Group \"%s\""), pl->group->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
-   LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part name"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->part_name_validator);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new part"));
    resource_name_validator_list_set(pl->part_name_validator, &pl->group->parts, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_part_name_changed, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
@@ -1011,7 +1011,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Part type:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part type"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
@@ -1026,7 +1026,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Part copy:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part copy"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox_copy)
    ewe_combobox_item_add(pl->popup.combobox_copy, _("None"));
    ewe_combobox_select_item_set(pl->popup.combobox_copy, 0);
@@ -1107,16 +1107,16 @@ _on_menu_add_group_data_clicked(void *data __UNUSED__,
 
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_printf(_("Add new data item to group \"%s\""), pl->group->name);
+   title = eina_stringshare_printf(_("Add New Data Item to Group \"%s\""), pl->group->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
 
-   LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Data item name"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->group_data_name_validator);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new group_data here."));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new group_data"));
    resource_name_validator_list_set(pl->group_data_name_validator, &pl->group->data_items, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_group_data_name_changed, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_group_data_ok_clicked, pl);
@@ -1245,24 +1245,24 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_printf(_("Add new state to part \"%s\""), pl->part->name);
+   title = eina_stringshare_printf(_("Add New State to Part \"%s\""), pl->part->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
-   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("State name"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _state_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_state_ok_clicked, pl);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new state here."));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new state"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Value:"), "popup", "1swallow_subtext")
+   LAYOUT_PROP_ADD(box, _("Value"), "popup", "1swallow_subtext")
    SPINNER_ADD(item, pl->popup.spinner_value, 0.0, 1.0, 0.1, true);
    elm_object_style_set(pl->popup.spinner_value, "vertical");
    elm_spinner_label_format_set(pl->popup.spinner_value, "%1.2f");
@@ -1271,7 +1271,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.spinner_value);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Duplicate state"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
 
    ewe_combobox_item_add(pl->popup.combobox, _("None"));
@@ -1376,26 +1376,26 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
 
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_printf(_("Add new item to part \"%s\""), pl->part->name);
+   title = eina_stringshare_printf(_("Add New Item to Part \"%s\""), pl->part->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
-   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_item_ok_clicked, pl);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new item here."));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new item"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Source group:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Source group"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-   ewe_combobox_text_set(pl->popup.combobox, _("Select source group here."));
+   ewe_combobox_text_set(pl->popup.combobox, _("Select the name of the source group."));
    evas_object_smart_callback_add(pl->popup.combobox, "selected", _item_validate, pl);
 
    EINA_LIST_FOREACH(ap.project->groups, l, group)
@@ -1495,23 +1495,23 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
 
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
+   elm_object_part_text_set(ap.popup, "title,text", _("Add New Program"));
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
-   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Program name"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          resource_name_validator_helper, pl->program_name_validator);
    resource_name_validator_list_set(pl->program_name_validator, &pl->group->programs, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new program"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Action type:"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Action type"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
 
