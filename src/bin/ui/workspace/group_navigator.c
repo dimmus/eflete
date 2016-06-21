@@ -34,6 +34,12 @@ static Evas_Object *dummy_navi = NULL;
 
 typedef struct
 {
+   int index;
+   Eina_Stringshare *data;
+} Combobox_Item;
+
+typedef struct
+{
    Group *group;
    Part *part;
 
@@ -66,12 +72,14 @@ typedef struct
    Resource_Name_Validator *group_data_name_validator;
 
    struct {
+        int copy_part, part_type;
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
         Evas_Object *combobox;
         Evas_Object *combobox_copy;
         Evas_Object *btn_add;
         Evas_Object *btn_cancel;
+        Elm_Genlist_Item_Class *itc;
    } popup;
 } Part_List;
 
@@ -839,7 +847,6 @@ _popup_add_part_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *item, *item_copy;
    Edje_Part_Type type = EDJE_PART_TYPE_NONE;
    Part_List *pl = data;
    const char *name, *copy_name;
@@ -850,10 +857,9 @@ _popup_add_part_ok_clicked(void *data,
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
-   item_copy = ewe_combobox_select_item_get(pl->popup.combobox_copy);
-   if (item_copy->index != 0)
+   if (pl->popup.copy_part)
      {
-        name = item_copy->title;
+        name = elm_object_text_get(pl->popup.combobox_copy);
         copy_name = elm_entry_entry_get(pl->popup.entry_name);
         msg = eina_stringshare_printf(_("copied new part \"%s\" from \"%s\""), name, copy_name);
         change = change_add(msg);
@@ -861,8 +867,7 @@ _popup_add_part_ok_clicked(void *data,
      }
    else
      {
-        item = ewe_combobox_select_item_get(pl->popup.combobox);
-        switch (item->index)
+        switch (pl->popup.part_type)
           {
            case 0:
               type = EDJE_PART_TYPE_RECTANGLE;
@@ -951,19 +956,51 @@ _combobox_collapsed(void *data,
 
 static void
 _part_selected_cb(void *data,
-                  Evas_Object *obj,
-                  void *event_info __UNUSED__)
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
 {
    Part_List *pl = data;
-   Ewe_Combobox_Item *item;
+   Combobox_Item *item;
 
    assert(pl != NULL);
 
-   item = ewe_combobox_select_item_get(obj);
+   item = elm_object_item_data_get(event_info);
+   pl->popup.copy_part = item->index;
    if (item->index != 0)
      elm_object_disabled_set(pl->popup.combobox, true);
    else
      elm_object_disabled_set(pl->popup.combobox, false);
+}
+
+static void
+_type_selected_cb(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
+{
+   Part_List *pl = data;
+   Combobox_Item *item;
+
+   assert(pl != NULL);
+
+   item = elm_object_item_data_get(event_info);
+   pl->popup.part_type = item->index;
+}
+
+static char *
+_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   return strdup(item->data);
+}
+
+static void
+_combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
+                          void *event_info)
+{
+   Combobox_Item *item = elm_object_item_data_get(event_info);
+   elm_object_text_set(obj, item->data);
+   elm_combobox_hover_end(obj);
+   elm_entry_cursor_end_set(obj);
 }
 
 static void
@@ -972,6 +1009,8 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
                           void *ei __UNUSED__)
 {
    Edje_Part_Type type;
+   Combobox_Item *combobox_item;
+   unsigned int i = 0;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_List *l;
    Part *part;
@@ -1002,30 +1041,50 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Part type"), "popup", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   COMBOBOX_ADD(item, pl->popup.combobox)
+   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+                                  _combobox_item_pressed_cb, NULL);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
      {
         if ((type == EDJE_PART_TYPE_GRADIENT) ||
             (type == EDJE_PART_TYPE_EXTERNAL))
           continue;
-        ewe_combobox_item_add(pl->popup.combobox, part_types[type]);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(part_types[type]);
+        elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   elm_object_text_set(pl->popup.combobox, part_types[0]);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _type_selected_cb, pl);
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Part copy"), "popup", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox_copy)
-   ewe_combobox_item_add(pl->popup.combobox_copy, _("None"));
-   ewe_combobox_select_item_set(pl->popup.combobox_copy, 0);
+   COMBOBOX_ADD(item, pl->popup.combobox_copy)
+   evas_object_smart_callback_add(pl->popup.combobox_copy, "item,pressed",
+                                  _combobox_item_pressed_cb, NULL);
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = 0;
+   combobox_item->data = eina_stringshare_add(_("None"));
+   elm_genlist_item_append(pl->popup.combobox_copy, pl->popup.itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   elm_object_text_set(pl->popup.combobox_copy, "None");
+   i = 0;
    EINA_LIST_FOREACH(pl->group->parts, l, part)
      {
-        ewe_combobox_item_add(pl->popup.combobox_copy, part->name);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(part->name);
+        elm_genlist_item_append(pl->popup.combobox_copy, pl->popup.itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
+   evas_object_show(pl->popup.combobox_copy);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox_copy);
-   evas_object_smart_callback_add(pl->popup.combobox_copy, "selected", _part_selected_cb, pl);
+   evas_object_smart_callback_add(pl->popup.combobox_copy, "item,selected", _part_selected_cb, pl);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
@@ -2174,6 +2233,15 @@ _on_btn_up_clicked(void *data,
      _part_item_restack(pl, glit, true);
 }
 
+static void
+_combobox_item_del(void *data,
+                   Evas_Object *obj __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   eina_stringshare_del(item->data);
+   free(item);
+}
+
 Evas_Object *
 group_navigator_add(Evas_Object *parent, Group *group)
 {
@@ -2245,6 +2313,11 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->itc_group_data = elm_genlist_item_class_new();
    pl->itc_group_data->item_style = "program";
    pl->itc_group_data->func.text_get = _resource_label_get;
+
+   pl->popup.itc = elm_genlist_item_class_new();
+   pl->popup.itc->item_style = "default";
+   pl->popup.itc->func.text_get = _combobox_text_get;
+   pl->popup.itc->func.del = _combobox_item_del;
 
    pl->genlist = elm_genlist_add(pl->layout);
    elm_genlist_homogeneous_set(pl->genlist, true);
