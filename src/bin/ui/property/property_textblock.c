@@ -1223,27 +1223,28 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
               IT.name = "Font name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME,
-                       _("Font description in fontconfig like format.<br>"
-                         "E.g: \"Sans:style=Italic:lang=hi\". or \"Serif:style=Bold\"."));
+                       _("Font description in fontconfig format.<br>"
+                         "For example, \"Sans:style=Italic:lang=hi\" or \"Serif:style=Bold\"."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
               IT.name = "Font style (weight)";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
                        _("Overrides the weight defined in \"font\".<br>"
-                         "E.g: value \"Bold\" is the same as font value \"style=Bold\"."));
+                         "For example, the value \"Bold\" is the<br>"
+                         "same as font value \"style=Bold\"."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
               IT.name = "Font style (width)";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
                        _("Overrides the width defined in \"font\".<br>"
-                         "E.g: value \"Condensed\" is the same as<br>"
-                         "font value \"style=Condensed"));
+                         "For example, the value \"Condensed\" is the<br>"
+                         "same as font value \"style=Condensed\"."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_COLOR:
               IT.name = "Color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR,
-                       _("Text color. Color cold be choosen by<br>"
-                         "color selector UI tool."));
+                       _("Text color. Color can be chosen<br>"
+                         "using the color selector UI tool."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_SIZE:
               IT.name = "Size";
@@ -1261,41 +1262,39 @@ _init_items()
               IT.name = "Horizontal align";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
                       _("Sets the horizontal alignment of the text.<br>"
-                        " * auto   - Respects LTR/RTL settings<br>"
-                        " * center - Centers the text in the line<br>"
+                        " * auto  - Respects LTR/RTL settings. <br>"
+                        " * center - Centers the text in the line.<br>"
                         " * middle - Alias for \"center\"<br>"
-                        " * left   - Puts the text at the left of the line<br>"
-                        " * right  - Puts the text at the right of the line "));
+                        " * left  - Aligns the text left.<br>"
+                        " * right  - Aligns the text right.<br>"));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
               IT.name = "Vertical align";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
                        _("Sets the vertical alignment of the text.<br>"
-                         " * top      - Puts text at the top of the line<br>"
-                         " * center   - Centers the text in the line<br>"
-                         " * middle   - Alias for \"center\"<br>"
-                         " * bottom   - Puts the text at the bottom of the line<br>"
+                         " * top - Puts text at the top of the line.<br>"
+                         " * center  - Centers the text in the line.<br>"
+                         " * middle  - Alias for \"center\"<br>"
+                         " * bottom  - Puts the text at the bottom of the line.<br>"
                          " * baseline - Baseline<br>"
-                         " * base     - Alias for \"baseline\""));
+                         " * base - Alias for \"baseline\""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN:
               IT.name = "Margin";
               _action1(&IT, "left", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT,
-                       _("Sets the left margin of the text.<br>"
-                         "In pixel."));
+                       _("Sets the left margin of the text in pixel."));
               _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT,
-                       _("Sets the right margin of the text.<br>"
-                         "In pixel."));
+                       _("Sets the right margin of the text in pixel."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
               IT.name = "Wrap";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
                        _("Sets the wrap policy of the text.<br>"
-                         " * word  - Only wraps lines at word boundaries<br>"
-                         " * char  - Wraps at any character<br>"
-                         " * mixed - Wrap at words if possible, if not at any character<br>"
-                         " * hyphenation - Hyphenate if possible, if not wrap at words if possible,<br>"
-                         "                 if not at any character "));
+                         " * word  - Only wraps lines at word boundaries.<br>"
+                         " * char  - Wraps at any character.<br>"
+                         " * mixed - Wrap at words if possible, if not, at any character.<br>"
+                         " * hyphenation - Hyphenate if possible, if not, wrap at words if possible,<br>"
+                         "                 if not, at any character."));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE:
@@ -1308,7 +1307,7 @@ _init_items()
               IT.name = "Tabstops";
               _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS,
                        _("Sets the size of the tab character.<br>"
-                         "The value must be a number greater than one."));
+                         "The value must be a number greater than 1."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
               IT.name = "Line size";
@@ -1318,7 +1317,7 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_BG_COLOR:
               IT.name = "Background color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK,
-                       _("Enable/disable background color."));
+                       _("Enables or disables the background color."));
               _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR,
                        _("Sets a background color for text."));
               break;
@@ -1331,17 +1330,16 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS:
               IT.name = "Ellipsis";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK,
-                       _("Enable or disable ellippsis feature for text."));
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE,
-                       _("Sets ellipsis mode. A value of 0 means ellipsizing<br>"
-                         "the leftmost portion of the text first, 1 on the<br>"
-                         "other hand the rightmost portion. "));
+                       _("Enables or disables the ellipsis feature for text."));              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE,
+                       _("Sets the ellipsis mode. A value of 0 means ellipsizing<br>"
+                         "the leftmost portion of the text first,<br>"
+                         "1 on the other hand the rightmost portion."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
               IT.name = "Line related size";
               _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE,
-                       _("Either a floating point value indicating the<br>"
-                         "wanted size of the line relative to the calculated size."));
+                       _("A floating point value indicating the wanted size<br>"
+                         "of the line relative to the calculated size."));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
@@ -1358,7 +1356,7 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
               IT.name = "Color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR,
-                       _("Sets the color of the shadow of the text."));
+                       _("Sets the color of the text shadow."));
               IT.filter_cb = _direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
@@ -1370,13 +1368,13 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
               IT.name = "Outer glow color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR,
-                       _("Sets outer shadow glow color."));
+                       _("Sets the outer shadow glow color."));
               IT.filter_cb = _no_direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
               IT.name = "Inner glow color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR,
-                       _("Sets inner shadow glow color."));
+                       _("Sets the inner shadow glow color."));
               IT.filter_cb = _no_direction_filter_cb;
               break;
 
@@ -1389,14 +1387,14 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH:
               IT.name = "Strikethrough color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK,
-                       _("Sets if the text will be striked through."));
+                       _("Sets if the text is striked through."));
               _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR,
-                       _("Sets the color of text that is striked through."));
+                       _("Sets the color of the text that is striked through."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE:
               IT.name = "Underline";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
-                       _("Sets if and how a text will be underlined."));
+                       _("Sets if and how a text is underlined."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
               IT.name = "Underline color one";
@@ -1408,8 +1406,8 @@ _init_items()
               IT.name = "Underline color two";
               IT.filter_cb = _underline_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO,
-                       _("Sets the color of the second line of<br>"
-                         "underline (when using underline mode \"double\")."));
+                       _("Sets the color of the second line of the underline<br>"
+                         "when using the \"double\" underline mode."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH:
               IT.name = "Underline dash";
