@@ -127,8 +127,8 @@ popup_want_action(const char *title,
    else if (popup_btns & BTN_CANCEL)
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
 
-   evas_object_show(ap.popup);
    if (to_focus) elm_object_focus_set(to_focus, true);
+   evas_object_show(ap.popup);
 
    TODO("Fix and refactor this weird behaviour. This is terrible decision")
    if (data) /* this is probably entry now */
