@@ -109,21 +109,19 @@ _player_units_free(char *str)
    elm_object_part_text_set(ITEM, "elm.text", TEXT); \
    evas_object_show(ITEM);
 
-static Eina_Bool
+static void
 _play_finished_cb(void *data __UNUSED__, const Eo_Event *event __UNUSED__)
 {
    eo_unref(in);
    in = NULL;
    eo_unref(out);
    out = NULL;
-   return true;
 }
 
-static Eina_Bool
+static void
 _out_fail(void *data __UNUSED__, const Eo_Event *event)
 {
    eo_unref(event->object);
-   return true;
 }
 
 static Eina_Bool

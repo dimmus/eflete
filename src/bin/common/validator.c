@@ -80,7 +80,7 @@ resource_name_validator_status_get(Resource_Name_Validator *validator)
    return validator->status;
 }
 
-Eina_Bool
+void
 resource_name_validator_helper(void *data, const Eo_Event *event)
 {
    Resource *res = NULL;
@@ -111,5 +111,6 @@ resource_name_validator_helper(void *data, const Eo_Event *event)
           validator->status = ELM_REG_NOMATCH;
      }
    vc->signal = validator->signal;
-   return validator->status ? EO_CALLBACK_STOP : EO_CALLBACK_CONTINUE;
+   if (validator->status)
+     eo_event_callback_stop(event->object);
 }
