@@ -4,6 +4,7 @@ group { name: "elm/label/base/tooltip/default";
       part { name: "elm.text"; type: TEXTBLOCK; mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
+            max: 180 -1;
             text {
                style: "tooltip_text";
                min: 1 1;
@@ -41,6 +42,7 @@ group { name: "elm/tooltip/base/default";
          scale: 1;
          description { state: "default" 0.0;
             min: 200 30;
+            max: 200 -1;
             image {
                normal: "text_box_02.png";
                border: 10 10 10 10;
