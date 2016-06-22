@@ -301,6 +301,21 @@ group { name: "elm/genlist/item/1swallow/property";
    }
 }
 
+group { name: "elm/genlist/item/1swallow_wide/property";
+   inherit: "elm/genlist/item/1swallow/property";
+   parts {
+      part { name: "swallow.action1";
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "elm.swallow.pad";
+               relative: 1.0 0.0;
+               offset: 25 4;
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/2swallow/property";
    data {
       item: "texts" "text.item.name text.action1.name text.action1.units text.action2.name text.action2.units";
