@@ -23,6 +23,10 @@ styles {
       base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_DISABLED
    }
+   style { name: "tooltip_text";
+      base: "+ font="FN" font_size=10 color=#d6d6d6 align=left wrap=word ellipsis=-1.0";
+      TEXTBLOCK_TAGS_ENABLED
+   }
 
    /* not refactored */
    style {
