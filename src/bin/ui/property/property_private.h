@@ -523,7 +523,7 @@ property_player_sound_set(Sound_Data *sound);
 
 /* color class manager submodule */
 void
-property_color_class_manager_init(void);
+property_color_class_manager_init(Property_Data *pd);
 
 Eina_List *
 property_color_class_manager_items_get(void);

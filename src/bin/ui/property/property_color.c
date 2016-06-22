@@ -25,11 +25,8 @@
 typedef struct {
    Property_Attribute item_description;
 
-   Property_Attribute item_title1;
    Property_Attribute item_object_color;
-   Property_Attribute item_title2;
    Property_Attribute item_outline_color;
-   Property_Attribute item_title3;
    Property_Attribute item_shadow_color;
 
    ColorClassData *selected;
@@ -136,25 +133,16 @@ _init_cb(Property_Attribute *pa, Property_Action *action __UNUSED__)
 }
 
 static void
-_color_class_selected(void *data __UNUSED__,
+_color_class_selected(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
+   Property_Data *pd = data;
    ColorClassData *selected = (ColorClassData *)event_info;
 
    if (!selected)
      {
         color_data.selected = NULL;
-        elm_object_item_disabled_set(color_data.item_object_color.glit, true);
-        elm_object_item_disabled_set(color_data.item_outline_color.glit, true);
-        elm_object_item_disabled_set(color_data.item_shadow_color.glit, true);
-
-        TODO("recheck this case");
-        if (color_data.item_description.action1.control)
-          {
-             property_entry_set(color_data.item_description.action1.control, "");
-             elm_object_disabled_set(color_data.item_description.action1.control, true);
-          }
      }
    else
      {
@@ -170,37 +158,48 @@ _color_class_selected(void *data __UNUSED__,
 
         _update_cb(NULL, &color_data.item_description.action1);
      }
+   GENLIST_FILTER_APPLY(pd->genlist);
+}
+
+static Eina_Bool
+_filter_cb(Property_Attribute *pa __UNUSED__)
+{
+   return color_data.selected != NULL;
 }
 
 void
-property_color_class_manager_init()
+property_color_class_manager_init(Property_Data *pd)
 {
    color_data.item_description.name = "Description";
+   color_data.item_description.filter_cb = _filter_cb;
    color_data.item_description.action1.control_type = PROPERTY_CONTROL_ENTRY;
    color_data.item_description.action1.init_cb = _init_cb;
    color_data.item_description.action1.change_cb = _change_cb;
    color_data.item_description.action1.update_cb = _update_cb;
    color_data.item_description.action1.tooltip = eina_stringshare_add(_("Provides a descriptive name for the effect of the color class"));
 
-   color_data.item_title1.name = "Object color";
+   color_data.item_object_color.name = "Object color";
+   color_data.item_object_color.filter_cb = _filter_cb;
    color_data.item_object_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_object_color.action1.init_cb = _init_cb;
    color_data.item_object_color.action1.change_cb = _on_changed_1;
    color_data.item_object_color.action1.update_cb = _update_1_cb;
 
-   color_data.item_title2.name = "Outline color";
+   color_data.item_outline_color.name = "Outline color";
+   color_data.item_outline_color.filter_cb = _filter_cb;
    color_data.item_outline_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_outline_color.action1.init_cb = _init_cb;
    color_data.item_outline_color.action1.change_cb = _on_changed_2;
    color_data.item_outline_color.action1.update_cb = _update_2_cb;
 
-   color_data.item_title3.name = "Shadow color";
+   color_data.item_shadow_color.name = "Shadow color";
+   color_data.item_shadow_color.filter_cb = _filter_cb;
    color_data.item_shadow_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_shadow_color.action1.init_cb = _init_cb;
    color_data.item_shadow_color.action1.change_cb = _on_changed_3;
    color_data.item_shadow_color.action1.update_cb = _update_3_cb;
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_SELECTED, _color_class_selected, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_SELECTED, _color_class_selected, pd);
 }
 
 Eina_List *
@@ -209,11 +208,8 @@ property_color_class_manager_items_get()
    Eina_List *items = NULL;
 
    items = eina_list_append(items, &color_data.item_description);
-   items = eina_list_append(items, &color_data.item_title1);
    items = eina_list_append(items, &color_data.item_object_color);
-   items = eina_list_append(items, &color_data.item_title2);
    items = eina_list_append(items, &color_data.item_outline_color);
-   items = eina_list_append(items, &color_data.item_title3);
    items = eina_list_append(items, &color_data.item_shadow_color);
 
    return items;
