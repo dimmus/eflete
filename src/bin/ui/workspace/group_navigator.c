@@ -84,17 +84,14 @@ typedef struct
 } Part_List;
 
 static char *part_types[] = {
-     N_("NONE"),
      N_("RECTANGLE"),
      N_("TEXT"),
      N_("IMAGE"),
      N_("SWALLOW"),
      N_("TEXTBLOCK"),
-     N_("GRADIENT"),
      N_("GROUP"),
      N_("BOX"),
      N_("TABLE"),
-     N_("EXTERNAL"),
      N_("PROXY"),
      N_("SPACER")
 };
@@ -1008,7 +1005,6 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
                           Evas_Object *obj,
                           void *ei __UNUSED__)
 {
-   Edje_Part_Type type;
    Combobox_Item *combobox_item;
    unsigned int i = 0;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
@@ -1044,14 +1040,11 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    COMBOBOX_ADD(item, pl->popup.combobox)
    evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
                                   _combobox_item_pressed_cb, NULL);
-   for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
+   for (i = 0; part_types[i]; i++)
      {
-        if ((type == EDJE_PART_TYPE_GRADIENT) ||
-            (type == EDJE_PART_TYPE_EXTERNAL))
-          continue;
         combobox_item = mem_malloc(sizeof(Combobox_Item));
-        combobox_item->index = i++;
-        combobox_item->data = eina_stringshare_add(part_types[type]);
+        combobox_item->data = eina_stringshare_add(part_types[i]);
+        combobox_item->index = i;
         elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1072,7 +1065,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_object_text_set(pl->popup.combobox_copy, "None");
-   i = 0;
+   i = 1;
    EINA_LIST_FOREACH(pl->group->parts, l, part)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
