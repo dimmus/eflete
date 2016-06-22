@@ -187,17 +187,6 @@ _caption_label_get(void *data,
    return NULL;
 }
 
-static char *
-_item_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
-{
-   if (!strcmp(pr, "elm.text"))
-     return strdup(data);
-
-   return NULL;
-}
-
 static Eina_Bool
 _all_parts_visible(Part_List *pl)
 {
@@ -512,7 +501,7 @@ _expanded_cb(void *data,
    Part *part;
    Resource *res;
    State *state;
-   Eina_Stringshare *item_name;
+   Part_Item *item;
 
    TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    Eina_Bool first_item = true;
@@ -562,11 +551,11 @@ _expanded_cb(void *data,
    else if (itc == pl->itc_item_caption)
      {
         part = elm_object_item_data_get(glit);
-        EINA_LIST_FOREACH(part->items, l, item_name)
+        EINA_LIST_FOREACH(part->items, l, item)
           {
              elm_genlist_item_append(pl->genlist,
                                      pl->itc_item,
-                                     item_name,
+                                     item,
                                      glit,
                                      ELM_GENLIST_ITEM_NONE,
                                      NULL,
@@ -791,7 +780,8 @@ _item_validate(void *data,
                void *event_info __UNUSED__)
 {
    Part_List *pl = data;
-   const char *name, *item;
+   const char *name;
+   Part_Item *item;
    Eina_Bool valid;
    Eina_List *l;
 
@@ -802,7 +792,7 @@ _item_validate(void *data,
    valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
    valid = valid && (ewe_combobox_select_item_get(pl->popup.combobox) != NULL);
    EINA_LIST_FOREACH(pl->part->items, l, item)
-      valid = valid && strcmp(item, name);
+      valid = valid && strcmp(item->name, name);
 
    elm_object_disabled_set(pl->popup.btn_add, !valid);
 }
@@ -2236,7 +2226,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";
-   pl->itc_item->func.text_get = _item_label_get;
+   pl->itc_item->func.text_get = _resource_label_get;
 
    pl->itc_item_caption = elm_genlist_item_class_new();
    pl->itc_item_caption->item_style = "items_caption";

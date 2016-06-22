@@ -209,6 +209,9 @@ _part_name_get(void)
    if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
      return ((State *)group_pd.group->current_selected)->part->name;
 
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
+     return ((Part_Item *)group_pd.group->current_selected)->part->name;
+
    TODO("Add item case")
    return NULL;
 }

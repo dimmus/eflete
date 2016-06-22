@@ -58,6 +58,7 @@ typedef struct _Group Group;
 typedef struct _History History;
 typedef struct _State State;
 typedef struct _Part Part;
+typedef struct _Part_Item Part_Item;
 typedef struct _Program Program;
 typedef struct _Shortcuts Shortcuts;
 typedef struct _ColorClassData ColorClassData;

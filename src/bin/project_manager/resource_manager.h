@@ -58,14 +58,13 @@ struct _Resource
    RESOURCE_COMMON;
 };
 
-/**
- * @struct _External_Resource
- *
- * Common structure for resources that can be used somewhere (images, sounds,
- * states etc.)
- *
- * @ingroup ProjectManager
- */
+struct _Part_Item
+{
+   RESOURCE_COMMON;
+
+   Part *part;
+};
+
 struct _External_Resource
 {
    RESOURCE_COMMON;
@@ -73,14 +72,6 @@ struct _External_Resource
    Eina_Stringshare *source;
 };
 
-/**
- * @struct _Tone_Resource
- *
- * Common structure for resources that can be used somewhere (images, sounds,
- * states etc.)
- *
- * @ingroup ProjectManager
- */
 struct _Tone_Resource
 {
    RESOURCE_COMMON;
@@ -137,14 +128,6 @@ struct _Group
    History *history;          /**< history of changes in the group */
 };
 
-/**
- * @struct _Colorclass_Resource
- *
- * Common structure for resources that can be used somewhere (images, sounds,
- * states etc.)
- *
- * @ingroup ProjectManager
- */
 struct _Colorclass_Resource
 {
    RESOURCE_COMMON;

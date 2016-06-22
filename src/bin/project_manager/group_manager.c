@@ -536,8 +536,9 @@ Part *
 gm_part_add(Project *pro, Group *group, const char *part_name)
 {
    Resource *resource, request;
+   Part_Item *item;
    Part *part;
-   Eina_List *states, *l;
+   Eina_List *states, *items, *l;
    Eina_Stringshare *state_name, *parsed_state_name, *group_name, *item_name;
    double val;
 
@@ -561,7 +562,16 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
-     part->items = edje_edit_part_items_list_get(group->edit_object, part_name);
+     {
+        items = edje_edit_part_items_list_get(group->edit_object, part_name);
+        EINA_LIST_FOREACH(items, l, item_name)
+          {
+             item = (Part_Item *)resource_add(item_name, RESOURCE_TYPE_ITEM);
+             item->part = part;
+             resource_insert(&part->items, (Resource *)item);
+          }
+        edje_edit_string_list_free(items);
+     }
 
    #define GROUP_USAGE_ADD(TYPE) \
    group_name = edje_edit_part_ ## TYPE ## _get(part->group->edit_object, \
@@ -579,18 +589,18 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
      {
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
-         EINA_LIST_FOREACH(part->items, l, item_name)
+         EINA_LIST_FOREACH(part->items, l, item)
            {
               group_name = edje_edit_part_item_source_get(group->edit_object,
                                                           part->name,
-                                                          item_name);
+                                                          item->name);
               if (group_name)
                 {
                    request.resource_type = RESOURCE_TYPE_GROUP;
                    request.name = group_name;
                    resource = resource_get(pro->groups, &request);
                    TODO("replace with item");
-                   resource_used_in_add(resource, (Resource *)part);
+                   resource_used_in_add(resource, (Resource *)item);
                    edje_edit_string_free(group_name);
                 }
            }
@@ -883,7 +893,7 @@ gm_groups_free(Project *pro)
    Resource *program;
    Part *part;
    State *state;
-   Eina_Stringshare *item_name;
+   Resource *item;
 
    assert(pro != NULL);
 
@@ -903,8 +913,11 @@ gm_groups_free(Project *pro)
                   eina_list_free(state->used_in);
                   resource_free((Resource *)state);
                }
-            EINA_LIST_FREE(part->items, item_name)
-               eina_stringshare_del(item_name);
+            EINA_LIST_FREE(part->items, item)
+               {
+                  eina_list_free(state->used_in);
+                  resource_free(item);
+               }
             resource_free((Resource *)part);
           }
         EINA_LIST_FREE(group->programs, program)
@@ -985,19 +998,46 @@ TODO("fix usage adding on properties change before using this code")
 void
 gm_part_item_add(Project *pro, Part *part, Eina_Stringshare *item_name)
 {
+   Part_Item *item;
+
    assert(pro != NULL);
    assert(part != NULL);
    assert(item_name != NULL);
    assert((part->type ==  EDJE_PART_TYPE_BOX) ||
           (part->type ==  EDJE_PART_TYPE_TABLE));
 
-   part->items = eina_list_append(part->items, eina_stringshare_ref(item_name));
+   item = (Part_Item *)resource_add(item_name, RESOURCE_TYPE_ITEM);
+   item->part = part;
+   resource_insert(&part->items, (Resource *)item);
 }
 
+static void
+_part_item_free(Project *pro, Part_Item *item)
+{
+   Resource *group, request;
+   Eina_Stringshare *group_name;
+
+   assert(item != NULL);
+
+   group_name = edje_edit_part_item_source_get(item->part->group->edit_object,
+                                               item->part->name,
+                                               item->name);
+   if (group_name)
+     {
+        request.resource_type = RESOURCE_TYPE_GROUP;
+        request.name = group_name;
+        group = resource_get(pro->groups, &request);
+        resource_used_in_del(group, (Resource *)item);
+        edje_edit_string_free(group_name);
+     }
+
+   resource_free((Resource *)item);
+}
 void
 gm_part_item_del(Project *pro, Part *part, Eina_Stringshare *item_name)
 {
-   Eina_List *l;
+   Resource request;
+   Part_Item *item;
 
    assert(pro != NULL);
    assert(part != NULL);
@@ -1005,20 +1045,20 @@ gm_part_item_del(Project *pro, Part *part, Eina_Stringshare *item_name)
    assert((part->type ==  EDJE_PART_TYPE_BOX) ||
           (part->type ==  EDJE_PART_TYPE_TABLE));
 
-   l = eina_list_data_find_list(part->items, item_name);
+   request.resource_type = RESOURCE_TYPE_ITEM;
+   request.name = item_name;
+   item = (Part_Item *)resource_remove(&part->items, &request);
 
-   assert(l != NULL);
-
-   part->items = eina_list_remove_list(part->items, l);
-   eina_stringshare_del(item_name);
+   _part_item_free(pro, item);
 }
 
 void
 gm_part_del(Project *pro, Part* part)
 {
+   Part_Item *item;
    State *state;
    Resource *group, request;
-   const char *group_name, *item_name;
+   const char *group_name;
    Eina_List *l;
 
    assert(pro != NULL);
@@ -1040,19 +1080,9 @@ gm_part_del(Project *pro, Part* part)
      {
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
-         EINA_LIST_FOREACH(part->items, l, item_name)
+         EINA_LIST_FOREACH(part->items, l, item)
            {
-              group_name = edje_edit_part_item_source_get(part->group->edit_object,
-                                                          part->name,
-                                                          item_name);
-              if (group_name)
-                {
-                   request.resource_type = RESOURCE_TYPE_GROUP;
-                   request.name = group_name;
-                   group = resource_get(pro->groups, &request);
-                   resource_used_in_del(group, (Resource *)part);
-                   edje_edit_string_free(group_name);
-                }
+              TODO("clean usage");
            }
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
@@ -1073,7 +1103,10 @@ gm_part_del(Project *pro, Part* part)
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
-     edje_edit_string_list_free(part->items);
+     {
+        EINA_LIST_FREE(part->items, item)
+           _part_item_free(pro, item);
+     }
 
    EINA_LIST_FREE(part->states, state)
       gm_state_del(pro, state);
@@ -1114,11 +1147,13 @@ gm_part_restack(Part *part, Part *rel_part)
 }
 
 void
-gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item)
+gm_part_item_restack(Part_Item *part_item, Part_Item *relative_part_item)
 {
-   assert(part != NULL);
+   Part *part;
+
    assert(part_item != NULL);
 
+   part = part_item->part;
    part->items = eina_list_remove(part->items, part_item);
    if (relative_part_item)
      part->items = eina_list_prepend_relative(part->items,

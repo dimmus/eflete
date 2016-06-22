@@ -43,7 +43,7 @@ resource_add(const char *name, Resource_Type type)
          res = mem_calloc(1, sizeof(Program));
          break;
       case RESOURCE_TYPE_ITEM:
-         //res = mem_calloc(1, sizeof(Item));
+         res = mem_calloc(1, sizeof(Part_Item));
          break;
       case RESOURCE_TYPE_DATA:
          res = mem_calloc(1, sizeof(Resource));
@@ -95,9 +95,6 @@ resource_cmp(Resource *res1, Resource *res2)
    if (res1->resource_type != res2->resource_type)
      return res1->resource_type - res2->resource_type;
 
-   if (res1->resource_type == RESOURCE_TYPE_ITEM)
-     abort();
-
    /* stringshares */
    if (res1->name == res2->name)
      cmp = 0;
@@ -137,10 +134,10 @@ resource_get(const Eina_List *list, const Resource *request)
       case RESOURCE_TYPE_STYLE:
       case RESOURCE_TYPE_TAG:
       case RESOURCE_TYPE_COLORCLASS:
-      case RESOURCE_TYPE_ITEM:
          ret = eina_list_search_sorted(list, (Eina_Compare_Cb)resource_cmp, request);
          break;
       case RESOURCE_TYPE_PART:
+      case RESOURCE_TYPE_ITEM:
          ret = eina_list_search_unsorted(list, (Eina_Compare_Cb)resource_cmp, request);
          break;
       case RESOURCE_TYPE_NONE:
@@ -169,10 +166,10 @@ resource_insert(Eina_List **list, const Resource *res)
       case RESOURCE_TYPE_STYLE:
       case RESOURCE_TYPE_TAG:
       case RESOURCE_TYPE_COLORCLASS:
-      case RESOURCE_TYPE_ITEM:
          *list = eina_list_sorted_insert(*list, (Eina_Compare_Cb)resource_cmp, res);
          break;
       case RESOURCE_TYPE_PART:
+      case RESOURCE_TYPE_ITEM:
          *list = eina_list_append(*list, res);
          break;
       case RESOURCE_TYPE_NONE:
@@ -203,10 +200,10 @@ resource_remove(Eina_List **list, const Resource *res)
       case RESOURCE_TYPE_STYLE:
       case RESOURCE_TYPE_TAG:
       case RESOURCE_TYPE_COLORCLASS:
-      case RESOURCE_TYPE_ITEM:
          l_del = eina_list_search_sorted_list(*list, (Eina_Compare_Cb)resource_cmp, res);
          break;
       case RESOURCE_TYPE_PART:
+      case RESOURCE_TYPE_ITEM:
          l_del = eina_list_search_unsorted_list(*list, (Eina_Compare_Cb)resource_cmp, res);
          break;
       case RESOURCE_TYPE_NONE:

@@ -1551,6 +1551,7 @@ workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *relative_part_item_name)
 {
    Part *part;
+   Part_Item *item, *rel_item;
    Resource request;
    WS_DATA_GET(obj);
    assert(part_item_name != NULL);
@@ -1559,8 +1560,16 @@ workspace_part_item_restack(Evas_Object *obj,
    request.name = part_name;
    part = (Part *)resource_get(wd->group->parts, &request);
 
+   request.resource_type = RESOURCE_TYPE_ITEM;
+   request.name = part_item_name;
+   item = (Part_Item *)resource_get(part->items, &request);
+
+   request.resource_type = RESOURCE_TYPE_ITEM;
+   request.name = relative_part_item_name;
+   rel_item = (Part_Item *)resource_get(part->items, &request);
+
    group_navigator_select(wd->group_navi, (Resource *)part);
-   gm_part_item_restack(part, part_item_name, relative_part_item_name);
+   gm_part_item_restack(item, rel_item);
    group_navigator_part_item_restack(wd->group_navi, part, part_item_name, relative_part_item_name);
 
    groupview_hard_update(wd->normal.content);
