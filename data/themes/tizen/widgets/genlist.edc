@@ -1242,7 +1242,7 @@ group { name: "elm/genlist/tree/part/default";
             max: 16 16;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            rel1.offset: 6 3;
+            rel1.offset: 20 3;
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -4;
@@ -1263,7 +1263,7 @@ group { name: "elm/genlist/tree/part/default";
             }
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 4;
+               offset: 5 4;
                to_x: "arrow";
             }
             rel2 {
@@ -1286,7 +1286,7 @@ group { name: "elm/genlist/tree/part/default";
                relative: 1.0 0.0;
                offset: 0 3;
             }
-            rel2.offset: -7 -4;
+            rel2.offset: -16 -4;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
@@ -1309,7 +1309,7 @@ group { name: "elm/genlist/tree/part/default";
                relative: 1.0 0.0;
                offset: 0 3;
             }
-            rel2.offset: -7 -4;
+            rel2.offset: -16 -4;
          }
          description { state: "over" 0.0;
             inherit: "default" 0.0;
@@ -1332,7 +1332,7 @@ group { name: "elm/genlist/tree/part/default";
                relative: 1.0 0.0;
                offset: 0 3;
             }
-            rel2.offset: -7 -4;
+            rel2.offset: -16 -4;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
@@ -1366,9 +1366,10 @@ group { name: "elm/genlist/tree/part/default";
             image.normal: "arrow_side_nor.png";
             rel1 {
                relative: 1.0 0.0;
-               offset: 12 0;
+               offset: 24 0;
                to_x: "elm.swallow.icon";
             }
+            fill.smooth: 0;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
@@ -2131,6 +2132,7 @@ group { name: "elm/genlist/tree/caption/default";
          type: SWALLOW;
          repeat_events: 1;
          description { state: "default" 0.0;
+            visible: 0;
             align: 0.0 0.5;
             fixed: 1 0;
             min: 16 16;
@@ -2153,14 +2155,14 @@ group { name: "elm/genlist/tree/caption/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: FN_B;
+               font: "Breeze-Bold";
                size: 12;
                max: 1 0;
                align: 0.0 0.5;
             }
             rel1 {
                relative: 1.0 0.0;
-               offset: 7 4;
+               offset: 5 4;
                to_x: "arrow";
             }
             rel2.offset: -7 -5;
@@ -2173,9 +2175,9 @@ group { name: "elm/genlist/tree/caption/default";
             align: 0.0 0.5;
             min: 0 16;
             max: -1 16;
-            color: 120 120 120 255;
+            color_class: "text_tabs_selected";
             text {
-               font: FN_B;
+               font: "Breeze-Bold";
                size: 13;
                align: 0.0 0.5;
             }
@@ -2188,6 +2190,8 @@ group { name: "elm/genlist/tree/caption/default";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
+            color_class: "";
+            color: 120 120 120 255;
          }
       }
       part { name: "events";
@@ -2204,9 +2208,10 @@ group { name: "elm/genlist/tree/caption/default";
             min: 9 9;
             max: 9 9;
             image.normal: "arrow_side_nor.png";
+            fill.smooth: 0;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 18 0;
                to_x: "elm.swallow.icon";
             }
          }
