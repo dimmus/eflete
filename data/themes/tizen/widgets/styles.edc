@@ -205,5 +205,7 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       base: "+ font=Breeze font_size=10 color=#727272ff underline_color=#FFF underline2_color=#FFF shadow_color=#FFF glow_color=#FFF glow2_color=#FFF backing_color=#FFF strikethrough_color=#FFF align=left wrap=word ellipsis=-1.0 underline_dash_color=#FFF";
       TEXTBLOCK_TAGS_ENABLED
    }
- 
+   style { name: "entry_main_combobox_text";
+      base: "font="FN" font_size=15 color=#585858 wrap=none text_class=entry";
+   }
 }
