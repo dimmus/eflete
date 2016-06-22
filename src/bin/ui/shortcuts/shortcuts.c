@@ -23,65 +23,71 @@ static inline unsigned int
 _keycode_convert(unsigned int keycode)
 {
 #ifdef __APPLE__
-#define KEY(mac, lin) case mac: return lin;
+    #define KEY(mac, lin) case mac: return lin;
    switch (keycode)
    {
-      KEY(26, 10) /* 1 */
-      KEY(27, 11)
-      KEY(28, 12)
-      KEY(29, 13)
-      KEY(31, 14)
-      KEY(30, 15)
-      KEY(34, 16)
-      KEY(36, 17)
-      KEY(33, 18)
-      KEY(37, 19)
-      KEY(35, 20) /* - */
-      KEY(32, 21) /* = */
+      KEY(18, 10) /* 1 */
+      KEY(19, 11)
+      KEY(20, 12)
+      KEY(21, 13)
+      KEY(23, 14)
+      KEY(22, 15)
+      KEY(26, 16)
+      KEY(28, 17)
+      KEY(25, 18)
+      KEY(29, 19)
+      KEY(27, 20) /* - */
+      KEY(24, 21) /* = */
 
-      KEY(20, 24) /* q */
-      KEY(21, 25)
-      KEY(22, 26)
-      KEY(23, 27)
-      KEY(25, 28)
-      KEY(24, 29)
-      KEY(40, 30)
-      KEY(42, 31)
-      KEY(39, 32)
-      KEY(43, 33) /* p */
-      KEY(41, 34) /* [ */
-      KEY(38, 35) /* ] */
-      KEY(50, 51) /* \ */
+      KEY(12, 24) /* q */
+      KEY(13, 25)
+      KEY(14, 26)
+      KEY(15, 27)
+      KEY(17, 28)
+      KEY(16, 29)
+      KEY(32, 30)
+      KEY(34, 31)
+      KEY(31, 32)
+      KEY(35, 33) /* p */
+      KEY(33, 34) /* [ */
+      KEY(30, 35) /* ] */
+      KEY(42, 51) /* \ */
 
-      KEY(8, 38) /* a */
-      KEY(9, 39)
-      KEY(10, 40)
-      KEY(11, 41)
-      KEY(13, 42)
-      KEY(12, 43)
-      KEY(46, 44)
-      KEY(48, 45)
-      KEY(45, 46)
-      KEY(49, 47) /* ; */
-      KEY(47, 48) /* ' */
+      KEY(0, 38) /* a */
+      KEY(1, 39)
+      KEY(2, 40)
+      KEY(3, 41)
+      KEY(5, 42)
+      KEY(4, 43)
+      KEY(38, 44)
+      KEY(40, 45)
+      KEY(37, 46)
+      KEY(41, 47) /* ; */
+      KEY(39, 48) /* ' */
 
-      KEY(14, 52) /* z */
-      KEY(15, 53)
-      KEY(16, 54)
-      KEY(17, 55)
-      KEY(19, 56)
-      KEY(53, 57)
-      KEY(54, 58)
-      KEY(51, 59)
-      KEY(55, 60)
-      KEY(52, 61) /* / */
+      KEY(6, 52) /* z */
+      KEY(7, 53)
+      KEY(8, 54)
+      KEY(9, 55)
+      KEY(11, 56)
+      KEY(45, 57)
+      KEY(46, 58)
+      KEY(43, 59)
+      KEY(47, 60)
+      KEY(44, 61) /* / */
 
-      KEY(56, 23) /* tab */
+      KEY(48, 23) /* tab */
 
-      KEY(66, 64) /* Alt_L */
+      KEY(123, 113) /* left */
+      KEY(124, 114) /* right */
 
-      KEY(131, 113) /* left */
-      KEY(132, 114) /* right */
+      KEY(122, 67) /* F1 */
+      KEY(120, 68) /* F2 */
+      KEY(99, 69) /* F3 */
+      KEY(98, 73) /* F7 */
+      KEY(100, 74) /* F8 */
+      KEY(101, 75) /* F9 */
+      KEY(109, 76) /* F10 */
    }
    DBG("notconverted mac keycode: %d", keycode);
 #undef KEY
