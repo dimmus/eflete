@@ -2707,7 +2707,7 @@ group { name: "elm/genlist/base/default";
    parts {
       part { name: "bg";
          description { state: "default" 0.0;
-           color: 244 244 244 255;
+           color: 248 248 248 255;
          }
       }
    }

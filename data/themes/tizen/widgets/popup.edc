@@ -124,7 +124,7 @@ group { name: "elm/popup/base/default";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: 244 244 244 255;
+            color: 248 248 248 255;
             rel1.to_y: "separator.title";
             rel2.to_y: "separator.action_area";
          }

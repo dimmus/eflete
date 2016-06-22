@@ -1,6 +1,6 @@
 color_classes {
    color_class { name: "scrollbar_bg";
-      color: 233 233 233 255;
+      color: 231 231 231 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
@@ -44,7 +44,11 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
-
+   color_class { name: "ruler_border";
+      color: 192 192 192 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
    color_class { name: "genlist_bg";
       color: 244 244 244 255;
       color2: 0 0 0 0;

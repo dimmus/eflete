@@ -103,7 +103,7 @@ group { name: "elm/layout/workspace/scroller";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color_class: "genlist_bg";
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 1.0;
                to_y: "area.ruler.cros";
@@ -139,7 +139,7 @@ group { name: "elm/layout/workspace/scroller";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color_class: "genlist_bg";
+            color: 255 255 255 255;
             rel1.to: "area.ruler.cros";
             rel2.to_y: "area.ruler.cros";
          }
@@ -191,7 +191,7 @@ group { name: "elm/layout/workspace/scroller";
             align: 0.5 0.0;
             min: 1 1;
             max: -1 1;
-            color_class: "border";
+            color_class: "ruler_border";
          }
       }
       part { name: "border_right";
@@ -200,7 +200,7 @@ group { name: "elm/layout/workspace/scroller";
             align: 0.0 0.5;
             min: 1 0;
             max: 1 -1;
-            color_class: "border";
+            color_class: "ruler_border";
          }
       }
       part { name: "ruler_bottom";
@@ -209,7 +209,7 @@ group { name: "elm/layout/workspace/scroller";
             align: 0.5 0.0;
             min: 0 1;
             max: -1 1;
-            color_class: "border";
+            color_class: "ruler_border";
             rel1 {
                relative: 0.0 1.0;
                to_y: "elm.swallow.ruler_h";
@@ -222,7 +222,7 @@ group { name: "elm/layout/workspace/scroller";
             align: 0.0 0.5;
             min: 1 0;
             max: 1 -1;
-            color_class: "border";
+            color_class: "ruler_border";
             rel1 {
                relative: 1.0 0.0;
                to_x: "elm.swallow.ruler_v";

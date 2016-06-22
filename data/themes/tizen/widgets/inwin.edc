@@ -145,7 +145,7 @@ group { name: "elm/win/inwin/modal_window";
          type: RECT;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            color: 244 244 244 255;
+            color: 248 248 248 255;
             rel1 {
                relative: 0.0 1.0;
                to_x: "base";
