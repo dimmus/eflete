@@ -61,15 +61,14 @@ group { name: "elm/panes/vertical/default";
          }
       }
       part { name: "bar";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
-            image.normal: "panes_vertical.png";
+            color: 177 177 177 255;
             rel1.to_x: "elm.bar";
             rel2.to_x: "elm.bar";
          }
          description { state: "disabled" 0.0;
             visible: 0;
-            image.normal: "panes_vertical.png";
             rel1.to_y: "elm.swallow.event";
             rel2.to_y: "elm.swallow.event";
          }
@@ -493,12 +492,12 @@ group { name: "elm/panes/horizontal/default";
          }
       }
       part { name: "bar";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 0 2;
             max: -1 2;
-            image.normal: "panes_horizontal.png";
+            color: 177 177 177 255;
             rel1.to_y: "elm.swallow.event";
             rel2.to_y: "elm.swallow.event";
          }
@@ -514,7 +513,7 @@ group { name: "elm/panes/horizontal/default";
          description { state: "default" 0.0;
             min: 0 2;
             max: -1 2;
-            color: 170 170 170 255;
+            color: 177 177 177 255;
             rel1.to: "bar";
             rel2.to: "bar";
          }
