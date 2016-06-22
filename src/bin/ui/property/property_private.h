@@ -56,6 +56,7 @@ typedef struct {
 
    Elm_Genlist_Item_Class *itc_caption;
    Elm_Genlist_Item_Class *itc_1swallow;
+   Elm_Genlist_Item_Class *itc_1swallow_wide;
    Elm_Genlist_Item_Class *itc_2swallow;
 
    /* Stores what item class to use with each pair of controls */

@@ -25,8 +25,11 @@
 typedef struct {
    Property_Attribute item_description;
 
+   Property_Attribute item_object_title;
    Property_Attribute item_object_color;
+   Property_Attribute item_outline_title;
    Property_Attribute item_outline_color;
+   Property_Attribute item_shadow_title;
    Property_Attribute item_shadow_color;
 
    ColorClassData *selected;
@@ -178,21 +181,30 @@ property_color_class_manager_init(Property_Data *pd)
    color_data.item_description.action1.update_cb = _update_cb;
    color_data.item_description.action1.tooltip = eina_stringshare_add(_("Provides a descriptive name for the effect of the color class"));
 
-   color_data.item_object_color.name = "Object color";
+   color_data.item_object_title.name = "Object color";
+   color_data.item_object_title.action1.control_type = PROPERTY_CONTROL_LABEL;
+   color_data.item_object_title.filter_cb = _filter_cb;
+
    color_data.item_object_color.filter_cb = _filter_cb;
    color_data.item_object_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_object_color.action1.init_cb = _init_cb;
    color_data.item_object_color.action1.change_cb = _on_changed_1;
    color_data.item_object_color.action1.update_cb = _update_1_cb;
 
-   color_data.item_outline_color.name = "Outline color";
+   color_data.item_outline_title.name = "Outline color";
+   color_data.item_outline_title.action1.control_type = PROPERTY_CONTROL_LABEL;
+   color_data.item_outline_title.filter_cb = _filter_cb;
+
    color_data.item_outline_color.filter_cb = _filter_cb;
    color_data.item_outline_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_outline_color.action1.init_cb = _init_cb;
    color_data.item_outline_color.action1.change_cb = _on_changed_2;
    color_data.item_outline_color.action1.update_cb = _update_2_cb;
 
-   color_data.item_shadow_color.name = "Shadow color";
+   color_data.item_shadow_title.name = "Shadow color";
+   color_data.item_shadow_title.action1.control_type = PROPERTY_CONTROL_LABEL;
+   color_data.item_shadow_title.filter_cb = _filter_cb;
+
    color_data.item_shadow_color.filter_cb = _filter_cb;
    color_data.item_shadow_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_shadow_color.action1.init_cb = _init_cb;
@@ -208,8 +220,11 @@ property_color_class_manager_items_get()
    Eina_List *items = NULL;
 
    items = eina_list_append(items, &color_data.item_description);
+   items = eina_list_append(items, &color_data.item_object_title);
    items = eina_list_append(items, &color_data.item_object_color);
+   items = eina_list_append(items, &color_data.item_outline_title);
    items = eina_list_append(items, &color_data.item_outline_color);
+   items = eina_list_append(items, &color_data.item_shadow_title);
    items = eina_list_append(items, &color_data.item_shadow_color);
 
    return items;

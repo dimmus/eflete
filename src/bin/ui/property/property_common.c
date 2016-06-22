@@ -569,6 +569,14 @@ property_common_itc_init(Property_Data *pd)
    pd->itc_1swallow->func.filter_get = _filter;
    pd->itc_1swallow->func.state_get = _state_get;
 
+   pd->itc_1swallow_wide = elm_genlist_item_class_new();
+   pd->itc_1swallow_wide->item_style = "1swallow_wide";
+   pd->itc_1swallow_wide->func.text_get = _1swallow_text_get;
+   pd->itc_1swallow_wide->func.content_get = _1swallow_content_get;
+   pd->itc_1swallow_wide->func.del = _del;
+   pd->itc_1swallow_wide->func.filter_get = _filter;
+   pd->itc_1swallow_wide->func.state_get = _state_get;
+
    pd->itc_2swallow = elm_genlist_item_class_new();
    pd->itc_2swallow->item_style = "2swallow";
    pd->itc_2swallow->func.text_get = _2swallow_text_get;
@@ -582,7 +590,7 @@ property_common_itc_init(Property_Data *pd)
 
    pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
-   pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_TWEEN]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
