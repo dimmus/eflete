@@ -1167,21 +1167,7 @@ group { name: "elm/scroller/entry_single/fileselector/default";
    }
 }
 
-group { name: "elm/scroller/entry_single/combobox_vertical/default";
-   alias: "elm/scroller/entry_single/combobox_horizontal/default";
-   parts {
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1.offset: 1 0;
-            rel2.offset: -5 -1;
-         }
-      }
-   }
-}
-
 group { name: "elm/entry/base-single/default";
-   alias: "elm/entry/base-single/combobox_vertical/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
