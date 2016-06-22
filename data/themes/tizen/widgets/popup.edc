@@ -39,6 +39,23 @@ group { name: "elm/notify/block_events/popup/default";
 }
 group { name: "elm/notify/center/popup/default";
   parts {
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "shadow.png";
+               border: 20 20 20 20;
+            }
+            rel1 {
+               offset: -7 -7;
+               to: "base";
+            }
+            rel2 {
+               offset: 9 9;
+               to: "base";
+            }
+         }
+     }
      part { name: "base";
         type: RECT;
         mouse_events: 0;
