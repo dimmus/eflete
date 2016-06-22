@@ -2315,7 +2315,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->itc_group_data->func.text_get = _resource_label_get;
 
    pl->popup.itc = elm_genlist_item_class_new();
-   pl->popup.itc->item_style = "combobox";
+   pl->popup.itc->item_style = "default";
    pl->popup.itc->func.text_get = _combobox_text_get;
    pl->popup.itc->func.del = _combobox_item_del;
 
