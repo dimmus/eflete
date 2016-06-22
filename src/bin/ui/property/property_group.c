@@ -4350,26 +4350,26 @@ _init_items()
            case PROPERTY_GROUP_ITEM_GROUP_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME,
-                       _("The name to be used by the application<br>"
-                         "to load the resulting Edje object and to identify<br>"
+                       _("The name to be used by the application "
+                         "to load the resulting Edje object and to identify "
                          "the group to swallow in a GROUP part."));
              break;
            case PROPERTY_GROUP_ITEM_GROUP_MIN:
               IT.name = "Min";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W,
-                       _("The minimum width for the container defined by<br>"
+                       _("The minimum width for the container defined by "
                          "the composition of the parts. This value is not enforced."));
              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H,
-                       _("The minimum height for the container defined by<br>"
+                       _("The minimum height for the container defined by "
                          "the composition of the parts. This value is not enforced."));
               break;
            case PROPERTY_GROUP_ITEM_GROUP_MAX:
               IT.name = "Max";
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W,
-                       _("The maximum width for the container defined by<br>"
+                       _("The maximum width for the container defined by "
                          "the composition of the parts. This value is not enforced."));
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H,
-                        _("The maximum height for the container defined by<br>"
+                        _("The maximum height for the container defined by "
                           "the composition of the parts. This value is not enforced."));
              break;
 
@@ -4384,7 +4384,7 @@ _init_items()
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME,
                        _("The part name is used as a reference in the relative<bt>"
-                         "positioning system of the theme, by programs and in some<br>"
+                         "positioning system of the theme, by programs and in some "
                          "cases by the application. It must be unique within the group."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TYPE:
@@ -4394,63 +4394,63 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_SCALE:
               IT.name = "Scale";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE,
-                       _("Specifies whether the part scales its size with an<br>"
-                         "Edje scaling factor. By default, the scale is off and the<br>"
-                         "default scale factor is 1.0 - that means no scaling.<br>"
-                         "This is used to scale properties, such as font size,<br>"
-                         "and minimum and maximum size of the part. It can also<br>"
-                         "be used to scale based on the DPI of the target device.<br>"
-                         "The reason to be selective is that some things work well<br>"
-                         "being scaled, and others do not, so the designer gets<br>"
+                       _("Specifies whether the part scales its size with an "
+                         "Edje scaling factor. By default, the scale is off and the "
+                         "default scale factor is 1.0 - that means no scaling. "
+                         "This is used to scale properties, such as font size, "
+                         "and minimum and maximum size of the part. It can also "
+                         "be used to scale based on the DPI of the target device. "
+                         "The reason to be selective is that some things work well "
+                         "being scaled, and others do not, so the designer gets "
                          "to choose what works best."));
              break;
            case PROPERTY_GROUP_ITEM_PART_MOUSE_EVENTS:
               IT.name = "Mouse events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS,
-                       _("Specifies whether the part emits signals.<br>"
-                         "Disabling it prevents the part from emitting<br>"
+                       _("Specifies whether the part emits signals. "
+                         "Disabling it prevents the part from emitting "
                          "any type of signal at all."));
              break;
            case PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS:
               IT.name = "Repeat events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS,
-                       _("Specifies whether a part echoes a mouse event<br>"
+                       _("Specifies whether a part echoes a mouse event "
                          "to other parts below the pointer."));
              break;
            case PROPERTY_GROUP_ITEM_PART_CLIP_TO:
               IT.name = "Clip to";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO,
-                       _("Only renders the area of the part that coincides with<br>"
-                         "another part's container. The overflowing content is<br>"
+                       _("Only renders the area of the part that coincides with "
+                         "another part's container. The overflowing content is "
                          "not displayed. Note that the part being clipped to can"
                          "be a rectangle or image part."));
               break;
            case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
               IT.name = "Ignore flags";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS,
-                       _("Specifies whether events with the given flags<br>"
-                         "must be ignored. These events do not have their<br>"
+                       _("Specifies whether events with the given flags "
+                         "must be ignored. These events do not have their "
                          "signals emitted to the parts."));
              break;
            case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
               IT.name = "Pointer mode";
               IT.filter_data.part_types &= ~PART_SPACER;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE,
-                       _("Sets the mouse pointer behavior for the part.<br>"
-                         "The default value is AUTOGRAB. The following modes are available:<br>"
-                         " * AUTOGRAB, when the part is clicked and the button<br>"
-                         "   remains pressed, the part is the source of all future<br>"
-                         "   mouse signals emitted, even outside the object, until<br>"
-                         "   the button is  released.<br>"
+                       _("Sets the mouse pointer behavior for the part. "
+                         "The default value is AUTOGRAB. The following modes are available: "
+                         " * AUTOGRAB, when the part is clicked and the button "
+                         "   remains pressed, the part is the source of all future "
+                         "   mouse signals emitted, even outside the object, until "
+                         "   the button is  released. "
                          " * NOGRAB, the effect is limited to the part's container."));
               break;
            case PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE:
               IT.name = "Source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE,
-                       _("The meaning of this parameter varies depending on the type of the part.<br>"
-                         " * For GROUP parts, it's the name of another group in the Edje<br>"
-                         "   file which is autoloaded and swallowed on this part.<br>"
-                         " * For TEXTBLOCK parts, it's the name of a group is used for<br>"
+                       _("The meaning of this parameter varies depending on the type of the part. "
+                         " * For GROUP parts, it's the name of another group in the Edje "
+                         "   file which is autoloaded and swallowed on this part. "
+                         " * For TEXTBLOCK parts, it's the name of a group is used for "
                          "   selection display under the text."));
               IT.filter_data.part_types = PART_GROUP;
               break;
@@ -4465,23 +4465,23 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
               IT.name = "Enable";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X,
-                       _("Enables or disables dragging along the X axis.<br>"
+                       _("Enables or disables dragging along the X axis. "
                          "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y,
-                       _("Enables or disables dragging along the Y axis.<br>"
+                       _("Enables or disables dragging along the Y axis. "
                          "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP:
               IT.name = "Step";
               _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X,
-                       _("This parameter takes any integer and limits movement<br>"
-                         "to values divisible by it, causing the part to jump from<br>"
-                         "position to position. If the step is set to 0, it is<br>"
+                       _("This parameter takes any integer and limits movement "
+                         "to values divisible by it, causing the part to jump from "
+                         "position to position. If the step is set to 0, it is "
                          "calculated as the width of the confined part divided by count."));
              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y,
-                       _("This parameter takes any integer and limits movement<br>"
-                         "to values divisible by it, causing the part to jump from<br>"
-                         "position to position. If the step is set to 0, it is<br>"
+                       _("This parameter takes any integer and limits movement "
+                         "to values divisible by it, causing the part to jump from "
+                         "position to position. If the step is set to 0, it is "
                          "calculated as the width of the confined part divided by count."));
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT:
@@ -4492,22 +4492,22 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
               IT.name = "Confine";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE,
-                       _("When set, limits the movement of the movable part<br>"
-                         "to another part's container. When you use the confine option,<br>"
-                         "do not forget to set a minimum size for the part,<br>"
+                       _("When set, limits the movement of the movable part "
+                         "to another part's container. When you use the confine option, "
+                         "do not forget to set a minimum size for the part, "
                          "or the movable part does not show up."));
              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD:
               IT.name = "Threshold";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD,
-                       _("When set, the movement of the dragged part<br>"
-                         "can only start when it gets moved enough to be outside<br>"
+                       _("When set, the movement of the dragged part "
+                         "can only start when it gets moved enough to be outside "
                          "of the threshold part."));
              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
               IT.name = "Events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT,
-                       _("Causes the part to forward the drag events<br>"
+                       _("Causes the part to forward the drag events "
                          "to another part, thus ignoring them for itself."));
              break;
 
@@ -4521,23 +4521,23 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME,
-                       _("A name used to identify a description inside a given part.<br>"
-                         "Multiple descriptions are used to declare different states<br>"
-                         "of the same part, such as \"clicked\" or \"invisible\".<br>"
-                         "All state declarations are also coupled with an index number<br>"
+                       _("A name used to identify a description inside a given part. "
+                         "Multiple descriptions are used to declare different states "
+                         "of the same part, such as \"clicked\" or \"invisible\". "
+                         "All state declarations are also coupled with an index number "
                          "between 0.0 and 1.0."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_VISIBLE:
               IT.name = "Visible";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE,
-                       _("Takes a boolean state specifying whether the part is<br>"
+                       _("Takes a boolean state specifying whether the part is "
                          "visible or not. Invisible parts do not emit signals."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE:
               IT.name = "Proxy source";
               IT.filter_data.part_types = PART_PROXY;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE,
-                       _("Causes the part to use another part content as<br>"
+                       _("Causes the part to use another part content as "
                          "the content of this part."));
               break;
 
@@ -4565,23 +4565,23 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL:
               IT.name = "Minmul";
               _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W,
-                       _("A width multiplier forcibly applied to whatever the<br>"
+                       _("A width multiplier forcibly applied to whatever the "
                          "minimum size is only during minimum size calculation."));
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H,
-                       _("A height multiplier forcibly applied to whatever the<br>"
+                       _("A height multiplier forcibly applied to whatever the "
                          "minimum size is only during minimum size calculation."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED:
               IT.name = "Fixed";
               _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W,
-                       _("Tells the minimum size calculation routine that this<br>"
-                         "part does not change size in width. ON for enabled<br>"
-                         "OFF for disabled. When enabled, the routine does not try<br>"
+                       _("Tells the minimum size calculation routine that this "
+                         "part does not change size in width. ON for enabled "
+                         "OFF for disabled. When enabled, the routine does not try "
                          "and expand or contract the part."));
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H,
-                        _("Tells the minimum size calculation routine that this<br>"
-                          "part does not change size in height. ON for enabled<br>"
-                          "OFF for disabled. When enabled, the routine does not try<br>"
+                        _("Tells the minimum size calculation routine that this "
+                          "part does not change size in height. ON for enabled "
+                          "OFF for disabled. When enabled, the routine does not try "
                           "and expand or contract the part."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF:
@@ -4592,12 +4592,12 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
               IT.name = "Aspect";
               _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN,
-                       _("Normally the width and height can be resized to any values<br>"
-                         "independently. The aspect property forces the width to height<br>"
+                       _("Normally the width and height can be resized to any values "
+                         "independently. The aspect property forces the width to height "
                          "ratio to be kept from the minimum."));
               _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX,
-                       _("Normally the width and height can be resized to any values<br>"
-                         "independently. The aspect property forces the width to height<br>"
+                       _("Normally the width and height can be resized to any values "
+                         "independently. The aspect property forces the width to height "
                          "ratio to be kept to the maximum."));
                break;
 
@@ -4620,85 +4620,86 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH:
               IT.name = "Smooth:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_SMOOTH,
-                       _("Enables or disables smooth map rendering.<br>"
-                         "This can be linear interpolation, anisotropic filtering,<br>"
+                       _("Enables or disables smooth map rendering. "
+                         "This can be linear interpolation, anisotropic filtering, "
                          "or anything the engine decides is \"smooth\"."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA:
               IT.name = "Alpha:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ALPHA,
-                       _("Enable or disable alpha channel when map rendering"));
+                       _("Enables or disables the alpha channel when rendering the map."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_BACKFACE_CULL:
               IT.name = "Backface Cull:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_BACKFACE_CULL,
-                     _("Enables or disabled backface culling (when the rotated part<br>"
-                       "that normally faces the camera is facing away after being<br>"
-                       "rotated etc.). This means that the object will be hidden when<br>"
-                       "\"backface culled\""));
-              break;
+                     _("Enables or disables backface culling (such as when the "
+                       "rotated part that normally faces the camera is facing "
+                       "away after being rotated). This means that the object "
+                       "is hidden when \"backface culled\""));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE:
               IT.name = "Perspective:";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_PERSPECTIVE,
-                       _("This sets the part that is used as the \"perspective point\"<br>"
-                         "for giving a part a \"3d look\". The perspective point should<br>"
-                         "have a perspective section that provides zplane and focal properties."));
-              break;
+                       _("Sets the part that is used as the \"perspective point\" "
+                         "for giving a part a \"3d look\". The perspective point "
+                         "must have a perspective section that provides the "
+                         "zplane and focal properties."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_LIGHT:
               IT.name = "Light";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_LIGHT,
-                       _("This sets the part that is used as the \"light\" for calculating<br>"
-                         "the brightness (based on how directly the part's surface is facing<br>"
-                         "the light source point)"));
-              break;
+                       _("Sets the part that is used as the \"light\" for "
+                         "calculating the brightness (based on how directly "
+                         "the part's surface is facing the light source point)"));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_FOCAL:
               IT.name = "perspective focal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL,
-                       _("Sets the distance from the focal z plane (zplane) and the camera"));
+                       _("Sets the distance from the focal z plane (zplane) and the camera."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ZPLANE:
               IT.name = "perspective zplane";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE,
-                       _("This sets the z value that will not be scaled"));
+                       _("Sets the z value that is not scaled."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_CENTER:
               IT.name = "rotation center";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
-                       _("sets the part that is used as the center of rotation<br>"
-                         "when rotating the part with this description."));
-              break;
+                       _("Sets the part that is used as the center of "
+                         "rotation when rotating the part with this description."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_X:
               IT.name = "rotation X";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_X,
-                       _("rotation (in degrees) around the X axis of the part considering the center set"));
+                       _("Rotation (in degrees) around the X axis of the part considering the center set."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Y:
               IT.name = "rotation Y";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Y,
-                       _("rotation (in degrees) around the Y axis of the part considering the center set"));
+                       _("Rotation (in degrees) around the Y axis of the part considering the center set."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Z:
               IT.name = "rotation Z";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Z,
-                       _("rotation (in degrees) around the Z axis of the part considering the center set"));
+                       _("Rotation (in degrees) around the Z axis of the part considering the center set."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_12:
               IT.name = "Color Points";
               _action1(&IT, "1:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_1,
-                       _("Set the color of a vertex in the map.<br>"
-                         "This control changes Left-Top point of a part"));
+                       _("Sets the color of a vertex in the map."
+                         "This control changes the left-top point of a part."));
               _action2(&IT, "2:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_2,
-                       _("Set the color of a vertex in the map.<br>"
-                         "This control changes Right-Top point of a part"));
+                       _("Sets the color of a vertex in the map. "
+                         "This control changes the right-top point of a part."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_34:
               IT.name = "";
               _action1(&IT, "3:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_3,
-                       _("Set the color of a vertex in the map.<br>"
-                         "This control changes Left-Bottom point of a part"));
+                       _("Sets the color of a vertex in the map."
+                         "This control changes the left-bottom point of a part."));
               _action2(&IT, "4:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_4,
-                       _("Set the color of a vertex in the map.<br>"
-                         "This control changes Right-Bottom point of a part"));
+                       _("Sets the color of a vertex in the map. "
+                         "This control changes the right-bottom point of a part."));
               break;
               /* part text */
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
@@ -4719,38 +4720,38 @@ _init_items()
               IT.name = "Select mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_SELECT_MODE,
-                       _("Sets the selection mode for a textblock part to one of:<br>"
-                         " * DEFAULT selection mode is what you would expect on any<br>"
-                         "   desktop. Press mouse, drag and release to end.<br>"
-                         " * EXPLICIT mode requires the application controlling the<br>"
-                         "   edje object has to explicitly begin and end selection modes,<br>"
-                         "   and the selection itself is dragable at both ends."));
-              break;
+                       _("Sets the selection mode for a textblock part to one of the following: "
+                         "The DEFAULT selection mode is what you expect on any desktop. "
+                         "Press mouse, drag, and release to end. The EXPLICIT mode requires "
+                         "the application controlling the Edje object has to explicitly "
+                         "begin and end selection modes, and the selection itself is "
+                         "draggable at both ends."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_ENTRY_MODE:
               IT.name = "Entry mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ENTRY_MODE,
-                       _("Sets the edit mode for a textblock part to one of:<br>"
-                         " * NONE<br>"
-                         " * PLAIN<br>"
-                         " * EDITABLE<br>"
-                         " * PASSWORD It causes the part be editable if the<br>"
-                         "   edje object has the keyboard focus AND the part has<br>"
-                         "   the edje focus (or selectable always regardless of focus)<br>"
-                         "   and in the event of password mode, not selectable and<br>"
-                         "   all text chars replaced with *'s but editable and pastable."));
-              break;
+                       _("Sets the edit mode for a textblock part to one of the following:<br>"
+                         "* NONE<br>"
+                         "* PLAIN<br>"
+                         "* EDITABLE<br>"
+                         "* PASSWORD<br>"
+                         "It causes the part be editable if the Edje object has the "
+                         "keyboard focus and the part has the Edje focus (or "
+                         "selectable always regardless of focus). In the password "
+                         "mode, the text is not selectable, but it can be edited "
+                         "and pasted, and all text characters are replaced with *s."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_CURSOR_MODE:
               IT.name = "Cursor mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CURSOR_MODE,
-                       _("Sets the cursor mode for a textblock part to one of:<br>"
-                         " * UNDER cursor mode means the cursor will draw below<br>"
-                         "   the character pointed at. That's the default.<br>"
-                         " * BEFORE cursor mode means the cursor is drawn as<br>"
-                         "   a vertical line before the current character, just<br>"
-                         "   like many other GUI toolkits handle it."));
-              break;
+                       _("Sets the cursor mode for a textblock part to one of the following: "
+                         "UNDER cursor mode means the cursor draws below the character "
+                         "pointed at. This is the default mode. BEFORE cursor mode means "
+                         "the cursor is drawn as a vertical line before the current "
+                         "character, just like many other GUI toolkits handle it."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_MULTILINE:
               IT.name = "Multiline";
               IT.filter_data.part_types = PART_TEXTBLOCK;
@@ -4761,44 +4762,44 @@ _init_items()
               IT.name = "Selection under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER,
-                       _("It is used for the group to be loaded and used<br>"
-                         "for selection display UNDER the selected text."));
-              break;
+                       _("Used for the group to be loaded and the selection "
+                         "display under the selected text."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_OVER:
               IT.name = "Selection over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER,
-                       _("It is used for the group to be loaded and used<br>"
-                         "for selection display OVER the selected text."));
-              break;
+                       _("Used for the group to be loaded and the selection "
+                         "display over the selected text."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_UNDER:
               IT.name = "Cursor under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER,
-                       _("It is used for the group to be loaded and used<br>"
-                         "for cursor display UNDER the cursor position."));
-              break;
+                       _("Used for the group to be loaded and the cursor "
+                         "display under the cursor position."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_OVER:
               IT.name = "Cursor over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER,
-                       _("It is used for the group to be loaded and used<br>"
-                         "for cursor display OVER the cursor position."));
-              break;
+                       _("Used for the group to be loaded and the cursor "
+                         "display over the cursor position."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_UNDER:
               IT.name = "Anchors under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER,
-                       _("It is used for the group to be loaded and used<br>"
-                         "for anchors display UNDER the anchor position."));
-              break;
+                       _("Used for the group to be loaded and the anchors "
+                         "display under the anchor position."));
+             break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_OVER:
               IT.name = "Anchors over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER,
-                       _(" It is used for the group to be loaded and used<br>"
-                         "for anchor display OVER the anchor position."));
-              break;
+                       _("Used for the group to be loaded and the anchor "
+                         "display over the anchor position."));
+             break;
 
               /* state position block */
            case PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE:
@@ -4810,20 +4811,20 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN:
               IT.name = "Align";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X,
-                       _("When the displayed object's size is smaller<br>"
-                         "(or bigger) than its container, this property moves<br>"
-                         "it relatively along X axis inside its container.<br>"
-                         "0.0 means left/top edges of the object touching<br>"
-                         "container's respective ones, while 1.0 stands for<br>"
-                         "right/bottom edges of the object on horizonal axis.<br>"
+                       _("When the displayed object's size is smaller "
+                         "(or bigger) than its container, this property moves "
+                         "it relatively along the X axis inside its container. "
+                         "0.0 means left and top edges of the object touching "
+                         "container's respective ones, while 1.0 stands for "
+                         "right and bottom edges of the object on horizonal axis. "
                          "The default value is 0.5."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y,
-                       _("When the displayed object's size is smaller<br>"
-                         "(or bigger) than its container, this property moves<br>"
-                         "it relatively along Y axis inside its container.<br>"
-                         "0.0 means left/top edges of the object touching<br>"
-                         "container's respective ones, while 1.0 stands for<br>"
-                         "right/bottom edges of the object on vertical axis.<br>"
+                       _("When the displayed object's size is smaller "
+                         "(or bigger) than its container, this property moves "
+                         "it relatively along the Y axis inside its container. "
+                         "0.0 means left and top edges of the object touching "
+                         "container's respective ones, while 1.0 stands for "
+                         "right and bottom edges of the object on vertical axis. "
                          "The default value is 0.5."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
@@ -4834,40 +4835,38 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X:
               IT.name = "Relative to";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X,
-                       _("Causes a left-up corner to be positioned relatively to the X<br>"
-                         "axis of another part's container. Simply put affects<br>"
-                         "the first parameter of \"relative\". Setting to NONE<br>"
-                         "will un-set this value for inherited parts."));
-             break;
+                       _("Causes the left-up corner to be positioned relatively to the X "
+                         "axis of another part's container. Affects the first parameter "
+                         "of \"relative\". Setting to NONE unsets this value for inherited parts."));
+              break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y:
               IT.name = "";
               _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y,
-                        _("Causes a left-up corner to be positioned relatively to the Y<br>"
-                         "axis of another part's container. Simply put affects<br>"
-                         "the first parameter of \"relative\". Setting to NONE<br>"
-                         "will un-set this value for inherited parts."));
-             break;
+                        _("Causes the left-up corner to be positioned relatively to the Y "
+                          "axis of another part's container. Affects the first parameter "
+                          "of \"relative\". Setting to NONE unsets this value for inherited parts."));
+              break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X,
-                        _("Moves a left-up corner to a relative position inside the<br>"
-                         "container of the relative \"to\" part. Values from 0.0<br>"
-                         "(0%, beginning) to 1.0 (100%, end) of X axis."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y,
-                       _("Moves a left-up corner to a relative position inside the<br>"
-                         "container of the relative \"to\" part. Values from 0.0<br>"
-                         "(0%, beginning) to 1.0 (100%, end) of Y axis."));
-               break;
+                        _("Moves the left-up corner to a relative position inside the "
+                          "container of the relative \"to\" part. Values from 0.0 "
+                          "(0%, beginning) to 1.0 (100%, end) of the X axis."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y,
+                       _("Moves the left-up corner to a relative position inside the "
+                         "container of the relative \"to\" part. Values from 0.0 "
+                         "(0%, beginning) to 1.0 (100%, end) of the Y axis."));
+              break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X,
-                       _("Affects the left-up corner position a fixed<br>"
-                         "number of pixels along X axis."));
+                       _("Affects the left-up corner position for a fixed "
+                         "number of pixels along the X axis."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y,
-                       _("Affects the left-up corner position a fixed<br>"
-                         "number of pixels along Y axis."));
+                       _("Affects the left-up corner position for a fixed "
+                         "number of pixels along the Y axis."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
               IT.name = "Rel2 (end point)";
@@ -4877,40 +4876,40 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X:
               IT.name = "Relative to";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X,
-                       _("Causes a right-down corner to be positioned relatively to the X<br>"
-                         "axis of another part's container. Simply put affects<br>"
-                         "the first parameter of \"relative\". Setting to NONE<br>"
-                         "will un-set this value for inherited parts."));
-               break;
+                       _("Causes the right-down corner to be positioned relatively "
+                         "to the X axis of another part's container. Affects the "
+                         "first parameter of \"relative\". Setting to NONE unsets "
+                         "this value for inherited parts."));
+              break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y:
               IT.name = "";
               _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y,
-                        _("Causes a right-down corner to be positioned relatively to the Y<br>"
-                         "axis of another part's container. Simply put affects<br>"
-                         "the first parameter of \"relative\". Setting to NONE<br>"
-                         "will un-set this value for inherited parts."));
+                        _("Causes the right-down corner to be positioned relatively "
+                          "to the Y axis of another part's container. Affects the "
+                          "first parameter of \"relative\". Setting to NONE unsets "
+                          "this value for inherited parts."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X,
-                        _("Moves a right-down corner to a relative position inside the<br>"
-                         "container of the relative \"to\" part. Values from 0.0<br>"
-                         "(0%, beginning) to 1.0 (100%, end) of X axis."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y,
-                       _("Moves a right-down corner to a relative position inside the<br>"
-                         "container of the relative \"to\" part. Values from 0.0<br>"
-                         "(0%, beginning) to 1.0 (100%, end) of Y axis."));
-               break;
+                        _("Moves the right-down corner to a relative position inside "
+                          "the container of the relative \"to\" part. Values from 0.0 "
+                          "(0%, beginning) to 1.0 (100%, end) of the X axis."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y,
+                       _("Moves the right-down corner to a relative position inside "
+                         "the container of the relative \"to\" part. Values from 0.0 "
+                         "(0%, beginning) to 1.0 (100%, end) of the Y axis."));
+              break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X,
-                       _("Affects the right-down corner position a fixed<br>"
-                         "number of pixels along X axis."));
+                       _("Affects the right-down corner position for a fixed "
+                         "number of pixels along the X axis."));
                _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y,
-                       _("Affects the right-down corner position a fixed<br>"
-                         "number of pixels along Y axis."));
+                       _("Affects the right-down corner position for a fixed "
+                         "number of pixels along the Y axis."));
                break;
 
               /* part image */
@@ -4924,50 +4923,46 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL:
               IT.name = "Image";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE,
-                       _("Name of image to be used. In an animation, this<br>"
+                       _("Name of image to be used. In an animation, this "
                          "is the first and last image displayed."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
               IT.name = "Tween";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN,
-                       _("Name of an images to be used in an animation loop<br>"
-                         "Can have none, one or multiple tween declarations.<br>"
-                         "Images are displayed in the order they are listed,<br>"
-                         "during the transition to the state they are declared in.<br>"
-                         "the \"normal\" image is the final state."));
-              break;
+                       _("Names of the images to be used in an animation loop. "
+                         "You can have none, 1, or multiple tween declarations. "
+                         "Images are displayed in the order they are listed, "
+                         "during the transition to the state they are declared in. "
+                         "The \"normal\" image is the final state."));
+             break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
               IT.name = "Border";
               _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
-                       _("If set, the area (in pixels) of each side of the image<br>"
-                         "will be displayed as a fixed size border, <br>"
-                         "from the side -> inwards, preventing the corners<br>"
-                         "from being changed on a resize."));
+                       _("If set, the area (in pixels) of each side of the image "
+                         "is displayed as a fixed size border, from the side "
+                         "inwards, preventing the corners from being changed on a resize."));
               _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
-                        _("If set, the area (in pixels) of each side of the image<br>"
-                         "will be displayed as a fixed size border, <br>"
-                         "from the side -> inwards, preventing the corners<br>"
-                         "from being changed on a resize."));
+                        _("If set, the area (in pixels) of each side of the image "
+                         "is displayed as a fixed size border, from the side "
+                         "inwards, preventing the corners from being changed on a resize."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V:
               IT.name = "";
               _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
-                        _("If set, the area (in pixels) of each side of the image<br>"
-                         "will be displayed as a fixed size border, <br>"
-                         "from the side -> inwards, preventing the corners<br>"
-                         "from being changed on a resize."));
-               _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
-                        _("If set, the area (in pixels) of each side of the image<br>"
-                         "will be displayed as a fixed size border, <br>"
-                         "from the side -> inwards, preventing the corners<br>"
-                         "from being changed on a resize."));
+                         _("If set, the area (in pixels) of each side of the image "
+                         "is displayed as a fixed size border, from the side "
+                         "inwards, preventing the corners from being changed on a resize."));
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
+                         _("If set, the area (in pixels) of each side of the image "
+                        "is displayed as a fixed size border, from the side "
+                        "inwards, preventing the corners from being changed on a resize."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
               IT.name = "Border fill";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
-                       _("If border is set, this value tells Edje if the<br>"
-                         "rest of the image (not covered by the defined border)<br>"
-                         "will be displayed or not or be assumed to be solid (without alpha)."));
+                       _("If the border is set, this value tells Edje if the rest "
+                         "of the image (not covered by the defined border) is "
+                         "displayed or not or assumed to be solid (without alpha)."));
               break;
 
               /* state fill block */
@@ -4982,19 +4977,19 @@ _init_items()
               IT.name = "Type";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE,
                        _("Sets the image fill type.<br>"
-                         " * SCALE - image will be scaled accordingly params<br>"
-                         "   value \"relative\" and \"offset\" from \"origin\"<br>"
-                         "   and \"size\" blocks.<br>"
-                         " * TILE - image will be tiled accordingly params<br>"
-                         "   value \"relative\" and \"offset\" from \"origin\"<br>"
-                         "   and \"size\" blocks.<br>"
-                         "SCALE is default type."));
+                         "* SCALE - the image is scaled according to "
+                         "the params value \"relative\" and \"offset\" from "
+                         "\"origin\" and \"size\" blocks. This is the "
+                         "default type.<br>"
+                         " * TILE - the image is tiled accordingly params "
+                         "value \"relative\" and \"offset\" from \"origin\" "
+                         "and \"size\" blocks."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH:
               IT.name = "Smooth";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH,
-                       _("The smooth property takes a boolean value to decide<br>"
-                         "if the image will be smoothed on scaling or not."));
+                       _("The smooth property takes a boolean value to decide "
+                         "if the image is smoothed on scaling or not."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
               IT.name = "Origin";
@@ -5005,21 +5000,19 @@ _init_items()
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X,
-                       _("Sets the left-up corner X coordinate<br>"
-                         "relatively to displayed element's content."));
+                       _("Sets the left-up corner X coordinate "
+                         "relative to the displayed element's content."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y,
-                       _("Sets the left-up corner Y coordinate<br>"
-                         "relatively to displayed element's content."));
+                       _("Sets the left-up corner Y coordinate "
+                         "relative to the displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X,
-                       _("Affects the left-up corner a fixed<br>"
-                         "number of pixels along X axis."));
+                       _("Affects the left-up corner for a fixed number of pixels along the X axis."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y,
-                       _("Affects the left-up corner a fixed<br>"
-                         "number of pixels along Y axis."));
+                       _("Affects the left-up corner for a fixed number of pixels along the Y axis."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
               IT.name = "Size";
@@ -5030,21 +5023,21 @@ _init_items()
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X,
-                       _("Sets the right-bottom corner X coordinate<br>"
-                         "relatively to displayed element's content."));
+                       _("Sets the right-bottom corner X coordinate "
+                         "relative to the displayed element's content."));
                _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y,
-                        _("Sets the right-bottom corner Y coordinate<br>"
-                         "relatively to displayed element's content."));
+                        _("Sets the right-bottom corner Y coordinate "
+                         "relative to the displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X,
-                       _("Affects the right-bottom corner a fixed<br>"
-                         "number of pixels along X axis."));
+                       _("Affects the right-bottom corner for a "
+                         "fixed number of pixels along the X axis."));
                _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y,
-                       _("Affects the right-bottom corner a fixed<br>"
-                         "number of pixels along Y axis."));
+                       _("Affects the right-bottom corner for a "
+                         "fixed number of pixels along the Y axis."));
                break;
 
               /* state colors block */
@@ -5058,10 +5051,9 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS,
-                       _("The part will use the color values of the<br>"
-                         "choosen color class, these values can be<br>"
-                         "overrided by the \"color\", \"color2\" and<br>"
-                         "\"color3\" properties set below."));
+                       _("The part uses the color values of the chosen color class. "
+                         "These values can be overridden by the \"color\", \"color2\" "
+                         "and \"color3\" properties set below."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR:
               IT.name = "Color";
@@ -5092,39 +5084,39 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT:
               IT.name = "Text";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT,
-                       _("Sets the default content of a text part,<br>"
-                         "normally the application is the one changing its value."));
+                       _("Sets the default content of a text part. "
+                         "Normally the application is the one changing its value."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN:
               IT.name = "Align";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X,
-                       _("Change the position on the X axis<br>"
-                         "of the point of balance inside the container."));
+                       _("Changes the position on the X axis of "
+                         "the point of balance inside the container."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y,
-                       _("Change the position on the Y axis<br>"
-                         "of the point of balance inside the container."));
+                       _("Changes the position on the Y axis of "
+                         "the point of balance inside the container."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN:
               IT.name = "Min";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X,
-                       _("When this parameter is enabled it<br>"
-                         "forces the minimum width of the container<br>"
-                         "to be equal to the minimum size of the text."));
+                       _("When this parameter is enabled, it forces the minimum "
+                         "width of the container to be equal to the minimum size "
+                         "of the text."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y,
-                        _("When this parameter is enabled it<br>"
-                         "forces the minimum height of the container<br>"
-                         "to be equal to the minimum size of the text."));
+                        _("When this parameter is enabled, it forces the minimum "
+                          "height of the container to be equal to the minimum size "
+                          "of the text."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX:
               IT.name = "Max";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X,
-                       _("When this parameter is enabled it<br>"
-                         "forces the maximum width of the container<br>"
-                         "to be equal to the maximum size of the text."));
+                       _("When this parameter is enabled, it forces the maximum "
+                         "width of the container to be equal to the maximum size "
+                         "of the text."));
                _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y,
-                        _("When this parameter is enabled it<br>"
-                         "forces the maximum height of the container<br>"
-                         "to be equal to the maximum size of the text."));
+                        _("When this parameter is enabled, it forces the maximum "
+                          "height of the container to be equal to the maximum size "
+                          "of the text."));
                break;
 
               /* state text block */
@@ -5132,53 +5124,52 @@ _init_items()
               IT.name = "Font";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT,
-                       _("This sets the font family to one of the aliases.<br>"
+                       _("This sets the font family to one of the aliases. "
                          "Can be overrided by the application."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE:
               IT.name = "Size";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE,
-                       _("Sets the default font size in points<br>"
-                         "for the text part.<br>"
+                       _("Sets the default font size in points for the text part. "
                          "Can be overrided by the application."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FIT:
               IT.name = "Fit";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X,
-                       _("When this parameter is enabled, edje will<br>"
-                         "resize the text width for it to fit in it's container."));
+                       _("When this parameter is enabled, Edje resizes "
+                         "the text width to fit in it's container."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y,
-                        _("When this parameter is enabled, edje will<br>"
-                         "resize the text height for it to fit in it's container."));
+                        _("When this parameter is enabled, Edje resizes "
+                          "the text height to fit in it's container."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE:
               IT.name = "Source";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE,
-                       _("Causes the part to use the text properties<br>"
-                         "(like font and size) of another part and update<br>"
+                       _("Causes the part to use the text properties "
+                         "(such as font and size) of another part and update "
                          "them as they change."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE:
               IT.name = "Text source";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE,
-                       _("Causes the part to display the text content<br>"
+                       _("Causes the part to display the text content "
                          "of another part and update them as they change."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS:
               IT.name = "Elipsis";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE,
-                       _("This parametr enable or disable ability to apply<br>"
-                         "ellipsis to the text."));
+                       _("This parameter enables or disables the ability "
+                         "to apply ellipsis to the text."));
               _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS,
-                       _("Used to balance the text in a relative point<br>"
-                         "from 0.0 to 1.0, this point is the last section<br>"
-                         "of the string to be cut out in case of a resize<br>"
-                         "that is smaller than the text itself.<br>"
+                       _("Used to balance the text in a relative point "
+                         "from 0.0 to 1.0, this point is the last section "
+                         "of the string to be cut out in case of a resize "
+                         "that is smaller than the text itself. "
                          "The default value is 0.0. "));
               break;
 
@@ -5187,7 +5178,7 @@ _init_items()
               IT.name = "Style";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE,
-                       _("Causes the part to use the default style and tags<br>"
+                       _("Causes the part to use the default style and tags "
                          "with the specified name. "));
               break;
 
@@ -5202,28 +5193,28 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN:
               IT.name = "Align";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
-                       _("Change the position of the point of balance<br>"
-                         "by X axis inside the container."));
+                       _("Changes the position of the point of balance "
+                         "by the X axis inside the container."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
-                       _("Change the position of the point of balance<br>"
-                         "by Y axis inside the container."));
+                       _("Changes the position of the point of balance "
+                         "by the Y axis inside the container."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
               IT.name = "Padding";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X,
-                       _("Sets the space between cells by X axis in pixels."));
+                       _("Sets the space between cells by the X axis in pixels."));
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y,
-                       _("Sets the space between cells by Y axis in pixels."));
+                       _("Sets the space between cells by the Y axis in pixels."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               IT.name = "Min";
               _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H,
-                       _("When this parameters is enabled it forces the<br>"
-                         "minimum horizonal size of the box/table to be equal to<br>"
+                       _("When this parameter is enabled, it forces the "
+                         "minimum horizonal size of the box/table to be equal to "
                          "the minimum horizonal size of the items."));
               _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V,
-                       _("When this parameters is enabled it forces the<br>"
-                         "minimum vertical size of the box/table to be equal to<br>"
+                       _("When this parameters is enabled, it forces the "
+                         "minimum vertical size of the box/table to be equal to "
                          "the minimum vertical size of the items."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
@@ -5244,12 +5235,12 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_ITEM_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME,
-                       _("Sets the name of the object via <b>evas_object_name_set()</b>."));
+                       _("Sets the name of the object using the evas_object_name_set() function."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
               IT.name = "Item source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE,
-                       _("Sets the group this object will be made from."));
+                       _("Sets the group this object is made from."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
               IT.name = "Min";
@@ -5301,13 +5292,13 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
               IT.name = "Spread";
               _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W,
-                       _("Will replicate the item in a rectangle with<br>"
-                         "given amount of rows starting from the defined<br>"
-                         "position of this item."));
+                       _("Replicates the item in a rectangle with "
+                         "a given amount of rows starting from the "
+                         "defined position of this item."));
               _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H,
-                       _("Will replicate the item in a rectangle with<br>"
-                         "given amount of columns starting from the defined<br>"
-                         "position of this item."));
+                       _("Replicates the item in a rectangle with "
+                         "a given amount of columns starting from "
+                         "the defined position of this item."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H:
               IT.name = "Paddings";
@@ -5326,17 +5317,17 @@ _init_items()
               IT.name = "Span";
               IT.filter_data.part_types = PART_TABLE;
               _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL,
-                       _("Sets how many rows this item will use."));
+                       _("Sets how many rows this item uses."));
               _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW,
-                       _("Sets how many columns this item will use."));
+                       _("Sets how many columns this item uses"));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_POSITION:
               IT.name = "Position";
               IT.filter_data.part_types = PART_TABLE;
               _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL,
-                       _("Sets the row position this item will have in the table."));
+                       _("Sets the row position this item has in the table."));
               _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW,
-                       _("Sets the column position this item will have in the table."));
+                       _("Sets the column position this item has in the table."));
               break;
 
               /* program block */
@@ -5364,54 +5355,53 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL:
               IT.name = "Signal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SIGNAL,
-                       _("Specifies signal that should cause the program to run.<br>"
-                         "The signal received must match the specified source to run.<br>"
-                         "Signals may be globbed, but only one signal keyword<br>"
-                         "per program may be used. ex: \"mouse,clicked,*\";<br>"
-                         "(clicking any mouse button that matches source starts program).<br>"
-                         "A list of global signal, that edje provide:<br>"
-                         "  hold,on; hold,off;<br>"
-                         "  mouse,in; mouse,out; mouse,pressed,in; mouse,pressed,out;<br>"
-                         "  mouse,down,N: where N - mouse button number;<br>"
-                         "  mouse,down,N,double: where N - mouse button number;<br>"
-                         "  mouse,down,N,triple: where N - mouse button number;<br>"
-                         "  mouse,up,N: where N - mouse button number;<br>"
-                         "  mouse,clicked,N: where N - mouse button number;<br>"
-                         "  mouse,move;<br>"
-                         "  mouse,wheel,N,M: where N - the direction (by default is 0),<br>"
-                         "                   M - 1 if wheel scrolled up and -1 if down;<br>"
-                         "  drag,start; drag; drag,stop;<br>"
-                         "  focus,part,in; focus,part,out.<br>"));
+                       _("Specifies the signal that causes the program to run."
+                         "The received signal must match the specified source "
+                         "to run. Signals can be globbed, but only 1 signal keyword "
+                         "per program may be used, for example: \"mouse,clicked,\"; "
+                         "(clicking any mouse button that matches source starts program)."
+                         "Edje provides the following global signals:<br>"
+                         "hold,on; hold,off;<br>"
+                         "mouse,in; mouse,out; mouse,pressed,in; mouse,pressed,out;<br>"
+                         "mouse,down,N: where N - mouse button number;<br>"
+                         "mouse,down,N,double: where N - mouse button number;<br>"
+                         "mouse,down,N,triple: where N - mouse button number;<br>"
+                         "mouse,up,N: where N - mouse button number;<br>"
+                         "mouse,clicked,N: where N - mouse button number;<br>"
+                         "mouse,move;<br>"
+                         "mouse,wheel,N,M: where N - the direction (by default is 0), "
+                         "M - 1 if wheel scrolled up and -1 if down;<br>"   
+                         "drag,start; drag; drag,stop;<br>"
+                         "focus,part,in; focus,part,out.<bd>"));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_SOURCE:
               IT.name = "Source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SOURCE,
-                       _("Source of accepted signal. Sources may be globbed,<br>"
-                         "but only one source keyword per program may be used.<br>"
-                         "ex: \"button-*\"; (Signals from any part or program<br>"
-                         "named \"button-*\" are accepted)."));
+                       _("Source of the accepted signal. Sources can be globbed, "
+                         "but only 1 source keyword per program can be used. "
+                         "For example: \"button-*\"; (Signals from any part "
+                         "or program named \"button-*\" are accepted)."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_IN:
               IT.name = "In";
               _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM,
                        _("Wait 'from' seconds before executing the program."));
               _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE,
-                       _("And add a random number of seconds (from 0 to 'range')<br>"
-                         "to the total waiting time."));
+                       _("Add a number of seconds (from 0 to 'range') to the total waiting time."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
               IT.name = "Filter";
               _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
-                       _("Filter signals to be only accepted if the part [part] is in<br>"
-                         "state named [state]. Only one filter per program can be used.<br>"
-                         "If [state] is not given, the source of the event will be used instead."));
+                       _("Filter signals to be only accepted if the part [part] is in "
+                         "state named [state]. Only 1 filter per program can be used. "
+                         "If [state] is not given, the source of the event is used instead."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
               _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
-                       _("Filter signals to be only accepted if the part [part] is in<br>"
-                         "state named [state]. Only one filter per program can be used.<br>"
-                         "If [state] is not given, the source of the event will be used instead."));
+                        _("Filter signals to be only accepted if the part [part] is in "
+                         "state named [state]. Only 1 filter per program can be used. "
+                         "If [state] is not given, the source of the event is used instead."));
                break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
               IT.name = "Action params";
@@ -5423,27 +5413,27 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE:
               IT.name = "State";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE,
-                       _("Switch part state from current to the given"));
+                       _("Switch the part state from the current to the given."));
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_VALUE:
               IT.name = "Value";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE,
-                       _("State index."));
+                       _("State index"));
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL:
               IT.name = "Signal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL,
-                       _("Name of signal, which will be emmited to<br>"
-                         "the application on execution this programm"));
+                       _("Name of the signal to be emitted to the "
+                         "application on execution of this program."));
               IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE:
               IT.name = "Source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE,
-                       _("Name of signal source, which will be emmited to<br>"
-                         "the application on execution this programm"));
+                       _("Name of the signal source to be emitted "
+                         "to the application on the execution of this program."));
                IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE:
@@ -5462,7 +5452,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE:
               IT.name = "Type";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
-                       _("Defines how transitions occur using STATE_SET action."));
+                       _("Defines how transitions occur using the STATE_SET action."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FROM_CURRENT:
               IT.name = "Current";
@@ -5472,39 +5462,40 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME:
               IT.name = "Time";
               _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME,
-                       _("A double specifying the number of seconds<br>"
+                       _("A double specifying the number of seconds "
                          "in which to preform the transition."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR:
               IT.name = "Factor";
               IT.filter_cb = _transition_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR,
-                       _("ACCEL_FAC, DECEL_FAC and SIN_FAC need the extra<br>"
-                         "optional value to determine the \"factor\" of curviness.<br>"
-                         "1.0 is the same as their non-factor counterparts,<br>"
-                         "where 0.0 is equal to linear. Numbers higher than one make<br>"
-                         "the curve angles steeper with a more pronounced curve point."));
+                       _("ACCEL_FAC, DECEL_FAC and SIN_FAC need the extra "
+                         "optional value to determine the \"factor\" of "
+                         "curviness. 1.0 is the same as their non-factor "
+                         "counterparts, where 0.0 is equal to linear. "
+                         "Numbers higher than 1 make the curve angles steeper "
+                         "with a more pronounced curve point."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT:
               IT.name = "Gradient";
               IT.filter_cb = _transition_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT,
-                       _("Initial gradient start (0.0 is horizontal, 1.0 is<br>"
-                         "diagonal (linear), 2.0 is twice the gradient of linear etc.)."));
+                       _("Initial gradient start (0.0 is horizontal, "
+                         "1.0 is diagonal (linear), 2.0 is twice the gradient of linear)."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY:
               IT.name = "Decay";
               IT.filter_cb = _transition_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY,
-                       _("Determining how much the bounce decays,<br>"
-                         "with 0.0 giving linear decay per bounce,<br>"
+                       _("Determining how much the bounce decays, "
+                         "with 0.0 giving linear decay per bounce, "
                          "and higher values giving much more decay."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES:
               IT.name = "Bounces";
               IT.filter_cb = _transition_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES,
-                       _("Number of bounces (so its rounded down to the nearest integer value)"));
+                       _("Number of bounces (rounded down to the nearest integer value)"));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS:
               IT.name = "Swings";
@@ -5550,14 +5541,14 @@ _init_items()
            case PROPERTY_GROUP_ITEM_GROUP_DATA_NAME:
               IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME,
-                       _("Defines a new parameter, the value will be<br>"
+                       _("Defines a new parameter. The value is "
                          "the string specified next to it."));
               break;
            case PROPERTY_GROUP_ITEM_GROUP_DATA_VALUE:
               IT.name = "Value";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE,
-                        _("Defines a new parameter, the value will be<br>"
-                         "the string specified next to it."));
+                        _("Defines a new parameter. The value is "
+                          "the string specified next to it."));
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
