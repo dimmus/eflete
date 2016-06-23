@@ -32,8 +32,7 @@ editor_group_add(Evas_Object *obj, const char *name)
    assert(obj != NULL);
    assert(name != NULL);
 
-   if (!edje_edit_group_add(obj, name))
-     return false;
+   CRIT_ON_FAIL(edje_edit_group_add(obj, name));
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
@@ -47,8 +46,7 @@ editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_des
    assert(group_src != NULL);
    assert(group_dest != NULL);
 
-   if (!edje_edit_group_copy(obj, group_src, group_dest))
-     return false;
+   CRIT_ON_FAIL(edje_edit_group_copy(obj, group_src, group_dest));
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
@@ -62,8 +60,7 @@ editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *grou
    assert(group_src != NULL);
    assert(group_alias != NULL);
 
-   if (!edje_edit_group_alias_add(obj, group_src, group_alias))
-     return false;
+   CRIT_ON_FAIL(edje_edit_group_alias_add(obj, group_src, group_alias));
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
@@ -76,8 +73,7 @@ editor_group_del(Evas_Object *obj, const char *name)
    assert(obj != NULL);
    assert(name != NULL);
 
-   if (!edje_edit_group_del(obj, name))
-     return false;
+   CRIT_ON_FAIL(edje_edit_group_del(obj, name));
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
@@ -145,8 +141,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
      } \
    if (apply) \
      { \
-        if (!edje_edit_group_max_## VAL ##_set(obj, new_value)) \
-          return false; \
+        CRIT_ON_FAIL(edje_edit_group_max_## VAL ##_set(obj, new_value)); \
         _editor_project_changed(); \
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
      } \
@@ -191,8 +186,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
      } \
    if (apply) \
      { \
-        if (!edje_edit_group_min_## VAL ##_set(obj, new_value)) \
-          return false; \
+        CRIT_ON_FAIL(edje_edit_group_min_## VAL ##_set(obj, new_value)); \
         _editor_project_changed(); \
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
      } \
@@ -228,8 +222,7 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      }
    if (apply)
      {
-        if (!edje_edit_group_name_set(edit_object, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_group_name_set(edit_object, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -264,8 +257,7 @@ editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      }
    if (apply)
      {
-        if (!edje_edit_group_data_value_set(edit_object, item_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_group_data_value_set(edit_object, item_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -300,8 +292,7 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      }
    if (apply)
      {
-        if (!edje_edit_group_data_name_set(edit_object, item_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_group_data_name_set(edit_object, item_name, new_val));
         _editor_project_changed();
         ren.old_name = item_name;
         ren.new_name = new_val;
@@ -335,8 +326,7 @@ editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge 
      }
    if (apply)
      {
-        if (!edje_edit_group_data_add(edit_object, item_name, ""))
-          return false;
+        CRIT_ON_FAIL(edje_edit_group_data_add(edit_object, item_name, ""));
 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
@@ -377,11 +367,7 @@ editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge 
      }
    if (apply)
      {
-        if (!edje_edit_group_data_del(edit_object, item_name))
-          {
-             eina_stringshare_del(event_info);
-             return false;
-          }
+        CRIT_ON_FAIL(edje_edit_group_data_del(edit_object, item_name));
         eina_stringshare_del(event_info);
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();

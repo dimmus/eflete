@@ -29,8 +29,7 @@ _editor_save(Evas_Object *edit_object, Eina_Bool current_group)
 {
    assert(edit_object != NULL);
 
-   if (!edje_edit_without_source_save(edit_object, current_group))
-     return false;
+   CRIT_ON_FAIL(edje_edit_without_source_save(edit_object, current_group));
 
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_SAVED, NULL);
    return true;
@@ -55,10 +54,8 @@ editor_internal_group_add(Evas_Object *edit_object)
    if (edje_edit_group_exist(edit_object, EFLETE_INTERNAL_GROUP_NAME))
      return true;
 
-   if (!edje_edit_group_add(edit_object, EFLETE_INTERNAL_GROUP_NAME))
-     return false;
-   if (!edje_edit_without_source_save(edit_object, false))
-     return false;
+   CRIT_ON_FAIL(edje_edit_group_add(edit_object, EFLETE_INTERNAL_GROUP_NAME));
+   CRIT_ON_FAIL(edje_edit_without_source_save(edit_object, false));
    return true;
 }
 

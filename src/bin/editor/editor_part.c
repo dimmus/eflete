@@ -53,8 +53,7 @@ editor_part_text_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      }
    if (apply)
      {
-        if (!edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_shadow_direction_get(edit_object, part_name))))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_shadow_direction_get(edit_object, part_name))));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -90,8 +89,7 @@ editor_part_text_shadow_direction_set(Evas_Object *edit_object, Change *change, 
      }
    if (apply)
      {
-        if (!edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_effect_get(edit_object, part_name))))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_effect_get(edit_object, part_name))));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -125,8 +123,7 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
      }
    if (apply)
      {
-        if (!edje_edit_part_ignore_flags_set(edit_object, part_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_ignore_flags_set(edit_object, part_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -185,8 +182,7 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
      }
    if (apply)
      {
-        if (!edje_edit_part_name_set(edit_object, name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_name_set(edit_object, name, new_val));
         _editor_project_changed();
         ren.old_name = name;
         ren.new_name = new_val;
@@ -226,8 +222,7 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
      }
    if (apply)
      {
-        if (!edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -285,8 +280,7 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      }
    if (apply)
      {
-        if (!edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val));
         _editor_project_changed();
         CRIT_ON_FAIL(editor_save(edit_object));
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
@@ -327,8 +321,7 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
      }
    if (apply)
      {
-        if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, o4, o5, o6))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, o4, o5, o6));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -366,8 +359,7 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
      }
    if (apply)
      {
-        if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, n4, o5, o6))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, n4, o5, o6));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -405,8 +397,7 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
      }
    if (apply)
      {
-        if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, n5, o6))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, n5, o6));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -444,8 +435,7 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
      }
    if (apply)
      {
-        if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, o5, n6))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, o5, n6));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -481,8 +471,7 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      }
    if (apply)
      {
-        if (!edje_edit_part_select_mode_set(edit_object, part_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_select_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -516,8 +505,7 @@ editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      }
    if (apply)
      {
-        if (!edje_edit_part_entry_mode_set(edit_object, part_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_entry_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -551,8 +539,7 @@ editor_part_pointer_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool
      }
    if (apply)
      {
-        if (!edje_edit_part_pointer_mode_set(edit_object, part_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_pointer_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -586,8 +573,7 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      }
    if (apply)
      {
-        if (!edje_edit_part_cursor_mode_set(edit_object, part_name, new_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_cursor_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -671,12 +657,11 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
      }
    if (apply)
      {
-        if (!edje_edit_part_item_append(edit_object, part_name, item_name, source_group))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_item_append(edit_object, part_name, item_name, source_group));
 
         /* fixing incorrect default item position */
-        edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0);
-        edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0);
+        CRIT_ON_FAIL(edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0));
+        CRIT_ON_FAIL(edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0));
 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
@@ -723,12 +708,7 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
      }
    if (apply)
      {
-        if (!edje_edit_part_item_del(edit_object, part_name, item_name))
-          {
-             eina_stringshare_del(event_info.part_name);
-             eina_stringshare_del(event_info.item_name);
-             return false;
-          }
+        CRIT_ON_FAIL(edje_edit_part_item_del(edit_object, part_name, item_name));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         eina_stringshare_del(event_info.part_name);
@@ -893,8 +873,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
      }
    if (apply)
      {
-        if (!edje_edit_part_add(edit_object, part_name, type))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_add(edit_object, part_name, type));
 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
@@ -902,7 +881,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
         /* fix incorrect default values */
         TODO("Fix edje_edit")
            if (type == EDJE_PART_TYPE_BOX)
-             edje_edit_state_box_layout_set(edit_object, part_name, "default", 0.0, "horizontal");
+             CRIT_ON_FAIL(edje_edit_state_box_layout_set(edit_object, part_name, "default", 0.0, "horizontal"));
 
         /* apply our default values */
         if (!editor_part_reset(edit_object, NULL, apply, part_name))
@@ -939,8 +918,7 @@ editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
      }
    if (apply)
      {
-        if (!edje_edit_part_copy(edit_object, part_name, part_name_copy))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_copy(edit_object, part_name, part_name_copy));
 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
@@ -984,11 +962,7 @@ _editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
      }
    if (apply)
      {
-        if (!edje_edit_part_del(edit_object, part_name))
-          {
-             eina_stringshare_del(event_info);
-             return false;
-          }
+        CRIT_ON_FAIL(edje_edit_part_del(edit_object, part_name));
         eina_stringshare_del(event_info);
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
@@ -1035,16 +1009,14 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, E
      {
         if (relative_part)
           {
-             if (!edje_edit_part_restack_part_below(edit_object, part_name, relative_part))
-               return false;
+             CRIT_ON_FAIL(edje_edit_part_restack_part_below(edit_object, part_name, relative_part));
           }
         else
           {
              /* edje_edit don't allows to restack_above part that is already on top,
                 but it is needed to simplify adding part deletion to history */
              if (old_relative_part != NULL)
-               if (!edje_edit_part_restack_above(edit_object, part_name))
-                 return false;
+               CRIT_ON_FAIL(edje_edit_part_restack_above(edit_object, part_name));
           }
 
         _editor_project_changed();
@@ -1187,8 +1159,7 @@ editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bo
      }
    if (apply)
      {
-        if (!edje_edit_part_selected_state_set(edit_object, part_name, state_name, state_val))
-          return false;
+        CRIT_ON_FAIL(edje_edit_part_selected_state_set(edit_object, part_name, state_name, state_val));
         if (!_editor_signals_blocked)
           {
              event_info.part_name = eina_stringshare_add(part_name);
