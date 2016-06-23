@@ -2079,7 +2079,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_SIZE:
          int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
-         elm_object_disabled_set(action->control, !!str_val1);
+         bool_val1 = edje_edit_state_text_fit_x_get(EDIT_OBJ, STATE_ARGS);
+         bool_val1 |= edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_object_disabled_set(action->control, (!!str_val1 || bool_val1));
 
          if (!str_val1)
            elm_spinner_value_set(action->control, int_val1);
@@ -3632,10 +3634,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_FIT_X:
          CRIT_ON_FAIL(editor_state_text_fit_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE]);
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
          CRIT_ON_FAIL(editor_state_text_fit_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE]);
          break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
          CRIT_ON_FAIL(editor_state_text_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
