@@ -1103,6 +1103,47 @@ _groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
           ewe_combobox_item_add(combo, group->name);
      }
 }
+static void
+_groups_newcombobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
+{
+   Eina_List *l;
+   Group *group;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
+
+   assert(with_none || selected != NULL);
+
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
+   if (selected)
+     elm_object_text_set(combo, selected);
+   else
+     elm_object_text_set(combo, STR_NONE);
+
+   if (with_none)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(STR_NONE);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        if (group != group_pd.group)
+          {
+             combobox_item = mem_malloc(sizeof(Combobox_Item));
+             combobox_item->index = i++;
+             combobox_item->data = eina_stringshare_add(group->name);
+             elm_genlist_item_append(combo, itc,
+                                     combobox_item, NULL,
+                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
+          }
+     }
+}
 
 static void
 _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
@@ -1630,9 +1671,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          return editor_part_clip_to_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_STATE_PROXY_SOURCE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_proxy_source_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_proxy_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_IGNORE_FLAGS:
@@ -1685,27 +1726,27 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, int_val1);
          return editor_part_drag_count_y_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_CONFINE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_drag_confine_get(EDIT_OBJ, PART_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_part_drag_confine_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_drag_threshold_get(EDIT_OBJ, PART_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_part_drag_threshold_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_EVENT:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_drag_event_get(EDIT_OBJ, PART_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_part_drag_event_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_GROUP_SOURCE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_source_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_group_source_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
@@ -3287,8 +3328,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_PROXY_SOURCE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_proxy_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3375,29 +3416,29 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_drag_confine_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_drag_threshold_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_drag_event_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -4527,7 +4568,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE,
                        _("The meaning of this parameter varies depending on the type of the part. "
                          " * For GROUP parts, it's the name of another group in the Edje "
                          "   file which is autoloaded and swallowed on this part. "
@@ -4572,7 +4613,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
               IT.name = "Confine";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE,
                        _("When set, limits the movement of the movable part "
                          "to another part's container. When you use the confine option, "
                          "do not forget to set a minimum size for the part, "
@@ -4580,14 +4621,14 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD:
               IT.name = "Threshold";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD,
                        _("When set, the movement of the dragged part "
                          "can only start when it gets moved enough to be outside "
                          "of the threshold part."));
              break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
               IT.name = "Events";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_DRAG_EVENT,
                        _("Causes the part to forward the drag events "
                          "to another part, thus ignoring them for itself."));
              break;
@@ -4617,7 +4658,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE:
               IT.name = "Proxy source";
               IT.filter_data.part_types = PART_PROXY;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE,
                        _("Causes the part to use another part content as "
                          "the content of this part."));
               break;
