@@ -245,7 +245,9 @@ resource_used_in_del(Resource *res, const Resource *used_in)
 
    l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, used_in);
 
-   assert(l_del != NULL);
+   TODO("replace with assert when resource manager will be ready");
+   if (l_del == NULL)
+     return;
 
    res->used_in = eina_list_remove_list(res->used_in, l_del);
 }
