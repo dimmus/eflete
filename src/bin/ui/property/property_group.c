@@ -689,6 +689,30 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
 }
 
 static void
+_fill_newcombobox_with_enum(Evas_Object *control, const char **array)
+{
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+
+   assert(control != NULL);
+   assert(array != NULL);
+
+   itc = evas_object_data_get(control, "COMMON_ITC");
+
+   while (array[i] != NULL)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(array[i]);
+        elm_genlist_item_append(control, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        ++i;
+     }
+}
+
+static void
 _ccl_control_free(void *data __UNUSED__,
                   Evas *e __UNUSED__,
                   Evas_Object *obj,
@@ -980,28 +1004,28 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_combobox_with_enum(action->control, aspect_preference_strings);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
-         _fill_combobox_with_enum(action->control, ignore_flags_strings);
+         _fill_newcombobox_with_enum(action->control, ignore_flags_strings);
          break;
       case ATTRIBUTE_PART_POINTER_MODE:
-         _fill_combobox_with_enum(action->control, pointer_mode_strings);
+         _fill_newcombobox_with_enum(action->control, pointer_mode_strings);
          break;
       case ATTRIBUTE_PART_SELECT_MODE:
-         _fill_combobox_with_enum(action->control, select_mode_strings);
+         _fill_newcombobox_with_enum(action->control, select_mode_strings);
          break;
       case ATTRIBUTE_PART_ENTRY_MODE:
-         _fill_combobox_with_enum(action->control, entry_mode_strings);
+         _fill_newcombobox_with_enum(action->control, entry_mode_strings);
          break;
       case ATTRIBUTE_PART_CURSOR_MODE:
-         _fill_combobox_with_enum(action->control, cursor_mode_strings);
+         _fill_newcombobox_with_enum(action->control, cursor_mode_strings);
          break;
       case ATTRIBUTE_STATE_FILL_TYPE:
-         _fill_combobox_with_enum(action->control, fill_type_strings);
+         _fill_newcombobox_with_enum(action->control, fill_type_strings);
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
-         _fill_combobox_with_enum(action->control, text_effect_strings);
+         _fill_newcombobox_with_enum(action->control, text_effect_strings);
          break;
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
-         _fill_combobox_with_enum(action->control, text_shadow_direction_strings);
+         _fill_newcombobox_with_enum(action->control, text_shadow_direction_strings);
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          _fill_combobox_with_enum(action->control, table_homogeneous_strings);
@@ -1612,37 +1636,29 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          return editor_state_proxy_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_IGNORE_FLAGS:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, ignore_flags_strings[(int) edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_ignore_flags_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_POINTER_MODE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, pointer_mode_strings[(int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_pointer_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_SELECT_MODE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_select_mode_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, select_mode_strings[(int) edje_edit_part_select_mode_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_select_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_ENTRY_MODE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_entry_mode_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, entry_mode_strings[(int) edje_edit_part_entry_mode_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_entry_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_CURSOR_MODE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, cursor_mode_strings[(int) edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_cursor_mode_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_STATE_FILL_TYPE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_state_fill_type_get(EDIT_OBJ, STATE_ARGS));
+         elm_object_text_set(action->control, fill_type_strings[(int) edje_edit_state_fill_type_get(EDIT_OBJ, STATE_ARGS)]);
          return editor_state_fill_type_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_TEXT_EFFECT:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS));
+         elm_object_text_set(action->control, text_effect_strings[(int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS)]);
          return editor_part_text_effect_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
          /* shodow directions are shifted by 4 in enum */
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_text_shadow_direction_get(EDIT_OBJ, PART_ARGS)>>4);
+         elm_object_text_set(action->control, text_shadow_direction_strings[(int) edje_edit_part_text_shadow_direction_get(EDIT_OBJ, PART_ARGS)>>4]);
          return editor_part_text_shadow_direction_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_DRAG_X:
          int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
@@ -3278,59 +3294,59 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_POINTER_MODE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_SELECT_MODE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_select_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_select_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_ENTRY_MODE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_entry_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_entry_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_CURSOR_MODE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_cursor_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_cursor_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_FILL_TYPE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_state_fill_type_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_state_fill_type_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
          /* shodow directions are shifted by 4 in enum */
-         CRIT_ON_FAIL(editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index << 4));
+         CRIT_ON_FAIL(editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item_combo->index << 4));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -4492,7 +4508,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
               IT.name = "Ignore flags";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS,
                        _("Specifies whether events with the given flags "
                          "must be ignored. These events do not have their "
                          "signals emitted to the parts."));
@@ -4500,7 +4516,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
               IT.name = "Pointer mode";
               IT.filter_data.part_types &= ~PART_SPACER;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_POINTER_MODE,
                        _("Sets the mouse pointer behavior for the part. "
                          "The default value is AUTOGRAB. The following modes are available: "
                          " * AUTOGRAB, when the part is clicked and the button "
@@ -4770,13 +4786,13 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
               IT.name = "Effect";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_EFFECT,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXT_EFFECT,
                        _("Causes Edje to draw the selected effect."));
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXT_SHADOW_DIRECTION:
               IT.name = "Shadow direction";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION,
                        _("Shadow directions."));
               break;
 
@@ -4784,7 +4800,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_SELECT_MODE:
               IT.name = "Select mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_SELECT_MODE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_SELECT_MODE,
                        _("Sets the selection mode for a textblock part to one of the following: "
                          "The DEFAULT selection mode is what you expect on any desktop. "
                          "Press mouse, drag, and release to end. The EXPLICIT mode requires "
@@ -4795,7 +4811,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_ENTRY_MODE:
               IT.name = "Entry mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ENTRY_MODE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_ENTRY_MODE,
                        _("Sets the edit mode for a textblock part to one of the following:<br>"
                          "* NONE<br>"
                          "* PLAIN<br>"
@@ -4810,7 +4826,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_CURSOR_MODE:
               IT.name = "Cursor mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CURSOR_MODE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_CURSOR_MODE,
                        _("Sets the cursor mode for a textblock part to one of the following: "
                          "UNDER cursor mode means the cursor draws below the character "
                          "pointed at. This is the default mode. BEFORE cursor mode means "
@@ -5040,7 +5056,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_FILL_TYPE,
                        _("Sets the image fill type.<br>"
                          "* SCALE - the image is scaled according to "
                          "the params value \"relative\" and \"offset\" from "
