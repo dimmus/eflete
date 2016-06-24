@@ -624,7 +624,7 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply
    res = res && editor_part_item_padding_left_reset(edit_object, change, apply, part_name, item_name);
    res = res && editor_part_item_padding_right_reset(edit_object, change, apply, part_name, item_name);
    if (!_part_item_restacking)
-     res = res && editor_part_item_restack(edit_object, change, apply, false, part_name, item_name, NULL);
+     res = res && editor_part_item_restack(edit_object, change, false, apply, part_name, item_name, NULL);
 
    you_shall_pass_editor_signals(change);
 
