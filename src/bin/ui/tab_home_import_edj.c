@@ -423,7 +423,7 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
+_progress_end(void *data, PM_Project_Result result)
 {
    if (PM_PROJECT_SUCCESS == result)
      {
@@ -436,7 +436,7 @@ _progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
         elm_entry_entry_set(tab_edj.meta.comment, N_("Created with Eflete!"));
      }
 
-   _tabs_progress_end(data, result, widgets);
+   _tabs_progress_end(data, result);
 }
 
 static Eina_Bool

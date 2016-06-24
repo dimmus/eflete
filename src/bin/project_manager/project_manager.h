@@ -76,9 +76,6 @@ struct _Project
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
-   /** The checked widgets. Used for loading just checked widgets. */
-   Eina_List *widgets;
-
    Eina_List *groups;
    Eina_List *images;
    Eina_List *sounds;
@@ -182,7 +179,7 @@ typedef Eina_Bool
  * @ingroup ProjectManager
  */
 typedef void
-(* PM_Project_End_Cb)(void *data, PM_Project_Result result, Eina_List *widgets);
+(* PM_Project_End_Cb)(void *data, PM_Project_Result result);
 
 /**
  * Free the Project Thread object.

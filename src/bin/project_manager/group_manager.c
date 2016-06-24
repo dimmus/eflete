@@ -797,38 +797,12 @@ gm_group_del(Project *pro, Group *group)
    resource_free((Resource *)group);
 }
 
-Eina_Bool
-_is_checked(Eina_List *widgets)
-{
-   Eina_List *l, *ll, *lll;
-   Tree_Item_Data *widget, *style;
-   End_Item_Data *item_style;
-
-   EINA_LIST_FOREACH(widgets, l, widget)
-     {
-        if (widget->check) return EINA_TRUE;
-        EINA_LIST_FOREACH(widget->list, ll, style)
-          {
-             if (style->check) return EINA_TRUE;
-             if (style->copy) return EINA_TRUE;
-             EINA_LIST_FOREACH(style->list, lll, item_style)
-               if (item_style->check) return EINA_TRUE;
-          }
-     }
-
-   return EINA_FALSE;
-}
-
 void
 gm_groups_load(Project *pro)
 {
-   Eina_List *collections, *l, *wl, *wll, *wlll;
+   Eina_List *collections, *l;
    Eina_Stringshare *group_name;
-   const char *widget_name;
-   Tree_Item_Data *widget, *style;
-   End_Item_Data *item_style;
    Group *group;
-   Eina_Bool check, is_checked;
 
    assert(pro != NULL);
    assert(pro->dev != NULL);
@@ -838,47 +812,11 @@ gm_groups_load(Project *pro)
 
    assert(collections != NULL);
 
-   is_checked = _is_checked(pro->widgets);
-
    collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
    EINA_LIST_FOREACH(collections, l, group_name)
      {
-        check = false;
         if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
 
-        if (pro->widgets && is_checked)
-          {
-             widget_name = widget_name_get(group_name);
-             if (!widget_name) continue;
-             EINA_LIST_FOREACH(pro->widgets, wl, widget)
-               {
-                  EINA_LIST_FOREACH(widget->list, wll, style)
-                    {
-                       if (style->check)
-                         {
-                            if (!strcmp(widget->name, widget_name) &&
-                                style_name_check(group_name, style->name))
-                              {
-                                 check = true;
-                                 break;
-                              }
-                         }
-                       EINA_LIST_FOREACH(style->list, wlll, item_style)
-                         {
-                            if (item_style->check)
-                              {
-                                 if (!strcmp(widget->name, widget_name) &&
-                                     item_style_name_check(group_name, item_style->name, widget->list))
-                                   {
-                                      check = true;
-                                      break;
-                                   }
-                              }
-                         }
-                    }
-               }
-             if (!check) continue;
-          }
         group = (Group *)resource_add(group_name, RESOURCE_TYPE_GROUP);
         pro->groups = eina_list_append(pro->groups, group);
      }

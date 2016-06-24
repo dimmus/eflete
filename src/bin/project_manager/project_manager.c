@@ -81,9 +81,6 @@ typedef struct
    Eina_List *widgets;
 } Project_Thread;
 
-
-
-
 static Project_Thread worker;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS, WIDGET_LIST) \
@@ -207,7 +204,6 @@ _project_descriptor_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "develop_path", develop_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_options", release_options, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "widgets", widgets);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "images", res.images);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "sounds", res.sounds);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "fonts", res.fonts);
@@ -239,15 +235,13 @@ _end_send(void *data __UNUSED__)
    PM_Project_End_Cb func;
    PM_Project_Result result;
    void *udata;
-   Eina_List *widgets = NULL;
 
    /** Copy the links to callback and meesage, to fast release worker resource. */
    worker.func_progress = NULL;
    func = worker.func_end;
    result = worker.result;
    udata = worker.data;
-   widgets = worker.widgets;
-   func(udata, result, widgets);
+   func(udata, result);
 }
 
 static Eina_Bool
@@ -313,7 +307,6 @@ _project_files_create(void)
    pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker.name);
    pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, worker.name);
    pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
-   pro->widgets = worker.widgets;
 
    pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker.name);
    pro->ef = eet_open(pro_path, EET_FILE_MODE_READ_WRITE);

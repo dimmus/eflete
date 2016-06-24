@@ -73,7 +73,7 @@ progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 }
 
 void
-progress_end(void *data __UNUSED__, PM_Project_Result result, Eina_List *widgets __UNUSED__)
+progress_end(void *data __UNUSED__, PM_Project_Result result)
 {
    switch (result)
      {
