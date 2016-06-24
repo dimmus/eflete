@@ -1001,7 +1001,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_combobox_with_enum(action->control, transition_type_strings);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
-         _fill_combobox_with_enum(action->control, aspect_preference_strings);
+         _fill_newcombobox_with_enum(action->control, aspect_preference_strings);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          _fill_newcombobox_with_enum(action->control, ignore_flags_strings);
@@ -1063,21 +1063,38 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 }
 
 static void
-_styles_combobox_fill(Evas_Object *combo, const char *selected)
+_styles_newcombobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *l;
    Resource *style;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
 
    assert(combo != NULL);
 
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
    if (selected)
-     ewe_combobox_text_set(combo, selected);
+     elm_object_text_set(combo, selected);
    else
-     ewe_combobox_text_set(combo, STR_NONE);
-   ewe_combobox_item_add(combo, STR_NONE);
+     elm_object_text_set(combo, STR_NONE);
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add(STR_NONE);
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
    EINA_LIST_FOREACH(ap.project->styles, l, style)
      {
-        ewe_combobox_item_add(combo, style->name);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(style->name);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 }
 
@@ -1750,39 +1767,39 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          return editor_part_group_source_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_selection_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_selection_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_cursor_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_cursor_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_anchors_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_anchors_under_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_selection_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_selection_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_cursor_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_cursor_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_textblock_anchors_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1, true);
+         _groups_newcombobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          return editor_part_textblock_anchors_over_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_MULTILINE:
@@ -1926,21 +1943,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H]);
          return true;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, PART_TEXT);
+         _parts_newcombobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
          return editor_state_text_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, PART_TEXT);
+         _parts_newcombobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
          return editor_state_text_text_source_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TEXT_STYLE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_text_style_get(EDIT_OBJ, STATE_ARGS);
-         _styles_combobox_fill(action->control, str_val1);
+         _styles_newcombobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          return editor_state_text_style_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_VISIBLE:
@@ -1992,8 +2009,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, double_val1);
          return editor_state_aspect_max_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ASPECT_PREF:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS));
+         elm_object_text_set(action->control, aspect_preference_strings[(int) edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS)]);
          return editor_state_aspect_pref_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_ALIGN_X:
          double_val1 = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
@@ -2316,15 +2332,15 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val2);
          return editor_program_filter_state_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_map_perspective_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_map_perspective_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_LIGHT:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_map_light_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_map_light_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ON:
@@ -2356,9 +2372,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, int_val1);
          return editor_state_map_perspective_zplane_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_map_rotation_center_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_map_rotation_center_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
@@ -3444,50 +3460,50 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_selection_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_cursor_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_selection_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_cursor_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3495,15 +3511,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE]);
          break;
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_STYLE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_text_style_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3561,9 +3577,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -4025,15 +4041,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_map_perspective_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_MAP_LIGHT:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_map_light_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -4067,8 +4083,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_map_rotation_center_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -4708,7 +4724,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF:
               IT.name = "Aspect preference";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF,
                        _("Sets the scope of the \"aspect\" property to a given dimension."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
@@ -4761,7 +4777,7 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE:
               IT.name = "Perspective:";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_PERSPECTIVE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_MAP_PERSPECTIVE,
                        _("Sets the part that is used as the \"perspective point\" "
                          "for giving a part a \"3d look\". The perspective point "
                          "must have a perspective section that provides the "
@@ -4769,7 +4785,7 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_LIGHT:
               IT.name = "Light";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_LIGHT,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_MAP_LIGHT,
                        _("Sets the part that is used as the \"light\" for "
                          "calculating the brightness (based on how directly "
                          "the part's surface is facing the light source point)"));
@@ -4786,7 +4802,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_CENTER:
               IT.name = "rotation center";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
                        _("Sets the part that is used as the center of "
                          "rotation when rotating the part with this description."));
              break;
@@ -4883,42 +4899,42 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_UNDER:
               IT.name = "Selection under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER,
                        _("Used for the group to be loaded and the selection "
                          "display under the selected text."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_OVER:
               IT.name = "Selection over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER,
                        _("Used for the group to be loaded and the selection "
                          "display over the selected text."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_UNDER:
               IT.name = "Cursor under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER,
                        _("Used for the group to be loaded and the cursor "
                          "display under the cursor position."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_OVER:
               IT.name = "Cursor over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER,
                        _("Used for the group to be loaded and the cursor "
                          "display over the cursor position."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_UNDER:
               IT.name = "Anchors under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER,
                        _("Used for the group to be loaded and the anchors "
                          "display under the anchor position."));
              break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_OVER:
               IT.name = "Anchors over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER,
                        _("Used for the group to be loaded and the anchor "
                          "display over the anchor position."));
              break;
@@ -5269,7 +5285,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE:
               IT.name = "Source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE,
                        _("Causes the part to use the text properties "
                          "(such as font and size) of another part and update "
                          "them as they change."));
@@ -5277,7 +5293,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE:
               IT.name = "Text source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE,
                        _("Causes the part to display the text content "
                          "of another part and update them as they change."));
                break;
@@ -5299,7 +5315,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_TEXT_STYLE:
               IT.name = "Style";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE,
                        _("Causes the part to use the default style and tags "
                          "with the specified name. "));
               break;
