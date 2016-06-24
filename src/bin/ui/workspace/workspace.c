@@ -1564,9 +1564,14 @@ workspace_part_item_restack(Evas_Object *obj,
    request.name = part_item_name;
    item = (Part_Item *)resource_get(part->items, &request);
 
-   request.resource_type = RESOURCE_TYPE_ITEM;
-   request.name = relative_part_item_name;
-   rel_item = (Part_Item *)resource_get(part->items, &request);
+   if (relative_part_item_name)
+     {
+        request.resource_type = RESOURCE_TYPE_ITEM;
+        request.name = relative_part_item_name;
+        rel_item = (Part_Item *)resource_get(part->items, &request);
+     }
+   else
+     rel_item = NULL;
 
    group_navigator_select(wd->group_navi, (Resource *)part);
    gm_part_item_restack(item, rel_item);
