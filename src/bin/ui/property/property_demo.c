@@ -143,14 +143,23 @@ _subitems_get(Property_Attribute *pa)
 static void
 _fill_combobox_with_enum(Evas_Object *control, const char **array)
 {
-   int i = 0;
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
 
    assert(control != NULL);
    assert(array != NULL);
 
+   itc = evas_object_data_get(control, "COMMON_ITC");
+
    while (array[i] != NULL)
      {
-        ewe_combobox_item_add(control, array[i]);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(array[i]);
+        elm_genlist_item_append(control, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
         ++i;
      }
 }
@@ -159,7 +168,7 @@ static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    Eina_Stringshare *str_val1 = NULL;
-   Ewe_Combobox_Item *cb_item = NULL;
+   Combobox_Item *cb_item_combo = NULL;
    double double_val1 = 0.0;
    int r = -1, g = -1, b = -1, a = -1;
 
@@ -178,9 +187,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
-      case PROPERTY_CONTROL_COMBOBOX:
-         TODO("change this after migrating to elm_combobox");
-         cb_item = ewe_combobox_select_item_get(action->control);
+      case PROPERTY_CONTROL_NEWCOMBOBOX:
+         cb_item_combo = evas_object_data_get(action->control, "CURRENT_DATA");
+         if (!cb_item_combo) return;
          break;
       case PROPERTY_CONTROL_COLOR:
          property_color_control_color_get(action->control, &r, &g, &b, &a);
@@ -199,17 +208,19 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
-         assert(cb_item != NULL);
-         demo_pd.part->swallow_content = cb_item->index;
+         assert(cb_item_combo != NULL);
+         demo_pd.part->swallow_content = cb_item_combo->index;
          demo_pd.part->change = true;
          GENLIST_FILTER_APPLY(pd->genlist);
+         elm_object_text_set(action->control, swallow_content_type[demo_pd.part->swallow_content]);
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
 
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
-         assert(cb_item != NULL);
-         demo_pd.part->widget = cb_item->index;
+         assert(cb_item_combo != NULL);
+         demo_pd.part->widget = cb_item_combo->index;
          demo_pd.part->change = true;
+         elm_object_text_set(action->control, widget_type[demo_pd.part->widget]);
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
@@ -276,13 +287,13 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_layout_text_set(action->control, NULL, demo_pd.part->name);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
-         ewe_combobox_select_item_set(action->control, demo_pd.part->swallow_content);
+         elm_object_text_set(action->control, swallow_content_type[demo_pd.part->swallow_content]);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
          property_entry_set(action->control, demo_pd.part->image_path);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
-         ewe_combobox_select_item_set(action->control, demo_pd.part->widget);
+         elm_object_text_set(action->control, widget_type[demo_pd.part->widget]);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
          property_entry_set(action->control, demo_pd.part->content_style);
@@ -483,7 +494,7 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
               IT.name = "Content";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
               IT.name = "Image";
@@ -495,7 +506,7 @@ _init_items()
               IT.name = "Widget";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
               IT.name = "Widget style";
