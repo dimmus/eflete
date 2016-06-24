@@ -566,6 +566,8 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
         items = edje_edit_part_items_list_get(group->edit_object, part_name);
         EINA_LIST_FOREACH(items, l, item_name)
           {
+             TODO("Remove this after switching to index API for items");
+             if (!item_name) continue;
              item = (Part_Item *)resource_add(item_name, RESOURCE_TYPE_ITEM);
              item->part = part;
              resource_insert(&part->items, (Resource *)item);
