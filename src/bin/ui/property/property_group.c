@@ -995,7 +995,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_min_max_set(action->control, -9999, 9999);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
-         _fill_combobox_with_enum(action->control, item_aspect_mode_strings);
+         _fill_newcombobox_with_enum(action->control, item_aspect_mode_strings);
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          _fill_combobox_with_enum(action->control, transition_type_strings);
@@ -1028,10 +1028,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_newcombobox_with_enum(action->control, text_shadow_direction_strings);
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
-         _fill_combobox_with_enum(action->control, table_homogeneous_strings);
+         _fill_newcombobox_with_enum(action->control, table_homogeneous_strings);
          break;
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
-         _fill_combobox_with_enum(action->control, image_border_fill_strings);
+         _fill_newcombobox_with_enum(action->control, image_border_fill_strings);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_style_set(action->control, "color_class");
@@ -1098,28 +1098,6 @@ _styles_newcombobox_fill(Evas_Object *combo, const char *selected)
      }
 }
 
-static void
-_groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
-{
-   Eina_List *l;
-   Group *group;
-
-   assert(with_none || selected != NULL);
-
-   if (selected)
-     ewe_combobox_text_set(combo, selected);
-   else
-     ewe_combobox_text_set(combo, STR_NONE);
-
-   if (with_none)
-     ewe_combobox_item_add(combo, STR_NONE);
-
-   EINA_LIST_FOREACH(ap.project->groups, l, group)
-     {
-        if (group != group_pd.group)
-          ewe_combobox_item_add(combo, group->name);
-     }
-}
 static void
 _groups_newcombobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
 {
@@ -1297,6 +1275,7 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
      }
 }
 
+TODO("Special style for color_class combobox")
 static void
 _color_class_select(Evas_Object *combo, const char *selected)
 {
@@ -1307,7 +1286,7 @@ _color_class_select(Evas_Object *combo, const char *selected)
 
    if (selected)
      {
-        ewe_combobox_text_set(combo, selected);
+        elm_object_text_set(combo, selected);
         edje_edit_color_class_colors_get(EDIT_OBJ, selected,
                                          &cc_val[0], &cc_val[1], &cc_val[2], &cc_val[3],
                                          &cc_val[4], &cc_val[5], &cc_val[6], &cc_val[7],
@@ -1327,7 +1306,7 @@ _color_class_select(Evas_Object *combo, const char *selected)
      }
    else
      {
-        ewe_combobox_text_set(combo, STR_NONE);
+        elm_object_text_set(combo, STR_NONE);
 
         color = evas_object_data_get(combo, "color1");
         evas_object_color_set(color, 0, 0, 0, 0);
@@ -1344,19 +1323,34 @@ static void
 _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *cclist, *l;
-   Ewe_Combobox_Item *it;
    Eina_Stringshare *color_class;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
 
    assert(combo != NULL);
 
+   itc = evas_object_data_get(combo, "COMMON_ITC");
    _color_class_select(combo, selected);
 
    cclist = edje_edit_color_classes_list_get(EDIT_OBJ);
-   ewe_combobox_item_add(combo, STR_NONE);
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add(STR_NONE);
+
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
    EINA_LIST_FOREACH(cclist, l, color_class)
      {
-        it = ewe_combobox_item_add(combo, color_class);
-        ewe_combobox_item_style_set(combo, it, "color_class");
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(color_class);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 
    edje_edit_string_list_free(cclist);
@@ -1832,13 +1826,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_check_state_set(action->control, bool_val1);
          return editor_state_container_min_h_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS));
+         elm_object_text_set(action->control, table_homogeneous_strings[(int) edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS)]);
          return editor_state_table_homogeneous_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_ITEM_SOURCE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
-         _groups_combobox_fill(action->control, str_val1, false);
+         _groups_newcombobox_fill(action->control, str_val1, false);
          edje_edit_string_free(str_val1);
          return true;
       case ATTRIBUTE_PART_ITEM_MIN_W:
@@ -1882,8 +1875,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, double_val1);
          return editor_part_item_align_y_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS));
+         elm_object_text_set(action->control, item_aspect_mode_strings[(int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]);
          return editor_part_item_aspect_mode_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          ewe_combobox_select_item_set(action->control,
@@ -2020,15 +2012,15 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, double_val1);
          return editor_state_align_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_TO_X:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_rel1_to_x_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_rel1_to_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_TO_Y:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_rel1_to_y_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_rel1_to_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL1_RELATIVE_X:
@@ -2048,15 +2040,15 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, double_val1);
          return editor_state_rel1_offset_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_TO_X:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_rel2_to_x_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_rel2_to_x_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_TO_Y:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_rel2_to_y_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          return editor_state_rel2_to_y_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
@@ -2096,8 +2088,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H]);
          return true;
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
-         ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_state_image_border_fill_get(EDIT_OBJ, STATE_ARGS));
+         elm_object_text_set(action->control, image_border_fill_strings[(int) edje_edit_state_image_border_fill_get(EDIT_OBJ, STATE_ARGS)]);
          return editor_state_image_border_fill_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
@@ -2144,7 +2135,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
          return editor_state_shadow_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_COLOR_CLASS:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_state_color_class_get(EDIT_OBJ, STATE_ARGS);
          _color_classes_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
@@ -3592,15 +3583,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_TO_X:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_rel1_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL1_TO_Y:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_rel1_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3622,15 +3613,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_TO_X:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_rel2_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL2_TO_Y:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_state_rel2_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3668,9 +3659,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
          break;
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_state_image_border_fill_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_state_image_border_fill_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -3708,8 +3699,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          _color_class_select(action->control, str_val1);
          CRIT_ON_FAIL(editor_state_color_class_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -3924,16 +3915,16 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_state_table_homogeneous_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_state_table_homogeneous_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
          CRIT_ON_FAIL(editor_part_item_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3979,9 +3970,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -4972,14 +4963,14 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X,
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_REL1_TO_X,
                        _("Causes the left-up corner to be positioned relatively to the X "
                          "axis of another part's container. Affects the first parameter "
                          "of \"relative\". Setting to NONE unsets this value for inherited parts."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y,
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y,
                         _("Causes the left-up corner to be positioned relatively to the Y "
                           "axis of another part's container. Affects the first parameter "
                           "of \"relative\". Setting to NONE unsets this value for inherited parts."));
@@ -5013,7 +5004,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X,
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_REL2_TO_X,
                        _("Causes the right-down corner to be positioned relatively "
                          "to the X axis of another part's container. Affects the "
                          "first parameter of \"relative\". Setting to NONE unsets "
@@ -5021,7 +5012,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y,
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y,
                         _("Causes the right-down corner to be positioned relatively "
                           "to the Y axis of another part's container. Affects the "
                           "first parameter of \"relative\". Setting to NONE unsets "
@@ -5097,7 +5088,7 @@ _init_items()
                break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
               IT.name = "Border fill";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
                        _("If the border is set, this value tells Edje if the rest "
                          "of the image (not covered by the defined border) is "
                          "displayed or not or assumed to be solid (without alpha)."));
@@ -5188,7 +5179,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS,
                        _("The part uses the color values of the chosen color class. "
                          "These values can be overridden by the \"color\", \"color2\" "
                          "and \"color3\" properties set below."));
@@ -5358,7 +5349,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
               IT.name = "Homogeneous mode";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS,
                        _("Sets the homogeneous mode for the table."));
               break;
 
@@ -5377,7 +5368,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
               IT.name = "Item source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE,
                        _("Sets the group this object is made from."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
@@ -5417,7 +5408,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
               IT.name = "Aspect mode";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE,
                        _("Sets the aspect control hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
