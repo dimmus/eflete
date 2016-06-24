@@ -674,21 +674,6 @@ _subitems_get(Property_Attribute *pa)
 }
 
 static void
-_fill_combobox_with_enum(Evas_Object *control, const char **array)
-{
-   int i = 0;
-
-   assert(control != NULL);
-   assert(array != NULL);
-
-   while (array[i] != NULL)
-     {
-        ewe_combobox_item_add(control, array[i]);
-        ++i;
-     }
-}
-
-static void
 _fill_newcombobox_with_enum(Evas_Object *control, const char **array)
 {
    unsigned int i = 0;
@@ -998,7 +983,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_newcombobox_with_enum(action->control, item_aspect_mode_strings);
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
-         _fill_combobox_with_enum(action->control, transition_type_strings);
+         _fill_newcombobox_with_enum(action->control, transition_type_strings);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          _fill_newcombobox_with_enum(action->control, aspect_preference_strings);
@@ -1141,37 +1126,6 @@ _groups_newcombobox_fill(Evas_Object *combo, const char *selected, Eina_Bool wit
 }
 
 static void
-_parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
-{
-   Eina_List *l;
-   Part *part;
-
-   assert(combo != NULL);
-
-   if (selected)
-     ewe_combobox_text_set(combo, selected);
-   else
-     ewe_combobox_text_set(combo, STR_NONE);
-   ewe_combobox_item_add(combo, STR_NONE);
-
-   if (allowed_types_mask)
-     {
-        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-          {
-             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part *)group_pd.group->current_selected))
-               ewe_combobox_item_add(combo, part->name);
-          }
-     }
-   else
-     {
-        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-          {
-             if (part != (Part *)group_pd.group->current_selected)
-               ewe_combobox_item_add(combo, part->name);
-          }
-     }
-}
-static void
 _parts_newcombobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
 {
    Eina_List *l;
@@ -1236,13 +1190,18 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
    Part *part;
    State *state;
    const char *state_name = NULL;
+   unsigned int i = 1;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
 
    assert(combo != NULL);
 
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
    if (selected)
-     ewe_combobox_text_set(combo, selected);
+     elm_object_text_set(combo, selected);
    else
-     ewe_combobox_text_set(combo, STR_NONE);
+     elm_object_text_set(combo, STR_NONE);
 
    if (!part_name)
      {
@@ -1263,15 +1222,26 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
           {
              if (state_name && !strcmp(state_name, state->name))
                continue;
-
-             ewe_combobox_item_add(combo, state->name);
+             combobox_item = mem_malloc(sizeof(Combobox_Item));
+             combobox_item->index = i++;
+             combobox_item->data = eina_stringshare_add(state->name);
+             elm_genlist_item_append(combo, itc,
+                                     combobox_item, NULL,
+                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
              state_name = state->name;
           }
      }
    else
      {
         EINA_LIST_FOREACH(part->states, l, state)
-           ewe_combobox_item_add(combo, state->name);
+          {
+             combobox_item = mem_malloc(sizeof(Combobox_Item));
+             combobox_item->index = i++;
+             combobox_item->data = eina_stringshare_add(state->name);
+             elm_genlist_item_append(combo, itc,
+                                     combobox_item, NULL,
+                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
+          }
      }
 }
 
@@ -1338,7 +1308,6 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
    combobox_item = mem_malloc(sizeof(Combobox_Item));
    combobox_item->index = i++;
    combobox_item->data = eina_stringshare_add(STR_NONE);
-
    elm_genlist_item_append(combo, itc,
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1361,17 +1330,33 @@ _programs_combobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *l;
    Program *program;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
 
-   assert(combo != NULL);
+   itc = evas_object_data_get(combo, "COMMON_ITC");
 
    if (selected)
-     ewe_combobox_text_set(combo, selected);
+     elm_object_text_set(combo, selected);
    else
-     ewe_combobox_text_set(combo, STR_NONE);
-   ewe_combobox_item_add(combo, STR_NONE);
+     elm_object_text_set(combo, STR_NONE);
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add(STR_NONE);
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
    EINA_LIST_FOREACH(group_pd.group->programs, l, program)
-      ewe_combobox_item_add(combo, program->name);
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(program->name);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
 }
 
 static void
@@ -1398,7 +1383,7 @@ _afters_change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_List *afters, *l;
    Eina_Stringshare *name;
    int i = 0;
-   Ewe_Combobox_Item *cb_item = NULL;
+   Combobox_Item *cb_item = NULL;
    Eina_Bool added = false;
 
    assert(pa != NULL);
@@ -1408,8 +1393,8 @@ _afters_change_cb(Property_Attribute *pa, Property_Action *action)
 
    group_pd.history.change = change_add("program afters changed");
 
-   TODO("change this after migrating to elm_combobox");
-   cb_item = ewe_combobox_select_item_get(action->control);
+   cb_item = evas_object_data_get(action->control, "CURRENT_DATA");
+   if (!cb_item) return;
 
    assert(cb_item != NULL);
 
@@ -1424,13 +1409,13 @@ _afters_change_cb(Property_Attribute *pa, Property_Action *action)
           CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, name));
         else if (cb_item->index != 0)
           {
-             CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+             CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->data));
              added = true;
           }
         i++;
      }
    if (!added && (cb_item->index != 0))
-     CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+     CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->data));
    history_change_add(group_pd.group->history, group_pd.history.change);
    group_pd.history.change = NULL;
 }
@@ -1457,7 +1442,7 @@ _afters_get(Property_Attribute *pa __UNUSED__)
         new_pa->del_cb = _del_cb;
         new_pa->data = (void *)eina_stringshare_add(name);
         new_pa->int_data = i++;
-        new_pa->action1.control_type = PROPERTY_CONTROL_COMBOBOX;
+        new_pa->action1.control_type = PROPERTY_CONTROL_NEWCOMBOBOX;
         new_pa->action1.init_cb = _afters_init_cb;
         new_pa->action1.change_cb = _afters_change_cb;
         new_pa->action1.tooltip =
@@ -1486,7 +1471,7 @@ _targets_init_cb(Property_Attribute *pa, Property_Action *action)
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-         _parts_combobox_fill(action->control, pa->data, 0);
+         _parts_newcombobox_fill(action->control, pa->data, 0);
          break;
       default:
          return;
@@ -1499,7 +1484,7 @@ _targets_change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_List *targets, *l;
    Eina_Stringshare *name;
    int i = 0;
-   Ewe_Combobox_Item *cb_item = NULL;
+   Combobox_Item *cb_item = NULL;
    Eina_Bool added = false;
 
    assert(pa != NULL);
@@ -1509,10 +1494,8 @@ _targets_change_cb(Property_Attribute *pa, Property_Action *action)
 
    group_pd.history.change = change_add("program targets changed");
 
-   TODO("change this target migrating to elm_combobox");
-   cb_item = ewe_combobox_select_item_get(action->control);
-
-   assert(cb_item != NULL);
+   cb_item = evas_object_data_get(action->control, "CURRENT_DATA");
+   if (!cb_item) return;
 
    targets = edje_edit_program_targets_get(EDIT_OBJ, PROGRAM_ARGS);
    EINA_LIST_REVERSE_FOREACH(targets, l, name)
@@ -1525,13 +1508,13 @@ _targets_change_cb(Property_Attribute *pa, Property_Action *action)
           CRIT_ON_FAIL(editor_program_target_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, name));
         else if (cb_item->index != 0)
           {
-             CRIT_ON_FAIL(editor_program_target_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+             CRIT_ON_FAIL(editor_program_target_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->data));
              added = true;
           }
         i++;
      }
    if (!added && (cb_item->index != 0))
-     CRIT_ON_FAIL(editor_program_target_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+     CRIT_ON_FAIL(editor_program_target_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->data));
    history_change_add(group_pd.group->history, group_pd.history.change);
    group_pd.history.change = NULL;
 }
@@ -1559,7 +1542,7 @@ _targets_get(Property_Attribute *pa __UNUSED__)
         new_pa->del_cb = _del_cb;
         new_pa->data = (void *)eina_stringshare_add(name);
         new_pa->int_data = i++;
-        new_pa->action1.control_type = PROPERTY_CONTROL_COMBOBOX;
+        new_pa->action1.control_type = PROPERTY_CONTROL_NEWCOMBOBOX;
         new_pa->action1.init_cb = _targets_init_cb;
         new_pa->action1.change_cb = _targets_change_cb;
         new_pa->action1.tooltip = eina_stringshare_add(_("Program or part on which the specified action acts."));
@@ -1878,8 +1861,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_object_text_set(action->control, item_aspect_mode_strings[(int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]);
          return editor_part_item_aspect_mode_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
-         ewe_combobox_select_item_set(action->control,
-           (int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS));
+         elm_object_text_set(action->control, transition_type_strings[(int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS)]);
          GENLIST_FILTER_APPLY(pd->genlist);
          return editor_program_transition_type_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
@@ -2308,14 +2290,14 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, double_val1);
          return editor_program_value_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_FILTER_PART:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS);
-         _parts_combobox_fill(action->control, str_val1, 0);
+         _parts_newcombobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
          return editor_program_filter_part_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_program_filter_state_get(EDIT_OBJ, PROGRAM_ARGS);
          str_val2 = edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS);
          _part_states_combobox_fill(action->control, str_val2, str_val1, true);
@@ -3197,7 +3179,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    int r = -1, g = -1, b = -1, a = -1;
    Eina_Stringshare *str_val1 = NULL;
    Eina_Bool bool_val1 = false;;
-   Ewe_Combobox_Item *cb_item = NULL;
    Combobox_Item *cb_item_combo = NULL;
 
    Eina_List *deleted_tweens = NULL, *l;
@@ -3219,10 +3200,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_CONTROL_CHECK:
          bool_val1 = elm_check_state_get(action->control);
-         break;
-      case PROPERTY_CONTROL_COMBOBOX:
-         TODO("change this after migrating to elm_combobox");
-         cb_item = ewe_combobox_select_item_get(action->control);
          break;
       case PROPERTY_CONTROL_NEWCOMBOBOX:
          cb_item_combo = evas_object_data_get(action->control, "CURRENT_DATA");
@@ -3876,16 +3853,16 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_PART:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_program_filter_part_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
          CRIT_ON_FAIL(editor_program_filter_state_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -3977,9 +3954,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
-         assert(cb_item != NULL);
-         str_val1 = eina_stringshare_add(cb_item->title);
-         CRIT_ON_FAIL(editor_program_transition_type_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->index));
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_program_transition_type_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -5520,14 +5497,14 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
               IT.name = "Filter";
-              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
+              _action1(&IT, "part", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
                        _("Filter signals to be only accepted if the part [part] is in "
                          "state named [state]. Only 1 filter per program can be used. "
                          "If [state] is not given, the source of the event is used instead."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
-              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
+              _action1(&IT, "state", NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
                         _("Filter signals to be only accepted if the part [part] is in "
                          "state named [state]. Only 1 filter per program can be used. "
                          "If [state] is not given, the source of the event is used instead."));
@@ -5580,7 +5557,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
                        _("Defines how transitions occur using the STATE_SET action."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FROM_CURRENT:
