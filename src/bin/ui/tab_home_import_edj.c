@@ -241,20 +241,6 @@ _edj_changed_cb(void *data __UNUSED__,
 }
 
 static void
-_edj_set(Eina_Stringshare *title)
-{
-   char buf[256];
-   if (title)
-     {
-        snprintf(buf, sizeof(buf), "%s/template/edj/%s", ap.path.edj_path, title);
-        elm_entry_entry_set(tab_edj.edj, buf);
-     }
-   else elm_entry_entry_set(tab_edj.edj, "");
-
-   _validate();
-}
-
-static void
 _on_check_all(void *data __UNUSED__,
               Evas_Object *obj,
               void *event_info __UNUSED__)
@@ -437,18 +423,6 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_template_theme_changed(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info)
-{
-   Eina_Stringshare *item = elm_object_item_data_get(event_info);
-   elm_object_text_set(obj, item);
-   elm_combobox_hover_end(obj);
-   elm_entry_cursor_end_set(obj);
-   _edj_set(item);
-}
-
-static void
 _progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
 {
    if (PM_PROJECT_SUCCESS == result)
@@ -567,19 +541,6 @@ _elipsis_edj(void *data __UNUSED__,
                                  false);
 }
 
-static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
-{
-   return strdup(data);
-}
-
-static void
-_combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
-{
-   eina_stringshare_del(data);
-}
-
 void
 _tab_import_edj_del(void *data __UNUSED__,
                     Evas *e __UNUSED__,
@@ -589,14 +550,9 @@ _tab_import_edj_del(void *data __UNUSED__,
    elm_validator_regexp_free(tab_edj.name_validator);
 }
 
-
 Evas_Object *
 _tab_import_edj_add(void)
 {
-   Eina_List *themes = NULL, *l = NULL;
-   char *theme;
-   char buf[PATH_MAX];
-
    tab_edj.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    tab_edj.layout = elm_layout_add(ap.win);
@@ -636,24 +592,6 @@ _tab_import_edj_add(void)
    evas_object_smart_callback_add(tab_edj.ch_all, "changed", _on_check_all, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.all_widgets_check", tab_edj.ch_all);
    elm_object_part_text_set(tab_edj.layout, "label.widgets", _("Widgets:"));
-
-   /* template themes */
-   COMBOBOX_ADD(tab_edj.layout, tab_edj.themes);
-   tab_edj.itc = elm_genlist_item_class_new();
-   tab_edj.itc->item_style = "default";
-   tab_edj.itc->func.text_get = _combobox_text_get;
-   tab_edj.itc->func.del = _combobox_item_del;
-   elm_object_part_content_set(tab_edj.layout, "swallow.template_themes", tab_edj.themes);
-   elm_object_text_set(tab_edj.themes, "template themes");
-   snprintf(buf, sizeof(buf), "%stemplate/edj", ap.path.edj_path);
-   themes = ecore_file_ls(buf);
-   EINA_LIST_FOREACH(themes, l, theme)
-     {
-        elm_genlist_item_append(tab_edj.themes, tab_edj.itc,
-                                eina_stringshare_add(theme), NULL,
-                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
-     }
-   evas_object_smart_callback_add(tab_edj.themes, "item,pressed", _template_theme_changed, NULL);
 
    /* genlist */
    tab_edj.genlist = elm_genlist_add(ap.win);
