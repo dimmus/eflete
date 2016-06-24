@@ -1111,6 +1111,62 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
           }
      }
 }
+static void
+_parts_newcombobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
+{
+   Eina_List *l;
+   Part *part;
+   unsigned int i = 1;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+
+   assert(combo != NULL);
+
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
+   if (selected)
+     elm_object_text_set(combo, selected);
+   else
+     elm_object_text_set(combo, STR_NONE);
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = 0;
+   combobox_item->data = eina_stringshare_add(STR_NONE);
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+   if (allowed_types_mask)
+     {
+        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+          {
+             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part *)group_pd.group->current_selected))
+               {
+                  combobox_item = mem_malloc(sizeof(Combobox_Item));
+                  combobox_item->index = i++;
+                  combobox_item->data = eina_stringshare_add(part->name);
+                  elm_genlist_item_append(combo, itc,
+                                          combobox_item, NULL,
+                                          ELM_GENLIST_ITEM_NONE, NULL, NULL);
+               }
+          }
+     }
+   else
+     {
+        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+          {
+             if (part != (Part *)group_pd.group->current_selected)
+               {
+                  combobox_item = mem_malloc(sizeof(Combobox_Item));
+                  combobox_item->index = i++;
+                  combobox_item->data = eina_stringshare_add(part->name);
+                  elm_genlist_item_append(combo, itc,
+                                          combobox_item, NULL,
+                                          ELM_GENLIST_ITEM_NONE, NULL, NULL);
+               }
+          }
+     }
+}
 
 static void
 _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char *selected, Eina_Bool ignore_value)
@@ -1544,9 +1600,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_check_state_set(action->control, bool_val1);
          return editor_part_repeat_events_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_CLIP_TO:
-         ewe_combobox_items_list_free(action->control, true);
+         elm_genlist_clear(action->control);
          str_val1 = edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS);
-         _parts_combobox_fill(action->control, str_val1, PART_RECTANGLE | PART_IMAGE);
+         _parts_newcombobox_fill(action->control, str_val1, PART_RECTANGLE | PART_IMAGE);
          edje_edit_string_free(str_val1);
          return editor_part_clip_to_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_STATE_PROXY_SOURCE:
@@ -3078,6 +3134,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Stringshare *str_val1 = NULL;
    Eina_Bool bool_val1 = false;;
    Ewe_Combobox_Item *cb_item = NULL;
+   Combobox_Item *cb_item_combo = NULL;
 
    Eina_List *deleted_tweens = NULL, *l;
    Eina_List *added_tweens = NULL;
@@ -3102,6 +3159,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_COMBOBOX:
          TODO("change this after migrating to elm_combobox");
          cb_item = ewe_combobox_select_item_get(action->control);
+         break;
+      case PROPERTY_CONTROL_NEWCOMBOBOX:
+         cb_item_combo = evas_object_data_get(action->control, "CURRENT_DATA");
+         if (!cb_item_combo) return;
          break;
       case PROPERTY_CONTROL_COLOR:
          property_color_control_color_get(action->control, &r, &g, &b, &a);
@@ -3203,8 +3264,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_CLIP_TO:
-         assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
          CRIT_ON_FAIL(editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -4423,7 +4484,7 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_PART_CLIP_TO:
               IT.name = "Clip to";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_PART_CLIP_TO,
                        _("Only renders the area of the part that coincides with "
                          "another part's container. The overflowing content is "
                          "not displayed. Note that the part being clipped to can"

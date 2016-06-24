@@ -27,12 +27,20 @@
    Property_Data *pd = evas_object_data_get(OBJ, PROPERTY_DATA); \
    assert(pd != NULL);
 
+typedef struct
+{
+   int index;
+   Eina_Stringshare *data;
+} Combobox_Item;
+
 enum _Property_Control {
    PROPERTY_CONTROL_NONE,
 
    PROPERTY_CONTROL_CHECK,
    PROPERTY_CONTROL_BUTTON,
    PROPERTY_CONTROL_COMBOBOX,
+/* temporary decision to not break everything at once will be removed later */
+   PROPERTY_CONTROL_NEWCOMBOBOX,
    PROPERTY_CONTROL_SPINNER,
    PROPERTY_CONTROL_ENTRY,
    PROPERTY_CONTROL_COLOR,

@@ -220,10 +220,51 @@ _start_change_cb(void *data,
      }
 }
 
+static char *
+_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   return strdup(item->data);
+}
+
+static void
+_combobox_item_del(void *data,
+                   Evas_Object *obj __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   eina_stringshare_del(item->data);
+   free(item);
+}
+
+static void
+_combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
+                          void *event_info)
+{
+   Combobox_Item *item_obj, *item = elm_object_item_data_get(event_info);
+   item_obj = evas_object_data_del(obj, "CURRENT_DATA");
+   if (item_obj)
+     {
+        eina_stringshare_del(item_obj->data);
+        free(item_obj);
+     }
+
+   item_obj = mem_malloc(sizeof(Combobox_Item));
+   item_obj->index = item->index;
+   item_obj->data = eina_stringshare_add(item->data);
+
+   evas_object_data_set(obj, "CURRENT_DATA", item_obj);
+
+   _start_change_stop_cb(data, obj, event_info);
+
+   elm_combobox_hover_end(obj);
+   elm_entry_cursor_end_set(obj);
+}
+
 static Evas_Object *
 _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *parent)
 {
    Evas_Object *content = NULL;
+   Elm_Genlist_Item_Class *itc;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -243,6 +284,16 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_COMBOBOX:
          EWE_COMBOBOX_ADD(parent, content);
          evas_object_smart_callback_add(content, "selected", _start_change_stop_cb, pa);
+         break;
+      case PROPERTY_CONTROL_NEWCOMBOBOX:
+         COMBOBOX_ADD(parent, content);
+         itc = elm_genlist_item_class_new();
+         itc->item_style = "default";
+         itc->func.text_get = _combobox_text_get;
+         itc->func.del = _combobox_item_del;
+         evas_object_data_set(content, "COMMON_ITC", itc);
+         evas_object_smart_callback_add(content, "item,pressed",
+                                        _combobox_item_pressed_cb, pa);
          break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
@@ -590,6 +641,7 @@ property_common_itc_init(Property_Data *pd)
 
    pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_NEWCOMBOBOX]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
