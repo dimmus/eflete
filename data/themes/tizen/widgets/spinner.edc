@@ -150,7 +150,7 @@ group { name: "elm/spinner/base/vertical";
          repeat_events: 1;
          scale: 1;
          dragable {
-            x: 1 0 0;
+            x: -1 0 0;
             y: 0 0 0;
             threshold: "bg";
          }
