@@ -68,6 +68,7 @@ struct _Style_Manager
    struct {
       Evas_Object *name;
       Resource_Name_Validator *validator;
+      Evas_Object *item;
    } popup;
    struct {
         Evas_Object *black;
@@ -161,28 +162,36 @@ _validate(void *data __UNUSED__,
      popup_buttons_disabled_set(BTN_OK, false);
 }
 
+Evas_Object *
+_add_style_content_get(void *data __UNUSED__)
+{
+   Evas_Object *item;
+
+   LAYOUT_PROP_ADD(mng.win, _("Style name:"), "popup", "1swallow");
+   mng.popup.item = item;
+   if (!mng.popup.validator)
+     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
+   ENTRY_ADD(mng.popup.item, mng.popup.name, true);
+   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
+   elm_object_part_content_set(mng.popup.item, "elm.swallow.content", mng.popup.name);
+
+   return mng.popup.item;
+}
+
 static void
 _style_add_cb(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *item;
    Resource *res;
    Popup_Button btn_res;
    const char *style_name;
    Elm_Object_Item *glit;
 
-   LAYOUT_PROP_ADD(mng.win, _("Style name:"), "popup", "1swallow");
-   if (!mng.popup.validator)
-     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
-   ENTRY_ADD(item, mng.popup.name, true);
-   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
-   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
-   elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
-
-   btn_res = popup_want_action(_("Add textblock style"), NULL, item,
+   btn_res = popup_want_action(_("Add textblock style"), NULL, _add_style_content_get,
                                mng.popup.name, BTN_OK|BTN_CANCEL,
                                NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
@@ -214,15 +223,30 @@ _style_add_cb(void *data __UNUSED__,
    ap.project->changed = true;
 
 close:
-   evas_object_del(item);
+   evas_object_del(mng.popup.item);
+}
+
+Evas_Object *
+_add_tag_content_get(void *data __UNUSED__)
+{
+   Evas_Object *item;
+
+   LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
+   ENTRY_ADD(item, mng.popup.name, true);
+   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new tag name."));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
+   mng.popup.item = item;
+
+   return item;
 }
 
 static void
-_tab_add_cb(void *data __UNUSED__,
+_tag_add_cb(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   Evas_Object *item;
    Resource *res;
    Eina_List *resources = NULL;
    Eina_Stringshare *style_name, *tag_name;
@@ -252,19 +276,12 @@ _tab_add_cb(void *data __UNUSED__,
         resource_insert(&resources, res);
      }
    edje_edit_string_list_free(tags);
-
-   LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
    if (!mng.popup.validator)
      mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &resources, true);
-   ENTRY_ADD(item, mng.popup.name, true);
-   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
-   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new tag name."));
-   elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
 
    buf = eina_stringshare_printf(_("Add tag for style: %s"), style_name);
-   btn_res = popup_want_action(buf, NULL, item,
+   btn_res = popup_want_action(buf, NULL, _add_tag_content_get,
                                mng.popup.name, BTN_OK|BTN_CANCEL,
                                NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
@@ -292,7 +309,7 @@ _tab_add_cb(void *data __UNUSED__,
 close:
    EINA_LIST_FREE(resources, res)
       resource_free(res);
-   evas_object_del(item);
+   evas_object_del(mng.popup.item);
    eina_stringshare_del(buf);
 }
 
@@ -848,7 +865,7 @@ style_manager_add()
 
    mng.menu = elm_menu_add(ap.win);
    elm_menu_item_add(mng.menu, NULL, "text_style", _("Style"), _style_add_cb, NULL);
-   mng.menu_tag = elm_menu_item_add(mng.menu, NULL, "text_style_tag", _("Tag"), _tab_add_cb, NULL);
+   mng.menu_tag = elm_menu_item_add(mng.menu, NULL, "text_style_tag", _("Tag"), _tag_add_cb, NULL);
 
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "plus_managers");
