@@ -1244,14 +1244,13 @@ tabs_current_tab_close(void)
 void
 tabs_clean(void)
 {
-   Eina_List *l;
+   Eina_List *l, *l_n;
    Tabs_Item *item;
 
    /* delete all tab besides home tab */
-   EINA_LIST_FOREACH(tabs.items, l, item)
+   EINA_LIST_FOREACH_SAFE(tabs.items, l, l_n, item)
      {
         if (!item->group) continue;
-        tabs.items = eina_list_remove(tabs.items, item);
         _del_tab(item);
      }
    tabs.selected = NULL;
