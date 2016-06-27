@@ -73,6 +73,7 @@ typedef struct
 
    struct {
         int copy_part, part_type;
+        Evas_Object *box;
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
         Evas_Object *combobox;
@@ -917,6 +918,14 @@ _popup_add_part_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
+Eina_Bool
+_popup_add_part_validator(void *data)
+{
+   _popup_add_part_ok_clicked(data, NULL, NULL);
+   return true;
+}
+
+
 void
 group_navigator_part_add(Evas_Object *obj, Part *part)
 {
@@ -1007,29 +1016,18 @@ _combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
    elm_entry_cursor_end_set(obj);
 }
 
-static void
-_on_menu_add_part_clicked(void *data __UNUSED__,
-                          Evas_Object *obj,
-                          void *ei __UNUSED__)
+Evas_Object *
+_add_part_content_get(void *data)
 {
    Combobox_Item *combobox_item;
    unsigned int i = 0;
-   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_List *l;
    Part *part;
 
-   Eina_Stringshare *title;
+   Part_List *pl = (Part_List *)data;
    Evas_Object *box, *item;
 
-   assert(pl != NULL);
-
-   ap.popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_printf(_("Add New Part to Group \"%s\""), pl->group->name);
-   elm_object_part_text_set(ap.popup, "title,text", title);
-   eina_stringshare_del(title);
-
-   BOX_ADD(ap.popup, box, false, false);
+   BOX_ADD(ap.win, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
    LAYOUT_PROP_ADD(box, _("Part name"), "popup", "1swallow")
@@ -1087,20 +1085,27 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    evas_object_smart_callback_add(pl->popup.combobox_copy, "item,selected", _part_selected_cb, pl);
    elm_box_pack_end(box, item);
 
-   elm_object_content_set(ap.popup, box);
-   BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
-   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, pl);
-   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
-   elm_object_disabled_set(pl->popup.btn_add, true);
+   pl->popup.box = box;
+   return box;
+}
 
-   BUTTON_ADD(box, pl->popup.btn_cancel, _("Cancel"));
-   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
-   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
+static void
+_on_menu_add_part_clicked(void *data __UNUSED__,
+                          Evas_Object *obj,
+                          void *ei __UNUSED__)
+{
+  Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Eina_Stringshare *title;
 
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   assert(pl != NULL);
 
-   elm_object_focus_set(pl->popup.entry_name, true);
-   evas_object_show(ap.popup);
+   title = eina_stringshare_printf(_("Add New Part to Group \"%s\""), pl->group->name);
+   Popup_Button button = popup_want_action(title, NULL, _add_part_content_get,
+                                           NULL, BTN_OK | BTN_CANCEL,
+                                           _popup_add_part_validator, pl);
+   if (BTN_CANCEL == button)
+     evas_object_del(pl->popup.box);
+   eina_stringshare_del(title);
 }
 
 static void
@@ -1344,7 +1349,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    BUTTON_ADD(ap.popup, pl->popup.btn_cancel, _("Cancel"));
    evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
    elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
-
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    elm_object_focus_set(pl->popup.entry_name, true);
    evas_object_show(ap.popup);

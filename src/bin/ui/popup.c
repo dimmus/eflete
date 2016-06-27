@@ -87,7 +87,7 @@ _btn_cb(void *data,
 Popup_Button
 popup_want_action(const char *title,
                   const char *msg,
-                  Evas_Object *content,
+                  Popup_Content_Get_Func content_get,
                   Evas_Object *to_focus,
                   Popup_Button popup_btns,
                   Popup_Validator_Func func,
@@ -97,7 +97,7 @@ popup_want_action(const char *title,
    Evas_Object *btn;
 
    /* only one content will be setted to ap.popup: or message, or used content */
-   assert((msg != NULL) != (content != NULL));
+   assert((msg != NULL) != (content_get != NULL));
    validator = func;
    user_data = data;
 
@@ -108,7 +108,11 @@ popup_want_action(const char *title,
    elm_object_part_text_set(ap.popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(ap.popup, ELM_WRAP_WORD);
    if (msg) elm_object_text_set(ap.popup, msg);
-   if (content) elm_object_content_set(ap.popup, content);
+   if (content_get)
+     {
+        Evas_Object *content = content_get(data);
+        elm_object_content_set(ap.popup, content);
+     }
 
    if (popup_btns & BTN_OK)
      BTN_ADD(_("Ok"), "button1", &_btn_ok)
@@ -870,7 +874,6 @@ popup_colorselector_helper(Evas_Object *follow_up,
    if (follow_up)
      {
         _helper_property_color_follow(NULL, NULL, follow_up, NULL);
-        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_color_follow, NULL);
         evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_property_color_follow, NULL);
      }
    else

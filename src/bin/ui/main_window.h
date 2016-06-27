@@ -112,6 +112,16 @@ typedef enum
 typedef Eina_Bool(* Popup_Validator_Func)(void *data);
 
 /**
+ * Function that return object, which is used as content
+ * inside popup window.
+ *
+ * @param data The user data
+ *
+ * @ingroup Window
+ */
+typedef Evas_Object *(* Popup_Content_Get_Func)(void *data);
+
+/**
  * The fileselector helper callback.
  *
  * @param data The user data;
@@ -308,18 +318,18 @@ project_close(void);
  *
  * @param title The Popup title;
  * @param msg The Popup message, formated text;
- * @param content The user Evas_Object seted as content to popup;
+ * @param content_get The func, that return content Evas_Object to popup;
  * @param to_focus The object what be focused after popup show;
  * @param p_btns The flags for set the popup buttons;
  * @param func The validation func, if returned EINA_FALSE popup not be closed;
- * @param data The user data for validation func.
+ * @param data The user data for validation and content_get funcutions.
  *
  * @ingroup Window
  */
 Popup_Button
 popup_want_action(const char *title,
                   const char *msg,
-                  Evas_Object *content,
+                  Popup_Content_Get_Func content_get,
                   Evas_Object *to_focus,
                   Popup_Button p_btns,
                   Popup_Validator_Func func,
