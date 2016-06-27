@@ -917,7 +917,7 @@ gm_groups_free(Project *pro)
                }
             EINA_LIST_FREE(part->items, item)
                {
-                  eina_list_free(state->used_in);
+                  eina_list_free(item->used_in);
                   resource_free(item);
                }
             resource_free((Resource *)part);
