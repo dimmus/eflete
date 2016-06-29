@@ -41,6 +41,12 @@
 
 #if !HAVE_TIZEN
 static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
+
+typedef struct
+{
+   int index;
+   Eina_Stringshare *data;
+} Combobox_Item;
 #endif
 
 /* As the workspace can manage the one drag in one time, and only one workspace
@@ -78,6 +84,7 @@ struct _Workspace_Data
       Evas_Object *obj;
       Evas_Object *history;
       struct {
+         Elm_Genlist_Item_Class *itc;
          Evas_Object *fit;
          Evas_Object *cmb_zoom;
          Evas_Object *slider;
@@ -299,7 +306,7 @@ _slider_zoom_cb(void *data,
 #else
    Eina_Stringshare *text;
    text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
-   ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, text);
+   elm_object_text_set(wd->toolbar.zoom.cmb_zoom, text);
    eina_stringshare_del(text);
 #endif
    _members_zoom_set(wd);
@@ -328,13 +335,33 @@ _spinner_zoom_cb(void *data,
    _members_zoom_set(wd);
 }
 #else
+static char *
+_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   return strdup(item->data);
+}
+
+static void
+_combobox_item_del(void *data,
+                   Evas_Object *obj __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   eina_stringshare_del(item->data);
+   free(item);
+}
+
 static void
 _zoom_selected_cb(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
    Workspace_Data *wd = data;
-   Ewe_Combobox_Item *item = event_info;
+   Combobox_Item *item = elm_object_item_data_get(event_info);
+
+   elm_object_text_set(obj, item->data);
+   elm_combobox_hover_end(obj);
+   elm_entry_cursor_end_set(obj);
 
    wd->zoom_factor = zoom_values[item->index] / 100.0;
    elm_slider_value_set(wd->toolbar.zoom.slider, zoom_values[item->index]);
@@ -392,16 +419,26 @@ _zoom_controls_add(Workspace_Data *wd)
 #else
    int i = 0;
    Eina_Stringshare *text;
-   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom);
+   Combobox_Item *combobox_item;
+   COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom);
+   elm_object_style_set(wd->toolbar.zoom.cmb_zoom, "zoom");
+   wd->toolbar.zoom.itc = elm_genlist_item_class_new();
+   wd->toolbar.zoom.itc->item_style = "default";
+   wd->toolbar.zoom.itc->func.text_get = _combobox_text_get;
+   wd->toolbar.zoom.itc->func.del = _combobox_item_del;
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
-   ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
-   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "selected", _zoom_selected_cb, wd);
+   elm_object_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
+   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "item,pressed", _zoom_selected_cb, wd);
    while (zoom_values[i])
     {
       text = eina_stringshare_printf("%d%%", zoom_values[i]);
-      ewe_combobox_item_add(wd->toolbar.zoom.cmb_zoom, text);
+      combobox_item = mem_malloc(sizeof(Combobox_Item));
+      combobox_item->data = eina_stringshare_add(text);
+      combobox_item->index = i++;
+      elm_genlist_item_append(wd->toolbar.zoom.cmb_zoom, wd->toolbar.zoom.itc,
+                              combobox_item, NULL,
+                              ELM_GENLIST_ITEM_NONE, NULL, NULL);
       eina_stringshare_del(text);
-      i++;
     }
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.cmb_zoom);

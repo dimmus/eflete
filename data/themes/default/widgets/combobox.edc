@@ -204,6 +204,31 @@ group { name: "elm/button/base/combobox_vertical/default";
    }
 }
 
+/* special style for zoom because it can't be strong in toolbar */
+group { name: "elm/button/base/combobox_vertical/zoom";
+   inherit: "elm/button/base/combobox_vertical/default";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "icon_clip";
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 40 19;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "left.offset";
+               to_y: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right.offset";
+               to_y: "base";
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/button/base/combobox_vertical/color_class";
    images {
       image: "dropdown-bg.png" COMP;
