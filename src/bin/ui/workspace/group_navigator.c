@@ -1094,7 +1094,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
                           Evas_Object *obj,
                           void *ei __UNUSED__)
 {
-  Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Stringshare *title;
 
    assert(pl != NULL);
@@ -1547,20 +1547,19 @@ _popup_add_program_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_on_menu_add_program_clicked(void *data __UNUSED__,
-                             Evas_Object *obj,
-                             void *ei __UNUSED__)
+Eina_Bool
+_popup_add_program_validator(void *data)
 {
-   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   _popup_add_program_ok_clicked(data, NULL, NULL);
+   return true;
+}
+
+Evas_Object *
+_add_program_content_get(void *data)
+{
+   Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
-   unsigned int i;
-
-   assert(pl != NULL);
-
-   ap.popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   elm_object_part_text_set(ap.popup, "title,text", _("Add New Program"));
+   unsigned int i = 0;
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
@@ -1588,22 +1587,31 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
 
-   elm_box_pack_end(box, item);
-
-   elm_object_content_set(ap.popup, box);
-
-   BUTTON_ADD(ap.popup, pl->popup.btn_add, _("Add"));
-   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_program_ok_clicked, pl);
-   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
-   elm_object_disabled_set(pl->popup.btn_add, true);
-
-   BUTTON_ADD(ap.popup, pl->popup.btn_cancel, _("Cancel"));
-   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
-   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    elm_object_focus_set(pl->popup.entry_name, true);
-   evas_object_show(ap.popup);
+   elm_box_pack_end(box, item);
+   pl->popup.box = box;
+
+   return pl->popup.box;
+}
+
+static void
+_on_menu_add_program_clicked(void *data __UNUSED__,
+                             Evas_Object *obj,
+                             void *ei __UNUSED__)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Eina_Stringshare *title;
+
+   assert(pl != NULL);
+
+   title = eina_stringshare_add(_("Add New Program"));
+   Popup_Button button = popup_want_action(title, NULL, _add_program_content_get,
+                                           NULL, BTN_OK | BTN_CANCEL,
+                                           _popup_add_program_validator, pl);
+
+   if (button == BTN_CANCEL)
+     evas_object_del(pl->popup.box);
+   eina_stringshare_del(title);
 }
 
 void
