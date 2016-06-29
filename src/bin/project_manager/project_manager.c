@@ -1931,7 +1931,7 @@ Eina_Bool
 pm_project_group_import(Project *project, const char *edj, const char *group)
 {
    Change *change;
-   Evas_Object *obj, *win, *img;
+   Evas_Object *obj, *img;
    Evas *e;
    Eina_List *resources, *resources1, *l, *l1;
    Eina_Stringshare *data, *data1, *source, *res_file, *res_dir;
@@ -1950,20 +1950,18 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    assert(group != NULL);
 
    ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_import", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
+   e = ecore_evas_get(project->ecore_evas);
    obj = edje_edit_object_add(e);
    edje_object_file_set(obj, edj, group);
 
    /* import group dependencies */
-   resources = gm_group_used_groups_edj_get(edj, group);
+   resources = gm_group_used_groups_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
         pm_project_group_import(project, edj, data);
      }
    /* import images */
-   resources = gm_group_used_images_edj_get(edj, group);
+   resources = gm_group_used_images_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
         if (project->images)
@@ -2018,7 +2016,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* images imported */
 
    /* import sound */
-   resources = gm_group_used_sample_edj_get(edj, group);
+   resources = gm_group_used_sample_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
         if (project->sounds)
@@ -2062,7 +2060,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* sounds imported */
 
    /* import fonts */
-   resources = gm_group_used_fonts_edj_get(edj, group);
+   resources = gm_group_used_fonts_edj_get(obj);
    ef = eet_open(edj, EET_FILE_MODE_READ);
    EINA_LIST_FOREACH(resources, l, data)
      {
@@ -2110,7 +2108,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* fonts imported */
 
    /* import color_classes */
-   resources = gm_group_used_color_classes_edj_get(edj, group);
+   resources = gm_group_used_color_classes_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
         request.resource_type = RESOURCE_TYPE_COLORCLASS;
@@ -2137,7 +2135,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* color_classes imported */
 
    /* import styles */
-   resources = gm_group_used_styles_edj_get(edj, group);
+   resources = gm_group_used_styles_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
         request.resource_type = RESOURCE_TYPE_STYLE;
@@ -2192,7 +2190,6 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* add group to project structures */
    gm_group_add(project, group);
 
-   evas_object_del(win);
    you_shall_pass_editor_signals(NULL);
 
    change_free(change);

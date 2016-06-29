@@ -122,22 +122,13 @@ do { \
 while (0);
 
 Eina_List *
-gm_group_used_groups_edj_get(const char *edj, const char *group)
+gm_group_used_groups_edj_get(Evas_Object *obj)
 {
    Eina_List *groups = NULL;
    Eina_List *parts, *l1;
    Eina_Stringshare *part, *source;
-   Evas *e;
-   Evas_Object *obj, *win;
    Edje_Part_Type type;
    int items_count, i;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_groups_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    parts = edje_edit_parts_list_get(obj);
    EINA_LIST_FOREACH(parts, l1, part)
@@ -167,29 +158,18 @@ gm_group_used_groups_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(parts);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(groups);
 }
 #undef SOURCE_GET
 
 Eina_List *
-gm_group_used_images_edj_get(const char *edj, const char *group)
+gm_group_used_images_edj_get(Evas_Object *obj)
 {
    Eina_List *images = NULL;
    Eina_List *parts, *l1, *states, *l2, *tweens;
    Eina_Stringshare *part, *state, *img, *pstate;
    double pvalue;
-   Evas *e;
-   Evas_Object *obj, *win;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_images_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    parts = edje_edit_parts_list_get(obj);
    EINA_LIST_FOREACH(parts, l1, part)
@@ -209,27 +189,16 @@ gm_group_used_images_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(parts);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(images);
 }
 
 Eina_List *
-gm_group_used_sample_edj_get(const char *edj, const char *group)
+gm_group_used_sample_edj_get(Evas_Object *obj)
 {
    Eina_List *samples = NULL;
    Eina_List *programs, *l1;
-   Evas *e;
-   Evas_Object *obj, *win;
    Eina_Stringshare *program, *sample;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_samples_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    programs = edje_edit_programs_list_get(obj);
    EINA_LIST_FOREACH(programs, l1, program)
@@ -245,28 +214,17 @@ gm_group_used_sample_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(programs);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(samples);
 }
 
 Eina_List *
-gm_group_used_color_classes_edj_get(const char *edj, const char *group)
+gm_group_used_color_classes_edj_get(Evas_Object *obj)
 {
    Eina_List *color_classes = NULL;
    Eina_List *parts, *l1, *states, *l2;
    Eina_Stringshare *part, *state, *color_c, *pstate;
    double pvalue;
-   Evas *e;
-   Evas_Object *obj, *win;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_color_classes_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    parts = edje_edit_parts_list_get(obj);
    EINA_LIST_FOREACH(parts, l1, part)
@@ -285,28 +243,17 @@ gm_group_used_color_classes_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(parts);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(color_classes);
 }
 
 Eina_List *
-gm_group_used_styles_edj_get(const char *edj, const char *group)
+gm_group_used_styles_edj_get(Evas_Object *obj)
 {
    Eina_List *styles = NULL;
    Eina_List *parts, *l1, *states, *l2;
    Eina_Stringshare *part, *state, *style, *pstate;
    double pvalue;
-   Evas *e;
-   Evas_Object *obj, *win;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_styles_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    parts = edje_edit_parts_list_get(obj);
    EINA_LIST_FOREACH(parts, l1, part)
@@ -326,8 +273,6 @@ gm_group_used_styles_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(parts);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(styles);
 }
@@ -359,22 +304,13 @@ _style_font_get(Evas_Object *obj, const char *style)
 }
 
 Eina_List *
-gm_group_used_fonts_edj_get(const char *edj, const char *group)
+gm_group_used_fonts_edj_get(Evas_Object *obj)
 {
    Eina_List *fonts = NULL;
    Eina_List *parts, *l1, *states, *l2, *style_fonts;
    Eina_Stringshare *part, *state, *font, *style, *real_font, *pstate;
    double pvalue;
-   Evas *e;
-   Evas_Object *obj, *win;
    Edje_Part_Type type;
-
-   ecore_thread_main_loop_begin();
-   win = elm_win_add(NULL, "eflete_group_fonts_list_get", ELM_WIN_BASIC);
-   elm_win_norender_push(win);
-   e = evas_object_evas_get(win);
-   obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, edj, group);
 
    parts = edje_edit_parts_list_get(obj);
    EINA_LIST_FOREACH(parts, l1, part)
@@ -417,8 +353,6 @@ gm_group_used_fonts_edj_get(const char *edj, const char *group)
           }
      }
    edje_edit_string_list_free(parts);
-   evas_object_del(win);
-   ecore_thread_main_loop_end();
 
    return _strings_list_duplicates_del(fonts);
 }
