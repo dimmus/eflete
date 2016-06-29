@@ -47,45 +47,27 @@ struct _Tab_Home_Edj
    Evas_Object *genlist;
 };
 
-typedef struct _Tab_Home_Edj Tab_Home_Edj;
-static Tab_Home_Edj tab_edj;
-
-static char *_genlist_label_get(void *data,
-                                Evas_Object *obj,
-                                const char  *part);
-
-static Evas_Object *_genlist_content_get(void *data,
-                                         Evas_Object *obj,
-                                         const char *part);
-
-
-/* CHECK ALL AND NOT ALL */
-static void
-_checks_set(Eina_Bool check_val)
+struct _Node
 {
-   Tree_Item_Data *widget = NULL, *style = NULL;
-   End_Item_Data *item_style;
-   Eina_List *l, *ll, *lll;
+   Eina_Stringshare *name;
+   Eina_Bool check;
+   Eina_List *list; /* if list is NULL then it is group in the tree */
+};
 
-   EINA_LIST_FOREACH(widget_list, l, widget)
-     {
-        if (widget->check != check_val)
-          widget->check = check_val;
+typedef struct _Tab_Home_Edj Tab_Home_Edj;
+typedef struct _Node Node;
 
-        EINA_LIST_FOREACH(widget->list, ll, style)
-          {
-             if (style->check != check_val)
-               style->check = check_val;
+static Tab_Home_Edj tab_edj;
+static Elm_Genlist_Item_Class *itc = NULL;
 
-             EINA_LIST_FOREACH(style->list, lll, item_style)
-               {
-                  if (item_style->check != check_val)
-                    item_style->check = check_val;
-               }
-          }
-     }
-   elm_genlist_realized_items_update(tab_edj.genlist);
-}
+static char *
+_genlist_label_get(void *data, Evas_Object *obj, const char  *part);
+
+static Evas_Object *
+_genlist_content_get(void *data, Evas_Object *obj, const char *part);
+
+static void
+_tree_nodes_get(Eina_List *groups_list, Node *node);
 
 static Eina_Bool
 _checked_get(void)
@@ -135,107 +117,146 @@ _name_changed_cb(void *data __UNUSED__,
 }
 
 static void
+_tree_nodes_get(Eina_List *groups_list, Node *node)
+{
+   Eina_List *folders = NULL, *groups = NULL;
+   Eina_Stringshare *prefix;
+   Node *n;
+   Group *group;
+
+   widget_tree_items_get(groups_list, node->name, &folders, &groups);
+   EINA_LIST_FREE(folders, prefix)
+     {
+        n = mem_calloc(1, sizeof(Node));
+        n->name = eina_stringshare_add(prefix);
+        node->list = eina_list_append(node->list, n);
+        _tree_nodes_get(groups_list, n);
+     }
+   EINA_LIST_FREE(groups, group)
+     {
+        n = mem_calloc(1, sizeof(Node));
+        n->name = eina_stringshare_add(group->name);
+        node->list = eina_list_append(node->list, n);
+     }
+}
+
+static void
 _edj_changed_cb(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   const char *widget_name, *style_name, *item_style_name;
-   Eina_List *collections, *l, *ll;
-   Eina_Stringshare *group_name;
-   Tree_Item_Data *widget = NULL, *style = NULL;
-   End_Item_Data *item_style = NULL;
-   Elm_Genlist_Item_Class *itc = NULL;
+   Eina_List *collections, *l, *groups_list = NULL;
+   Eina_List *folders = NULL, *groups = NULL;
+   Eina_Stringshare *group_name, *prefix;
+   Group *group;
+   Node *node;
 
-   if (prev_edj_path && !strcmp(prev_edj_path, elm_entry_entry_get(tab_edj.edj))) return;
+   if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") &&
+       !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)))
+     return;
+
+   if (prev_edj_path && !strcmp(prev_edj_path, elm_entry_entry_get(tab_edj.edj)))
+     return;
    prev_edj_path = elm_entry_entry_get(tab_edj.edj);
 
    elm_genlist_clear(tab_edj.genlist);
-
-   EINA_LIST_FREE(widget_list, widget)
+   EINA_LIST_FREE(widget_list, group_name)
      {
-        free(widget);
+        eina_stringshare_del(group_name);
      }
    widget_list = NULL;
 
-   if (eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") &&
-       ecore_file_exists(elm_entry_entry_get(tab_edj.edj)))
+   collections = edje_file_collection_list(elm_entry_entry_get(tab_edj.edj));
+   if (!collections) return;
+
+   collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
+   EINA_LIST_FOREACH(collections, l, group_name)
      {
-        collections = edje_file_collection_list(elm_entry_entry_get(tab_edj.edj));
-
-        assert(collections != NULL);
-
-        collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
-        EINA_LIST_FOREACH(collections, l, group_name)
-          {
-             if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
-             widget_name = widget_name_get(group_name);
-             if (!widget_name) continue;
-
-             EINA_LIST_FOREACH(widget_list, ll, widget)
-               {
-                  if (widget->name && !strcmp(widget->name, widget_name))
-                     break;
-               }
-             if (!widget)
-               {
-                  widget = mem_calloc(1, sizeof(Tree_Item_Data));
-                  widget->name = widget_name;
-                  widget->check = false;
-                  widget->list = NULL;
-                  widget_list = eina_list_append(widget_list, widget);
-               }
-
-             style_name = style_name_get(group_name);
-             if (style_name)
-               {
-                  EINA_LIST_FOREACH(widget->list, ll, style)
-                    {
-                       if (style->name && !strcmp(style->name, style_name))
-                         break;
-                    }
-                  if (!style)
-                    {
-                       style = mem_calloc(1, sizeof(Tree_Item_Data));
-                       style->name = style_name;
-                       style->check = false;
-                       style->list = NULL;
-                       widget->list = eina_list_append(widget->list, style);
-                    }
-               }
-
-             if (!strcmp(widget_name, "genlist"))
-               {
-                  item_style_name = item_style_name_get(group_name, widget->list);
-                  if (item_style_name)
-                    {
-                       EINA_LIST_FOREACH(style->list, ll, item_style)
-                         {
-                            if (item_style->name && !strcmp(item_style->name, item_style_name))
-                              break;
-                         }
-                       if (!item_style)
-                         {
-                            item_style = mem_calloc(1, sizeof(End_Item_Data));
-                            item_style->name = item_style_name;
-                            item_style->check = false;
-                            style->list = eina_list_append(style->list, item_style);
-                         }
-                    }
-               }
-          }
-
-        itc = elm_genlist_item_class_new();
-        itc->item_style = "aligned";
-        itc->func.text_get = _genlist_label_get;
-        itc->func.content_get = _genlist_content_get;
-
-        EINA_LIST_FOREACH(widget_list, l, widget)
-          {
-             elm_genlist_item_append(tab_edj.genlist, itc, widget,
-                                     NULL, ELM_GENLIST_ITEM_TREE, NULL, NULL);
-          }
-        elm_genlist_item_class_free(itc);
+        group = mem_calloc(1, sizeof(Group));
+        group->name = eina_stringshare_ref(group_name);
+        groups_list = eina_list_append(groups_list, group);
      }
+   edje_file_collection_list_free(collections);
+
+   widget_tree_items_get(groups_list, "", &folders, &groups);
+   EINA_LIST_FREE(folders, prefix)
+     {
+        node = mem_calloc(1, sizeof(Node));
+        node->name = eina_stringshare_ref(prefix);
+        _tree_nodes_get(groups_list, node);
+        elm_genlist_item_append(tab_edj.genlist,
+                                itc,
+                                node,
+                                NULL,
+                                ELM_GENLIST_ITEM_TREE,
+                                NULL,
+                                NULL);
+     }
+   EINA_LIST_FREE(groups, group)
+     {
+        node = mem_calloc(1, sizeof(Node));
+        node->name = eina_stringshare_ref(group->name);
+        elm_genlist_item_append(tab_edj.genlist,
+                                itc,
+                                node,
+                                NULL,
+                                ELM_GENLIST_ITEM_NONE,
+                                NULL,
+                                NULL);
+     }
+   edje_file_cache_flush();
+   EINA_LIST_FREE(groups_list, group)
+     {
+        eina_stringshare_del(group->name);
+        free(group);
+     }
+
+   _validate();
+}
+
+/*  GENLIST  */
+static void
+_widget_list_group_set(Node *node)
+{
+   if (node->check)
+     {
+        if (!node->list)
+          widget_list = eina_list_append(widget_list, node->name);
+     }
+   else
+     {
+        if (!node->list)
+          widget_list = eina_list_remove(widget_list, node->name);
+     }
+}
+
+static void
+_node_selected_set(Node *node)
+{
+   Eina_List *l;
+   Node *n;
+
+   EINA_LIST_FOREACH(node->list, l, n)
+     {
+        n->check = node->check;
+        _widget_list_group_set(n);
+        _node_selected_set(n);
+     }
+}
+
+static void
+_check_widget(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Node *node = data;
+
+   assert(node != NULL);
+
+   node->check = elm_check_state_get(obj);
+   _widget_list_group_set(node);
+   _node_selected_set(node);
+   elm_genlist_realized_items_update(tab_edj.genlist);
 
    _validate();
 }
@@ -245,34 +266,21 @@ _on_check_all(void *data __UNUSED__,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
-   _checks_set(elm_check_state_get(obj));
-   _validate();
-}
+   Elm_Object_Item *item;
+   Node *node;
 
-/*  GENLIST  */
-static void
-_check_widget(void *data,
-              Evas_Object *obj,
-              void *event_info __UNUSED__)
-{
-   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
-   assert(widget_data != NULL);
-   Tree_Item_Data *style;
-   End_Item_Data *item_style;
-   Eina_List *l, *ll;
-   widget_data->check = elm_check_state_get(obj);
-
-   EINA_LIST_FOREACH(widget_data->list, l, style)
+   item = elm_genlist_first_item_get(tab_edj.genlist);
+   do
      {
-        style->check = widget_data->check;
-
-        EINA_LIST_FOREACH(style->list, ll, item_style)
-          {
-             item_style->check = style->check;
-          }
+        node = elm_object_item_data_get(item);
+        node->check = elm_check_state_get(obj);
+        _widget_list_group_set(node);
+        _node_selected_set(node);
+        item = elm_genlist_item_next_get(item);
      }
-   elm_genlist_realized_items_update(tab_edj.genlist);
+   while(item);
 
+   elm_genlist_realized_items_update(tab_edj.genlist);
    _validate();
 }
 
@@ -281,9 +289,30 @@ _genlist_label_get(void *data,
                    Evas_Object *obj __UNUSED__,
                    const char  *part __UNUSED__)
 {
-   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
-   assert(widget_data != NULL);
-   return strdup(widget_data->name);
+   Node *node = data;
+   const char *pos;
+   char buf[BUFF_MAX];
+   int symbols;
+
+   assert (node != NULL);
+   if (node->list)
+     {
+        symbols = strlen(node->name) - 1;
+        strncpy(buf, node->name, symbols);
+        buf[symbols] = '\0';
+        pos = strrchr(buf, '/');
+        if (pos) return strdup(pos + 1);
+        else return strdup(buf);
+
+     }
+   else
+     {
+        pos = strrchr(node->name, '/');
+        if (pos) return strdup(pos + 1);
+        else return strdup(node->name);
+     }
+
+   return strdup(node->name);
 }
 
 static Evas_Object *
@@ -292,65 +321,16 @@ _genlist_content_get(void *data,
                      const char *part)
 {
    Evas_Object *check;
-   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
+   Node *node = data;
    if (strcmp(part, "elm.swallow.icon")) return NULL;
 
    /* the old hack. sometimes edje get wrong style, from system defalt theme,
     * for changed widget if widget is hidden */
-   TODO("find why load wrong style");
+   //TODO("find why load wrong style");
    CHECK_ADD(ap.win, check);
    elm_object_focus_allow_set(check, false);
-   elm_check_state_set(check, widget_data->check);
-   evas_object_smart_callback_add(check, "changed", _check_widget, data);
-   return check;
-}
-
-static void
-_check_style(void *data,
-              Evas_Object *obj,
-              void *event_info __UNUSED__)
-{
-   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
-   assert(style_data != NULL);
-   End_Item_Data *item_style;
-   Eina_List *l;
-   style_data->check = elm_check_state_get(obj);
-
-   EINA_LIST_FOREACH(style_data->list, l, item_style)
-     {
-        item_style->check = style_data->check;
-     }
-   elm_genlist_realized_items_update(tab_edj.genlist);
-
-   _validate();
-}
-
-static char *
-_genlist_style_label_get(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   const char  *part __UNUSED__)
-{
-   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
-   assert(style_data != NULL);
-   return strdup(style_data->name);
-}
-
-static Evas_Object *
-_genlist_style_content_get(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     const char *part)
-{
-   Evas_Object *check;
-   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
-   if (strcmp(part, "elm.swallow.icon")) return NULL;
-
-   /* the old hack. sometimes edje get wrong style, from system defalt theme,
-    * for changed widget if widget is hidden */
-   TODO("find why load wrong style");
-   CHECK_ADD(ap.win, check);
-   elm_object_focus_allow_set(check, false);
-   elm_check_state_set(check, style_data->check);
-   evas_object_smart_callback_add(check, "changed", _check_style, data);
+   elm_check_state_set(check, node->check);
+   evas_object_smart_callback_add(check, "changed", _check_widget, node);
    return check;
 }
 
@@ -388,28 +368,33 @@ _contract_request_cb(void *data __UNUSED__,
 
 static void
 _expanded_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *obj __UNUSED__,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   Tree_Item_Data *parent = elm_object_item_data_get(glit);
-   Elm_Genlist_Item_Class *itc;
-   Tree_Item_Data *child;
+   Node *node = elm_object_item_data_get(glit);
    Eina_List *l;
+   Node *n;
 
-   itc = elm_genlist_item_class_new();
-   itc->item_style = "aligned";
-   itc->func.text_get = _genlist_style_label_get;
-   itc->func.content_get = _genlist_style_content_get;
-
-   EINA_LIST_FOREACH(parent->list, l, child)
+   EINA_LIST_FOREACH(node->list, l, n)
      {
-        if (!(child->list))
-          elm_genlist_item_append(tab_edj.genlist, itc, child,
-                                  glit, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        if (n->list)
+          elm_genlist_item_append(tab_edj.genlist,
+                                  itc,
+                                  n,
+                                  glit,
+                                  ELM_GENLIST_ITEM_TREE,
+                                  NULL,
+                                  NULL);
         else
-          elm_genlist_item_append(tab_edj.genlist, itc, child,
-                                  glit, ELM_GENLIST_ITEM_TREE, NULL, NULL);
+          elm_genlist_item_append(tab_edj.genlist,
+                                  itc,
+                                  n,
+                                  glit,
+                                  ELM_GENLIST_ITEM_NONE,
+                                  NULL,
+                                  NULL);
+
      }
 }
 
@@ -592,6 +577,12 @@ _tab_import_edj_add(void)
    evas_object_smart_callback_add(tab_edj.ch_all, "changed", _on_check_all, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.all_widgets_check", tab_edj.ch_all);
    elm_object_part_text_set(tab_edj.layout, "label.widgets", _("Widgets:"));
+
+   /* genlist item */
+   itc = elm_genlist_item_class_new();
+   itc->item_style = "aligned";
+   itc->func.text_get = _genlist_label_get;
+   itc->func.content_get = _genlist_content_get;
 
    /* genlist */
    tab_edj.genlist = elm_genlist_add(ap.win);
