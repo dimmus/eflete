@@ -165,11 +165,9 @@ ui_main_window_add(void)
 }
 
 Evas_Object *
-about_window_add(void)
+_about_window_content_get(void *data)
 {
-   Evas_Object *label;
-
-   label = elm_label_add(ap.win);
+   Evas_Object *label = (Evas_Object *) data;
    elm_object_text_set(label,
      "<color=#b6b6b6>"
      "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
@@ -197,7 +195,14 @@ about_window_add(void)
    elm_object_style_set(label, "slide_about");
    elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
 
-   popup_want_action(_("About"), NULL, label, NULL, BTN_CANCEL, NULL, NULL);
-   evas_object_del(label);
+   return label;
+}
+
+Evas_Object *
+about_window_add(void)
+{
+   Evas_Object *content = elm_label_add(ap.win);
+   popup_want_action(_("About"), NULL, _about_window_content_get, NULL, BTN_CANCEL, NULL, content);
+   evas_object_del(content);
    return NULL;
 }
