@@ -41,13 +41,13 @@
 
 #if !HAVE_TIZEN
 static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
+#endif
 
 typedef struct
 {
    int index;
    Eina_Stringshare *data;
 } Combobox_Item;
-#endif
 
 /* As the workspace can manage the one drag in one time, and only one workspace
  * viewed, we can use the static Change for all workspace */
@@ -111,6 +111,7 @@ struct _Workspace_Data
       } bg_switcher;
 #if HAVE_TIZEN
       Evas_Object *libraries_switcher;
+      Elm_Genlist_Item_Class *libraries_itc;
 #endif
    } toolbar;
    Evas_Object *panes_h; /* for set subobject like code, sequance etc */
@@ -320,21 +321,6 @@ _zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
    elm_object_disabled_set(wd->toolbar.zoom.slider, disabled);
 }
 
-#if HAVE_TIZEN
-static void
-_spinner_zoom_cb(void *data,
-                 Evas_Object *obj,
-                 void *event_info __UNUSED__)
-{
-   Workspace_Data *wd = (Workspace_Data *)data;
-
-   double val = elm_spinner_value_get(obj);
-   wd->zoom_factor = val / 100.0;
-   elm_slider_value_set(wd->toolbar.zoom.slider, (int) val);
-
-   _members_zoom_set(wd);
-}
-#else
 static char *
 _combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
@@ -351,6 +337,21 @@ _combobox_item_del(void *data,
    free(item);
 }
 
+#if HAVE_TIZEN
+static void
+_spinner_zoom_cb(void *data,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = (Workspace_Data *)data;
+
+   double val = elm_spinner_value_get(obj);
+   wd->zoom_factor = val / 100.0;
+   elm_slider_value_set(wd->toolbar.zoom.slider, (int) val);
+
+   _members_zoom_set(wd);
+}
+#else
 static void
 _zoom_selected_cb(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -827,12 +828,14 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
 #if HAVE_TIZEN
 static void
-_library_select(void *data,
-                Evas_Object *obj __UNUSED__,
+_library_select(void *data __UNUSED__,
+                Evas_Object *obj,
                 void *event_info)
 {
-   Workspace_Data *wd = data;
-   Ewe_Combobox_Item *item = event_info;
+   Combobox_Item *item = elm_object_item_data_get(event_info);
+
+   elm_combobox_hover_end(obj);
+   elm_entry_cursor_end_set(obj);
 
    switch (item->index)
      {
@@ -849,8 +852,6 @@ _library_select(void *data,
          colorclass_manager_add();
         break;
      }
-
-   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
 }
 #endif
 
@@ -1199,22 +1200,46 @@ workspace_add(Evas_Object *parent, Group *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
 
-
-
 #if HAVE_TIZEN
+   Combobox_Item *combobox_item;
    /* Combobox for a choose libraries. */
-   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
+   COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
    evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 95, 0);
-   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
-   ewe_combobox_style_set(wd->toolbar.libraries_switcher, "library");
-   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "selected", _library_select, wd);
+   elm_object_text_set(wd->toolbar.libraries_switcher, _("Library"));
+   elm_object_style_set(wd->toolbar.libraries_switcher, "library");
+   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "item,pressed", _library_select, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
 
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Image");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Sound");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Textblock styles");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Color classes");
+   wd->toolbar.libraries_itc = elm_genlist_item_class_new();
+   wd->toolbar.libraries_itc->item_style = "default";
+   wd->toolbar.libraries_itc->func.text_get = _combobox_text_get;
+   wd->toolbar.libraries_itc->func.del = _combobox_item_del;
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->data = eina_stringshare_add("Image");
+   combobox_item->index = 0;
+   elm_genlist_item_append(wd->toolbar.libraries_switcher, wd->toolbar.libraries_itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->data = eina_stringshare_add("Sound");
+   combobox_item->index = 1;
+   elm_genlist_item_append(wd->toolbar.libraries_switcher, wd->toolbar.libraries_itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->data = eina_stringshare_add("Textblock");
+   combobox_item->index = 2;
+   elm_genlist_item_append(wd->toolbar.libraries_switcher, wd->toolbar.libraries_itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->data = eina_stringshare_add("ColorClasses");
+   combobox_item->index = 3;
+   elm_genlist_item_append(wd->toolbar.libraries_switcher, wd->toolbar.libraries_itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
 #endif
