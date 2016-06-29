@@ -2039,7 +2039,7 @@ _part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
         rel_glit = elm_genlist_item_prev_get(glit);
         /* Finding where to move item. genlist don't allows to ignore subitems */
         while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
-          rel_glit = elm_genlist_item_prev_get(rel_glit);
+          rel_glit = elm_genlist_item_parent_get(rel_glit);
         assert(rel_glit != NULL); /* we shouldn't move up first item */
         assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_part);
      }
