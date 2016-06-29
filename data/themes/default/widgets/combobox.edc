@@ -204,6 +204,358 @@ group { name: "elm/button/base/combobox_vertical/default";
    }
 }
 
+group { name: "elm/button/base/combobox_vertical/color_class";
+   images {
+      image: "dropdown-bg.png" COMP;
+      image: "dropdown-focus-bg.png" COMP;
+      image: "dropdown-bg_unactive.png" COMP;
+      image: "icon-slidedown.png" COMP;
+      image: "icon-slideup.png" COMP;
+      image: "color-background-2.png" COMP;
+      image: "color-shadow-2.png" COMP;
+   }
+   min: 80 19;
+   max: 9999 19;
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            max: -1 19;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "dropdown-bg.png";
+               border: 3 3 1 1;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "focus" 0.0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "dropdown-focus-bg.png";
+               border: 3 3 1 1;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "disable" 0.0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "dropdown-bg_unactive.png";
+               border: 3 3 1 1;
+               middle: DEFAULT;
+            }
+         }
+      }
+      rect { "icon_clip";
+         desc { "default";
+         }
+         desc { "disabled";
+            inherit: "default";
+            color: 255 255 255 180;
+         }
+      }
+      rect { "event";
+         desc { "default";
+            color: 0 0 0 0;
+         }
+         desc { "disabled";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      part { name: "left.offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 10 0;
+            max: 10 -1;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "right.offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 20 19;
+            max: 20 -1;
+            rel2 {
+               to: "bg";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "icon_clip";
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "left.offset";
+               to_y: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right.offset";
+               to_y: "base";
+            }
+         }
+      }
+      part { name: "select_line";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            max: 6 4;
+            rel1 {
+               to: "right.offset";
+            }
+            rel2 {
+               to: "right.offset";
+            }
+            image {
+               normal: "icon-slidedown.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "clicked" 0.0;
+            max: 6 4;
+            rel1 {
+               to: "right.offset";
+            }
+            rel2 {
+               to: "right.offset";
+            }
+            image {
+               normal: "icon-slideup.png";
+               middle: DEFAULT;
+            }
+         }
+         desc { "disabled";
+            inherit: "default";
+         }
+      }
+      part { name: "bg.color3";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "right.offset";
+               to_y: "base";
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "bg.color2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "bg.color3";
+               to_y: "base";
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "bg.color1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "bg.color2";
+               to_y: "base";
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "swallow.color1";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color1";
+            }
+            rel2 {
+               to: "bg.color1";
+            }
+         }
+      }
+      part { name: "swallow.color2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color2";
+            }
+            rel2 {
+               to: "bg.color2";
+            }
+         }
+      }
+      part { name: "swallow.color3";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color3";
+            }
+            rel2 {
+               to: "bg.color3";
+            }
+         }
+      }
+      part { name: "shadow.color1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color1";
+            }
+            rel2 {
+               to: "bg.color1";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color2";
+            }
+            rel2 {
+               to: "bg.color2";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color3";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color3";
+            }
+            rel2 {
+               to: "bg.color3";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         signal: "mouse,down,1"; source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "elm";
+         after: "button_click_anim";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.0;
+         target: "base";
+         target: "select_line";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1"; source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "elm";
+         after: "button_unclick_anim";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         target: "select_line";
+      }
+      program { name: "buttonactivate";
+         signal: "elm,anim,activate"; source: "elm";
+         action: STATE_SET "clicked" 0.0;
+         target: "base";
+         target: "select_line";
+         after: "button_unpressed_anim";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.0;
+         in: 0.5 0.0;
+         target: "base";
+         target: "select_line";
+      }
+      program {
+         signal: "mouse,clicked,1"; source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "button_state_disabled";
+         signal: "elm,state,disabled"; source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "icon_clip";
+         target: "event";
+         target: "select_line";
+      }
+      program { name: "button_state_enabled";
+         signal: "elm,state,enabled"; source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "icon_clip";
+         target: "event";
+         target: "select_line";
+      }
+   }
+}
+
 /* TODO: remove scripts, remake hover */
 group { name: "elm/hover/base/combobox_vertical/default";
    data.item: "dismiss" "on";

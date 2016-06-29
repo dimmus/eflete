@@ -715,50 +715,6 @@ _ccl_control_free(void *data __UNUSED__,
    evas_object_del(color);
 }
 
-
-static void
-_color_class_colors_fill(void *data __UNUSED__,
-                         Evas_Object *combo,
-                         void *event_info __UNUSED__)
-{
-   int cc_val[12];
-   Evas_Object *color;
-   const Eina_List *items, *l;
-   Ewe_Combobox_Item *item;
-   Evas *canvas;
-
-   items = ewe_combobox_items_list_get(combo);
-   if (!items) return;
-
-   item = eina_list_data_get(items);
-   canvas = evas_object_evas_get(item->content);
-   items = eina_list_next(items);
-   EINA_LIST_FOREACH(items, l, item)
-     {
-        edje_edit_color_class_colors_get(EDIT_OBJ, item->title,
-                                         &cc_val[0], &cc_val[1], &cc_val[2], &cc_val[3],
-                                         &cc_val[4], &cc_val[5], &cc_val[6], &cc_val[7],
-                                         &cc_val[8], &cc_val[9], &cc_val[10], &cc_val[11]);
-        evas_color_argb_premul(cc_val[3], &cc_val[0], &cc_val[1], &cc_val[2]);
-        evas_color_argb_premul(cc_val[7], &cc_val[4], &cc_val[5], &cc_val[6]);
-        evas_color_argb_premul(cc_val[11], &cc_val[8], &cc_val[9], &cc_val[10]);
-        /* FIXME: this is bad solition, user shoud not use edje object for add contnent to a
-         * combobox item. Need to move combobox from edje ocject to layout. */
-        color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-        evas_object_color_set(color, cc_val[0], cc_val[1], cc_val[2], cc_val[3]);
-        edje_object_part_swallow(item->content, "swallow.color1", color);
-        color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-        evas_object_color_set(color, cc_val[4], cc_val[5], cc_val[6], cc_val[7]);
-        edje_object_part_swallow(item->content, "swallow.color2", color);
-        color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-        evas_object_color_set(color, cc_val[8], cc_val[9], cc_val[10], cc_val[11]);
-        edje_object_part_swallow(item->content, "swallow.color3", color);
-     }
-}
-
 static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
 {
@@ -1019,25 +975,24 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_combobox_with_enum(action->control, image_border_fill_strings);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
-         ewe_combobox_style_set(action->control, "color_class");
+         elm_object_style_set(action->control, "color_class");
 
          color = elm_image_add(action->control);
          elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-         ewe_combobox_content_set(action->control, "swallow.color1", color);
+         elm_object_part_content_set(action->control, "swallow.color1", color);
          evas_object_data_set(action->control, "color1", color);
 
          color = elm_image_add(action->control);
          elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-         ewe_combobox_content_set(action->control, "swallow.color2", color);
+         elm_object_part_content_set(action->control, "swallow.color2", color);
          evas_object_data_set(action->control, "color2", color);
 
          color = elm_image_add(action->control);
          elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
-         ewe_combobox_content_set(action->control, "swallow.color3", color);
+         elm_object_part_content_set(action->control, "swallow.color3", color);
          evas_object_data_set(action->control, "color3", color);
 
          evas_object_event_callback_add(action->control, EVAS_CALLBACK_FREE, _ccl_control_free, NULL);
-         evas_object_smart_callback_add(action->control, "expanded", _color_class_colors_fill, NULL);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -1245,7 +1200,6 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
      }
 }
 
-TODO("Special style for color_class combobox")
 static void
 _color_class_select(Evas_Object *combo, const char *selected)
 {
