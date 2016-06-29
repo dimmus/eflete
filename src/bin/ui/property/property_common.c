@@ -329,6 +329,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_data_set(content, "COMMON_ITC", itc);
          evas_object_smart_callback_add(content, "item,pressed",
                                         _combobox_item_pressed_cb, pa);
+         elm_object_style_set(content, "color_class");
          break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
