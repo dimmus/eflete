@@ -1934,7 +1934,8 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    Evas_Object *obj, *img;
    Evas *e;
    Eina_List *resources, *resources1, *l, *l1;
-   Eina_Stringshare *data, *data1, *source, *res_file, *res_dir;
+   Eina_Stringshare *data, *data1, *source, *res_file;
+   char *res_dir;
    External_Resource *res;
    int id, size;
    int c1_r, c1_g, c1_b, c1_a,
@@ -1988,7 +1989,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
           }
         else
           {
-             res_dir = eina_stringshare_printf("%s/images", project->develop_path);
+             res_dir = string_cat(project->develop_path, "images");
           }
         img = evas_object_image_add(e);
         id = edje_edit_image_id_get(obj, data);
@@ -2011,7 +2012,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
 
         eina_stringshare_del(source);
         eina_stringshare_del(res_file);
-        eina_stringshare_del(res_dir);
+        free(res_dir);
      }
    /* images imported */
 
@@ -2035,7 +2036,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
           }
         else
           {
-             res_dir = eina_stringshare_printf("%s/sounds", project->develop_path);
+             res_dir = string_cat(project->develop_path, "sounds");
           }
         sound_bin = edje_edit_sound_samplebuffer_get(obj, data);
         res_file = eina_stringshare_printf("%s/%s", res_dir, data);
@@ -2056,6 +2057,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         resource_insert(&project->sounds, (Resource *)res);
 
         eina_stringshare_del(res_file);
+        free(res_dir);
      }
    /* sounds imported */
 
@@ -2080,7 +2082,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
           }
         else
           {
-             res_dir = eina_stringshare_printf("%s/fonts", project->develop_path);
+             res_dir = string_cat(project->develop_path, "fonts");
           }
         source = eina_stringshare_printf("edje/fonts/%s", data);
         font = eet_read(ef, source, &size);
@@ -2103,6 +2105,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         resource_insert(&project->fonts, (Resource *)res);
 
         eina_stringshare_del(res_file);
+        free(res_dir);
      }
    eet_close(ef);
    /* fonts imported */
