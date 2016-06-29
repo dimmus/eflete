@@ -657,11 +657,16 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
      }
    if (apply)
      {
+        Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
         CRIT_ON_FAIL(edje_edit_part_item_append(edit_object, part_name, item_name, source_group));
 
-        /* fixing incorrect default item position */
-        CRIT_ON_FAIL(edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0));
-        CRIT_ON_FAIL(edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0));
+        if (type == EDJE_PART_TYPE_TABLE)
+          {
+             /* fixing incorrect default item position */
+             CRIT_ON_FAIL(edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0));
+             CRIT_ON_FAIL(edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0));
+          }
 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
