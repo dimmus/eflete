@@ -55,14 +55,23 @@ static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST];
 static void
 _fill_combobox_with_enum(Evas_Object *control, const char **array)
 {
-   int i = 0;
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
 
    assert(control != NULL);
    assert(array != NULL);
 
+   itc = evas_object_data_get(control, "COMMON_ITC");
+
    while (array[i] != NULL)
      {
-        ewe_combobox_item_add(control, array[i]);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(array[i]);
+        elm_genlist_item_append(control, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
         ++i;
      }
 }
@@ -147,9 +156,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          if (sound_pd.sample)
-           ewe_combobox_select_item_set(action->control,
-                                        (int) edje_edit_sound_compression_type_get(ap.project->global_object,
-                                                                                   sound_pd.snd->name));
+           elm_object_text_set(action->control,
+                               edje_sound_compression[(int) edje_edit_sound_compression_type_get(ap.project->global_object,
+                                                                                                 sound_pd.snd->name)]);
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
          if (sound_pd.sample)
@@ -306,7 +315,7 @@ _init_items()
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
               IT.name = "Compression type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
               IT.filter_data.sound_types = SOUND_SAMPLE;
