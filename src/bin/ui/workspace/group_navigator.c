@@ -73,7 +73,7 @@ typedef struct
 
    struct {
         int copy_part, part_type, program_selected;
-        Combobox_Item *state_selected;
+        Combobox_Item *state_selected, *item_selected;
         Evas_Object *box;
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
@@ -791,20 +791,25 @@ _state_validate(void *data,
 static void
 _item_validate(void *data,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
    Part_List *pl = data;
    const char *name;
    Part_Item *item;
    Eina_Bool valid;
    Eina_List *l;
+   Combobox_Item *combo_item;
 
    assert(pl != NULL);
    assert(pl->part != NULL);
 
+   combo_item = elm_object_item_data_get(event_info);
+   if (combo_item)
+     pl->popup.item_selected = combo_item;
+
    name = elm_entry_entry_get(pl->popup.entry_name);
    valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
-   valid = valid && (ewe_combobox_select_item_get(pl->popup.combobox) != NULL);
+   valid = valid && pl->popup.item_selected && (pl->popup.item_selected->index != 0);
    EINA_LIST_FOREACH(pl->part->items, l, item)
       valid = valid && strcmp(item->name, name);
 
@@ -1377,7 +1382,6 @@ _popup_add_item_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *item;
    Part_List *pl = data;
    const char *name;
    Eina_Stringshare *msg;
@@ -1390,11 +1394,10 @@ _popup_add_item_ok_clicked(void *data,
    assert(pl->part != NULL);
 
    name = elm_entry_entry_get(pl->popup.entry_name);
-   item = ewe_combobox_select_item_get(pl->popup.combobox);
 
    msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, pl->part->name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_item_append(pl->group->edit_object, change, false, true, pl->part->name, name, item->title));
+   CRIT_ON_FAIL(editor_part_item_append(pl->group->edit_object, change, false, true, pl->part->name, name, pl->popup.item_selected->data));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1449,9 +1452,11 @@ Evas_Object *
 _add_item_content_get(void *data)
 {
    Part_List *pl = (Part_List *)data;
+   Combobox_Item *combobox_item;
    Group *group;
    Evas_Object *box, *item;
    Eina_List *l;
+   unsigned int i = 0;
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
@@ -1467,16 +1472,26 @@ _add_item_content_get(void *data)
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Source group"), "popup", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-   ewe_combobox_text_set(pl->popup.combobox, _("Select the name of the source group."));
-   evas_object_smart_callback_add(pl->popup.combobox, "selected", _item_validate, pl);
+   COMBOBOX_ADD(item, pl->popup.combobox)
+   elm_object_text_set(pl->popup.combobox, _("Select the name of the source group."));
 
    EINA_LIST_FOREACH(ap.project->groups, l, group)
      {
         TODO("Add checks for recursion");
         if (pl->part->group != group)
-          ewe_combobox_item_add(pl->popup.combobox, group->name);
+          {
+             combobox_item = mem_malloc(sizeof(Combobox_Item));
+             combobox_item->index = i++;
+             combobox_item->data = eina_stringshare_add(group->name);
+             elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
+                                     combobox_item, NULL,
+                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
+          }
      }
+   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+                                  _combobox_item_pressed_cb, NULL);
+   evas_object_show(pl->popup.combobox);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _item_validate, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
 
    elm_box_pack_end(box, item);
