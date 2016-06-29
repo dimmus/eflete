@@ -61,6 +61,7 @@ struct _Sound_Manager
    Evas_Object *property_panes;
    Evas_Object *menu;
    Evas_Object *tone_entry, *frq_entry;
+   Evas_Object *box;
    Resource_Name_Validator *tone_validator;
    Elm_Validator_Regexp *frq_validator;
    Evas_Object *gengrid;
@@ -325,21 +326,10 @@ _validation(void *data __UNUSED__,
      popup_buttons_disabled_set(BTN_OK, false);
 }
 
-static void
-_tone_add_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+Evas_Object *
+_add_tone_content_get(void *data __UNUSED__)
 {
-   Evas_Object *box, *item;
-   Popup_Button btn_res;
-
-   if (!mng.tone_validator)
-     {
-        mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
-        resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
-     }
-   if (!mng.frq_validator)
-     mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
+   Evas_Object *item, *box;
 
    BOX_ADD(mng.win, box, false, false);
    elm_box_padding_set(box, 0, 10);
@@ -362,16 +352,35 @@ _tone_add_cb(void *data __UNUSED__,
    /* need to manualy set not valid string for triggered validator */
    elm_entry_entry_set(mng.frq_entry, NULL);
    elm_box_pack_end(box, item);
+   mng.box = box;
+
+   return box;
+}
+
+static void
+_tone_add_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   Popup_Button btn_res;
+
+   if (!mng.tone_validator)
+     {
+        mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
+        resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
+     }
+   if (!mng.frq_validator)
+     mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
    popup_buttons_disabled_set(BTN_OK, true);
-   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+   btn_res = popup_want_action(_("Create a new layout"), NULL, _add_tone_content_get,
                                mng.tone_entry, BTN_OK|BTN_CANCEL,
                                NULL, mng.tone_entry);
    if (BTN_CANCEL == btn_res) goto close;
    _tone_add();
 
 close:
-   evas_object_del(box);
+   evas_object_del(mng.box);
 }
 
 #undef INFO_ADD
