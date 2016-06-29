@@ -560,7 +560,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
-      case PROPERTY_CONTROL_NEWCOMBOBOX:
+      case PROPERTY_CONTROL_COMBOBOX:
          cb_item = evas_object_data_get(action->control, "CURRENT_DATA");
          if (!cb_item) return;
          break;
@@ -1246,14 +1246,14 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
               IT.name = "Font style (weight)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
                        _("Overrides the weight defined in \"font\". "
                          "For example, the value \"Bold\" is the "
                          "same as font value \"style=Bold\"."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
               IT.name = "Font style (width)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
                        _("Overrides the width defined in \"font\". "
                          "For example, the value \"Condensed\" is the "
                          "same as font value \"style=Condensed\"."));
@@ -1278,7 +1278,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
               IT.name = "Horizontal align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
                       _("Sets the horizontal alignment of the text.<br>"
                         " * auto  - Respects LTR/RTL settings.<br> "
                         " * center - Centers the text in the line.<br>"
@@ -1288,7 +1288,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
               IT.name = "Vertical align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
                        _("Sets the vertical alignment of the text.<br>"
                          " * top - Puts text at the top of the line.<br>"
                          " * center  - Centers the text in the line.<br>"
@@ -1306,7 +1306,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
               IT.name = "Wrap";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
                        _("Sets the wrap policy of the text.<br>"
                          " * word  - Only wraps lines at word boundaries.<br>"
                          " * char  - Wraps at any character.<br>"
@@ -1369,7 +1369,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
               IT.name = "Style";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE,
                        _("Sets the style of the text."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
@@ -1380,7 +1380,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
               IT.name = "Direction";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION,
                        _("Sets the shadow direction"));
               IT.filter_cb = _direction_filter_cb;
               break;
@@ -1412,7 +1412,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE:
               IT.name = "Underline";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
                        _("Sets if and how a text is underlined."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:

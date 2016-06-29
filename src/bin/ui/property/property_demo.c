@@ -187,7 +187,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
-      case PROPERTY_CONTROL_NEWCOMBOBOX:
+      case PROPERTY_CONTROL_COMBOBOX:
          cb_item_combo = evas_object_data_get(action->control, "CURRENT_DATA");
          if (!cb_item_combo) return;
          break;
@@ -494,7 +494,7 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
               IT.name = "Content";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
               IT.name = "Image";
@@ -506,7 +506,7 @@ _init_items()
               IT.name = "Widget";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
               IT.name = "Widget style";

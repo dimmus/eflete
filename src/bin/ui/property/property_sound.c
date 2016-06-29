@@ -315,7 +315,7 @@ _init_items()
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
               IT.name = "Compression type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
               IT.filter_data.sound_types = SOUND_SAMPLE;

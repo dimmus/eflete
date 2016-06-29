@@ -282,10 +282,6 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "clicked", _start_change_stop_cb, pa);
          break;
       case PROPERTY_CONTROL_COMBOBOX:
-         EWE_COMBOBOX_ADD(parent, content);
-         evas_object_smart_callback_add(content, "selected", _start_change_stop_cb, pa);
-         break;
-      case PROPERTY_CONTROL_NEWCOMBOBOX:
          COMBOBOX_ADD(parent, content);
          itc = elm_genlist_item_class_new();
          itc->item_style = "default";
@@ -641,7 +637,6 @@ property_common_itc_init(Property_Data *pd)
 
    pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
-   pd->item_classes[PROPERTY_CONTROL_NEWCOMBOBOX]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;

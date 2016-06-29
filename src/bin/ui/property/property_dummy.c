@@ -242,7 +242,7 @@ property_dummy_init()
 
    dummy_data.item5.name = eina_stringshare_add(_("Item 5"));
    dummy_data.item5.action1.name = eina_stringshare_add(_("comb"));
-   dummy_data.item5.action1.control_type = PROPERTY_CONTROL_NEWCOMBOBOX;
+   dummy_data.item5.action1.control_type = PROPERTY_CONTROL_COMBOBOX;
    dummy_data.item5.action1.init_cb = _combo_init_cb;
    dummy_data.item5.action1.change_cb = _combo_change_cb;
    dummy_data.item5.action1.start_cb = _start_cb;
@@ -307,7 +307,7 @@ property_dummy_init()
                }
              else
                dummy_data.items[i].action1.name = eina_stringshare_add(_("y"));
-             dummy_data.items[i].action1.control_type = PROPERTY_CONTROL_NEWCOMBOBOX;
+             dummy_data.items[i].action1.control_type = PROPERTY_CONTROL_COMBOBOX;
              dummy_data.items[i].action1.init_cb = _combo_init_cb;
           }
         else
