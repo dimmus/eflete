@@ -583,7 +583,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
       }
       part { name: "base"; type: RECT; mouse_events: 1;
          description { state: "default" 0.0;
-            color: 0 0 0 64;
+            color: 0 0 0 0;
          }
       }
       part { name: "box"; type: RECT; mouse_events: 0;
