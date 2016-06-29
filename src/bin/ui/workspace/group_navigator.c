@@ -826,28 +826,6 @@ _program_validate(void *data,
 }
 
 static void
-_job_popup_del(void *data)
-{
-   Part_List *pl = data;
-
-   assert(pl != NULL);
-
-   pl->popup.entry_name = NULL;
-   evas_object_del(ap.popup);
-   ap.popup = NULL;
-   elm_object_disabled_set(pl->popup.combobox, false);
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-}
-
-static void
-_popup_cancel_clicked(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
-{
-   ecore_job_add(_job_popup_del, data);
-}
-
-static void
 _popup_add_part_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
@@ -915,7 +893,7 @@ _popup_add_part_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   ecore_job_add(_job_popup_del, pl);
+   evas_object_del(pl->popup.box);
 }
 
 Eina_Bool
@@ -1144,7 +1122,7 @@ _popup_add_group_data_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   ecore_job_add(_job_popup_del, pl);
+   evas_object_del(pl->popup.box);
 }
 
 Eina_Bool
@@ -1246,7 +1224,7 @@ _popup_add_state_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   ecore_job_add(_job_popup_del, pl);
+   evas_object_del(pl->popup.box);
 }
 
 Eina_Bool
@@ -1389,7 +1367,7 @@ _popup_add_item_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   ecore_job_add(_job_popup_del, pl);
+   evas_object_del(pl->popup.box);
 }
 
 Eina_Bool
@@ -1552,7 +1530,7 @@ _popup_add_program_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   ecore_job_add(_job_popup_del, pl);
+   evas_object_del(pl->popup.box);
 }
 
 Eina_Bool
