@@ -73,6 +73,7 @@ typedef struct
 
    struct {
         int copy_part, part_type;
+        Combobox_Item *state_selected;
         Evas_Object *box;
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
@@ -964,6 +965,20 @@ _part_selected_cb(void *data,
 }
 
 static void
+_state_selected_cb(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Part_List *pl = data;
+   Combobox_Item *item;
+
+   assert(pl != NULL);
+
+   item = elm_object_item_data_get(event_info);
+   pl->popup.state_selected = item;
+}
+
+static void
 _type_selected_cb(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
@@ -1181,7 +1196,6 @@ _popup_add_state_ok_clicked(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *item;
    Part_List *pl = data;
    const char *name;
    double val;
@@ -1199,8 +1213,7 @@ _popup_add_state_ok_clicked(void *data,
    val = elm_spinner_value_get(pl->popup.spinner_value);
    val = ((int) (val * 100)) / 100.0; /* only first two digets after point are used */
 
-   item = ewe_combobox_select_item_get(pl->popup.combobox);
-   if (item->index == 0)
+   if (pl->popup.state_selected->index == 0)
      {
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f"), name, val);
         change = change_add(msg);
@@ -1211,7 +1224,7 @@ _popup_add_state_ok_clicked(void *data,
      {
         request.resource_type = RESOURCE_TYPE_STATE;
         TODO("Avoid parse here");
-        state_name_split(item->title, &request.name, &request.val);
+        state_name_split(pl->popup.state_selected->data, &request.name, &request.val);
         state_from = (State *)resource_get(pl->part->states, (Resource *)&request);
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
                                       name, val, state_from->name, state_from->val);
@@ -1279,6 +1292,8 @@ _add_state_content_get(void *data)
    Eina_List *l;
    Eina_Stringshare *label;
    State *state = NULL;
+   Combobox_Item *combobox_item;
+   unsigned int i = 0;
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
@@ -1303,18 +1318,32 @@ _add_state_content_get(void *data)
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Duplicate state"), "popup", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
 
-   ewe_combobox_item_add(pl->popup.combobox, _("None"));
-   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   COMBOBOX_ADD(item, pl->popup.combobox)
+   elm_object_text_set(pl->popup.combobox, _("None"));
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = 0;
+   combobox_item->data = eina_stringshare_add(_("None"));
+   elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   i = 1;
    EINA_LIST_FOREACH(pl->part->states, l, state)
      {
         label = eina_stringshare_printf("%s %.2f", state->name, state->val);
-        ewe_combobox_item_add(pl->popup.combobox, label);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(label);
+        elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
         eina_stringshare_del(label);
      }
+   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+                                  _combobox_item_pressed_cb, NULL);
+   evas_object_show(pl->popup.combobox);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _state_selected_cb, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
-
    elm_box_pack_end(box, item);
 
    pl->popup.box = box;
