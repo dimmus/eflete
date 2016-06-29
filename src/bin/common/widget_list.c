@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include <Eina.h>
+#include "resource_manager.h"
 #include "widget_list.h"
 
 static const char *exception[] =
@@ -378,3 +378,95 @@ widget_prefix_list_get(Eina_List *collections, const char *widget_name, const ch
      }
    return list;
 }
+
+Eina_Stringshare *
+widget_prefix_get(const char *group_name, int level, int *symbols)
+{
+   const char *pos;
+   char prefix[BUFF_MAX];
+   int i, len;
+
+   assert(group_name != NULL);
+   assert(level >= 0);
+
+   pos = group_name - 1;
+   for (i = 0; (pos) && (i <= level); i++)
+     {
+        pos = strchr(pos + 1, '/');
+     }
+   if (!pos) return NULL;
+
+   len = pos - group_name + 1;
+   strncpy(prefix, group_name, len);
+   prefix[len] = '\0';
+   if (symbols) *symbols = len;
+
+   return eina_stringshare_add(prefix);
+}
+
+void
+widget_tree_items_get(Eina_List *groups,
+                      const char *prefix,
+                      Eina_List **folders_out,
+                      Eina_List **groups_out)
+{
+   int cmp;
+   int level = 0;
+   const char *pos;
+   Group *group, *group_next;
+   size_t prefix_len;
+   Eina_Stringshare *group_prefix;
+   int group_prefix_len;
+   Eina_List *l, *lnext;
+
+   assert(prefix != NULL);
+   assert(folders_out != NULL);
+   assert(groups_out != NULL);
+
+   prefix_len = strlen(prefix);
+
+   pos = prefix - 1;
+   while ((pos = strchr(pos + 1, '/')))
+     level++;
+
+   EINA_LIST_FOREACH(groups, l, group)
+     {
+        cmp = strncmp(group->name, prefix, prefix_len);
+        /* skipping all groups with different prefix */
+        if (cmp < 0)
+          {
+             continue;
+          }
+        if (cmp > 0)
+          {
+             if (strlen(group->name) < prefix_len)
+               continue;
+             else
+               break; /* there is no sense to check all next groups because list is sorted */
+          }
+
+        group_prefix = widget_prefix_get(group->name, level, &group_prefix_len);
+        if (group_prefix)
+          {
+             *folders_out= eina_list_append(*folders_out, eina_stringshare_ref(group_prefix));
+
+             /* skipping other groups from the same "folder" */
+             lnext = l;
+             while ((lnext = eina_list_next(lnext)))
+               {
+                  group_next = eina_list_data_get(lnext);
+                  if ((group_next) && (!strncmp(group_next->name, group_prefix, group_prefix_len)))
+                    l = lnext;
+                  else
+                    break;
+               }
+          }
+        else
+          {
+             *groups_out = eina_list_append(*groups_out, group);
+          }
+        eina_stringshare_del(group_prefix);
+     }
+}
+
+

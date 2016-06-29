@@ -24,6 +24,7 @@
 #include "main_window.h"
 #include "validator.h"
 #include "project_manager.h"
+#include "widget_list.h"
 
 typedef struct
 {
@@ -167,94 +168,6 @@ _folder_item_del(void *data,
    eina_stringshare_del(prefix);
 }
 
-static Eina_Stringshare *
-_get_prefix(const char *group_name, int level, int *symbols)
-{
-   const char *pos;
-   char prefix[BUFF_MAX];
-   int i, len;
-
-   assert(group_name != NULL);
-   assert(level >= 0);
-
-   pos = group_name - 1;
-   for (i = 0; (pos) && (i <= level); i++)
-     {
-        pos = strchr(pos + 1, '/');
-     }
-   if (!pos) return NULL;
-
-   len = pos - group_name + 1;
-   strncpy(prefix, group_name, len);
-   prefix[len] = '\0';
-   if (symbols) *symbols = len;
-
-   return eina_stringshare_add(prefix);
-}
-
-static void
-_tree_items_get(const char *prefix,
-                Eina_List **folders_out,
-                Eina_List **groups_out)
-{
-   int cmp;
-   int level = 0;
-   const char *pos;
-   Group *group, *group_next;
-   size_t prefix_len;
-   Eina_Stringshare *group_prefix;
-   int group_prefix_len;
-   Eina_List *l, *lnext;
-
-   assert(prefix != NULL);
-   assert(folders_out != NULL);
-   assert(groups_out != NULL);
-
-   prefix_len = strlen(prefix);
-
-   pos = prefix - 1;
-   while ((pos = strchr(pos + 1, '/')))
-     level++;
-
-   EINA_LIST_FOREACH(ap.project->groups, l, group)
-     {
-        cmp = strncmp(group->name, prefix, prefix_len);
-        /* skipping all groups with different prefix */
-        if (cmp < 0)
-          {
-             continue;
-          }
-        if (cmp > 0)
-          {
-             if (strlen(group->name) < prefix_len)
-               continue;
-             else
-               break; /* there is no sense to check all next groups because list is sorted */
-          }
-
-        group_prefix = _get_prefix(group->name, level, &group_prefix_len);
-        if (group_prefix)
-          {
-             *folders_out= eina_list_append(*folders_out, group_prefix);
-
-             /* skipping other groups from the same "folder" */
-             lnext = l;
-             while ((lnext = eina_list_next(lnext)))
-               {
-                  group_next = eina_list_data_get(lnext);
-                  if ((group_next) && (!strncmp(group_next->name, group_prefix, group_prefix_len)))
-                    l = lnext;
-                  else
-                    break;
-               }
-          }
-        else
-          {
-             *groups_out = eina_list_append(*groups_out, group);
-          }
-     }
-}
-
 static void
 _expand_request_cb(void *data __UNUSED__,
                    Evas_Object *o __UNUSED__,
@@ -283,7 +196,7 @@ _expanded_cb(void *data __UNUSED__,
    Elm_Object_Item *glit = event_info;
    Eina_Stringshare *prefix = elm_object_item_data_get(glit);
 
-   _tree_items_get(prefix, &folders, &groups);
+   widget_tree_items_get(ap.project->groups, prefix, &folders, &groups);
    EINA_LIST_FREE(folders, prefix)
      {
         elm_genlist_item_append(project_navigator.genlist,
@@ -405,7 +318,7 @@ _group_add(void *data __UNUSED__,
 
    if (i != count - 1)
      {
-        prefix = _get_prefix(group->name, i, NULL);
+        prefix = widget_prefix_get(group->name, i, NULL);
         elm_genlist_item_sorted_insert(project_navigator.genlist,
                                        project_navigator.itc_folder,
                                        prefix,
@@ -568,7 +481,7 @@ _folder_del(const char *prefix)
    Eina_Stringshare *tmp, *msg;
    Group *group, *alias;
 
-   _tree_items_get(prefix, &folders, &groups);
+   widget_tree_items_get(ap.project->groups, prefix, &folders, &groups);
    EINA_LIST_FREE(folders, tmp)
      {
        _folder_del(tmp);
@@ -834,7 +747,7 @@ project_navigator_project_set(void)
    Group *group;
 
    elm_object_text_set(project_navigator.layout, ap.project->name);
-   _tree_items_get("", &folders, &groups);
+   widget_tree_items_get(ap.project->groups, "", &folders, &groups);
 
    EINA_LIST_FREE(folders, prefix)
      {
