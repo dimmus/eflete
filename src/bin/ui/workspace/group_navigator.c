@@ -72,7 +72,7 @@ typedef struct
    Resource_Name_Validator *group_data_name_validator;
 
    struct {
-        int copy_part, part_type;
+        int copy_part, part_type, program_selected;
         Combobox_Item *state_selected;
         Evas_Object *box;
         Evas_Object *entry_name;
@@ -935,18 +935,6 @@ group_navigator_part_add(Evas_Object *obj, Part *part)
 }
 
 static void
-_combobox_collapsed(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
-{
-   Part_List *pl = data;
-
-   assert(pl != NULL);
-
-   elm_object_focus_set(pl->popup.entry_name, true);
-}
-
-static void
 _part_selected_cb(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
@@ -976,6 +964,20 @@ _state_selected_cb(void *data,
 
    item = elm_object_item_data_get(event_info);
    pl->popup.state_selected = item;
+}
+
+static void
+_program_selected_cb(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   Part_List *pl = data;
+   Combobox_Item *item;
+
+   assert(pl != NULL);
+
+   item = elm_object_item_data_get(event_info);
+   pl->popup.program_selected = item->index;
 }
 
 static void
@@ -1508,7 +1510,6 @@ _popup_add_program_ok_clicked(void *data,
                               Evas_Object *obj __UNUSED__,
                               void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *item;
    Edje_Action_Type type = EDJE_ACTION_TYPE_NONE;
    Part_List *pl = data;
    const char *name;
@@ -1519,8 +1520,7 @@ _popup_add_program_ok_clicked(void *data,
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
-   item = ewe_combobox_select_item_get(pl->popup.combobox);
-   switch (item->index)
+   switch (pl->popup.program_selected)
      {
       case 0:
          type = EDJE_ACTION_TYPE_NONE;
@@ -1575,6 +1575,7 @@ _add_program_content_get(void *data)
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
    unsigned int i = 0;
+   Combobox_Item *combobox_item;
 
    BOX_ADD(ap.popup, box, false, false);
    elm_box_padding_set(box, 0, 10);
@@ -1591,18 +1592,22 @@ _add_program_content_get(void *data)
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Action type"), "popup", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-   ewe_combobox_select_item_set(pl->popup.combobox, 0);
-
+   COMBOBOX_ADD(item, pl->popup.combobox)
    for (i = 0; program_actions[i]; i++)
      {
-        ewe_combobox_item_add(pl->popup.combobox, program_actions[i]);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(program_actions[i]);
+        elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   elm_object_text_set(pl->popup.combobox, program_actions[0]);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+                                  _combobox_item_pressed_cb, NULL);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _program_selected_cb, pl);
 
-   elm_object_focus_set(pl->popup.entry_name, true);
    elm_box_pack_end(box, item);
    pl->popup.box = box;
 
