@@ -453,26 +453,17 @@ _group_validate(void *data __UNUSED__,
      popup_buttons_disabled_set(BTN_OK, false);
 }
 
-static void
-_btn_add_group_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+Evas_Object *
+_add_group_content_get(void *data __UNUSED__)
 {
    Evas_Object *item;
-   Popup_Button btn_res;
    Group *group;
    Eina_List *l;
    Elm_Object_Item *glit;
 
-   if (!ap.project) return; /* when pressing ctrl + n without open project */
-
-   assert(validator == NULL);
-
    BOX_ADD(ap.win, layout_p.box, false, false)
    elm_box_padding_set(layout_p.box, 0, 10);
    /* name: entry */
-   validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
-   resource_name_validator_list_set(validator, &ap.project->groups, false);
    LAYOUT_PROP_ADD(layout_p.box, _("name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
@@ -505,7 +496,23 @@ _btn_add_group_cb(void *data __UNUSED__,
      }
    ewe_combobox_select_item_set(layout_p.combobox, 0);
 
-   btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box,
+   return layout_p.box;
+}
+
+static void
+_btn_add_group_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Popup_Button btn_res;
+
+   if (!ap.project) return; /* when pressing ctrl + n without open project */
+
+   assert(validator == NULL);
+
+   validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
+   resource_name_validator_list_set(validator, &ap.project->groups, false);
+   btn_res = popup_want_action(_("Create a new layout"), NULL, _add_group_content_get,
                                layout_p.entry, BTN_OK|BTN_CANCEL,
                                NULL, layout_p.entry);
    if (BTN_CANCEL == btn_res) goto close;
