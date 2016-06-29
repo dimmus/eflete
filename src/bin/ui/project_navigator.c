@@ -27,6 +27,12 @@
 
 typedef struct
 {
+   int index;
+   Eina_Stringshare *data;
+} Combobox_Item;
+
+typedef struct
+{
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *btn_add;
@@ -42,6 +48,8 @@ typedef struct
    Evas_Object *layout_combo;
    Evas_Object *combobox;
    Evas_Object *check;
+   Elm_Genlist_Item_Class *combobox_itc;
+   Combobox_Item *selected;
 } Layout_Popup;
 
 static Project_Navigator project_navigator;
@@ -435,11 +443,15 @@ _alias_ch(void *data __UNUSED__,
 
 static void
 _group_sel(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
+           Evas_Object *obj,
            void *event_info)
 {
-    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
-    elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
+   Combobox_Item *item = elm_object_item_data_get(event_info);
+   elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
+   layout_p.selected = item;
+   elm_object_text_set(obj, item->data);
+   elm_combobox_hover_end(obj);
+   elm_entry_cursor_end_set(obj);
 }
 
 static void
@@ -460,6 +472,8 @@ _add_group_content_get(void *data __UNUSED__)
    Group *group;
    Eina_List *l;
    Elm_Object_Item *glit;
+   Combobox_Item *combobox_item;
+   unsigned int i = 1;
 
    BOX_ADD(ap.win, layout_p.box, false, false)
    elm_box_padding_set(layout_p.box, 0, 10);
@@ -476,8 +490,8 @@ _add_group_content_get(void *data __UNUSED__)
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "popup", "1swallow")
    layout_p.layout_combo = item;
-   EWE_COMBOBOX_ADD(item, layout_p.combobox)
-   evas_object_smart_callback_add(layout_p.combobox, "selected", _group_sel, NULL);
+   COMBOBOX_ADD(item, layout_p.combobox)
+   evas_object_smart_callback_add(layout_p.combobox, "item,pressed", _group_sel, NULL);
    elm_layout_content_set(item, NULL, layout_p.combobox);
    elm_box_pack_end(layout_p.box, item);
    /* alias: check */
@@ -489,12 +503,22 @@ _add_group_content_get(void *data __UNUSED__)
    elm_box_pack_end(layout_p.box, item);
 
    /* fill the combobox */
-   ewe_combobox_item_add(layout_p.combobox, _("None"));
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = 0;
+   combobox_item->data = eina_stringshare_add(_("None"));
+   elm_genlist_item_append(layout_p.combobox, layout_p.combobox_itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->groups, l, group)
      {
-        ewe_combobox_item_add(layout_p.combobox, group->name);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(group->name);
+        elm_genlist_item_append(layout_p.combobox, layout_p.combobox_itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   ewe_combobox_select_item_set(layout_p.combobox, 0);
+   elm_object_text_set(layout_p.combobox, _("None"));
 
    return layout_p.box;
 }
@@ -517,16 +541,14 @@ _btn_add_group_cb(void *data __UNUSED__,
                                NULL, layout_p.entry);
    if (BTN_CANCEL == btn_res) goto close;
 
-   Ewe_Combobox_Item *combo_it;
-   combo_it = ewe_combobox_select_item_get(layout_p.combobox);
-   if (combo_it->index  == 0)
+   if ((!layout_p.selected) || (layout_p.selected->index == 0))
      CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry)));
    else
      {
         if (!elm_check_state_get(layout_p.check))
-          CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry)));
+          CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
         else
-          CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry)));
+          CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
      }
    gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
 
@@ -696,6 +718,22 @@ _shortcut_save_cb(void *data __UNUSED__,
    project_save();
 }
 
+static char *
+_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   return strdup(item->data);
+}
+
+static void
+_combobox_item_del(void *data,
+                   Evas_Object *obj __UNUSED__)
+{
+   Combobox_Item *item = (Combobox_Item *)data;
+   eina_stringshare_del(item->data);
+   free(item);
+}
+
 Evas_Object *
 project_navigator_add(void)
 {
@@ -714,6 +752,11 @@ project_navigator_add(void)
    project_navigator.itc_group->func.content_get = _group_item_icon_get;
    project_navigator.itc_group->func.state_get = NULL;
    project_navigator.itc_group->func.del = NULL;
+
+   layout_p.combobox_itc = elm_genlist_item_class_new();
+   layout_p.combobox_itc->item_style = "default";
+   layout_p.combobox_itc->func.text_get = _combobox_text_get;
+   layout_p.combobox_itc->func.del = _combobox_item_del;
 
    project_navigator.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(project_navigator.layout, "layout", "navigator", "default");
