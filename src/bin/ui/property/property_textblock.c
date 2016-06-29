@@ -458,17 +458,27 @@ _tag_parse(const char *value, const char *text)
 static void
 _fill_combobox_with_enum(Evas_Object *control, const char **array)
 {
-   int i = 0;
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
 
    assert(control != NULL);
    assert(array != NULL);
 
+   itc = evas_object_data_get(control, "COMMON_ITC");
+
    while (array[i] != NULL)
      {
-        ewe_combobox_item_add(control, array[i]);
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(array[i]);
+        elm_genlist_item_append(control, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
         ++i;
      }
 }
+
 
 static Eina_List *
 _subitems_get(Property_Attribute *pa)
@@ -528,7 +538,7 @@ static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    Eina_Stringshare *str_val1 = NULL, *str_tmp = NULL;
-   Ewe_Combobox_Item *cb_item = NULL;
+   Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
    Eina_Bool bool_val1 = false;
    int r = -1, g = -1, b = -1, a = -1;
@@ -550,9 +560,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
-      case PROPERTY_CONTROL_COMBOBOX:
-         TODO("change this after migrating to elm_combobox");
-         cb_item = ewe_combobox_select_item_get(action->control);
+      case PROPERTY_CONTROL_NEWCOMBOBOX:
+         cb_item = evas_object_data_get(action->control, "CURRENT_DATA");
+         if (!cb_item) return;
          break;
       case PROPERTY_CONTROL_COLOR:
          property_color_control_color_get(action->control, &r, &g, &b, &a);
@@ -575,18 +585,20 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          assert(cb_item != NULL);
          tpd.font_style_weight = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "font_weight");
+         _tag_parse(eina_stringshare_add(cb_item->data), "font_weight");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+         elm_object_text_set(action->control, font_weight_list[tpd.font_style_weight]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
          assert(cb_item != NULL);
          tpd.font_style_width = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "font_width");
+         _tag_parse(eina_stringshare_add(cb_item->data), "font_width");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+         elm_object_text_set(action->control, font_width_list[tpd.font_style_width]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
          tpd.color.r = r;
@@ -613,18 +625,20 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
          assert(cb_item != NULL);
          tpd.font_align_hor = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "align");
+         _tag_parse(eina_stringshare_add(cb_item->data), "align");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+         elm_object_text_set(action->control, font_horizontal_align[tpd.font_align_hor]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
          assert(cb_item != NULL);
          tpd.font_valign_hor = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "valign");
+         _tag_parse(eina_stringshare_add(cb_item->data), "valign");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+         elm_object_text_set(action->control, font_horizontal_valign[tpd.font_valign_hor]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
          tpd.left_margin = double_val1;
@@ -647,10 +661,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          assert(cb_item != NULL);
          tpd.wrap = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "wrap");
+         _tag_parse(eina_stringshare_add(cb_item->data), "wrap");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+         elm_object_text_set(action->control, text_wrap[tpd.wrap]);
          break;
 
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
@@ -743,11 +758,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
          assert(cb_item != NULL);
          tpd.glow_style = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "style");
+         _tag_parse(eina_stringshare_add(cb_item->data), "style");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          GENLIST_FILTER_APPLY(pd->genlist);
+         elm_object_text_set(action->control, font_glow_list[tpd.glow_style]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
          tpd.shadow_color.r = r;
@@ -764,10 +780,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
          assert(cb_item != NULL);
          eina_stringshare_del(style_table[DIRECTION_NUM][1]);
-         style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->title);
-         _tag_parse(cb_item->title, "direction");
+         style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->data);
+         _tag_parse(cb_item->data, "direction");
          _style_edit_update();
          ap.project->changed = true;
+         elm_object_text_set(action->control, direction_list[tpd.direction]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
          tpd.outer_color.r = r;
@@ -821,11 +838,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
          assert(cb_item != NULL);
          tpd.underline = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->title), "underline");
+         _tag_parse(eina_stringshare_add(cb_item->data), "underline");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          GENLIST_FILTER_APPLY(pd->genlist);
+         elm_object_text_set(action->control, underl_styles[tpd.underline]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
          tpd.underone_color.r = r;
@@ -903,10 +921,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, tpd.font);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
-         ewe_combobox_select_item_set(action->control, tpd.font_style_weight);
+         elm_object_text_set(action->control, font_weight_list[tpd.font_style_weight]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
-         ewe_combobox_select_item_set(action->control, tpd.font_style_width);
+         elm_object_text_set(action->control, font_width_list[tpd.font_style_width]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
          property_color_control_color_set(action->control,
@@ -919,10 +937,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, tpd.font_size);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
-         ewe_combobox_select_item_set(action->control, tpd.font_align_hor);
+         elm_object_text_set(action->control, font_horizontal_align[tpd.font_align_hor]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
-         ewe_combobox_select_item_set(action->control, tpd.font_valign_hor);
+         elm_object_text_set(action->control, font_horizontal_valign[tpd.font_valign_hor]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
          elm_spinner_value_set(action->control, tpd.left_margin);
@@ -931,7 +949,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, tpd.right_margin);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
-         ewe_combobox_select_item_set(action->control, tpd.wrap);
+         elm_object_text_set(action->control, text_wrap[tpd.wrap]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
          elm_spinner_value_set(action->control, tpd.tabstops);
@@ -964,7 +982,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, tpd.linerelsize);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
-         ewe_combobox_select_item_set(action->control, tpd.glow_style);
+         elm_object_text_set(action->control, font_glow_list[tpd.glow_style]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
          property_color_control_color_set(action->control,
@@ -974,7 +992,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
                                           tpd.shadow_color.a);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
-         ewe_combobox_select_item_set(action->control, tpd.direction);
+         elm_object_text_set(action->control, direction_list[tpd.direction]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
          property_color_control_color_set(action->control,
@@ -1001,7 +1019,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
                                           tpd.strikethrough_color.a);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
-         ewe_combobox_select_item_set(action->control, tpd.underline);
+         elm_object_text_set(action->control, underl_styles[tpd.underline]);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
          property_color_control_color_set(action->control,
@@ -1228,14 +1246,14 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
               IT.name = "Font style (weight)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
                        _("Overrides the weight defined in \"font\". "
                          "For example, the value \"Bold\" is the "
                          "same as font value \"style=Bold\"."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
               IT.name = "Font style (width)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
                        _("Overrides the width defined in \"font\". "
                          "For example, the value \"Condensed\" is the "
                          "same as font value \"style=Condensed\"."));
@@ -1260,7 +1278,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
               IT.name = "Horizontal align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
                       _("Sets the horizontal alignment of the text.<br>"
                         " * auto  - Respects LTR/RTL settings.<br> "
                         " * center - Centers the text in the line.<br>"
@@ -1270,7 +1288,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
               IT.name = "Vertical align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
                        _("Sets the vertical alignment of the text.<br>"
                          " * top - Puts text at the top of the line.<br>"
                          " * center  - Centers the text in the line.<br>"
@@ -1288,7 +1306,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
               IT.name = "Wrap";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
                        _("Sets the wrap policy of the text.<br>"
                          " * word  - Only wraps lines at word boundaries.<br>"
                          " * char  - Wraps at any character.<br>"
@@ -1351,7 +1369,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
               IT.name = "Style";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE,
                        _("Sets the style of the text."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
@@ -1362,7 +1380,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
               IT.name = "Direction";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION,
                        _("Sets the shadow direction"));
               IT.filter_cb = _direction_filter_cb;
               break;
@@ -1394,7 +1412,7 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE:
               IT.name = "Underline";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_NEWCOMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
                        _("Sets if and how a text is underlined."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
