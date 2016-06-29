@@ -533,7 +533,7 @@ static void
 _folder_del(const char *prefix)
 {
    Eina_List *folders = NULL, *groups = NULL;
-   Eina_Stringshare *tmp;
+   Eina_Stringshare *tmp, *msg;
    Group *group;
 
    _tree_items_get(prefix, &folders, &groups);
@@ -544,8 +544,14 @@ _folder_del(const char *prefix)
    EINA_LIST_FREE(groups, group)
      {
        tmp = eina_stringshare_add(group->name);
-       gm_group_del(ap.project, group);
-       CRIT_ON_FAIL(editor_group_del(ap.project->global_object, tmp));
+       if (editor_group_del(ap.project->global_object, tmp))
+         gm_group_del(ap.project, group);
+       else
+         {
+            msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
+            popup_want_action(_("Error"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+            eina_stringshare_del(msg);
+         }
        eina_stringshare_del(tmp);
      }
 }
@@ -613,7 +619,7 @@ _btn_del_group_cb(void *data __UNUSED__,
    Popup_Button btn_res;
    Group *group;
    Elm_Object_Item *glit;
-   Eina_Stringshare *tmp;
+   Eina_Stringshare *tmp, *msg;
 
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
@@ -644,8 +650,14 @@ _btn_del_group_cb(void *data __UNUSED__,
                                     NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
         tmp = eina_stringshare_add(group->name);
-        gm_group_del(ap.project, group);
-        CRIT_ON_FAIL(editor_group_del(ap.project->global_object, tmp));
+        if (editor_group_del(ap.project->global_object, tmp))
+          gm_group_del(ap.project, group);
+        else
+          {
+             msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
+             popup_want_action(_("Error"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+             eina_stringshare_del(msg);
+          }
         eina_stringshare_del(tmp);
      }
    elm_object_disabled_set(project_navigator.btn_del, true);

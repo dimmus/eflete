@@ -73,7 +73,8 @@ editor_group_del(Evas_Object *obj, const char *name)
    assert(obj != NULL);
    assert(name != NULL);
 
-   CRIT_ON_FAIL(edje_edit_group_del(obj, name));
+   if (!edje_edit_group_del(obj, name))
+      return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
