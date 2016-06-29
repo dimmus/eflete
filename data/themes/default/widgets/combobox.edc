@@ -1327,6 +1327,213 @@ group { name: "elm/genlist/base/combobox_vertical/default";
    }
 }
 
+group { name: "elm/genlist/item_compress/color_class/combobox_vertical/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "20";
+      item: "contents" "swallow.color1 swallow.color2 swallow.color3";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            min: 0 24;
+            max: -1 0;
+         }
+         description { state: "selected" 0.0;
+            color_class: "select";
+            min: 0 19;
+            max: -1 0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 213 213 213 255;
+            rel1 {
+               offset: 10 0;
+            }
+            rel2 {
+               offset: -11 -1;
+            }
+            text {
+               font: FN;
+               size: 12;
+               align: 0.0 0.5;
+               min: 1 1;
+               elipsis: -1;
+            }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      part { name: "bg.color3";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel2 {
+               offset: -7 -1;
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "bg.color2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "bg.color3";
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "bg.color1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 13;
+            max: 16 13;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "bg.color2";
+            }
+            image {
+               normal: "color-background-2.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "swallow.color1";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color1";
+            }
+            rel2 {
+               to: "bg.color1";
+            }
+         }
+      }
+      part { name: "swallow.color2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color2";
+            }
+            rel2 {
+               to: "bg.color2";
+            }
+         }
+      }
+      part { name: "swallow.color3";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color3";
+            }
+            rel2 {
+               to: "bg.color3";
+            }
+         }
+      }
+      part { name: "shadow.color1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color1";
+            }
+            rel2 {
+               to: "bg.color1";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color2";
+            }
+            rel2 {
+               to: "bg.color2";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color3";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color3";
+            }
+            rel2 {
+               to: "bg.color3";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "mouse,in";
+         source: "disclip";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "mouse,out";
+         source: "disclip";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "item_hide";
+         signal: "elm,state,contract_flip";
+         source: "elm";
+         action: STATE_SET "hide" 0.00;
+         target: "elm.text";
+         target: "disclip";
+      }
+   }
+}
+
 group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
    data {
       item: "texts" "elm.text";

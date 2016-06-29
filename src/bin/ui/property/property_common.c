@@ -227,11 +227,39 @@ _combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __U
    return strdup(item->data);
 }
 
+static Evas_Object *
+_combobox_cc_content_get(void *data, Evas_Object *obj, const char *part)
+{
+   Combobox_Cc_Item *item = (Combobox_Cc_Item *)data;
+
+   Evas_Object *object = evas_object_rectangle_add(evas_object_evas_get(obj));
+
+   if (!strcmp(part, "swallow.color1"))
+     evas_object_color_set(object, item->r1, item->g1, item->b1, item->a1);
+   else if (!strcmp(part, "swallow.color2"))
+     evas_object_color_set(object, item->r2, item->g2, item->b2, item->a2);
+   else if (!strcmp(part, "swallow.color3"))
+     evas_object_color_set(object, item->r3, item->g3, item->b3, item->a3);
+
+   evas_object_show(object);
+
+   return object;
+}
+
 static void
 _combobox_item_del(void *data,
                    Evas_Object *obj __UNUSED__)
 {
    Combobox_Item *item = (Combobox_Item *)data;
+   eina_stringshare_del(item->data);
+   free(item);
+}
+
+static void
+_combobox_cc_item_del(void *data,
+                   Evas_Object *obj __UNUSED__)
+{
+   Combobox_Cc_Item *item = (Combobox_Cc_Item *)data;
    eina_stringshare_del(item->data);
    free(item);
 }
@@ -287,6 +315,17 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          itc->item_style = "default";
          itc->func.text_get = _combobox_text_get;
          itc->func.del = _combobox_item_del;
+         evas_object_data_set(content, "COMMON_ITC", itc);
+         evas_object_smart_callback_add(content, "item,pressed",
+                                        _combobox_item_pressed_cb, pa);
+         break;
+      case PROPERTY_CONTROL_COMBOBOX_CC:
+         COMBOBOX_ADD(parent, content);
+         itc = elm_genlist_item_class_new();
+         itc->item_style = "color_class";
+         itc->func.text_get = _combobox_text_get;
+         itc->func.content_get = _combobox_cc_content_get;
+         itc->func.del = _combobox_cc_item_del;
          evas_object_data_set(content, "COMMON_ITC", itc);
          evas_object_smart_callback_add(content, "item,pressed",
                                         _combobox_item_pressed_cb, pa);
@@ -637,6 +676,7 @@ property_common_itc_init(Property_Data *pd)
 
    pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_COMBOBOX_CC]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;

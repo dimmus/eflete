@@ -33,12 +33,22 @@ typedef struct
    Eina_Stringshare *data;
 } Combobox_Item;
 
+typedef struct
+{
+   int index;
+   Eina_Stringshare *data;
+   int r1, g1, b1, a1;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+} Combobox_Cc_Item;
+
 enum _Property_Control {
    PROPERTY_CONTROL_NONE,
 
    PROPERTY_CONTROL_CHECK,
    PROPERTY_CONTROL_BUTTON,
    PROPERTY_CONTROL_COMBOBOX,
+   PROPERTY_CONTROL_COMBOBOX_CC, /* special combobox for color_classes */
    PROPERTY_CONTROL_SPINNER,
    PROPERTY_CONTROL_ENTRY,
    PROPERTY_CONTROL_COLOR,

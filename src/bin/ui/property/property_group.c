@@ -714,6 +714,46 @@ _ccl_control_free(void *data __UNUSED__,
    color = evas_object_data_del(obj, "color3");
    evas_object_del(color);
 }
+/*
+static void
+_color_class_colors_fill(void *data __UNUSED__,
+                         Evas_Object *combo,
+                         void *event_info __UNUSED__)
+{
+   int cc_val[12];
+   Evas_Object *color;
+   const Eina_List *items, *l;
+   Ewe_Combobox_Item *item;
+   Evas *canvas;
+
+   items = ewe_combobox_items_list_get(combo);
+   if (!items) return;
+
+   item = eina_list_data_get(items);
+   canvas = evas_object_evas_get(item->content);
+   items = eina_list_next(items);
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        evas_color_argb_premul(cc_val[3], &cc_val[0], &cc_val[1], &cc_val[2]);
+        evas_color_argb_premul(cc_val[7], &cc_val[4], &cc_val[5], &cc_val[6]);
+        evas_color_argb_premul(cc_val[11], &cc_val[8], &cc_val[9], &cc_val[10]);
+        FIXME: this is bad solition, user shoud not use edje object for add contnent to a
+         * combobox item. Need to move combobox from edje ocject to layout.
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[0], cc_val[1], cc_val[2], cc_val[3]);
+        edje_object_part_swallow(item->content, "swallow.color1", color);
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[4], cc_val[5], cc_val[6], cc_val[7]);
+        edje_object_part_swallow(item->content, "swallow.color2", color);
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[8], cc_val[9], cc_val[10], cc_val[11]);
+        edje_object_part_swallow(item->content, "swallow.color3", color);
+     }
+}
+*/
 
 static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
@@ -1250,7 +1290,7 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
    Eina_Stringshare *color_class;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
-   Combobox_Item *combobox_item;
+   Combobox_Cc_Item *combobox_item;
 
    assert(combo != NULL);
 
@@ -1259,7 +1299,7 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
 
    cclist = edje_edit_color_classes_list_get(EDIT_OBJ);
 
-   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item = mem_calloc(1, sizeof(Combobox_Cc_Item));
    combobox_item->index = i++;
    combobox_item->data = eina_stringshare_add(STR_NONE);
    elm_genlist_item_append(combo, itc,
@@ -1268,8 +1308,12 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
 
    EINA_LIST_FOREACH(cclist, l, color_class)
      {
-        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item = mem_calloc(1, sizeof(Combobox_Cc_Item));
         combobox_item->index = i++;
+        edje_edit_color_class_colors_get(EDIT_OBJ, color_class,
+                                         &combobox_item->r1, &combobox_item->g1, &combobox_item->b1, &combobox_item->a1,
+                                         &combobox_item->r2, &combobox_item->g2, &combobox_item->b2, &combobox_item->a2,
+                                         &combobox_item->r3, &combobox_item->g3, &combobox_item->b3, &combobox_item->a3);
         combobox_item->data = eina_stringshare_add(color_class);
         elm_genlist_item_append(combo, itc,
                                 combobox_item, NULL,
@@ -3156,6 +3200,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = elm_check_state_get(action->control);
          break;
       case PROPERTY_CONTROL_COMBOBOX:
+      case PROPERTY_CONTROL_COMBOBOX_CC:
          cb_item_combo = evas_object_data_get(action->control, "CURRENT_DATA");
          if (!cb_item_combo) return;
          break;
@@ -5110,7 +5155,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX_CC, ATTRIBUTE_STATE_COLOR_CLASS,
                        _("The part uses the color values of the chosen color class. "
                          "These values can be overridden by the \"color\", \"color2\" "
                          "and \"color3\" properties set below."));
