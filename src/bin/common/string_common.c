@@ -20,6 +20,7 @@
 #include <string.h>
 #include <Eina.h>
 #include <assert.h>
+#include "eflete.h"
 
 int
 sort_cb(const void *data1, const void *data2)
@@ -58,4 +59,15 @@ string_char_replace(char *str, char src, char rep)
         if (*str == src) *str = rep;
         str++;
      }
+}
+
+char *
+string_cat(const char *str1, const char *str2)
+{
+   char *string;
+   string = mem_calloc(strlen(str1) + strlen(str2) + 1, sizeof(char));
+   strcpy(string, str1);
+   strcat(string, str2);
+
+   return string;
 }
