@@ -367,18 +367,13 @@ _copy_meta_data_to_pro(void)
 }
 
 static Eina_Bool
-_project_edj_file_copy(void)
+_project_edj_file_copy(const char *src, const char *dst)
 {
-   Eina_Stringshare *src, *dst;
    Eina_Bool result;
 
-   src = eina_stringshare_ref(worker.edj);
-   dst = eina_stringshare_ref(worker.project->saved_edj);
    result = ecore_file_cp(src, dst);
 
    DBG("Copy the .edj file to project folder.");
-   eina_stringshare_del(src);
-   eina_stringshare_del(dst);
    return result;
 }
 
@@ -464,6 +459,12 @@ _project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
+   Eina_Tmpstr *tmp_dirname;
+   Eina_Stringshare *dummy_source, *edc, *edj, *cmd;
+   Ecore_Exe *exe_cmd;
+   pid_t exe_pid;
+   int edje_cc_res = 0, waitpid_res = 0;
+   FILE *f;
 
    PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
@@ -479,14 +480,51 @@ _project_import_edj(void *data,
         END_SEND(PM_PROJECT_LOCKED);
         return NULL;
      }
+   /* create a edj file with dummy group */
+   eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
+   edc = eina_stringshare_printf("%s/out.edc", tmp_dirname);
+   edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
+   cmd = eina_stringshare_printf("edje_cc %s %s", edc, edj);
+   dummy_source = eina_stringshare_add("collections { group { name: \""EFLETE_INTERNAL_GROUP_NAME"\";} }");
+
+   f = fopen(edc, "w");
+   if (!f)
+     {
+        ERR("Could't open file '%s'", edc);
+        return NULL;
+     }
+   fputs(dummy_source, f);
+   fclose(f);
+
+   THREAD_TESTCANCEL;
+   exe_cmd = ecore_exe_pipe_run(cmd, ECORE_EXE_NONE, NULL);
+   exe_pid = ecore_exe_pid_get(exe_cmd);
+   THREAD_TESTCANCEL;
+   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
+
+   if ((waitpid_res == -1) ||
+       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
+     }
 
    PROGRESS_SEND(_("Import processing"));
-   _project_edj_file_copy();
+   _project_edj_file_copy(edj, worker.project->saved_edj);
    _copy_meta_data_to_pro();
-   _project_special_group_add(worker.project);
    _project_dummy_image_add(worker.project);
    _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
+
+   Eina_List *l;
+   Eina_Stringshare *group;
+   EINA_LIST_FOREACH(worker.widgets, l, group)
+     {
+        pm_project_group_import(worker.project, worker.edj, group);
+     }
+
+   ecore_file_recursive_rm(tmp_dirname);
+   eina_tmpstr_del(tmp_dirname);
 
    PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
    if (send_end) END_SEND(PM_PROJECT_SUCCESS);
