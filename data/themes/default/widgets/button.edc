@@ -613,6 +613,7 @@ group { name: "elm/button/base/close";
       program { name: "mouse_out";
          signal: "mouse,out";
          source: "event";
+         filter: "icon" "hilighted";
          action: STATE_SET "default" 0.0;
          target: "icon";
       }
@@ -683,6 +684,7 @@ group { name: "elm/button/base/plus";
       program { name: "button_unclick";
          signal: "mouse,up,1";
          source: "event";
+         filter: "bg" "clicked";
          action: SIGNAL_EMIT "elm,action,unpress" "";
          after: "button_unclick_anim";
       }
@@ -737,6 +739,7 @@ group { name: "elm/button/base/plus";
       program { name: "mouse_out";
          signal: "mouse,out";
          source: "event";
+         filter: "icon" "hilighted";
          action: STATE_SET "default" 0.0;
          target: "icon";
       }
@@ -1124,6 +1127,7 @@ group { name: "elm/button/base/undo";
       program { name: "mouse_out";
          signal: "mouse,out";
          source: "event";
+         filter: "icon" "hilighted";
          action: STATE_SET "default" 0.00;
          target: "icon";
       }
@@ -1232,6 +1236,7 @@ group { name: "elm/button/base/redo";
       program { name: "mouse_out";
          signal: "mouse,out";
          source: "event";
+         filter: "icon" "hilighted";
          action: STATE_SET "default" 0.00;
          target: "icon";
       }
