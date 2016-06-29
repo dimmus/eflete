@@ -45,6 +45,7 @@ struct _Colorclasses_Manager
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *entry, *popup;
    Evas_Object *del_button;
+   Evas_Object *item;
    Resource_Name_Validator *name_validator;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
@@ -68,12 +69,26 @@ _validation(void *data __UNUSED__,
     popup_buttons_disabled_set(BTN_OK, false);
 }
 
+Evas_Object *
+_add_colorclass_content_get(void *data __UNUSED__)
+{
+   Evas_Object *item = NULL;
+
+   LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
+   ENTRY_ADD(item, mng.entry, true);
+   eo_event_callback_add(mng.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.name_validator);
+   evas_object_smart_callback_add(mng.entry, "changed", _validation, NULL);
+   elm_object_part_text_set(mng.entry, "guide", _("Type new color class name here"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.entry);
+   mng.item = item;
+   return mng.item;
+}
+
 static void
 _colorclass_add_cb(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *item;
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
@@ -84,14 +99,7 @@ _colorclass_add_cb(void *data __UNUSED__,
 
    mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.name_validator, &ap.project->colorclasses, true);
-   LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
-   ENTRY_ADD(item, mng.entry, true);
-   eo_event_callback_add(mng.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.name_validator);
-   evas_object_smart_callback_add(mng.entry, "changed", _validation, edit);
-   elm_object_part_text_set(mng.entry, "guide", _("Type new color class name here"));
-   elm_object_part_content_set(item, "elm.swallow.content", mng.entry);
-
-   btn_res = popup_want_action(_("Create a new layout"), NULL, item,
+   btn_res = popup_want_action(_("Create a new layout"), NULL, _add_colorclass_content_get,
                                mng.entry, BTN_OK|BTN_CANCEL,
                                NULL, mng.entry);
 
@@ -117,7 +125,7 @@ _colorclass_add_cb(void *data __UNUSED__,
 
 end:
    resource_name_validator_free(mng.name_validator);
-   evas_object_del(item);
+   evas_object_del(mng.item);
 }
 
 static void
