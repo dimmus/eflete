@@ -466,7 +466,7 @@ _btn_add_group_cb(void *data __UNUSED__,
         else
           CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
      }
-   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
+   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry), true);
 
 close:
    evas_object_del(layout_p.box);

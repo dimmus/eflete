@@ -677,7 +677,7 @@ _group_load(Project *pro, Group *group)
 }
 
 Group *
-gm_group_add(Project *pro, const char *group_name)
+gm_group_add(Project *pro, const char *group_name, Eina_Bool emit)
 {
    Group *group;
 
@@ -688,7 +688,7 @@ gm_group_add(Project *pro, const char *group_name)
    resource_insert(&pro->groups, (Resource *)group);
 
    _group_load(pro, group);
-   evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_ADDED, (void *)group);
+   if (emit) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_ADDED, (void *)group);
    return group;
 }
 

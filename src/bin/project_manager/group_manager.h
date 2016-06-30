@@ -65,7 +65,7 @@ void
 gm_part_item_add(Project *pro, Part *part, Eina_Stringshare *item_name);
 
 Group *
-gm_group_add(Project *pro, const char *group_name);
+gm_group_add(Project *pro, const char *group_name, Eina_Bool emit);
 
 void
 gm_group_del(Project *pro, Group *group);

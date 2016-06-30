@@ -117,7 +117,7 @@ _group_copy(Project *pro, Eina_List *widgets)
                             snprintf(group_name, strlen(prefix) + strlen(style->name) + 1, "%s%s", prefix, style->name);
                             snprintf(cp_group_name, strlen(prefix) + strlen(cp_style_name) + 1, "%s%s", prefix, cp_style_name);
                             CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, group_name, cp_group_name));
-                            gm_group_add(ap.project, cp_group_name);
+                            gm_group_add(ap.project, cp_group_name, true);
                          }
                     }
                }

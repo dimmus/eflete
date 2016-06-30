@@ -2229,7 +2229,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    /* reload file after group add */
    pm_dev_file_reload(project);
    /* add group to project structures */
-   gm_group_add(project, group);
+   gm_group_add(project, group, false);
 
    you_shall_pass_editor_signals(NULL);
 
