@@ -50,7 +50,7 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          description {state: "default" 0.0;
             rel1.to: "button_image";
             rel2.to: "button_image";
-            rel1.offset: -7 7-;
+            rel1.offset: -7 7;
             rel2.offset: 9 9;
             image {
                normal: "shadow.png";
