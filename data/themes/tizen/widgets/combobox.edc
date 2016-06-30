@@ -1374,10 +1374,7 @@ group { name: "elm/genlist/item_compress/color_class/combobox_vertical/default";
    images.image: "color_class_img.png" COMP;
    data {
       item: "texts" "elm.text";
-      item: "treesize" "20";
       item: "contents" "swallow.color1 swallow.color2 swallow.color3";
-      item: "stacking" "above";
-      item: "selectraise" "on";
    }
    parts {
       part { name: "bg";
@@ -1545,10 +1542,7 @@ group { name: "elm/genlist/item_compress/color_class/combobox_vertical/default";
 group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
    data {
       item: "texts" "elm.text";
-      item: "treesize" "20";
       item: "contents" "elm.swallow.icon elm.swallow.end";
-      item: "stacking" "above";
-      item: "selectraise" "on";
    }
    parts {
       part { name: "bg";
