@@ -44,12 +44,14 @@ _list_update(History_New_UI_data *hd)
 {
    Change *change = NULL;
    Eina_List *l = NULL;
+   unsigned int i = 0;
+   Elm_Object_Item *hoversel_it;
 
    assert(hd != NULL);
 
    /* removing all reverted changes because the were deleted from history */
-   ewe_combobox_items_list_free(hd->undo_cmbx, EINA_FALSE);
-   ewe_combobox_items_list_free(hd->redo_cmbx, EINA_FALSE);
+   elm_hoversel_clear(hd->undo_cmbx);
+   elm_hoversel_clear(hd->redo_cmbx);
 
    hd->to_undo = 0;
    hd->to_redo = 0;
@@ -59,7 +61,10 @@ _list_update(History_New_UI_data *hd)
         if (!change->reverted)
           {
              hd->to_undo++;
-             ewe_combobox_item_add(hd->undo_cmbx, change->description);
+             hoversel_it = elm_hoversel_item_add(hd->undo_cmbx, change->description, NULL, ELM_ICON_NONE, NULL, NULL);
+             evas_object_data_set(hoversel_it, "number", (void*)(uintptr_t)i);
+             printf("UNDO\n");
+             i++;
           }
         else
           {
@@ -68,9 +73,13 @@ _list_update(History_New_UI_data *hd)
           }
      }
 
+   i = 0;
    EINA_LIST_REVERSE_FOREACH(reverse_redo, l, change)
      {
-        ewe_combobox_item_add(hd->redo_cmbx, change->description);
+        hoversel_it = elm_hoversel_item_add(hd->redo_cmbx, change->description, NULL, ELM_ICON_NONE, NULL, NULL);
+        evas_object_data_set(hoversel_it, "number", (void*)(uintptr_t)i);
+             printf("REDO\n");
+        i++;
      }
 }
 
@@ -80,12 +89,12 @@ _undo_item_selected(void *data,
                    void *ei)
 {
    History_New_UI_data *hd = data;
-   Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
-   unsigned int i;
+   int i;
+   int index = (int)(uintptr_t) (evas_object_data_get(ei, "number"));
 
    assert(hd != NULL);
 
-   for (i = 0; i <= it->index; i++)
+   for (i = 0; i <= index; i++)
      CRIT_ON_FAIL(history_undo(hd->history));
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
@@ -98,12 +107,12 @@ _redo_item_selected(void *data,
                     void *ei)
 {
    History_New_UI_data *hd = data;
-   Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
-   unsigned int i;
+   int i;
+   int index = (int)(uintptr_t) (evas_object_data_get(ei, "number"));
 
    assert(hd != NULL);
 
-   for (i = 0; i <= it->index; i++)
+   for (i = 0; i <= index; i++)
      CRIT_ON_FAIL(history_redo(hd->history));
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
@@ -177,8 +186,11 @@ history_ui_add(Evas_Object *parent, History *history)
    evas_object_show(undo_layout);
    elm_object_part_content_set(undo_layout, "button", btn);
 
-   EWE_COMBOBOX_ADD(hd->layout, hd->undo_cmbx);
-   ewe_combobox_style_set(hd->undo_cmbx, "history");
+   hd->undo_cmbx = elm_hoversel_add(hd->layout);
+   elm_hoversel_hover_parent_set(hd->undo_cmbx, ap.win);
+   evas_object_size_hint_weight_set(hd->undo_cmbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(hd->undo_cmbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_style_set(hd->undo_cmbx, "history");
    evas_object_smart_callback_add(hd->undo_cmbx, "selected", _undo_item_selected, hd);
    evas_object_show(hd->undo_cmbx);
    elm_object_part_content_set(undo_layout, "arrow", hd->undo_cmbx);
@@ -194,8 +206,11 @@ history_ui_add(Evas_Object *parent, History *history)
    evas_object_show(redo_layout);
    elm_object_part_content_set(redo_layout, "button", btn);
 
-   EWE_COMBOBOX_ADD(hd->layout, hd->redo_cmbx);
-   ewe_combobox_style_set(hd->redo_cmbx, "history");
+   hd->redo_cmbx = elm_hoversel_add(hd->layout);
+   elm_hoversel_hover_parent_set(hd->redo_cmbx, ap.win);
+   evas_object_size_hint_weight_set(hd->redo_cmbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(hd->redo_cmbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_style_set(hd->redo_cmbx, "history");
    evas_object_smart_callback_add(hd->redo_cmbx, "selected", _redo_item_selected, hd);
    evas_object_show(hd->redo_cmbx);
    elm_object_part_content_set(redo_layout, "arrow", hd->redo_cmbx);
