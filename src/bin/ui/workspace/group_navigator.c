@@ -761,9 +761,9 @@ _on_part_name_changed(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->part_name_validator) != ELM_REG_NOERROR)
-     elm_object_disabled_set(pl->popup.btn_add, true);
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(pl->popup.btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -781,11 +781,12 @@ _state_validate(void *data,
    name = elm_entry_entry_get(pl->popup.entry_name);
    val = elm_spinner_value_get(pl->popup.spinner_value);
    val = ((int) (val * 100)) / 100.0; /* only first two digets after point are used */
+
    if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
        (edje_edit_state_exist(pl->group->edit_object, pl->part->name, name, val)))
-     elm_object_disabled_set(pl->popup.btn_add, true);
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(pl->popup.btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -813,7 +814,7 @@ _item_validate(void *data,
    EINA_LIST_FOREACH(pl->part->items, l, item)
       valid = valid && strcmp(item->name, name);
 
-   elm_object_disabled_set(pl->popup.btn_add, !valid);
+   popup_buttons_disabled_set(BTN_OK, !valid);
 }
 
 static void
@@ -826,9 +827,9 @@ _program_validate(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->program_name_validator) != ELM_REG_NOERROR)
-     elm_object_disabled_set(pl->popup.btn_add, true);
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(pl->popup.btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -844,7 +845,8 @@ _popup_add_part_ok_clicked(void *data,
 
    assert(pl != NULL);
 
-   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+   if (resource_name_validator_status_get(pl->part_name_validator) != ELM_REG_NOERROR)
+      return;
 
    if (pl->popup.copy_part)
      {
@@ -905,7 +907,10 @@ _popup_add_part_ok_clicked(void *data,
 Eina_Bool
 _popup_add_part_validator(void *data)
 {
+   Part_List *pl = (Part_List *) data;
    _popup_add_part_ok_clicked(data, NULL, NULL);
+   if (resource_name_validator_status_get(pl->part_name_validator) != ELM_REG_NOERROR)
+     return false;
    return true;
 }
 
@@ -1017,7 +1022,7 @@ _combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
 }
 
 Evas_Object *
-_add_part_content_get(void *data)
+_add_part_content_get(void *data, Evas_Object **to_focus)
 {
    Combobox_Item *combobox_item;
    unsigned int i = 0;
@@ -1085,6 +1090,8 @@ _add_part_content_get(void *data)
    evas_object_smart_callback_add(pl->popup.combobox_copy, "item,selected", _part_selected_cb, pl);
    elm_box_pack_end(box, item);
 
+   if (to_focus) *to_focus = pl->popup.entry_name;
+   popup_buttons_disabled_set(BTN_OK, true);
    pl->popup.box = box;
    return box;
 }
@@ -1101,7 +1108,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    title = eina_stringshare_printf(_("Add New Part to Group \"%s\""), pl->group->name);
    Popup_Button button = popup_want_action(title, NULL, _add_part_content_get,
-                                           NULL, BTN_OK | BTN_CANCEL,
+                                           BTN_OK | BTN_CANCEL,
                                            _popup_add_part_validator, pl);
    if (BTN_CANCEL == button)
      evas_object_del(pl->popup.box);
@@ -1118,9 +1125,9 @@ _on_group_data_name_changed(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->group_data_name_validator) != ELM_REG_NOERROR)
-     elm_object_disabled_set(pl->popup.btn_add, true);
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(pl->popup.btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -1135,7 +1142,8 @@ _popup_add_group_data_ok_clicked(void *data,
 
    assert(pl != NULL);
 
-   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+   if (resource_name_validator_status_get(pl->group_data_name_validator) != ELM_REG_NOERROR)
+      return;
 
    name = elm_entry_entry_get(pl->popup.entry_name);
    msg = eina_stringshare_printf(_("added new data item \"%s\""), name);
@@ -1150,12 +1158,15 @@ _popup_add_group_data_ok_clicked(void *data,
 Eina_Bool
 _popup_add_group_data_validator(void *data)
 {
+   Part_List *pl = (Part_List *) data;
    _popup_add_group_data_ok_clicked(data, NULL, NULL);
+   if (resource_name_validator_status_get(pl->group_data_name_validator) != ELM_REG_NOERROR)
+     return false;
    return true;
 }
 
 Evas_Object *
-_add_group_data_content_get(void *data)
+_add_group_data_content_get(void *data, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
@@ -1174,6 +1185,8 @@ _add_group_data_content_get(void *data)
    elm_object_focus_set(pl->popup.entry_name, true);
 
    pl->popup.box = box;
+   if (to_focus) *to_focus = pl->popup.entry_name;
+   popup_buttons_disabled_set(BTN_OK, true);
 
    return pl->popup.box;
 }
@@ -1191,7 +1204,7 @@ _on_menu_add_group_data_clicked(void *data __UNUSED__,
 
    title = eina_stringshare_printf(_("Add New Data Item to Group \"%s\""), pl->group->name);
    Popup_Button button = popup_want_action(title, NULL, _add_group_data_content_get,
-                                           NULL, BTN_OK | BTN_CANCEL,
+                                            BTN_OK | BTN_CANCEL,
                                            _popup_add_group_data_validator, pl);
    if (button == BTN_CANCEL)
      evas_object_del(pl->popup.box);
@@ -1214,7 +1227,8 @@ _popup_add_state_ok_clicked(void *data,
    assert(pl != NULL);
    assert(pl->part != NULL);
 
-   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
+      return;
 
    name = elm_entry_entry_get(pl->popup.entry_name);
    val = elm_spinner_value_get(pl->popup.spinner_value);
@@ -1250,7 +1264,11 @@ _popup_add_state_ok_clicked(void *data,
 Eina_Bool
 _popup_add_state_validator(void *data)
 {
+   Part_List *pl = (Part_List *) data;
    _popup_add_state_ok_clicked(data, NULL, NULL);
+
+   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
+     return false;
    return true;
 }
 
@@ -1292,7 +1310,7 @@ group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state)
 }
 
 Evas_Object *
-_add_state_content_get(void *data)
+_add_state_content_get(void *data, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Evas_Object *box, *item;
@@ -1353,6 +1371,8 @@ _add_state_content_get(void *data)
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    elm_box_pack_end(box, item);
 
+   if (to_focus) *to_focus = pl->popup.entry_name;
+   popup_buttons_disabled_set(BTN_OK, true);
    pl->popup.box = box;
    return box;
 }
@@ -1369,7 +1389,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 
    title = eina_stringshare_printf(_("Add New State to Part \"%s\""), pl->part->name);
    Popup_Button button = popup_want_action(title, NULL, _add_state_content_get,
-                                           NULL, BTN_OK | BTN_CANCEL,
+                                           BTN_OK | BTN_CANCEL,
                                            _popup_add_state_validator, pl);
 
    if (button == BTN_CANCEL)
@@ -1389,7 +1409,8 @@ _popup_add_item_ok_clicked(void *data,
 
    assert(pl != NULL);
 
-   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
+      return;
 
    assert(pl->part != NULL);
 
@@ -1407,7 +1428,10 @@ _popup_add_item_ok_clicked(void *data,
 Eina_Bool
 _popup_add_item_validator(void *data)
 {
+   Part_List *pl = (Part_List *) data;
    _popup_add_item_ok_clicked(data, NULL, NULL);
+   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
+     return false;
    return true;
 }
 
@@ -1449,7 +1473,7 @@ group_navigator_part_item_add(Evas_Object *obj, Part *part, Eina_Stringshare * i
 }
 
 Evas_Object *
-_add_item_content_get(void *data)
+_add_item_content_get(void *data, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Combobox_Item *combobox_item;
@@ -1496,6 +1520,8 @@ _add_item_content_get(void *data)
 
    elm_box_pack_end(box, item);
    pl->popup.box = box;
+   if (to_focus) *to_focus = pl->popup.entry_name;
+   popup_buttons_disabled_set(BTN_OK, true);
 
    return pl->popup.box;
 }
@@ -1512,7 +1538,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
 
    title = eina_stringshare_printf(_("Add New Item to Part \"%s\""), pl->part->name);
    Popup_Button button = popup_want_action(title, NULL, _add_item_content_get,
-                                           NULL, BTN_OK | BTN_CANCEL,
+                                            BTN_OK | BTN_CANCEL,
                                            _popup_add_item_validator, pl);
 
    if (button == BTN_CANCEL)
@@ -1533,7 +1559,8 @@ _popup_add_program_ok_clicked(void *data,
 
    assert(pl != NULL);
 
-   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+   if (resource_name_validator_status_get(pl->program_name_validator) != ELM_REG_NOERROR)
+      return;
 
    switch (pl->popup.program_selected)
      {
@@ -1580,12 +1607,15 @@ _popup_add_program_ok_clicked(void *data,
 Eina_Bool
 _popup_add_program_validator(void *data)
 {
+   Part_List *pl = (Part_List *) data;
    _popup_add_program_ok_clicked(data, NULL, NULL);
+   if (resource_name_validator_status_get(pl->program_name_validator) != ELM_REG_NOERROR)
+     return false;
    return true;
 }
 
 Evas_Object *
-_add_program_content_get(void *data)
+_add_program_content_get(void *data, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
@@ -1625,6 +1655,8 @@ _add_program_content_get(void *data)
 
    elm_box_pack_end(box, item);
    pl->popup.box = box;
+   if (to_focus) *to_focus = pl->popup.entry_name;
+   popup_buttons_disabled_set(BTN_OK, true);
 
    return pl->popup.box;
 }
@@ -1641,7 +1673,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
 
    title = eina_stringshare_add(_("Add New Program"));
    Popup_Button button = popup_want_action(title, NULL, _add_program_content_get,
-                                           NULL, BTN_OK | BTN_CANCEL,
+                                           BTN_OK | BTN_CANCEL,
                                            _popup_add_program_validator, pl);
 
    if (button == BTN_CANCEL)

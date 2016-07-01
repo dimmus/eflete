@@ -133,14 +133,16 @@ _tabs_progress_end(void *data, PM_Project_Result result, Eina_List *widgets)
    if (PM_PROJECT_LOCKED == result)
      {
         progress_end(data, result, NULL);
-        popup_want_action(_("File is locked"), _("File locked by another application"), NULL, NULL, BTN_OK, NULL, NULL);
+        popup_want_action(_("File is locked"), _("File locked by another application"),
+                          NULL, BTN_OK, NULL, NULL);
         return;
      }
    if (PM_PROJECT_ERROR == result)
      {
         progress_end(data, result, NULL);
         popup_want_action(_("File opening error"), _("Unknown problem with file appeared.<br>"
-                                                     "(wrong file, filesystem error, no memory, etc)"), NULL, NULL, BTN_OK, NULL, NULL);
+                                                     "(wrong file, filesystem error, no memory, etc)"),
+                          NULL, BTN_OK, NULL, NULL);
         return;
      }
    if (PM_PROJECT_SUCCESS != result) return;

@@ -70,7 +70,7 @@ _validation(void *data __UNUSED__,
 }
 
 Evas_Object *
-_add_colorclass_content_get(void *data __UNUSED__)
+_add_colorclass_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 {
    Evas_Object *item = NULL;
 
@@ -81,6 +81,9 @@ _add_colorclass_content_get(void *data __UNUSED__)
    elm_object_part_text_set(mng.entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", mng.entry);
    mng.item = item;
+   if (to_focus) *to_focus = mng.entry;
+   popup_buttons_disabled_set(BTN_OK, true);
+
    return mng.item;
 }
 
@@ -100,7 +103,7 @@ _colorclass_add_cb(void *data __UNUSED__,
    mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.name_validator, &ap.project->colorclasses, true);
    btn_res = popup_want_action(_("Create a new layout"), NULL, _add_colorclass_content_get,
-                               mng.entry, BTN_OK|BTN_CANCEL,
+                               BTN_OK|BTN_CANCEL,
                                NULL, mng.entry);
 
    if (BTN_CANCEL == btn_res) goto end;

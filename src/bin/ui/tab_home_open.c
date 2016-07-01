@@ -85,7 +85,7 @@ _open(void *data __UNUSED__,
    if (!pm_lock_check(selected))
      {
        popup_want_action(_("Open project"), _("The given file is locked by another application"),
-                         NULL, NULL, BTN_OK, NULL, NULL);
+                         NULL, BTN_OK, NULL, NULL);
        return;
      }
 
@@ -129,7 +129,7 @@ _recent_clear(void *data __UNUSED__,
    btn_res = popup_want_action(_("Confirm clear recent list"),
                                _("Are you sure you want to clear list of "
                                  "recently opened projects?<br>"),
-                               NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+                               NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
    if (BTN_CANCEL == btn_res) return;
 
    config_recent_list_clear();
@@ -185,7 +185,7 @@ _open_recent(void *data,
    if (!pm_lock_check(r->path))
      {
        popup_want_action(_("Open project"), _("The given file is locked by another application"),
-                         NULL, NULL, BTN_OK, NULL, NULL);
+                         NULL, BTN_OK, NULL, NULL);
        return;
      }
 

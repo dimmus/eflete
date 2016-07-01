@@ -37,7 +37,7 @@ exist_permission_check(const char *path, const char *name,
      {
         buf_msg = eina_strbuf_new();
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to write '%s'"), path);
-        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
+        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
         return false;
      }
@@ -45,13 +45,13 @@ exist_permission_check(const char *path, const char *name,
    eina_strbuf_append_printf(buf, "%s/%s", path, name);
    if (!ecore_file_exists(eina_strbuf_string_get(buf))) return true;
    btn_res = popup_want_action(title, msg, NULL,
-                               NULL, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+                               BTN_REPLACE | BTN_CANCEL, NULL, NULL);
    if (btn_res == BTN_CANCEL) return false;
    if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
      {
         buf_msg = eina_strbuf_new();
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
-        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
+        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
         return false;
      }

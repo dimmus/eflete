@@ -513,7 +513,7 @@ _import(void *data __UNUSED__,
    if (!pm_lock_check(eina_strbuf_string_get(buf)))
      {
        popup_want_action(_("Import EDJ-file"), _("The given file is locked by another application"),
-                         NULL, NULL, BTN_OK, NULL, NULL);
+                         NULL, BTN_OK, NULL, NULL);
        return;
      }
 
@@ -660,7 +660,7 @@ static void
 _delayed_popup(void *data)
 {
    char *msg = data;
-   popup_want_action(_("Import edj-file"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   popup_want_action(_("Import edj-file"), msg, NULL, BTN_OK, NULL, NULL);
    free(msg);
 }
 

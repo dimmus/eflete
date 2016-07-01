@@ -327,7 +327,7 @@ _validation(void *data __UNUSED__,
 }
 
 Evas_Object *
-_add_tone_content_get(void *data __UNUSED__)
+_add_tone_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 {
    Evas_Object *item, *box;
 
@@ -354,6 +354,9 @@ _add_tone_content_get(void *data __UNUSED__)
    elm_box_pack_end(box, item);
    mng.box = box;
 
+   if (to_focus) *to_focus = mng.tone_entry;
+   popup_buttons_disabled_set(BTN_OK, true);
+
    return box;
 }
 
@@ -374,7 +377,7 @@ _tone_add_cb(void *data __UNUSED__,
 
    popup_buttons_disabled_set(BTN_OK, true);
    btn_res = popup_want_action(_("Create a new layout"), NULL, _add_tone_content_get,
-                               mng.tone_entry, BTN_OK|BTN_CANCEL,
+                               BTN_OK|BTN_CANCEL,
                                NULL, mng.tone_entry);
    if (BTN_CANCEL == btn_res) goto close;
    _tone_add();

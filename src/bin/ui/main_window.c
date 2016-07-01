@@ -165,7 +165,7 @@ ui_main_window_add(void)
 }
 
 Evas_Object *
-_about_window_content_get(void *data)
+_about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *label = (Evas_Object *) data;
    elm_object_text_set(label,
@@ -202,7 +202,7 @@ Evas_Object *
 about_window_add(void)
 {
    Evas_Object *content = elm_label_add(ap.win);
-   popup_want_action(_("About"), NULL, _about_window_content_get, NULL, BTN_CANCEL, NULL, content);
+   popup_want_action(_("About"), NULL, _about_window_content_get, BTN_CANCEL, NULL, content);
    evas_object_del(content);
    return NULL;
 }

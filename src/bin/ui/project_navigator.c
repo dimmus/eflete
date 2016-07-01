@@ -466,7 +466,7 @@ _group_validate(void *data __UNUSED__,
 }
 
 Evas_Object *
-_add_group_content_get(void *data __UNUSED__)
+_add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 {
    Evas_Object *item;
    Group *group;
@@ -520,6 +520,9 @@ _add_group_content_get(void *data __UNUSED__)
      }
    elm_object_text_set(layout_p.combobox, _("None"));
 
+   if (to_focus) *to_focus = layout_p.entry;
+   popup_buttons_disabled_set(BTN_OK, true);
+
    return layout_p.box;
 }
 
@@ -537,7 +540,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
    resource_name_validator_list_set(validator, &ap.project->groups, false);
    btn_res = popup_want_action(_("Create a new layout"), NULL, _add_group_content_get,
-                               layout_p.entry, BTN_OK|BTN_CANCEL,
+                               BTN_OK|BTN_CANCEL,
                                NULL, layout_p.entry);
    if (BTN_CANCEL == btn_res) goto close;
 
@@ -578,7 +581,7 @@ _folder_del(const char *prefix)
        else
          {
             msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
-            popup_want_action(_("Error"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+            popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
             eina_stringshare_del(msg);
          }
        eina_stringshare_del(tmp);
@@ -656,7 +659,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         btn_res = popup_want_action(_("Confirm delete layouts"),
                                     _("Are you sure you want to delete the selected layouts?<br>"
                                       "All aliases will be delete too."),
-                                    NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+                                    NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
         _folder_del(elm_object_item_data_get(glit));
      }
@@ -670,13 +673,13 @@ _btn_del_group_cb(void *data __UNUSED__,
              popup_want_action(_("Warning: Delete layout"),
                                _("Cann't delete the opened layout. Please, "
                                  "close the layout tab before delete it."),
-                               NULL, NULL, BTN_CANCEL, NULL, NULL);
+                               NULL, BTN_CANCEL, NULL, NULL);
              return;
           }
         btn_res = popup_want_action(_("Confirm delete layout"),
                                     _("Are you sure you want to delete the selected layout?<br>"
                                       "All aliases will be delete too."),
-                                    NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+                                    NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
         tmp = eina_stringshare_add(group->name);
         if (editor_group_del(ap.project->global_object, tmp))
@@ -684,7 +687,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         else
           {
              msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
-             popup_want_action(_("Error"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+             popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
              eina_stringshare_del(msg);
           }
         eina_stringshare_del(tmp);

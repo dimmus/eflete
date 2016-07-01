@@ -88,13 +88,13 @@ Popup_Button
 popup_want_action(const char *title,
                   const char *msg,
                   Popup_Content_Get_Func content_get,
-                  Evas_Object *to_focus,
                   Popup_Button popup_btns,
                   Popup_Validator_Func func,
                   void *data)
 
 {
    Evas_Object *btn;
+   Evas_Object *to_focus = NULL;
 
    /* only one content will be setted to ap.popup: or message, or used content */
    assert((msg != NULL) != (content_get != NULL));
@@ -107,13 +107,6 @@ popup_want_action(const char *title,
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(ap.popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(ap.popup, ELM_WRAP_WORD);
-   if (msg) elm_object_text_set(ap.popup, msg);
-   if (content_get)
-     {
-        Evas_Object *content = content_get(data);
-        elm_object_content_set(ap.popup, content);
-     }
-
    if (popup_btns & BTN_OK)
      BTN_ADD(_("Ok"), "button1", &_btn_ok)
 
@@ -130,6 +123,13 @@ popup_want_action(const char *title,
      BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
    else if (popup_btns & BTN_CANCEL)
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
+
+   if (msg) elm_object_text_set(ap.popup, msg);
+   if (content_get)
+     {
+        Evas_Object *content = content_get(data, &to_focus);
+        elm_object_content_set(ap.popup, content);
+     }
 
    if (to_focus) elm_object_focus_set(to_focus, true);
    evas_object_show(ap.popup);

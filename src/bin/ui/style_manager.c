@@ -163,7 +163,7 @@ _validate(void *data __UNUSED__,
 }
 
 Evas_Object *
-_add_style_content_get(void *data __UNUSED__)
+_add_style_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
@@ -177,6 +177,9 @@ _add_style_content_get(void *data __UNUSED__)
    evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
    elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(mng.popup.item, "elm.swallow.content", mng.popup.name);
+
+   if (to_focus) *to_focus = mng.popup.name;
+   popup_buttons_disabled_set(BTN_OK, true);
 
    return mng.popup.item;
 }
@@ -192,7 +195,7 @@ _style_add_cb(void *data __UNUSED__,
    Elm_Object_Item *glit;
 
    btn_res = popup_want_action(_("Add textblock style"), NULL, _add_style_content_get,
-                               mng.popup.name, BTN_OK|BTN_CANCEL,
+                               BTN_OK|BTN_CANCEL,
                                NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
 
@@ -227,7 +230,7 @@ close:
 }
 
 Evas_Object *
-_add_tag_content_get(void *data __UNUSED__)
+_add_tag_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
@@ -239,6 +242,8 @@ _add_tag_content_get(void *data __UNUSED__)
    elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
    mng.popup.item = item;
 
+   if (to_focus) *to_focus = mng.popup.name;
+   popup_buttons_disabled_set(BTN_OK, true);
    return item;
 }
 
@@ -282,7 +287,7 @@ _tag_add_cb(void *data __UNUSED__,
 
    buf = eina_stringshare_printf(_("Add tag for style: %s"), style_name);
    btn_res = popup_want_action(buf, NULL, _add_tag_content_get,
-                               mng.popup.name, BTN_OK|BTN_CANCEL,
+                               BTN_OK|BTN_CANCEL,
                                NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
 

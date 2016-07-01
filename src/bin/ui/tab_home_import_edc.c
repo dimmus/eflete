@@ -430,7 +430,7 @@ _import(void *data __UNUSED__,
    if (!pm_lock_check(eina_strbuf_string_get(buf)))
      {
        popup_want_action(_("Import EDC-file"), _("The given file is locked by another application"),
-                         NULL, NULL, BTN_OK, NULL, NULL);
+                         NULL, BTN_OK, NULL, NULL);
        return;
      }
 

@@ -635,7 +635,7 @@ static void
 _delayed_popup(void *data)
 {
    char *msg = data;
-   popup_want_action(_("New project"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   popup_want_action(_("New project"), msg, NULL, BTN_OK, NULL, NULL);
    free(msg);
 }
 

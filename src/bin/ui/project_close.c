@@ -156,7 +156,7 @@ project_close(void)
      {
         title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
         btn_res = popup_want_action(title, _("Do you want to save changes?"), NULL,
-                                    NULL, BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
+                                    BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
                                     NULL, NULL);
         switch (btn_res)
           {
