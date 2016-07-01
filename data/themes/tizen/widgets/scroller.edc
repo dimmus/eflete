@@ -1,4 +1,5 @@
 group { name: "elm/scroller/base/default";
+   alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
    images {
       image: "scroll_down_icon_dim.png" COMP;
       image: "scroll_up_icon_sel.png" COMP;
