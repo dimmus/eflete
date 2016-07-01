@@ -924,6 +924,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
 }
 
 group { name: "elm/genlist/base/combobox_vertical/default";
+   alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
    images {
       image: "scroll-indicator.png" COMP;
       image: "scroll-area-dark.png" COMP;
