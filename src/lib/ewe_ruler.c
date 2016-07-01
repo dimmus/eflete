@@ -906,13 +906,13 @@ _ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
      }
 }
 
-EOLIAN static Eina_Bool
+EOLIAN static Elm_Theme_Apply
 _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
-   Eina_Bool int_ret;
+   Elm_Theme_Apply int_ret = ELM_THEME_APPLY_FAILED;
    int count;
    int_ret = elm_obj_widget_theme_apply(eo_super(obj, MY_CLASS));
-   if (!int_ret) return EINA_FALSE;
+   if (!int_ret) return ELM_THEME_APPLY_FAILED;
 
    Ewe_Ruler_Scale *scale;
    Eina_List *ls;
@@ -939,7 +939,7 @@ _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
              _delete_extra_dashes(scale, count);
           }
      }
-   return EINA_TRUE;
+   return int_ret;
 }
 
 /*---------------------------Legacy functions --------------------------------*/
