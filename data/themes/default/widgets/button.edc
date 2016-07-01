@@ -1611,3 +1611,157 @@ group { name: "elm/button/base/redo";
    }
 }
 
+group { name: "elm/button/base/hoversel_vertical/history";
+   min: 9 9;
+   max: 9 9;
+   images {
+      image: "tool_s_ic_arrow_nor.png" COMP;
+      image: "tool_s_ic_arrow_sel.png" COMP;
+   }
+   parts {
+     part { name: "arrow";
+         type: IMAGE;
+         clip_to: "disabler";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 9 9;
+            max: 9 9;
+            image.normal: "tool_s_ic_arrow_nor.png";
+         }
+         description { state: "expanded" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "tool_s_ic_arrow_sel.png";
+         }
+      }
+      part { name: "expand.btn";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "unvisible" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+         description { state: "active" 0.0;
+            color: 64 64 64 225;
+         }
+      }
+   }
+   programs {
+      program { name: "button_click";
+         signal: "mouse,down,1";
+         source: "expand.btn";
+         action: SIGNAL_EMIT "elm,action,press" "";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "expand.btn";
+         action: SIGNAL_EMIT "elm,action,unpress" "";
+      }
+      program { name: "button_click2";
+         signal: "mouse,down,1";
+         source: "expand.btn";
+         action: STATE_SET "expanded" 0.00;
+         target: "arrow";
+      }
+      program { name: "button_unclick2";
+         signal: "mouse,up,1";
+         source: "expand.btn";
+         action: STATE_SET "default" 0.00;
+         target: "arrow";
+      }
+      program { name: "button_unclick3";
+         signal: "mouse,clicked,1";
+         source: "expand.btn";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+   }
+}
+
+group { name: "elm/button/base/hoversel_vertical_entry/history";
+   parts {
+      part { name: "button_image";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            min: 0 24;
+            max: -1 0;
+         }
+         description { state: "hovered" 0.0;
+            color_class: "select";
+            min: 0 19;
+            max: -1 0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 213 213 213 255;
+            rel1 {
+               offset: 10 0;
+            }
+            rel2 {
+               offset: -11 -1;
+            }
+            text {
+               font: FN;
+               size: 12;
+               align: 0.0 0.5;
+               min: 1 1;
+               elipsis: -1;
+            }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      part { name: "over2";
+         type: RECT;
+         repeat_events: 1;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "button_mouse_in";
+         signal: "mouse,in";
+         source: "over2";
+         action: STATE_SET "hovered" 0.00;
+         target: "button_image";
+      }
+      program { name: "button_mouse_out";
+         signal: "mouse,out";
+         source: "over2";
+         action: STATE_SET "default" 0.00;
+         target: "button_image";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,clicked,1";
+         source: "over2";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+   }
+}

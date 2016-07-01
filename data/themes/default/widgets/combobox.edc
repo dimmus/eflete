@@ -583,6 +583,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
 
 /* TODO: remove scripts, remake hover */
 group { name: "elm/hover/base/combobox_vertical/default";
+   alias: "elm/hover/base/hoversel_vertical/history";
    data.item: "dismiss" "on";
    script {
       public on_dismiss = 0;
@@ -747,6 +748,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
 }
 
 group { name: "elm/genlist/base/combobox_vertical/default";
+   alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
    data {
       item: "focus_highlight" "on";
    }
