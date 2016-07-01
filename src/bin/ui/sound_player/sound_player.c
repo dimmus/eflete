@@ -152,7 +152,7 @@ _on_rewin_cb(void *data __UNUSED__,
               void *event_info __UNUSED__)
 {
    double value = elm_slider_value_get(rewin);
-   value = ecore_audio_obj_in_seek(in, value, SEEK_SET);
+   ecore_audio_obj_in_seek(in, value, SEEK_SET);
 }
 static void
 _create_io_stream()
@@ -201,7 +201,7 @@ _tone_play()
 
    value = elm_slider_value_get(rewin);
    if (value)
-     value = ecore_audio_obj_in_seek(in, value, SEEK_SET);
+     ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
@@ -238,7 +238,7 @@ _sample_play()
 
    value = elm_slider_value_get(rewin);
    if (value)
-     value = ecore_audio_obj_in_seek(in, value, SEEK_SET);
+     ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
