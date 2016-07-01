@@ -6,8 +6,7 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (>= 1.17.0 && <= 1.17.99)
-   * elementary (>= 1.17.0 && <= 1.17.99)
+   * efl (>= 1.17.0 && < 1.17.9999)
 
 Please note that some features may not quite function correctly or
 completely on EFL 1.17.0
