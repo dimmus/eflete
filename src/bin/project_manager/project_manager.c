@@ -520,12 +520,31 @@ _project_import_edj(void *data,
    Eina_Stringshare *group;
    EINA_LIST_FOREACH(worker.widgets, l, group)
      {
+        if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
+          {
+             char **arr = eina_str_split(group, "***", 0);
+             you_shall_not_pass_editor_signals(NULL);
+             if (!editor_group_copy(worker.project->global_object, arr[1], arr[2]))
+               abort();
+             you_shall_pass_editor_signals(NULL);
+             /* reload file after group add */
+             pm_dev_file_reload(worker.project);
+             /* add group to project structures */
+             ecore_thread_main_loop_begin();
+             gm_group_add(worker.project, arr[2], false);
+             ecore_thread_main_loop_end();
+
+             free(arr[0]);
+             free(arr);
+             continue;
+          }
         pm_project_group_import(worker.project, worker.edj, group);
      }
 
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
 
+   ecore_file_cp(worker.project->dev, worker.project->saved_edj);
    PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
    if (send_end) END_SEND(PM_PROJECT_SUCCESS);
 
