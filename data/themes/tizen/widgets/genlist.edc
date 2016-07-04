@@ -1909,20 +1909,15 @@ group { name: "elm/genlist/tree/items_caption/default";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel2 {
-               offset: -1 -2;
-            }
          }
          description { state: "selected" 0.0;
-            color_class: "select_dark";
-            rel2 {
-               offset: -1 -2;
-            }
+            color_class: "genlist_selected";
          }
       }
       part { name: "separator";
          type: RECT;
          description { state: "default" 0.0;
+            visible: 0;
             align: 0.5 1.0;
             min: 0 1;
             max: -1 1;
@@ -1945,7 +1940,7 @@ group { name: "elm/genlist/tree/items_caption/default";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 0 26;
-            color_class: "main";
+            color_class: "genlist_text_tree";
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
@@ -1956,10 +1951,15 @@ group { name: "elm/genlist/tree/items_caption/default";
             }
             text {
                font: FN;
-               size: 12;
+               size: 13;
                max: 1 0;
                align: 0.0 0.5;
             }
+         }
+        description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+            color_class: "";
+            color: 120 120 120 255;
          }
       }
       part { name: "elm.text.end";
@@ -1978,8 +1978,8 @@ group { name: "elm/genlist/tree/items_caption/default";
                offset: -7 -1;
             }
             text {
-               font: FN;
-               size: 12;
+               font: FN_B;
+               size: 13;
                align: 0.0 0.5;
             }
          }
@@ -1995,31 +1995,19 @@ group { name: "elm/genlist/tree/items_caption/default";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            max: 14 14;
-            color_class: "main";
+            min: 9 9;
+            max: 9 9;
+            image.normal: "arrow_side_nor.png";
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 20 0;
                to_x: "elm.swallow.pad";
             }
-            image {
-               normal: "icon_arrow_right.png";
-               middle: DEFAULT;
-            }
+            fill.smooth: 0;
          }
          description { state: "selected" 0.0;
-            align: 0.0 0.5;
-            max: 14 14;
-            color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.pad";
-            }
-            image {
-               normal: "icon_arrow_down.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            image.normal: "arrow_bottom_nor.png";
          }
       }
       part { name: "disclip";
