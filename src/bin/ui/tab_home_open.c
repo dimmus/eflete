@@ -70,9 +70,9 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
-_open(void *data __UNUSED__,
-      Evas_Object *obj __UNUSED__,
-      void *event_info __UNUSED__)
+_open_done(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
 {
    const char *selected;
 
@@ -152,12 +152,12 @@ _tab_open_project_add(void)
    elm_fileselector_expandable_set(tab.fs, false);
    elm_fileselector_path_set(tab.fs, profile_get()->general.projects_folder);
    elm_fileselector_custom_filter_append(tab.fs, _eflete_filter, NULL, "Eflete Files");
-   evas_object_smart_callback_add(tab.fs, "done", _open, NULL);
+   evas_object_smart_callback_add(tab.fs, "done", _open_done, NULL);
    evas_object_smart_callback_add(tab.fs, "selected", _selected, NULL);
    /* small hack for disabling 'Open' button when .pro is not selected */
    evas_object_smart_callback_add(elm_layout_content_get(tab.fs, "elm.swallow.files"),
                                   "unselected", _unselected, NULL);
-   evas_object_smart_callback_add(tab.fs, "activated", _open, NULL);
+   evas_object_smart_callback_add(tab.fs, "activated", _open_done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.filters"));
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.cancel"));
