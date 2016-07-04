@@ -242,6 +242,19 @@ property_add(Evas_Object *parent, Property_Mode mode)
    return pd->layout;
 }
 
+static void
+_state_update(void *data)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+
+   if (pa->default_is)
+     elm_genlist_item_fields_update(pa->glit, "default", ELM_GENLIST_ITEM_FIELD_STATE);
+   else
+     elm_genlist_item_fields_update(pa->glit, "changed", ELM_GENLIST_ITEM_FIELD_STATE);
+}
+
 void
 property_item_update(Property_Attribute *pa)
 {
@@ -262,10 +275,7 @@ property_item_update(Property_Attribute *pa)
         pa->default_is = pa->default_is && pa->action2.update_cb(pa, &pa->action2);
      }
 
-   if (pa->default_is)
-     elm_genlist_item_fields_update(pa->glit, "default", ELM_GENLIST_ITEM_FIELD_STATE);
-   else
-     elm_genlist_item_fields_update(pa->glit, "changed", ELM_GENLIST_ITEM_FIELD_STATE);
+   ecore_job_add(_state_update, pa);
 }
 
 void
