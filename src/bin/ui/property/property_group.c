@@ -516,7 +516,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
-         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
@@ -535,8 +535,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE);
          break;
-      case PROPERTY_GROUP_ITEM_STATE_MAP:
-         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP);
+      case PROPERTY_GROUP_ITEM_STATE_MAP_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ON);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ON);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE);
@@ -4706,7 +4705,7 @@ _init_items()
                          "ratio to be kept to the maximum."));
                break;
 
-           case PROPERTY_GROUP_ITEM_STATE_MAP:
+           case PROPERTY_GROUP_ITEM_STATE_MAP_TITLE:
               IT.name = "MAP";
               IT.expandable = true;
               IT.expanded = false;
@@ -5687,7 +5686,7 @@ property_group_items_get()
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
-   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_MAP]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_MAP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
