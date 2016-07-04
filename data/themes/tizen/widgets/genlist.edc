@@ -1590,20 +1590,15 @@ group { name: "elm/genlist/item/item/default";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel2 {
-               offset: -1 -2;
-            }
          }
          description { state: "selected" 0.0;
-            color_class: "select_dark";
-            rel2 {
-               offset: -1 -2;
-            }
+            color_class: "genlist_selected";
          }
       }
       part { name: "separator";
          type: RECT;
          description { state: "default" 0.0;
+            visible: 0;
             align: 0.5 1.0;
             min: 0 1;
             max: -1 1;
@@ -1628,10 +1623,10 @@ group { name: "elm/genlist/item/item/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             min: 0 26;
-            color_class: "main";
+            color_class: "genlist_text_tree";
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 20 0;
                to_x: "elm.swallow.pad";
             }
             rel2 {
@@ -1639,7 +1634,7 @@ group { name: "elm/genlist/item/item/default";
             }
             text {
                font: FN;
-               size: 12;
+               size: 13;
                align: 0.0 0.5;
             }
          }
