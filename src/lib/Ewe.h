@@ -48,7 +48,6 @@
 #endif
 
 #include "ewe_main.h"
-#include "ewe_combobox.h"
 #include "ewe_ruler.h"
 
 #endif  /* ELEMENTARY_WIDGET_EXTENTIONS_H */

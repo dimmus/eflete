@@ -86,13 +86,6 @@ TODO("see large comment below")
    elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
    evas_object_show(ENTRY);
 
-TODO("Delete this when not used anymore")
-#define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \
-   COMBOBOX = ewe_combobox_add(PARENT); \
-   evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   evas_object_show(COMBOBOX);
-
 /* ap.win for now, because only this parent allow combobox to show it's genlist */
 #define COMBOBOX_ADD(PARENT, COMBOBOX) \
    COMBOBOX = elm_combobox_add(ap.win); \

@@ -32,11 +32,6 @@ includesdir = $(pkgincludedir)-@VMAJ@
 includesub_HEADERS = \
 logger/logger.h \
 ewe_main.h \
-ewe_combobox.h \
-ewe_combobox_eo.h \
-ewe_combobox_legacy.h \
-ewe_combobox_common.h \
-ewe_widget_combobox.h \
 ewe_ruler.h \
 ewe_ruler_legacy.h \
 ewe_ruler_eo.h \
@@ -50,14 +45,11 @@ libewe_la_LDFLAGS = @EWE_LTLIBRARY_FLAGS@
 libewe_la_SOURCES = \
 ewe_main.c \
 logger/logger.c \
-ewe_combobox.c \
 ewe_ruler.c \
 ewe_private.h
 
 BUILT_SOURCES = \
-ewe_combobox.eo.c \
-ewe_combobox.eo.h \
 ewe_ruler.eo.c \
 ewe_ruler.eo.h
 
-EXTRA_DIST = ewe_combobox.eo ewe_ruler.eo
+EXTRA_DIST = ewe_ruler.eo

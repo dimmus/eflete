@@ -4,7 +4,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
 ewe_init_test \
-ewe_combobox_test \
 ewe_ruler_test \
 eflete_test \
 alloc_test \
@@ -55,7 +54,6 @@ include_HEADERS = \
 	../tests/utc_common.h \
 	../tests/test_ewe_init/test_ewe_init.h \
 	../tests/test_ewe_ruler/test_ewe_ruler.h \
-	../tests/test_ewe_combobox/test_ewe_combobox.h \
 	../tests/test_eflete/test_eflete.h \
 	../tests/test_alloc/test_alloc.h \
 	../tests/test_diff/test_diff.h \
@@ -107,19 +105,6 @@ ewe_ruler_test_SOURCES = \
 
 ewe_ruler_test_CFLAGS = ${FLAGS}
 ewe_ruler_test_LDADD = ${LD}
-
-ewe_combobox_test_SOURCES = \
-../tests/test_ewe_combobox/test_ewe_combobox.c \
-../tests/test_ewe_combobox/ewe_combobox_add.c \
-../tests/test_ewe_combobox/ewe_combobox_item_add.c \
-../tests/test_ewe_combobox/ewe_combobox_item_del.c \
-../tests/test_ewe_combobox/ewe_combobox_item_title_get.c \
-../tests/test_ewe_combobox/ewe_combobox_item_title_set.c \
-../tests/test_ewe_combobox/ewe_combobox_items_list_get.c \
-../tests/test_ewe_combobox/ewe_combobox_select_item_get.c \
-../tests/test_ewe_combobox/ewe_combobox_select_item_set.c
-ewe_combobox_test_CFLAGS = ${FLAGS}
-ewe_combobox_test_LDADD = ${LD}
 
 eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \
