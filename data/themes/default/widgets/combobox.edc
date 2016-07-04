@@ -584,6 +584,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
 /* TODO: remove scripts, remake hover */
 group { name: "elm/hover/base/combobox_vertical/default";
    alias: "elm/hover/base/hoversel_vertical/history";
+   alias: "elm/hover/base/combobox_vertical/color_class";
    data.item: "dismiss" "on";
    script {
       public on_dismiss = 0;
@@ -1354,7 +1355,7 @@ group { name: "elm/genlist/base/combobox_vertical/default";
    }
 }
 
-group { name: "elm/genlist/item_compress/color_class/combobox_vertical/default";
+group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
    data {
       item: "texts" "elm.text";
       item: "contents" "swallow.color1 swallow.color2 swallow.color3";
@@ -1634,6 +1635,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
 
 group { name: "elm/scroller/entry_single/combobox_vertical/default";
    alias: "elm/scroller/entry_single/combobox_horizontal/default";
+   alias: "elm/scroller/entry_single/combobox_vertical/color_class";
    parts {
       part { name: "elm.swallow.content";
          repeat_events: 1;
@@ -1648,6 +1650,7 @@ group { name: "elm/scroller/entry_single/combobox_vertical/default";
 
 
 group { name: "elm/entry/base-single/combobox_vertical/default";
+   alias: "elm/entry/base-single/combobox_vertical/color_class";
    parts {
       part { name: "elm.text";
          type: TEXTBLOCK;

@@ -322,7 +322,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_COMBOBOX_CC:
          COMBOBOX_ADD(parent, content);
          itc = elm_genlist_item_class_new();
-         itc->item_style = "color_class";
+         itc->item_style = "default";
          itc->func.text_get = _combobox_text_get;
          itc->func.content_get = _combobox_cc_content_get;
          itc->func.del = _combobox_cc_item_del;
