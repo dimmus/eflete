@@ -487,7 +487,7 @@ _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    return true;
 }
 
-static Eina_Bool
+__UNUSED__ static Eina_Bool
 _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    pm_project_thread_cancel();
@@ -533,7 +533,7 @@ _import(void *data __UNUSED__,
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,
-                          _cancel_open_splash,
+                          NULL,
                           NULL);
    elm_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);

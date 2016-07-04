@@ -397,6 +397,7 @@ group { name: "elm/win/inwin/splash";
             fixed: 1 1;
             max: 86 -1;
             rel1.to: "area.info";
+            rel1.relative: 1.0 0.0;
             rel2.to: "area.info";
          }
       }

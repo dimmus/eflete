@@ -95,7 +95,7 @@ _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    return true;
 }
 
-static Eina_Bool
+__UNUSED__ static Eina_Bool
 _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    pm_project_thread_cancel();
@@ -108,7 +108,7 @@ _open_project(void *data __UNUSED__)
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,
-                          _cancel_open_splash,
+                          NULL,
                           (void *)eina_stringshare_add(file));
    evas_object_show(ap.splash);
 }
