@@ -164,4 +164,14 @@ shortcuts_object_push(Evas_Object *obj);
 void
 shortcuts_object_check_pop(Evas_Object *obj);
 
+/**
+ * Send signal that type shortcut was pressed
+ *
+ * @param type Type of shotcut to be sent
+ *
+ * @ingroup Shortcuts
+ */
+void
+shortcuts_shortcut_send(Shortcut_Type type);
+
 #endif /* SHORTCUTS_H */

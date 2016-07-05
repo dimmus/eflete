@@ -563,3 +563,9 @@ shortcuts_object_check_pop(Evas_Object *obj)
 
    handlers_stack = eina_list_remove_list(handlers_stack, handlers_stack);
 }
+
+void
+shortcuts_shortcut_send(Shortcut_Type type)
+{
+   _shortcut_handle(type);
+}
