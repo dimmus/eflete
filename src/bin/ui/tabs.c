@@ -1047,7 +1047,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_NEXT, _shortcut_part_next_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_PREV, _shortcut_part_prev_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_SHOWHIDE, _shortcut_part_showhide_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_UNSELECT, _shortcut_part_unselect_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_CANCEL, _shortcut_part_unselect_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE, _shortcut_all_parts_showhide_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NEXT, _shortcut_tab_next_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
