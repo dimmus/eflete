@@ -584,6 +584,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
 group { name: "elm/hover/base/combobox_vertical/default";
    alias: "elm/hover/base/hoversel_vertical/history";
    alias: "elm/hover/base/combobox_vertical/color_class";
+   alias: "elm/hover/base/combobox_vertical/zoom";
    data.item: "dismiss" "on";
    script {
       public on_dismiss = 0;
@@ -749,6 +750,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
 
 group { name: "elm/genlist/base/combobox_vertical/default";
    alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
+   alias: "elm/genlist/base/combobox_vertical/zoom";
    data {
       item: "focus_highlight" "on";
    }
@@ -1559,6 +1561,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
 }
 
 group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
+   alias: "elm/genlist/item_compress/default/combobox_vertical/zoom";
    data {
       item: "texts" "elm.text";
       item: "contents" "elm.swallow.icon elm.swallow.end";
@@ -1635,6 +1638,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
 group { name: "elm/scroller/entry_single/combobox_vertical/default";
    alias: "elm/scroller/entry_single/combobox_horizontal/default";
    alias: "elm/scroller/entry_single/combobox_vertical/color_class";
+   alias: "elm/scroller/entry_single/combobox_vertical/zoom";
    parts {
       part { name: "elm.swallow.content";
          repeat_events: 1;
@@ -1650,6 +1654,7 @@ group { name: "elm/scroller/entry_single/combobox_vertical/default";
 
 group { name: "elm/entry/base-single/combobox_vertical/default";
    alias: "elm/entry/base-single/combobox_vertical/color_class";
+   alias: "elm/entry/base-single/combobox_vertical/zoom";
    parts {
       part { name: "elm.text";
          type: TEXTBLOCK;
