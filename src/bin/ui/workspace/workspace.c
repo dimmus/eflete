@@ -662,26 +662,41 @@ _container_changed(void *data,
 }
 
 static void
-_menu_undo(void *data __UNUSED__,
+_menu_dismissed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+
+   assert(wd != NULL);
+
+   shortcuts_object_check_pop(wd->menu.obj);
+}
+
+static void
+_menu_undo(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
 }
 
 static void
-_menu_redo(void *data __UNUSED__,
+_menu_redo(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_REDO);
 }
 
 static void
-_menu_rulers_visible(void *data __UNUSED__,
+_menu_rulers_visible(void *data,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
 }
 
@@ -690,6 +705,8 @@ _menu_ruler_abs(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
+
    Workspace_Data *wd = data;
    Scroll_Area *area;
 
@@ -705,6 +722,8 @@ _menu_ruler_rel(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
+
    Workspace_Data *wd = data;
    Scroll_Area *area;
 
@@ -720,6 +739,8 @@ _menu_rulers_both(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
+   _menu_dismissed(data, NULL, NULL);
+
    Workspace_Data *wd = data;
    Scroll_Area *area;
 
@@ -756,27 +777,33 @@ _menu_cb(void *data,
    Eina_Bool sa, sr;
 
    if (ev->button != 3) return;
-   area = _scroll_area_get(wd);
-
-   sa = ewe_ruler_scale_visible_get(area->ruler_h.obj, NULL);
-   sr = ewe_ruler_scale_visible_get(area->ruler_h.obj, area->ruler_h.scale_rel);
-
-   if (sa) elm_radio_value_set(wd->menu.scale_abs, 0);
-   if (sr) elm_radio_value_set(wd->menu.scale_abs, 1);
-   if (sa && sr) elm_radio_value_set(wd->menu.scale_abs, 2);
-
    elm_menu_move(wd->menu.obj, ev->canvas.x, ev->canvas.y);
-   evas_object_show(wd->menu.obj);
+
+   if (!evas_object_visible_get(wd->menu.obj))
+     {
+        area = _scroll_area_get(wd);
+
+        sa = ewe_ruler_scale_visible_get(area->ruler_h.obj, NULL);
+        sr = ewe_ruler_scale_visible_get(area->ruler_h.obj, area->ruler_h.scale_rel);
+
+        if (sa) elm_radio_value_set(wd->menu.scale_abs, 0);
+        if (sr) elm_radio_value_set(wd->menu.scale_abs, 1);
+        if (sa && sr) elm_radio_value_set(wd->menu.scale_abs, 2);
+
+        shortcuts_object_push(wd->menu.obj);
+        evas_object_show(wd->menu.obj);
+     }
 }
 
 static void
 _menu_add(Workspace_Data *wd)
 {
    wd->menu.obj = elm_menu_add(ap.win);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL, NULL);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL, NULL);
+   evas_object_smart_callback_add(wd->menu.obj, "clicked", _menu_dismissed, wd);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL, wd);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL, wd);
    elm_menu_item_separator_add(wd->menu.obj, NULL);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, wd);
 
 #if !HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
