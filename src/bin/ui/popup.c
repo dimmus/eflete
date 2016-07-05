@@ -21,6 +21,7 @@
 #include "widget_macro.h"
 #include "project_manager.h"
 #include "config.h"
+#include "shortcuts.h"
 
 static Popup_Button btn_pressed;
 static Evas_Object *helper;
@@ -138,7 +139,9 @@ popup_want_action(const char *title,
    if (data) /* this is probably entry now */
      evas_object_smart_callback_call(data, "changed", NULL);
 
+   shortcuts_object_push(ap.popup);
    eflete_main_loop_begin();
+   shortcuts_object_check_pop(ap.popup);
 
    /* clear up before return the presed button */
    elm_object_content_unset(ap.popup);
