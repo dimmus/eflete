@@ -931,9 +931,9 @@ _shortcut_object_area_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_rulers_visible_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
+_shortcut_rulers_show_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
 {
    Eina_Bool visible;
 
@@ -1064,7 +1064,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FIT, _shortcut_fit_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visible_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_SHOW, _shortcut_rulers_show_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _shortcut_undo_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _shortcut_redo_cb, NULL);
 

@@ -29,6 +29,7 @@
 #include "project_manager.h"
 #include "change.h"
 #include "syntax_color.h"
+#include "shortcuts.h"
 
 #define WORKSPACE_DATA "workspace_data"
 
@@ -665,7 +666,7 @@ _menu_undo(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
-   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+   shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
 }
 
 static void
@@ -673,7 +674,7 @@ _menu_redo(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
-   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+   shortcuts_shortcut_send(SHORTCUT_TYPE_REDO);
 }
 
 static void
@@ -681,7 +682,7 @@ _menu_rulers_visible(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
-   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
+   shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
 }
 
 static void

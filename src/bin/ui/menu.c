@@ -21,6 +21,7 @@
 #include "preference.h"
 #include "tabs.h"
 #include "workspace.h"
+#include "shortcuts.h"
 
 static int _menu_delayed_event = 0;
 
@@ -137,49 +138,49 @@ _menu_cb(void *data __UNUSED__,
          /* preferences_window_add(ap.project); */
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_IN);
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_OUT:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_OUT);
         break;
       case MENU_VIEW_WORKSPACE_ZOOM_RESET:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_RESET);
          break;
       case MENU_VIEW_WORKSPACE_FIT:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_FIT, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_FIT);
          break;
       case MENU_VIEW_WORKSPACE_FILL:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_FILL, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_FILL);
          break;
       case MENU_VIEW_RULERS_SHOW:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_OBJECT_AREA);
          break;
       case MENU_EDIT_UNDO:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
          break;
       case MENU_EDIT_REDO:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_REDO);
          break;
       case MENU_EDIT_GROUP_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_GROUP);
          break;
       case MENU_EDIT_PART_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PART, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_PART);
          break;
       case MENU_EDIT_STATE_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_STATE, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_STATE);
          break;
       case MENU_EDIT_ITEM_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_ITEM);
          break;
       case MENU_EDIT_PROGRAM_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_PROGRAM);
          break;
       case MENU_EDIT_DATA_ITEM_ADD:
-         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_DATA_ITEM, NULL);
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_DATA_ITEM);
          break;
 
       case MENU_WINDOW_TAB_HOME:

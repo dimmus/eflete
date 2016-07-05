@@ -195,6 +195,9 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(ZOOM_IN);
         SHORTCUT(ZOOM_OUT);
         SHORTCUT(ZOOM_RESET);
+        SHORTCUT(FILL);
+        SHORTCUT(FIT);
+        SHORTCUT(RULERS_SHOW);
         SHORTCUT(OBJECT_AREA);
         SHORTCUT(CANCEL);
         SHORTCUT(DONE);
