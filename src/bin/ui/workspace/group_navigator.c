@@ -897,6 +897,7 @@ _popup_add_part_ok_clicked(void *data,
         msg = eina_stringshare_printf(_("added new part \"%s\""), name);
         change = change_add(msg);
         CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, type));
+        pl->popup.part_type = 0; /* get that selected stuff down, next type RECT again */
      }
 
    history_change_add(pl->group->history, change);
