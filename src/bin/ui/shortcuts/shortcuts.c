@@ -19,6 +19,8 @@
 
 #include "shortcuts.h"
 
+static Eina_List *handlers_stack = NULL;
+
 static inline unsigned int
 _keycode_convert(unsigned int keycode)
 {
@@ -131,7 +133,13 @@ static void
 _shortcut_handle(Shortcut_Type type)
 {
    int num;
+   Evas_Object *handler;
 #define SHORTCUT(NAME) \
+ case SHORTCUT_TYPE_##NAME: \
+    evas_object_smart_callback_call(handler, SIGNAL_SHORTCUT_##NAME, NULL); \
+    break;
+
+#define SHORTCUT_GLOBAL_ONLY(NAME) \
  case SHORTCUT_TYPE_##NAME: \
     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_##NAME, NULL); \
     break;
@@ -139,15 +147,20 @@ _shortcut_handle(Shortcut_Type type)
 #define SHORTCUT_NUM(NAME, SIGNAL, NUM) \
  case SHORTCUT_TYPE_##NAME: \
     num = NUM; \
-    evas_object_smart_callback_call(ap.win, SIGNAL, &num); \
+    evas_object_smart_callback_call(handler, SIGNAL, &num); \
     break;
+
+   if (handlers_stack)
+     handler = eina_list_data_get(handlers_stack);
+   else
+     handler = ap.win;
 
    switch (type)
      {
-        SHORTCUT(QUIT);
+        SHORTCUT_GLOBAL_ONLY(QUIT);
+        SHORTCUT_GLOBAL_ONLY(SAVE);
         SHORTCUT(REDO);
         SHORTCUT(UNDO);
-        SHORTCUT(SAVE);
         SHORTCUT(ADD_GROUP);
         SHORTCUT(ADD_PART);
         SHORTCUT(ADD_STATE);
@@ -540,4 +553,23 @@ shortcuts_shutdown(void)
    ap.shortcuts = NULL;
 
    return true;
+}
+
+
+void
+shortcuts_object_push(Evas_Object *obj)
+{
+   assert(obj != NULL);
+
+   handlers_stack = eina_list_prepend(handlers_stack, obj);
+}
+
+void
+shortcuts_object_check_pop(Evas_Object *obj)
+{
+   assert(obj != NULL);
+   assert(handlers_stack != NULL);
+   assert(obj == eina_list_data_get(handlers_stack));
+
+   handlers_stack = eina_list_remove_list(handlers_stack, handlers_stack);
 }

@@ -126,7 +126,7 @@ shortcuts_profile_load(Profile *profile);
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_init();
+shortcuts_init(void);
 
 /**
  * Initialize shortcut module.
@@ -140,6 +140,29 @@ shortcuts_init();
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_shutdown();
+shortcuts_shutdown(void);
+
+/**
+ * Push an object on stack of shortcut handlers.
+ * This object will recieve all shortcuts except SAVE and QUIT as long as it will
+ * be on top of handlers stack.
+ *
+ * @param obj New handler object
+ *
+ * @ingroup Shortcuts
+ */
+void
+shortcuts_object_push(Evas_Object *obj);
+
+/**
+ * Pop an object from stack of shortcut handlers.
+ *
+ * @param obj Handler object. This object should be on top of stack, otherwise
+ * program will be terminated to avoid undefined behaviour.
+ *
+ * @ingroup Shortcuts
+ */
+void
+shortcuts_object_check_pop(Evas_Object *obj);
 
 #endif /* SHORTCUTS_H */
