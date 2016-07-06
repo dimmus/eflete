@@ -696,6 +696,19 @@ _unselect_part(Part_List *pl)
 }
 
 static void
+_unselected_cb(void *data,
+               Evas_Object *o __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   assert(pl != NULL);
+
+   _unselect_internal(pl);
+
+   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, NULL);
+}
+
+static void
 _selected_cb(void *data,
              Evas_Object *o __UNUSED__,
              void *event_info)
@@ -2435,6 +2448,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "unselected", _unselected_cb, pl);
    evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
    /*elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);*/
 
