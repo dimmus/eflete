@@ -297,6 +297,22 @@ _combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
    elm_entry_cursor_end_set(obj);
 }
 
+static void
+_combobox_expanded_cb(void *data __UNUSED__,
+                           Evas_Object *obj,
+                           void *event_info __UNUSED__)
+{
+   shortcuts_object_push(obj);
+}
+
+static void
+_combobox_dismissed_cb(void *data __UNUSED__,
+                            Evas_Object *obj,
+                            void *event_info __UNUSED__)
+{
+   shortcuts_object_check_pop(obj);
+}
+
 static Evas_Object *
 _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *parent)
 {
@@ -325,8 +341,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          itc->func.text_get = _combobox_text_get;
          itc->func.del = _combobox_item_del;
          evas_object_data_set(content, "COMMON_ITC", itc);
-         evas_object_smart_callback_add(content, "item,pressed",
-                                        _combobox_item_pressed_cb, pa);
+         evas_object_smart_callback_add(content, "item,pressed", _combobox_item_pressed_cb, pa);
+         evas_object_smart_callback_add(content, "expanded", _combobox_expanded_cb, pa);
+         evas_object_smart_callback_add(content, "dismissed", _combobox_dismissed_cb, pa);
          break;
       case PROPERTY_CONTROL_COMBOBOX_CC:
          COMBOBOX_ADD(parent, content);
