@@ -23,6 +23,7 @@
 #include "history.h"
 #include "widget_macro.h"
 #include "main_window.h"
+#include "shortcuts.h"
 
 typedef struct {
    Evas_Object *layout;
@@ -63,6 +64,7 @@ _expanded_undo(void *data,
 
    assert(hd != NULL);
 
+   shortcuts_object_push(hd->undo_cmbx);
    hd->to_undo = 0;
    EINA_LIST_REVERSE_FOREACH(hd->history->changes, l, change)
      {
@@ -89,6 +91,7 @@ _expanded_redo(void *data,
 
    assert(hd != NULL);
 
+   shortcuts_object_push(hd->undo_cmbx);
    hd->to_redo = 0;
    EINA_LIST_FOREACH(hd->history->changes, l, change)
      {
@@ -109,6 +112,7 @@ _undo_item_cleanup(void *data,
 {
    History_New_UI_data *hd = data;
    _list_cleanup(hd);
+   shortcuts_object_check_pop(hd->undo_cmbx);
 }
 static void
 _undo_item_selected(void *data,
@@ -138,6 +142,7 @@ _redo_item_cleanup(void *data,
 {
    History_New_UI_data *hd = data;
    _list_cleanup(hd);
+   shortcuts_object_check_pop(hd->undo_cmbx);
 }
 static void
 _redo_item_selected(void *data,
