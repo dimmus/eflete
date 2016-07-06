@@ -22,6 +22,7 @@
 #include "property_common.h"
 #include "widget_macro.h"
 #include "sound_player.h"
+#include "shortcuts.h"
 
 /* hack to disable spinner value changes when scrolling */
 static void
@@ -108,6 +109,7 @@ _start_cb(void *data,
         /* hack to disable genlist scrolling while dragging spinner */
         if (pa->action1.control_type == PROPERTY_CONTROL_SPINNER)
           {
+             shortcuts_object_push(pa->action1.control);
              /* disable wheel scrolling */
              elm_object_scroll_freeze_push(pa->action1.control);
              /* disable page-up/page-down scrolling */
@@ -121,6 +123,7 @@ _start_cb(void *data,
 
         if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
           {
+             shortcuts_object_push(pa->action2.control);
              elm_object_scroll_freeze_push(pa->action2.control);
              elm_object_focus_set(pd->genlist, false);
           }
@@ -141,7 +144,10 @@ _stop_cb(void *data,
      {
         /* enable scrolling after finishing spinner drag */
         if (pa->action1.control_type == PROPERTY_CONTROL_SPINNER)
-          elm_object_scroll_freeze_pop(pa->action1.control);
+          {
+             shortcuts_object_check_pop(pa->action1.control);
+             elm_object_scroll_freeze_pop(pa->action1.control);
+          }
         _stop(pd, pa, &pa->action1);
      }
    else
@@ -149,7 +155,10 @@ _stop_cb(void *data,
         assert (pa->action2.control == obj);
 
         if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
-          elm_object_scroll_freeze_pop(pa->action2.control);
+          {
+             shortcuts_object_push(pa->action2.control);
+             elm_object_scroll_freeze_pop(pa->action2.control);
+          }
         _stop(pd, pa, &pa->action2);
      }
 }
