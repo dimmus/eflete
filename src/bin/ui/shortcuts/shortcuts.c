@@ -219,9 +219,9 @@ _mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
      return ECORE_CALLBACK_PASS_ON;
 
    if (ev->z > 0)
-     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, NULL);
+     _shortcut_handle(SHORTCUT_TYPE_ZOOM_OUT);
    else if (ev->z < 0)
-     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, NULL);
+     _shortcut_handle(SHORTCUT_TYPE_ZOOM_IN);
 
    return ECORE_CALLBACK_DONE;
 }

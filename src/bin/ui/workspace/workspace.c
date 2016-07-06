@@ -296,6 +296,21 @@ _fit_cb(void *data,
 }
 
 static void
+_slider_zoom_stop_cb(void *data __UNUSED__,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   shortcuts_object_check_pop(obj);
+}
+static void
+_slider_zoom_start_cb(void *data __UNUSED__,
+                      Evas_Object *obj,
+                      void *event_info __UNUSED__)
+{
+   shortcuts_object_push(obj);
+}
+
+static void
 _slider_zoom_cb(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
@@ -394,7 +409,9 @@ _zoom_controls_add(Workspace_Data *wd)
    wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
    elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
    elm_slider_value_set(wd->toolbar.zoom.slider, 100);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,start", _slider_zoom_start_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,stop", _slider_zoom_stop_cb, wd);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
