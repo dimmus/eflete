@@ -20,6 +20,7 @@
 #include "modal_window.h"
 #include "widget_macro.h"
 #include "main_window.h"
+#include "shortcuts.h"
 
 #define SIGNAL_DONE "done"
 #define SIGNAL_CANCEL "cancel"
@@ -111,6 +112,7 @@ _anim_hide_finish(void *data,
    img = elm_layout_content_get(obj, "elm.swallow.content");
    evas_object_image_source_visible_set(img, true);
    evas_object_del(obj);
+   shortcuts_object_check_pop(mw);
    evas_object_del(mw);
 }
 
@@ -205,6 +207,9 @@ mw_add(void)
    BUTTON_ADD(mw, btn, _("Ok"))
    evas_object_smart_callback_add(btn, "clicked", _mw_done, mw);
    elm_object_part_content_set(mw, "eflete.swallow.btn_ok", btn);
+
+   shortcuts_object_push(mw);
+
    return mw;
 }
 
