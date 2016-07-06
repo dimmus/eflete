@@ -131,8 +131,6 @@ _undo_item_selected(void *data,
         hd->to_undo--;
         hd->to_redo++;
      }
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 static void
@@ -161,8 +159,6 @@ _redo_item_selected(void *data,
         hd->to_redo--;
         hd->to_undo++;
      }
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 void
