@@ -1054,7 +1054,7 @@ _groupview_clicked(void *data,
 
 static void
 _groupview_hl_part_drag_start(void *data,
-                              Evas_Object *obj __UNUSED__,
+                              Evas_Object *obj,
                               void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1079,6 +1079,7 @@ _groupview_hl_part_drag_start(void *data,
                                                    event->part->current_state->name,
                                                    event->part->current_state->val);
      }
+   shortcuts_object_push(obj);
 }
 
 static void
@@ -1129,7 +1130,7 @@ _groupview_hl_part_changed(void *data,
 
 static void
 _groupview_hl_part_drag_stop(void *data,
-                             Evas_Object *obj __UNUSED__,
+                             Evas_Object *obj,
                              void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1168,6 +1169,7 @@ _groupview_hl_part_drag_stop(void *data,
           }
      }
    change = NULL;
+   shortcuts_object_check_pop(obj);
 }
 /******************************************************************************/
 
