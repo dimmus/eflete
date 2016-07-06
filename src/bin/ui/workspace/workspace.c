@@ -1179,6 +1179,16 @@ _panes_h_unpress(void *data,
    Workspace_Data *wd = data;
 
    wd->code.size = elm_panes_content_right_size_get(obj);
+
+   shortcuts_object_check_pop(obj);
+}
+
+static void
+_panes_h_press(void *data __UNUSED__,
+               Evas_Object *obj,
+               void *event_info __UNUSED__)
+{
+   shortcuts_object_push(obj);
 }
 
 Evas_Object *
@@ -1318,6 +1328,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_style_set(wd->panes_h, "pan_hide");
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
+   evas_object_smart_callback_add(wd->panes_h, "press", _panes_h_press, wd);
    evas_object_smart_callback_add(wd->panes_h, "unpress", _panes_h_unpress, wd);
    elm_layout_content_set(wd->layout, NULL, wd->panes_h);
 
