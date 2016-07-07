@@ -727,8 +727,8 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                   const char *part_name)
 {
    Eina_Bool res = true;
-   Eina_List *items, *states, *parts, *l, *l_s;
-   Eina_Stringshare *part, *state, *name, *ref;
+   Eina_List *items, *states, *l;
+   Eina_Stringshare *state, *name;
    double state_val;
 
    assert(edit_object != NULL);
@@ -794,61 +794,6 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       res = res && editor_part_item_del(edit_object, change, false, apply, part_name, name);
    edje_edit_string_list_free(items);
 
-   /* remove external references */
-   parts = edje_edit_parts_list_get(edit_object);
-   EINA_LIST_FOREACH(parts, l, part)
-     {
-        if (part == part_name) continue;
-        states = edje_edit_part_states_list_get(edit_object, part);
-        type = edje_edit_part_type_get(edit_object, part);
-        EINA_LIST_FOREACH(states, l_s, state)
-          {
-             state_name_split(state, &name, &state_val);
-
-             #define RESET_STATE_REF(ATT) \
-             ref = edje_edit_state_ ## ATT ## _get(edit_object, part, name, state_val); \
-             if (ref == part_name) \
-               res = res && editor_state_ ## ATT ## _reset(edit_object, change, apply, part, name, state_val);
-
-             RESET_STATE_REF(rel1_to_x);
-             RESET_STATE_REF(rel2_to_x);
-             RESET_STATE_REF(rel1_to_y);
-             RESET_STATE_REF(rel2_to_y);
-             if (type == EDJE_PART_TYPE_PROXY)
-               {
-                  RESET_STATE_REF(proxy_source);
-               }
-             else if (type == EDJE_PART_TYPE_TEXT)
-               {
-                  RESET_STATE_REF(text_source);
-                  RESET_STATE_REF(text_text_source);
-               }
-
-             eina_stringshare_del(name);
-          }
-        #define RESET_PART_REF(ATT, REAL_ATT) \
-        ref = edje_edit_part_ ## REAL_ATT ## _get(edit_object, part); \
-        if (ref == part_name) \
-          res = res && editor_part_ ## ATT ## _reset(edit_object, change, apply, part);
-
-        RESET_PART_REF(clip_to, clip_to);
-        RESET_PART_REF(drag_confine, drag_confine);
-        RESET_PART_REF(drag_threshold, drag_threshold);
-        RESET_PART_REF(drag_event, drag_event);
-        if (type == EDJE_PART_TYPE_TEXTBLOCK)
-          {
-             RESET_PART_REF(textblock_selection_under, source);
-             RESET_PART_REF(textblock_selection_over, source2);
-             RESET_PART_REF(textblock_cursor_under, source3);
-             RESET_PART_REF(textblock_cursor_over, source4);
-             RESET_PART_REF(textblock_anchors_under, source5);
-             RESET_PART_REF(textblock_anchors_over, source6);
-          }
-        if (type == EDJE_PART_TYPE_GROUP)
-          RESET_PART_REF(group_source, source);
-
-     }
-   edje_edit_string_list_free(parts);
    you_shall_pass_editor_signals(change);
 
    return res;
@@ -942,11 +887,73 @@ _editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
    Diff *diff;
    Eina_Stringshare *event_info;
    Edje_Part_Type type;
+   Eina_Bool res = true;
+   Eina_List *states, *parts, *l, *l_s;
+   Eina_Stringshare *part, *state, *name, *ref;
+   double state_val;
 
    assert(edit_object != NULL);
 
    event_info = eina_stringshare_add(part_name);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_DELETED, (void *)event_info);
+
+   /* remove external references */
+   you_shall_not_pass_editor_signals(change);
+   parts = edje_edit_parts_list_get(edit_object);
+   EINA_LIST_FOREACH(parts, l, part)
+     {
+        if (part == part_name) continue;
+        states = edje_edit_part_states_list_get(edit_object, part);
+        type = edje_edit_part_type_get(edit_object, part);
+        EINA_LIST_FOREACH(states, l_s, state)
+          {
+             state_name_split(state, &name, &state_val);
+
+             #define RESET_STATE_REF(ATT) \
+             ref = edje_edit_state_ ## ATT ## _get(edit_object, part, name, state_val); \
+             if (ref == part_name) \
+             res = res && editor_state_ ## ATT ## _reset(edit_object, change, apply, part, name, state_val);
+
+             RESET_STATE_REF(rel1_to_x);
+             RESET_STATE_REF(rel2_to_x);
+             RESET_STATE_REF(rel1_to_y);
+             RESET_STATE_REF(rel2_to_y);
+             if (type == EDJE_PART_TYPE_PROXY)
+               {
+                  RESET_STATE_REF(proxy_source);
+               }
+             else if (type == EDJE_PART_TYPE_TEXT)
+               {
+                  RESET_STATE_REF(text_source);
+                  RESET_STATE_REF(text_text_source);
+               }
+
+             eina_stringshare_del(name);
+          }
+        #define RESET_PART_REF(ATT, REAL_ATT) \
+        ref = edje_edit_part_ ## REAL_ATT ## _get(edit_object, part); \
+        if (ref == part_name) \
+        res = res && editor_part_ ## ATT ## _reset(edit_object, change, apply, part);
+
+        RESET_PART_REF(clip_to, clip_to);
+        RESET_PART_REF(drag_confine, drag_confine);
+        RESET_PART_REF(drag_threshold, drag_threshold);
+        RESET_PART_REF(drag_event, drag_event);
+        if (type == EDJE_PART_TYPE_TEXTBLOCK)
+          {
+             RESET_PART_REF(textblock_selection_under, source);
+             RESET_PART_REF(textblock_selection_over, source2);
+             RESET_PART_REF(textblock_cursor_under, source3);
+             RESET_PART_REF(textblock_cursor_over, source4);
+             RESET_PART_REF(textblock_anchors_under, source5);
+             RESET_PART_REF(textblock_anchors_over, source6);
+          }
+        if (type == EDJE_PART_TYPE_GROUP)
+          RESET_PART_REF(group_source, source);
+
+     }
+   edje_edit_string_list_free(parts);
+   you_shall_pass_editor_signals(change);
 
    if (change)
      {
