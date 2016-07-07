@@ -1,4 +1,5 @@
 group { name: "elm/entry/base/default";
+   alias: "elm/entry/base-single-noedit/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
