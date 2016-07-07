@@ -1360,6 +1360,7 @@ _add_state_content_get(void *data, Evas_Object **to_focus)
    combobox_item = mem_malloc(sizeof(Combobox_Item));
    combobox_item->index = 0;
    combobox_item->data = eina_stringshare_add(_("None"));
+   pl->popup.state_selected = combobox_item;
    elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
