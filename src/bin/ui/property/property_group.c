@@ -769,7 +769,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PART_ITEM_NAME:
-      case ATTRIBUTE_STATE_IMAGE:
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_PROGRAM_SCRIPT:
@@ -783,6 +782,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_DATA_NAME:
          eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.group_data_name_validator);
          break;
+      case ATTRIBUTE_STATE_IMAGE:
       case ATTRIBUTE_GROUP_DATA_VALUE:
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
       case ATTRIBUTE_GROUP_MIN_W:

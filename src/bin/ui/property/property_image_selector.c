@@ -39,7 +39,6 @@ _on_image_done(void *data,
    property_entry_set(data, selected);
 
    evas_object_smart_callback_call(data, "changed,demo,image", NULL);
-   elm_object_scroll_freeze_pop(data);
 
    return true;
 }
@@ -56,7 +55,6 @@ _on_image_choose(void *data,
                                    data,
                                    false,
                                    false);
-   elm_object_scroll_freeze_push(data);
 }
 
 Evas_Object *

@@ -352,8 +352,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_demo)
      {
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
-         elm_object_disabled_set(action->control, true);
-         break;
       case ATTRIBUTE_DEMO_ITEM_TEXT_NAME:
       case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
