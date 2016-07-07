@@ -22,7 +22,7 @@
 
 Eina_Bool
 exist_permission_check(const char *path, const char *name,
-                       const char *title, const char *msg)
+                       const char *title, const char *msg, Eina_Bool append)
 {
    Eina_Strbuf *buf, *buf_msg;
    Popup_Button btn_res;
@@ -44,8 +44,12 @@ exist_permission_check(const char *path, const char *name,
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s", path, name);
    if (!ecore_file_exists(eina_strbuf_string_get(buf))) return true;
-   btn_res = popup_want_action(title, msg, NULL,
-                               BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+   if (!append)
+     btn_res = popup_want_action(title, msg, NULL,
+                                 BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+   else
+     btn_res = popup_want_action(title, msg, NULL,
+                                 BTN_APPEND | BTN_REPLACE | BTN_CANCEL, NULL, NULL);
    if (btn_res == BTN_CANCEL) return false;
    if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
      {
@@ -55,7 +59,8 @@ exist_permission_check(const char *path, const char *name,
         eina_strbuf_free(buf_msg);
         return false;
      }
-   ecore_file_recursive_rm(eina_strbuf_string_get(buf));
+   if (btn_res == BTN_REPLACE)
+     ecore_file_recursive_rm(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf);
    return true;
 }

@@ -31,6 +31,7 @@ static void* func_data;
 
 static const Popup_Button _btn_ok         = BTN_OK;
 static const Popup_Button _btn_save       = BTN_SAVE;
+static const Popup_Button _btn_append     = BTN_APPEND;
 static const Popup_Button _btn_replace    = BTN_REPLACE;
 static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
 static const Popup_Button _btn_cancel     = BTN_CANCEL;
@@ -73,7 +74,8 @@ _btn_cb(void *data,
         void *ei __UNUSED__)
 {
    btn_pressed = *((Popup_Button *)data);
-   if ((BTN_OK == btn_pressed) || (BTN_SAVE == btn_pressed) || (BTN_REPLACE == btn_pressed))
+   if ((BTN_OK == btn_pressed) || (BTN_SAVE == btn_pressed) ||
+       (BTN_REPLACE == btn_pressed) || (BTN_APPEND == btn_pressed))
      if (validator && (!validator(user_data))) return;
    eflete_main_loop_quit();
 }
@@ -114,13 +116,20 @@ popup_want_action(const char *title,
    if (popup_btns & BTN_SAVE)
      BTN_ADD(_("Save"), "button1", &_btn_save)
 
-   if (popup_btns & BTN_REPLACE)
+   if (popup_btns & BTN_APPEND)
+     BTN_ADD(_("Append"), "button1", &_btn_append)
+
+   if ((popup_btns & BTN_REPLACE) && (popup_btns & BTN_APPEND))
+     BTN_ADD(_("Replace"), "button2", &_btn_replace)
+   else if (popup_btns & BTN_REPLACE)
      BTN_ADD(_("Replace"), "button1", &_btn_replace)
 
    if (popup_btns & BTN_DONT_SAVE)
      BTN_ADD(_("Don't save"), "button2", &_btn_dont_save)
 
    if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
+     BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
+   else if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_APPEND))
      BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
    else if (popup_btns & BTN_CANCEL)
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)

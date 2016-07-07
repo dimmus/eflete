@@ -534,7 +534,7 @@ _on_create(void *data __UNUSED__,
 
    if (!exist_permission_check(elm_entry_entry_get(tab_new.path),
                                elm_entry_entry_get(tab_new.name),
-                               _("New project"), eina_strbuf_string_get(buf)))
+                               _("New project"), eina_strbuf_string_get(buf), EINA_FALSE))
      return;
    eina_strbuf_free(buf);
    ap.splash = splash_add(ap.win,

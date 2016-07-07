@@ -143,7 +143,8 @@ typedef enum _Popup_Button
    BTN_CANCEL     = (1 << 1),
    BTN_SAVE       = (1 << 2),
    BTN_DONT_SAVE  = (1 << 3),
-   BTN_REPLACE    = (1 << 4)
+   BTN_REPLACE    = (1 << 4),
+   BTN_APPEND     = (1 << 5)
 } Popup_Button;
 
 /**

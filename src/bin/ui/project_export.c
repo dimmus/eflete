@@ -68,7 +68,7 @@ _export_dev(void *data __UNUSED__,
    if (!exist_permission_check(elm_fileselector_path_get(obj),
                                elm_fileselector_current_name_get(obj),
                                _("Export to develop edj-file"),
-                               eina_strbuf_string_get(buf)))
+                               eina_strbuf_string_get(buf), EINA_TRUE))
      return false;
    eina_strbuf_free(buf);
 
@@ -132,7 +132,7 @@ _export_release(void *data __UNUSED__,
    if (!exist_permission_check(elm_fileselector_path_get(obj),
                                elm_fileselector_current_name_get(obj),
                                _("Export to release edj-file"),
-                               eina_strbuf_string_get(buf)))
+                               eina_strbuf_string_get(buf), EINA_FALSE))
      return false;
    eina_strbuf_free(buf);
 
@@ -186,7 +186,7 @@ _export_source_code(void *data __UNUSED__,
    if (!exist_permission_check(path,
                                ap.project->name,
                                _("Export to develop edj-file"),
-                               eina_strbuf_string_get(buf)))
+                               eina_strbuf_string_get(buf), EINA_FALSE))
      return false;
    eina_strbuf_free(buf);
 
@@ -244,7 +244,7 @@ _export_group_source_code(void *data __UNUSED__,
                              path, name);
    if (!exist_permission_check(path, name,
                                _("Export group source code"),
-                               eina_strbuf_string_get(buf)))
+                               eina_strbuf_string_get(buf), EINA_FALSE))
      return false;
    eina_strbuf_free(buf);
    free(name);

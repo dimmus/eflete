@@ -446,7 +446,7 @@ _import(void *data __UNUSED__,
 
    if (!exist_permission_check(elm_entry_entry_get(tab_edc.path),
                                elm_entry_entry_get(tab_edc.name),
-                               _("Import edc-file"), eina_strbuf_string_get(buf)))
+                               _("Import edc-file"), eina_strbuf_string_get(buf), EINA_FALSE))
      return;
    eina_strbuf_free(buf);
    ap.splash = splash_add(ap.win,
