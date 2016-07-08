@@ -240,6 +240,9 @@ _workspace_del(void *data,
    evas_object_del(wd->demo.container);
    evas_object_hide(wd->demo.container);
 
+   evas_object_del(wd->group_navi);
+   wd->group_navi = NULL;
+
    free(wd);
 }
 

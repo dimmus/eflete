@@ -2357,6 +2357,34 @@ _combobox_item_del(void *data,
    free(item);
 }
 
+static void
+_group_navigator_del(void *data,
+                     Evas *e __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   Part_List *pl = (Part_List *)data;
+
+   elm_genlist_item_class_free(pl->itc_part);
+   elm_genlist_item_class_free(pl->itc_caption);
+   elm_genlist_item_class_free(pl->itc_group_data);
+   elm_genlist_item_class_free(pl->itc_program);
+   elm_genlist_item_class_free(pl->itc_item);
+   elm_genlist_item_class_free(pl->itc_item_caption);
+   elm_genlist_item_class_free(pl->itc_state);
+   elm_genlist_item_class_free(pl->itc_state_selected);
+   elm_genlist_item_class_free(pl->popup.itc);
+
+   evas_object_data_del(pl->layout, GROUP_NAVIGATOR_DATA);
+   evas_object_data_del(pl->menu, GROUP_NAVIGATOR_DATA);
+   evas_object_data_del(pl->genlist, GROUP_NAVIGATOR_DATA);
+
+   pl->group = NULL;
+
+   free(pl);
+
+}
+
 Evas_Object *
 group_navigator_add(Evas_Object *parent, Group *group)
 {
@@ -2513,6 +2541,8 @@ group_navigator_add(Evas_Object *parent, Group *group)
         elm_genlist_item_expanded_set(pl->programs_caption_item, true);
         elm_genlist_item_expanded_set(pl->data_caption_item, true);
      }
+
+   evas_object_event_callback_add(pl->layout, EVAS_CALLBACK_DEL, _group_navigator_del, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
