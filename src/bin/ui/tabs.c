@@ -105,8 +105,8 @@ _content_set(void *data,
              evas_object_hide(ap.property.demo);
              return;
           }
-
-        elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
+        else
+          elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
         if (ap.project)
@@ -190,7 +190,7 @@ _del_tab(Tabs_Item *item)
         history_del(item->group->history);
         item->group->history = NULL;
         item->group->current_selected = NULL;
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, item->group);
+        item->group = NULL;
      }
    free(item);
 }
@@ -1251,7 +1251,7 @@ tabs_clean(void)
    EINA_LIST_FOREACH_SAFE(tabs.items, l, l_n, item)
      {
         if (!item->group) continue;
-        _del_tab(item);
+        _tab_close(item, item->toolbar_item, NULL, NULL);
      }
    tabs.selected = NULL;
 }
