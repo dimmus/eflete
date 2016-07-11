@@ -196,7 +196,8 @@ libete.a \
 ${top_builddir}/src/lib/libewe.la \
 @LTLIBINTL@
 
-if HAVE_ENVENTOR
-eflete_CPPFLAGS += @ENVENTOR_CFLAGS@
-eflete_LDADD += @ENVENTOR_LIBS@
-endif
+#Enable after Enventor compabitility will be implement
+#if HAVE_ENVENTOR
+#eflete_CPPFLAGS += @ENVENTOR_CFLAGS@
+#eflete_LDADD += @ENVENTOR_LIBS@
+#endif

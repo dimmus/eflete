@@ -91,9 +91,10 @@ PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
    [have_check="${RED}no${RESET}"])
 
-PKG_CHECK_MODULES([ENVENTOR], [enventor >= enventor_version],
-   [have_enventor="yes"],
-   [have_enventor="no"])
+#Enable after Enventor compabitility will be implement
+#PKG_CHECK_MODULES([ENVENTOR], [enventor >= enventor_version],
+#   [have_enventor="yes"],
+#   [have_enventor="no"])
 
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "x${GREEN}yes${RESET}"])
 AC_SUBST([CHECK_FOUND])
@@ -169,24 +170,25 @@ if test "x$dont_want_eflete_audio" = "xno"; then
    EFLETE_AUDIO_DEF="#define"
 fi
 
-dnl --enable-enventor/--disable-enventor
-HAVE_ENVENTOR_DEF="#undef"
-want_enventor="no"
-AC_ARG_ENABLE([enventor],
-   [AC_HELP_STRING([--enable-enventor], [enable the Enventor support in the Eflete. @<:@default=disabled@:>@])],
-   [want_enventor=$enableval], [])
-
-if test "x$have_enventor" = "xno"; then
-   summary_enventor="${RED}no${RESET} (version < enventor_version)"
-fi
-if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"; then
-   AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])
-   HAVE_ENVENTOR_DEF="#define"
-   summary_enventor="${GREEN}yes${RESET}"
-fi
-if test "x$want_enventor" = "xno" -a "x$have_enventor" = "xyes"; then
-   summary_enventor="${RED}no${RESET}"
-fi
+#Enable after Enventor compabitility will be implement
+#dnl --enable-enventor/--disable-enventor
+#HAVE_ENVENTOR_DEF="#undef"
+#want_enventor="no"
+#AC_ARG_ENABLE([enventor],
+#   [AC_HELP_STRING([--enable-enventor], [enable the Enventor support in the Eflete. @<:@default=disabled@:>@])],
+#   [want_enventor=$enableval], [])
+#
+#if test "x$have_enventor" = "xno"; then
+#   summary_enventor="${RED}no${RESET} (version < enventor_version)"
+#fi
+#if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"; then
+#   AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])
+#   HAVE_ENVENTOR_DEF="#define"
+#   summary_enventor="${GREEN}yes${RESET}"
+#fi
+#if test "x$want_enventor" = "xno" -a "x$have_enventor" = "xyes"; then
+#   summary_enventor="${RED}no${RESET}"
+#fi
 
 
 AC_SUBST(EFLETE_DEBUG_DEF)
@@ -215,7 +217,7 @@ AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O
 
-AM_CONDITIONAL([HAVE_ENVENTOR], [test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"])
+#AM_CONDITIONAL([HAVE_ENVENTOR], [test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
@@ -255,7 +257,7 @@ echo "  efl............: ${have_efl}"
 echo ""
 echo "Features:"
 echo "  tizen..........: ${summary_tizen}"
-dnl echo "  enventor.......: ${summary_enventor}"
+#dnl echo "  enventor.......: ${summary_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo ""
@@ -284,21 +286,21 @@ if test "x$dont_want_eflete_audio" = "xyes"; then
    echo ""
 fi
 
-if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xno"; then
-   echo " __________________________________________"
-   echo "/ Enventor dependency is available on your \\"
-   echo "| system, but you are building without     |"
-   echo "| enventor support. Don't forget to        |"
-   echo "| --enable-enventor if you want Enventor   |"
-   echo "\\ integration for Eflete.                  /"
-   echo " ------------------------------------------"
-   echo "        \\   ^__^"
-   echo "         \\  (oo)\\_______"
-   echo "            (__)\\       )\\/\\"
-   echo "                ||----w |"
-   echo "                ||     ||"
-   echo ""
-fi
+#if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xno"; then
+#   echo " __________________________________________"
+#   echo "/ Enventor dependency is available on your \\"
+#   echo "| system, but you are building without     |"
+#   echo "| enventor support. Don't forget to        |"
+#   echo "| --enable-enventor if you want Enventor   |"
+#   echo "\\ integration for Eflete.                  /"
+#   echo " ------------------------------------------"
+#   echo "        \\   ^__^"
+#   echo "         \\  (oo)\\_______"
+#   echo "            (__)\\       )\\/\\"
+#   echo "                ||----w |"
+#   echo "                ||     ||"
+#   echo ""
+#fi
 
 if test "x$want_eflete_todo" = "xyes"; then
    echo " _________________________________________  "

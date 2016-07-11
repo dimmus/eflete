@@ -39,15 +39,13 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
-@ENVENTOR_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
-${top_builddir}/src/lib/libewe.la \
-@ENVENTOR_LIBS@
+${top_builddir}/src/lib/libewe.la
 
 include_HEADERS = \
 	../tests/test_common.h \
