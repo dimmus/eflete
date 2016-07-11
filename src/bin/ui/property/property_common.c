@@ -412,7 +412,10 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
      }
 
    if (action->tooltip)
-       elm_object_tooltip_text_set(content, action->tooltip);
+     {
+        elm_object_tooltip_text_set(content, action->tooltip);
+        elm_object_tooltip_move_freeze_push(content);
+     }
 
    return content;
 }
