@@ -142,14 +142,14 @@ group { name: "elm/spinner/base/vertical";
          description { state: "active" 0.0;
             fixed: 1 1;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "button.down";
-               to_y: "bg";
+               to_x: "bg";
+               to_y: "button.up";
+               offset: 0 2;
             }
             rel2 {
                relative: 0.0 1.0;
                to_x: "button.up";
-               to_y: "bg";
+               to_y: "button.down";
             }
          }
       }
@@ -157,10 +157,12 @@ group { name: "elm/spinner/base/vertical";
          type: RECT;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "bg";
+            rel1.to_x: "bg";
+            rel1.to_y: "button.up";
             rel2 {
                relative: 0.0 1.0;
-               to: "button.up";
+               to_x: "button.up";
+               to_y: "button.down";
             }
          }
       }
