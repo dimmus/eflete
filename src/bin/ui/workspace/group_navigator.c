@@ -2146,45 +2146,41 @@ _on_btn_minus_clicked(void *data,
 static void
 _part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
 {
-   Part *part, *rel_part;
-   Elm_Object_Item *rel_glit;
+   Part *part, *rel_part = NULL;
+   Eina_List *part_list_node = NULL;
+   Eina_List *rel_part_list_node = NULL;
+
    Eina_Stringshare *msg;
    Change *change;
 
    assert(pl != NULL);
    assert(glit != NULL);
 
+   part = elm_object_item_data_get(glit);
+   part_list_node = eina_list_data_find_list(pl->group->parts, part);
+
+   assert(part_list_node != NULL);
+
    if (move_up)
      {
-        rel_glit = elm_genlist_item_prev_get(glit);
-        /* Finding where to move item. genlist don't allows to ignore subitems */
-        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
-          rel_glit = elm_genlist_item_parent_get(rel_glit);
-        assert(rel_glit != NULL); /* we shouldn't move up first item */
-        assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_part);
+       rel_part_list_node = eina_list_prev(part_list_node);
+       rel_part = eina_list_data_get(rel_part_list_node);
      }
    else
      {
-        rel_glit = elm_genlist_item_next_get(glit);
-        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
-          rel_glit = elm_genlist_item_next_get(rel_glit);
-        assert(rel_glit != NULL); /* we shouldn't move down last item */
-        rel_glit = elm_genlist_item_next_get(rel_glit);
-        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
-          rel_glit = elm_genlist_item_next_get(rel_glit);
-
-        /* NULL after second loop means that part will be moved to first position */
-        assert((rel_glit == NULL) || (elm_genlist_item_item_class_get(rel_glit) == pl->itc_part));
+        rel_part_list_node = eina_list_next(part_list_node);
+        rel_part = eina_list_data_get(rel_part_list_node);
+        Part *part_tmp = rel_part;
+        rel_part = part;
+        part = part_tmp;
      }
-
-   part = elm_object_item_data_get(glit);
-   rel_part = elm_object_item_data_get(rel_glit);
 
    if (rel_part)
       msg = eina_stringshare_printf(_("part \"%s\" placed below part \"%s\" in the stack"), part->name, rel_part->name);
    else
       msg = eina_stringshare_printf(_("part \"%s\" restacked to the top of the stack"), part->name);
    change = change_add(msg);
+
    CRIT_ON_FAIL(editor_part_restack(pl->group->edit_object, change, false, true,
                                     part->name,
                                     (rel_part) ? rel_part->name : NULL));
@@ -2350,6 +2346,7 @@ _on_btn_down_clicked(void *data,
      _part_restack(pl, glit, false);
    else if (itc == pl->itc_item)
      _part_item_restack(pl, glit, false);
+   elm_genlist_item_selected_set(glit, true);
 }
 
 static void
@@ -2372,6 +2369,7 @@ _on_btn_up_clicked(void *data,
      _part_restack(pl, glit, true);
    else if (itc == pl->itc_item)
      _part_item_restack(pl, glit, true);
+   elm_genlist_item_selected_set(glit, true);
 }
 
 static void
