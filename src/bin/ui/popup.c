@@ -111,7 +111,10 @@ popup_want_action(const char *title,
    elm_object_part_text_set(ap.popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(ap.popup, ELM_WRAP_WORD);
    if (popup_btns & BTN_OK)
-     BTN_ADD(_("Ok"), "button1", &_btn_ok)
+     {
+        BTN_ADD(_("Ok"), "button1", &_btn_ok);
+        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_DONE, _btn_cb, &_btn_ok);
+     }
 
    if (popup_btns & BTN_SAVE)
      BTN_ADD(_("Save"), "button1", &_btn_save)
@@ -130,9 +133,15 @@ popup_want_action(const char *title,
    if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
      BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
    else if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_APPEND))
-     BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
+     {
+        BTN_ADD(_("Cancel"), "button3", &_btn_cancel);
+        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_CANCEL, _btn_cb, &_btn_cancel);
+     }
    else if (popup_btns & BTN_CANCEL)
-     BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
+     {
+        BTN_ADD(_("Cancel"), "button2", &_btn_cancel);
+        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_CANCEL, _btn_cb, &_btn_cancel);
+     }
 
    if (msg) elm_object_text_set(ap.popup, msg);
    if (content_get)
