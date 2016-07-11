@@ -384,12 +384,20 @@ _colorclass_manager_init(void)
      {
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
 
-        it->r1 = res->color1.r; it->g1 = res->color1.g;
-        it->b1 = res->color1.b; it->a1 = res->color1.a;
-        it->r2 = res->color2.r; it->g2 = res->color2.g;
-        it->b2 = res->color2.b; it->a2 = res->color2.a;
-        it->r3 = res->color3.r; it->g3 = res->color3.g;
-        it->b3 = res->color3.b; it->a3 = res->color3.a;
+        it->r1 = res->color1.r;
+        it->g1 = res->color1.g;
+        it->b1 = res->color1.b;
+        it->a1 = res->color1.a;
+
+        it->r2 = res->color2.r;
+        it->g2 = res->color2.g;
+        it->b2 = res->color2.b;
+        it->a2 = res->color2.a;
+
+        it->r3 = res->color3.r;
+        it->g3 = res->color3.g;
+        it->b3 = res->color3.b;
+        it->a3 = res->color3.a;
 
         it->name = eina_stringshare_add(res->name);
         elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
