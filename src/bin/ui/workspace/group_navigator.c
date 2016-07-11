@@ -803,6 +803,21 @@ _state_validate(void *data,
 }
 
 static void
+_item_selected(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
+{
+   Part_List *pl = data;
+
+   Combobox_Item *combo_item;
+   combo_item = elm_object_item_data_get(event_info);
+   if (combo_item)
+     pl->popup.item_selected = combo_item;
+   else
+     pl->popup.item_selected = NULL;
+}
+
+static void
 _item_validate(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info)
@@ -810,7 +825,6 @@ _item_validate(void *data,
    Part_List *pl = data;
    const char *name;
    Part_Item *item;
-   Eina_Bool valid;
    Eina_List *l;
    Combobox_Item *combo_item;
 
@@ -822,12 +836,25 @@ _item_validate(void *data,
      pl->popup.item_selected = combo_item;
 
    name = elm_entry_entry_get(pl->popup.entry_name);
-   valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
-   valid = valid && pl->popup.item_selected && (pl->popup.item_selected->index != 0);
-   EINA_LIST_FOREACH(pl->part->items, l, item)
-      valid = valid && strcmp(item->name, name);
+   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
+     goto item_data_invalidated;
 
-   popup_buttons_disabled_set(BTN_OK, !valid);
+   if ((!pl->popup.item_selected) || (pl->popup.item_selected && (pl->popup.item_selected->data == NULL)) ||
+       !strcmp(_("Select the name of the source group."), elm_object_text_get(pl->popup.combobox)))
+     goto item_data_invalidated;
+
+   EINA_LIST_FOREACH(pl->part->items, l, item)
+     {
+       if (!strcmp(item->name, name))
+         goto item_data_invalidated;
+     }
+
+   popup_buttons_disabled_set(BTN_OK, false);
+   return;
+
+item_data_invalidated:
+   popup_buttons_disabled_set(BTN_OK, true);
+   return;
 }
 
 static void
@@ -1421,8 +1448,6 @@ _popup_add_item_ok_clicked(void *data,
 
    assert(pl != NULL);
 
-   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
-      return;
 
    assert(pl->part != NULL);
 
@@ -1526,7 +1551,8 @@ _add_item_content_get(void *data, Evas_Object **to_focus)
    evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
                                   _combobox_item_pressed_cb, NULL);
    evas_object_show(pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _item_validate, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, "dismissed", _item_validate, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _item_selected, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
 
    elm_box_pack_end(box, item);
