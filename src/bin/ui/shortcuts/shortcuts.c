@@ -269,6 +269,8 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
           (sc.keycode <= 76 /*F10*/)) ||
          (sc.keycode == 95 /*F11*/) ||
          (sc.keycode == 96 /*F12*/) ||
+         (sc.keycode == 36 /*ENTER*/) ||
+         (sc.keycode == 104 /*KP_ENTER*/) ||
          (sc.keycode == 9 /*ESC*/)) ) &&
       /* elm_entry is in focus */
       (!strcmp("elm_entry", evas_object_type_get(elm_object_focused_object_get(ap.win)))))
