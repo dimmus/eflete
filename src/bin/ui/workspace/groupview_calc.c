@@ -562,6 +562,8 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
                                         gp->part->current_state->val);
          if (!str)
            edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
+         else
+           edje_object_part_text_set(sd->group->edit_object, gp->part->name, str);
          eina_stringshare_del(str);
          _common_param_update(gp, sd->group->edit_object);
          break;
