@@ -259,6 +259,7 @@ group { name: "elm/layout/tab_home/open_project";
       part { name: "area.fileselector";
          type: SPACER;
          description { state: "default" 0.0;
+            min: 225 0;
             rel2 {
                to: "area.recent";
                relative: 0.0 1.0;
@@ -335,6 +336,7 @@ group { name: "elm/layout/tab_home/new_project";
       part { name: "area.project_info";
          type: SPACER;
          description { state: "default" 0.0;
+           min: 225 0;
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
@@ -345,6 +347,7 @@ group { name: "elm/layout/tab_home/new_project";
       part { name: "area.widgets_info";
          type: SPACER;
          description { state: "default" 0.0;
+            min: 300 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
@@ -655,84 +658,406 @@ group { name: "elm/layout/tab_home/new_project";
    }
 }
 group { name: "elm/layout/tab_home/import_edj";
-   inherit: "elm/layout/tab_home/new_project";
-   parts {
-      part { name: "label.edj";
-         type: TEXT;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            color_class: "main";
-            rel1 {
-               to_x: "area.project_info";
-               to_y: "swallow.edj";
-            }
-            rel2 {
-               relative: 0.3 1.0;
-               to_x: "area.project_info";
-               to_y: "swallow.edj";
-            }
-            text {
-               font: FN;
-               size: 12;
-               align: 0.0 0.5;
-            }
-         }
-      }
-      part { name: "swallow.edj";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 20;
-            max: -1 20;
-            rel1 {
-               relative: 0.3 1.0;
-               offset: 0 6;
-               to_x: "area.project_info";
-               to_y: "swallow.path";
-            }
-            rel2 {
-               to: "area.project_info";
-            }
-         }
-      }
-      part { name: "swallow.meta_version";
-         description { state: "default" 0.0;
-            rel1.to_y: "swallow.edj";
-         }
-      }
-      part { name: "area.large_items";
-         description { state: "default" 0.0;
-            rel1.to_y: "swallow.meta_version";
-         }
-      }
-      part { name: "label.widgets";
-         description { state: "default" 0.0;
-            rel2 {
-                relative: 0.0 1.0;
-                to_x: "swallow.all_widgets_check";
-            }
-            text.min: 1 0;
-            text.ellipsis: -1;
-         }
-      }
-      part { name: "swallow.template_themes";
-         type: SWALLOW;
-         insert_after: "label.widgets";
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1 0.0;
-               to: "label.widgets";
-               offset: 6 0;
-            }
-            rel2 {
-               to_x: "area.widgets_info";
-               to_y: "label.widgets";
-            }
-         }
-      }
-   }
+  images {
+     image: "separator-horizontal.png" COMP;
+     image: "separator-vertical.png" COMP;
+  }
+  parts {
+     part { name: "elm.swallow.btn_create";
+        type: SWALLOW;
+        description { state: "default" 0.0;
+           align: 1.0 1.0;
+           fixed: 1 1;
+           rel1.relative: 1.0 1.0;
+        }
+     }
+     part { name: "separator_hor";
+        type: IMAGE;
+        description { state: "default" 0.0;
+           align: 0.5 1.0;
+           min: 0 2;
+           max: -1 2;
+           image.normal: "separator-horizontal.png";
+           rel2 {
+              relative: 1.0 0.0;
+              offset: -1 -7;
+              to: "elm.swallow.btn_create";
+           }
+        }
+     }
+     part { name: "block_separator_deco";
+        type: IMAGE;
+        description { state: "default" 0.0;
+           min: 2 0;
+           max: 2 -1;
+           image.normal: "separator-vertical.png";
+           rel2 {
+              relative: 1.0 0.0;
+              offset: -1 -7;
+              to: "separator_hor";
+           }
+        }
+     }
+     part { name: "area.project_info";
+        type: SPACER;
+        description { state: "default" 0.0;
+           min: 225 0;
+           rel2 {
+              relative: 0.0 1.0;
+              offset: -7 -1;
+              to: "block_separator_deco";
+           }
+        }
+     }
+     part { name: "area.widgets_info";
+        type: SPACER;
+        description { state: "default" 0.0;
+           min: 300 0;
+           rel1 {
+              relative: 1.0 0.0;
+              offset: 6 0;
+              to_x: "block_separator_deco";
+           }
+           rel2.to_y: "block_separator_deco";
+        }
+     }
+     part { name: "swallow.all_widgets_check";
+        type: SWALLOW;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           min: 20 20;
+           max: 20 20;
+           rel1 {
+              offset: 6 0;
+              to_x: "swallow.widgets";
+              to_y: "area.widgets_info";
+           }
+           rel2.to: "area.widgets_info";
+        }
+     }
+     part { name: "label.widgets";
+        type: TEXT;
+        description { state: "default" 0.0;
+           align: 0.0 0.5;
+           fixed: 1 0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              min: 1 0;
+              align: 0.0 0.5;
+              ellipsis: -1.0;
+           }
+           rel1 {
+              relative: 1.0 0.0;
+              offset: 6 0;
+              to: "swallow.all_widgets_check";
+           }
+           rel2.to: "swallow.all_widgets_check";
+        }
+     }
+     part { name: "swallow.widgets";
+        type: SWALLOW;
+        description { state: "default" 0.0;
+           rel1 {
+              relative: 0.0 1.0;
+              offset: 0 6;
+              to_x: "area.widgets_info";
+              to_y: "swallow.all_widgets_check";
+           }
+           rel2.to: "area.widgets_info";
+        }
+     }
+     part { name: "area.large_items";
+        type: SPACER;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           rel1 {
+              relative: 0.0 1.0;
+              offset: 0 6;
+              to_y: "label.meta_version";
+           }
+           rel2.to: "area.project_info";
+        }
+     }
+     part { name: "label.name";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.5;
+           }
+           rel1 {
+              to_x: "area.project_info";
+              to_y: "swallow.name";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.project_info";
+              to_y: "swallow.name";
+           }
+        }
+     }
+     part { name: "swallow.name";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.5 0.0;
+           fixed: 1 1;
+           max: -1 19;
+           rel1 {
+              relative: 0.3 0.0;
+              to: "area.project_info";
+           }
+           rel2.to_x: "area.project_info";
+        }
+     }
+     part { name: "label.path";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.5;
+           }
+           rel1 {
+              to_x: "area.project_info";
+              to_y: "swallow.path";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.project_info";
+              to_y: "swallow.path";
+           }
+        }
+     }
+     part { name: "swallow.path";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.5 0.0;
+           fixed: 1 1;
+           max: -1 19;
+           rel1 {
+              relative: 0.3 1.0;
+              offset: 0 6;
+              to_x: "area.project_info";
+              to_y: "swallow.name";
+           }
+           rel2.to_x: "area.project_info";
+        }
+     }
+     part { name: "label.meta_version";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.5;
+           }
+           rel1 {
+              to_x: "area.project_info";
+              to_y: "swallow.meta_version";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.project_info";
+              to_y: "swallow.meta_version";
+           }
+        }
+     }
+     part { name: "swallow.meta_version";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.5 0.0;
+           fixed: 1 1;
+           max: -1 19;
+           rel1 {
+              relative: 0.3 1.0;
+              offset: 0 6;
+              to_x: "area.project_info";
+              to_y: "swallow.edj";
+           }
+           rel2.to_x: "area.project_info";
+        }
+     }
+     part { name: "label.meta_authors";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.0;
+           }
+           rel1 {
+              to_x: "area.large_items";
+              to_y: "swallow.meta_authors";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.large_items";
+              to_y: "swallow.meta_authors";
+           }
+        }
+     }
+     part { name: "swallow.meta_authors";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1 {
+              relative: 0.3 0.0;
+              to: "area.large_items";
+           }
+           rel2 {
+              relative: 1.0 0.33;
+              to: "area.large_items";
+           }
+        }
+     }
+     part { name: "label.meta_licenses";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.0;
+           }
+           rel1 {
+              to_x: "area.large_items";
+              to_y: "swallow.meta_licenses";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.large_items";
+              to_y: "swallow.meta_licenses";
+           }
+        }
+     }
+     part { name: "swallow.meta_licenses";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1 {
+              relative: 0.3 1.0;
+              offset: 0 6;
+              to_x: "area.large_items";
+              to_y: "swallow.meta_authors";
+           }
+           rel2 {
+              relative: 1.0 0.66;
+              to: "area.large_items";
+           }
+        }
+     }
+     part { name: "label.meta_comment";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.0;
+           }
+           rel1 {
+              to_x: "area.large_items";
+              to_y: "swallow.meta_comment";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.large_items";
+              to_y: "swallow.meta_comment";
+           }
+        }
+     }
+     part { name: "swallow.meta_comment";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1 {
+              relative: 0.3 1.0;
+              offset: 0 6;
+              to_x: "area.large_items";
+              to_y: "swallow.meta_licenses";
+           }
+           rel2.to: "area.large_items";
+        }
+     }
+     part { name: "label.edj";
+        type: TEXT;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.0 0.0;
+           color_class: "main";
+           text {
+              font: "PT";
+              size: 12;
+              align: 0.0 0.5;
+           }
+           rel1 {
+              to_x: "area.project_info";
+              to_y: "swallow.edj";
+           }
+           rel2 {
+              relative: 0.3 1.0;
+              to_x: "area.project_info";
+              to_y: "swallow.edj";
+           }
+        }
+     }
+     part { name: "swallow.edj";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           align: 0.5 0.0;
+           fixed: 1 1;
+           max: -1 19;
+           rel1 {
+              relative: 0.3 1.0;
+              offset: 0 6;
+              to_x: "area.project_info";
+              to_y: "swallow.path";
+           }
+           rel2.to_x: "area.project_info";
+        }
+     }
+     part { name: "swallow.template_themes";
+        type: SWALLOW;
+        description { state: "default" 0.0;
+           fixed: 1 0;
+           rel1 {
+              relative: 1.0 0.0;
+              offset: 6 0;
+              to: "label.widgets";
+           }
+           rel2 {
+              to_x: "area.widgets_info";
+              to_y: "label.widgets";
+           }
+        }
+     }
+  }
 }
    
 group { name: "elm/layout/tab_home/import_edc";
@@ -790,6 +1115,7 @@ group { name: "elm/layout/tab_home/import_edc";
       part { name: "swallow.project_info";
          type: SWALLOW;
          description { state: "default" 0.0;
+            min: 225 0;
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
@@ -801,6 +1127,7 @@ group { name: "elm/layout/tab_home/import_edc";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
+            min: 300 0;
             align: 0.0 0.0;
             rel1 {
                relative: 1.0 0.0;
