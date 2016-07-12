@@ -1162,6 +1162,11 @@ tabs_home_tab_add(Tabs_Menu view)
         goto subtab_select;
      }
 
+   Evas_Object *scroller = elm_scroller_add(ap.win);
+   evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(scroller);
+
    tabs.home.content = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
    tabs.home.tabs = elm_toolbar_add(tabs.home.content);
@@ -1171,6 +1176,10 @@ tabs_home_tab_add(Tabs_Menu view)
    elm_toolbar_shrink_mode_set(tabs.home.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(tabs.home.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_toolbar_align_set(tabs.home.tabs, 0.0);
+
+   evas_object_size_hint_weight_set(tabs.home.content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tabs.home.content, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_content_set(scroller, tabs.home.content);
 
    tabs.home.content_open_project = _tab_open_project_add();
    tabs.home.content_new_project = _tab_new_project_add();
@@ -1191,7 +1200,7 @@ tabs_home_tab_add(Tabs_Menu view)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = NULL;
-   item->content = tabs.home.content;
+   item->content = scroller;
 #ifndef HAVE_TIZEN
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, "go-home", _("Home"),
                                                 _content_set, (void *)item);
