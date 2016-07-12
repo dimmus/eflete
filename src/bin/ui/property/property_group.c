@@ -878,10 +878,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
-      case ATTRIBUTE_STATE_TEXT_SIZE:
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
          elm_spinner_min_max_set(action->control, 1, 9999);
          break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
          elm_spinner_min_max_set(action->control, 0, 9999);
          break;
