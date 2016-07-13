@@ -781,6 +781,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          assert(cb_item != NULL);
          eina_stringshare_del(style_table[DIRECTION_NUM][1]);
          style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->data);
+         tpd.direction = cb_item->index;
          _tag_parse(cb_item->data, "direction");
          _style_edit_update();
          ap.project->changed = true;
