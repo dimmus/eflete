@@ -1105,7 +1105,8 @@ _tab_close(void *data,
    if (!item) return;
 
    tabs.items = eina_list_remove(tabs.items, item);
-   _content_unset();
+   tabs.current_workspace = NULL;
+   tabs.current_group = NULL;
    _del_tab(item);
    if (tabs.selected == it)
      {
