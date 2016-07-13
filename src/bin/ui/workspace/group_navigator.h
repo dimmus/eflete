@@ -81,7 +81,7 @@ void
 group_navigator_part_item_add(Evas_Object *obj, Part *part, Eina_Stringshare * item_name);
 
 void
-group_navigator_part_item_del(Evas_Object *obj, Part *part, Eina_Stringshare * item_name);
+group_navigator_part_item_del(Evas_Object *obj, Part_Item *item);
 
 void
 group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state);

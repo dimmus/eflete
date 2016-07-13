@@ -2108,26 +2108,46 @@ _item_del(Part_List *pl,
 }
 
 void
-group_navigator_part_item_del(Evas_Object *obj, Part *part __UNUSED__, Eina_Stringshare *item_name)
+group_navigator_part_item_del(Evas_Object *obj, Part_Item *item)
 {
-   Elm_Object_Item *part_item;
+   Elm_Object_Item *part_item, *to_select;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
-   Elm_Object_Item *items_glit;
+   Elm_Object_Item *items_glit, *item_glit;
+   Part_Item *it;
+   const Eina_List *part_items;
 
    assert(pl != NULL);
-   assert(pl->part != NULL);
-   assert(item_name != NULL);
+   assert(item != NULL);
 
-   part_item = _part_item_find(pl, part);
+   part_item = _part_item_find(pl, item->part);
 
    assert(part_item != NULL);
 
    elm_genlist_item_expanded_set(part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(part_item)));
-
-   elm_genlist_item_expanded_set(items_glit, false);
-   elm_genlist_item_update(items_glit);
    elm_genlist_item_expanded_set(items_glit, true);
+
+   part_items = elm_genlist_item_subitems_get(items_glit);
+   item_glit = eina_list_data_get(part_items);
+   it = elm_object_item_data_get(item_glit);
+   while (it != item)
+     {
+        part_items = eina_list_next(part_items);
+        item_glit = eina_list_data_get(part_items);
+        it = elm_object_item_data_get(item_glit);
+     }
+   assert(item_glit != NULL);
+
+   to_select = elm_genlist_item_next_get(item_glit);
+
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_item))
+     to_select = elm_genlist_item_prev_get(item_glit);
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_item))
+     to_select = items_glit;
+
+   elm_object_item_del(item_glit);
+   elm_genlist_item_update(items_glit);
+   elm_genlist_item_selected_set(to_select, true);
 }
 
 static void

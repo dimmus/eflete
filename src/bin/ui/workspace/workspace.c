@@ -1551,6 +1551,7 @@ workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *item_name)
 {
    Part *part;
+   Part_Item *item;
    Resource request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
@@ -1563,9 +1564,15 @@ workspace_part_item_del(Evas_Object *obj,
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
 
+   request.resource_type = RESOURCE_TYPE_ITEM;
+   request.name = item_name;
+   item = (Part_Item *)resource_get(part->items, &request);
+
+   assert(item != NULL);
+
    group_navigator_select(wd->group_navi, (Resource *)part);
+   group_navigator_part_item_del(wd->group_navi, item);
    gm_part_item_del(ap.project, part, item_name);
-   group_navigator_part_item_del(wd->group_navi, part, item_name);
 }
 
 void
