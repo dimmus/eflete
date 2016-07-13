@@ -2048,7 +2048,7 @@ group_navigator_part_state_del(Evas_Object *obj, Part *part __UNUSED__, State *s
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit;
    Elm_Object_Item *part_item;
-   Elm_Object_Item *default_glit;
+   Elm_Object_Item *to_select;
    const Eina_List *subitems;
    const Eina_List *l;
 
@@ -2059,8 +2059,6 @@ group_navigator_part_state_del(Evas_Object *obj, Part *part __UNUSED__, State *s
    elm_genlist_item_expanded_set(part_item, true);
 
    subitems = elm_genlist_item_subitems_get(part_item);
-   /* "default 0.0" is always first in states list */
-   default_glit = eina_list_data_get(subitems);
    /* find state's genlist item */
    EINA_LIST_FOREACH(subitems, l, glit)
      {
@@ -2069,7 +2067,15 @@ group_navigator_part_state_del(Evas_Object *obj, Part *part __UNUSED__, State *s
      }
    assert(glit != NULL);
 
-   elm_genlist_item_selected_set(default_glit, true);
+   to_select = elm_genlist_item_next_get(glit);
+   if ((to_select == NULL) ||
+       ((elm_genlist_item_item_class_get(to_select) != pl->itc_state) &&
+        (elm_genlist_item_item_class_get(to_select) != pl->itc_state_selected)))
+     to_select = elm_genlist_item_prev_get(glit);
+
+   /* there should be at least default state */
+   assert(to_select != NULL);
+   elm_genlist_item_selected_set(to_select, true);
    elm_object_item_del(glit);
 }
 
