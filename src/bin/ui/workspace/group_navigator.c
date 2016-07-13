@@ -1982,17 +1982,32 @@ void
 group_navigator_part_del(Evas_Object *obj, Part *part)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
-   Elm_Object_Item *part_item;
+   Elm_Object_Item *part_item, *to_select;
 
    assert(pl != NULL);
    assert(part != NULL);
 
    part_item = _part_item_find(pl, part);
+
+   to_select = elm_genlist_item_next_get(part_item);
+
+   while ((to_select != NULL) && (elm_genlist_item_item_class_get(to_select) != pl->itc_part))
+     to_select = elm_genlist_item_next_get(to_select);
+   if (to_select == NULL)
+     {
+        to_select = elm_genlist_item_prev_get(part_item);
+        while ((to_select != NULL) && (elm_genlist_item_item_class_get(to_select) != pl->itc_part))
+          to_select = elm_genlist_item_prev_get(to_select);
+     }
+   if (to_select == NULL)
+     to_select = pl->parts_caption_item;
+
    if (part == pl->part)
      _unselect_part(pl);
 
    elm_object_item_del(part_item);
    elm_genlist_item_update(pl->parts_caption_item);
+   elm_genlist_item_selected_set(to_select, true);
 }
 
 static void
