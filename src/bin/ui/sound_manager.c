@@ -431,7 +431,7 @@ _sound_del_cb(void *data __UNUSED__,
               break;
            case SOUND_TYPE_TONE:
               request.name = snd->name;
-              request.resource_type = RESOURCE_TYPE_SOUND;
+              request.resource_type = RESOURCE_TYPE_TONE;
               res = (External_Resource *)resource_get(ap.project->tones, &request);
               if (res->used_in) ERR("Unable to delete tone '%s'", res->name);
               edje_edit_sound_tone_del(ap.project->global_object, snd->name);
