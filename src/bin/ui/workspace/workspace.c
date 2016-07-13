@@ -1723,11 +1723,17 @@ workspace_program_add(Evas_Object *obj, Eina_Stringshare *program_name)
 void
 workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
 {
+   Resource request;
+   Program *program;
    WS_DATA_GET(obj);
    assert(program_name != NULL);
 
+   request.resource_type = RESOURCE_TYPE_PROGRAM;
+   request.name = program_name;
+   program = (Program *)resource_get(wd->group->programs, &request);
+
    gm_program_del(ap.project, wd->group, program_name);
-   group_navigator_program_del(wd->group_navi, program_name);
+   group_navigator_program_del(wd->group_navi, program);
    demo_group_program_del(wd->demo_navi, program_name);
 }
 

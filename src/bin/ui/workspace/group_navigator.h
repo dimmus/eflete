@@ -102,7 +102,7 @@ void
 group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);
 
 void
-group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program);
+group_navigator_program_del(Evas_Object *obj, Program *program);
 
 void
 group_navigator_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data);

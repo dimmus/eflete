@@ -461,6 +461,7 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static Elm_Object_Item * _part_item_find(Part_List *pl, Part *part);
+static Elm_Object_Item * _program_glit_find(Part_List *pl, Program *part);
 
 void
 group_navigator_part_state_select(Evas_Object *obj, State *state)
@@ -1769,19 +1770,26 @@ _program_del(Part_List *pl,
 }
 
 void
-group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program __UNUSED__)
+group_navigator_program_del(Evas_Object *obj, Program *program)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Elm_Object_Item *program_glit, *to_select;
 
    assert(pl != NULL);
+   assert(program != NULL);
 
+   program_glit = _program_glit_find(pl, program);
+
+   to_select = elm_genlist_item_next_get(program_glit);
+
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_program))
+     to_select = elm_genlist_item_prev_get(program_glit);
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_program))
+     to_select = pl->programs_caption_item;
+
+   elm_object_item_del(program_glit);
    elm_genlist_item_update(pl->programs_caption_item);
-   if (elm_genlist_item_expanded_get(pl->programs_caption_item))
-     {
-        elm_genlist_item_expanded_set(pl->programs_caption_item, false);
-        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
-     }
-   elm_genlist_item_selected_set(pl->programs_caption_item, true);
+   elm_genlist_item_selected_set(to_select, true);
 }
 
 void
@@ -1919,6 +1927,33 @@ _part_item_find(Part_List *pl, Part *part)
      }
    assert(part_item != NULL);
    return part_item;
+}
+
+static Elm_Object_Item *
+_program_glit_find(Part_List *pl, Program *program)
+{
+   Elm_Object_Item *program_glit;
+   const Eina_List *program_glits;
+   Program *pr;
+
+   assert(pl != NULL);
+   assert(program != NULL);
+
+   elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+   program_glits = elm_genlist_item_subitems_get(pl->programs_caption_item);
+
+   program_glit = eina_list_data_get(program_glits);
+   pr = elm_object_item_data_get(program_glit);
+   while (pr != program)
+     {
+        program_glits = eina_list_next(program_glits);
+        program_glit = eina_list_data_get(program_glits);
+        pr = elm_object_item_data_get(program_glit);
+
+        assert(pr != NULL);
+     }
+   assert(program_glit != NULL);
+   return program_glit;
 }
 
 static Elm_Object_Item *
