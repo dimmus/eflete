@@ -5150,7 +5150,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
-              IT.filter_data.part_types &= ~PART_SPACER & ~PART_SWALLOW;
+              IT.filter_data.part_types &= ~PART_SPACER & ~PART_SWALLOW & ~PART_TEXTBLOCK;
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
