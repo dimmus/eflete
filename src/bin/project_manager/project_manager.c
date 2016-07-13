@@ -539,6 +539,21 @@ static void *
 _project_import_edc(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
+   /**
+    * Comment by Andrii:
+    * | problem with edje_cc is that it uses child process itself:
+    * | when we create thread SIGCHLD is blocked for that
+    * | thread by commit aeeda1f77d1b21b15e916852baac06bb530618e2,
+    * | when we run edje_cc from that thread it's process
+    * | inherits all blocked signals edje_cc starts embryo compiler
+    * | if group has scripts it waits for child(compiler)
+    * | process termination, but never receives it because of blocked SIGCHLD
+    */
+   sigset_t oldset, newset;
+   sigemptyset(&newset);
+   sigaddset(&newset, SIGCHLD);
+   sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+
    Eina_Bool send_end_child;
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
 
@@ -1577,6 +1592,21 @@ static void *
 _release_export(void *data __UNUSED__,
                 Eina_Thread *thread __UNUSED__)
 {
+   /**
+    * Comment by Andrii:
+    * | problem with edje_cc is that it uses child process itself:
+    * | when we create thread SIGCHLD is blocked for that
+    * | thread by commit aeeda1f77d1b21b15e916852baac06bb530618e2,
+    * | when we run edje_cc from that thread it's process
+    * | inherits all blocked signals edje_cc starts embryo compiler
+    * | if group has scripts it waits for child(compiler)
+    * | process termination, but never receives it because of blocked SIGCHLD
+    */
+   sigset_t oldset, newset;
+   sigemptyset(&newset);
+   sigaddset(&newset, SIGCHLD);
+   sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+
    Eina_Tmpstr *tmp_dirname;
    Eina_Strbuf *cmd;
    Ecore_Exe *exe_cmd;
@@ -1754,6 +1784,21 @@ static void *
 _enventor_save(void *data __UNUSED__,
                Eina_Thread *thread __UNUSED__)
 {
+   /**
+    * Comment by Andrii:
+    * | problem with edje_cc is that it uses child process itself:
+    * | when we create thread SIGCHLD is blocked for that
+    * | thread by commit aeeda1f77d1b21b15e916852baac06bb530618e2,
+    * | when we run edje_cc from that thread it's process
+    * | inherits all blocked signals edje_cc starts embryo compiler
+    * | if group has scripts it waits for child(compiler)
+    * | process termination, but never receives it because of blocked SIGCHLD
+    */
+   sigset_t oldset, newset;
+   sigemptyset(&newset);
+   sigaddset(&newset, SIGCHLD);
+   sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
