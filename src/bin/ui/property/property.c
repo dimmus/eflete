@@ -258,6 +258,7 @@ _state_update(void *data)
 void
 property_item_update(Property_Attribute *pa)
 {
+   Eina_Bool res;
    assert(pa != NULL);
 
    if (!pa->realized) return;
@@ -267,12 +268,14 @@ property_item_update(Property_Attribute *pa)
    if (pa->action1.update_cb != NULL)
      {
         DBG("calling update_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
-        pa->default_is = pa->default_is && pa->action1.update_cb(pa, &pa->action1);
+        res = pa->action1.update_cb(pa, &pa->action1);
+        pa->default_is = pa->default_is && res;
      }
    if (pa->action2.update_cb != NULL)
      {
         DBG("calling update_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
-        pa->default_is = pa->default_is && pa->action2.update_cb(pa, &pa->action2);
+        res = pa->action2.update_cb(pa, &pa->action2);
+        pa->default_is = pa->default_is && res;
      }
 
    ecore_job_add(_state_update, pa);
