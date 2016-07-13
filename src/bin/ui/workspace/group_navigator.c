@@ -462,6 +462,7 @@ _contract_request_cb(void *data __UNUSED__,
 
 static Elm_Object_Item * _part_item_find(Part_List *pl, Part *part);
 static Elm_Object_Item * _program_glit_find(Part_List *pl, Program *part);
+static Elm_Object_Item * _group_data_item_find(Part_List *pl, Resource *group_data);
 
 void
 group_navigator_part_state_select(Evas_Object *obj, State *state)
@@ -1844,19 +1845,26 @@ _group_data_del(Part_List *pl,
 }
 
 void
-group_navigator_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data __UNUSED__)
+group_navigator_group_data_del(Evas_Object *obj, Resource *data)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Elm_Object_Item *data_glit, *to_select;
 
    assert(pl != NULL);
+   assert(data != NULL);
 
+   data_glit = _group_data_item_find(pl, data);
+
+   to_select = elm_genlist_item_next_get(data_glit);
+
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_group_data))
+     to_select = elm_genlist_item_prev_get(data_glit);
+   if ((to_select == NULL) || (elm_genlist_item_item_class_get(to_select) != pl->itc_group_data))
+     to_select = pl->data_caption_item;
+
+   elm_object_item_del(data_glit);
    elm_genlist_item_update(pl->data_caption_item);
-   if (elm_genlist_item_expanded_get(pl->data_caption_item))
-     {
-        elm_genlist_item_expanded_set(pl->data_caption_item, false);
-        elm_genlist_item_expanded_set(pl->data_caption_item, true);
-     }
-   elm_genlist_item_selected_set(pl->data_caption_item, true);
+   elm_genlist_item_selected_set(to_select, true);
 }
 
 static void

@@ -1750,11 +1750,17 @@ workspace_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data_name)
 void
 workspace_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data_name)
 {
+   Resource request;
+   Resource *group_data;
    WS_DATA_GET(obj);
    assert(group_data_name != NULL);
 
+   request.resource_type = RESOURCE_TYPE_DATA;
+   request.name = group_data_name;
+   group_data = resource_get(wd->group->data_items, &request);
+
+   group_navigator_group_data_del(wd->group_navi, group_data);
    gm_group_data_del(ap.project, wd->group, group_data_name);
-   group_navigator_group_data_del(wd->group_navi, group_data_name);
 }
 
 void
