@@ -1274,6 +1274,7 @@ group { name: "elm/entry/base-single/fileselector/default";
 
 group { name: "elm/entry/base-single/spinner/default";
    alias: "elm/entry/base-single/spinner/vertical";
+   alias: "elm/entry/base-single/spinner/colorselector/default";
    inherit: "elm/entry/base-single/default";
    parts {
       part { name: "elm.text";
