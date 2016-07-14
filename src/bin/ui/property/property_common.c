@@ -156,7 +156,7 @@ _stop_cb(void *data,
 
         if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
           {
-             shortcuts_object_push(pa->action2.control);
+             shortcuts_object_check_pop(pa->action2.control);
              elm_object_scroll_freeze_pop(pa->action2.control);
           }
         _stop(pd, pa, &pa->action2);
