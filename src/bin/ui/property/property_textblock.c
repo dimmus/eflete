@@ -63,6 +63,13 @@ struct _Property_Textblock_Update_Info {
 };
 typedef struct _Property_Textblock_Update_Info Property_Textblock_Update_Info;
 
+/* since font name should be without any spaces here we go:
+   let's block those spaces */
+static Elm_Entry_Filter_Accept_Set accept_set = {
+     .accepted = NULL,
+     .rejected = " "
+};
+
 /* array to find item by Attribute */
 static Property_Textblock_Update_Info attribute_map[ATTRIBUTE_TEXTBLOCK_ITEM_LAST];
 
@@ -111,48 +118,6 @@ static const char *text_wrap[] = { "none",
                                    "mixed",
                                    "hyphenation",
                                    NULL};
-
-static const char *style_table[][2] = {{"font", NULL},
-                                       {"font_fallback", NULL},
-                                       {"font_size", NULL},
-                                       {"font_source", NULL},
-                                       {"font_weight", NULL},
-                                       {"font_style", NULL},
-                                       {"font_width", NULL},
-                                       {"lang", NULL},
-                                       {"color", NULL},
-                                       {"underline_color", NULL},
-                                       {"underline2_color", NULL},
-                                       {"underline_dash_color", NULL},
-                                       {"outline_color", NULL},
-                                       {"shadow_color", NULL},
-                                       {"glow_color", NULL},
-                                       {"glow2_color", NULL},
-                                       {"backing_color", NULL},
-                                       {"strikethrough_color", NULL},
-                                       {"align", NULL},
-                                       {"valign", NULL},
-                                       {"wrap", NULL},
-                                       {"left_margin", NULL},
-                                       {"right_margin", NULL},
-                                       {"underline", NULL},
-                                       {"strikethrough", NULL},
-                                       {"backing", NULL},
-                                       {"style", NULL},
-                                       {"tabstops", NULL},
-                                       {"linesize", NULL},
-                                       {"linerelsize", NULL},
-                                       {"linegap", NULL},
-                                       {"linerelgap", NULL},
-                                       {"item", NULL},
-                                       {"linefill", NULL},
-                                       {"ellipsis", NULL},
-                                       {"password", NULL},
-                                       {"underline_dash_width", NULL},
-                                       {"underline_dash_gap", NULL},
-                                       {"underline_dash_color", NULL},
-                                       {NULL, NULL},
-                                       {"direction", NULL}};
 
 static const char *font_glow_list[] = { "none",
                                         "plain",
@@ -329,10 +294,119 @@ _tag_value_get(const char* text_style, char* a_tag)
 }
 
 static void
+_entry_repch_update(Eina_Bool password)
+{
+   if (password)
+     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, "*");
+   else
+     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, NULL);
+}
+
+inline static void
+_print_string(Eina_Strbuf **tag, const char *param, const char *text)
+{
+   eina_strbuf_append(*tag, param);
+   eina_strbuf_append(*tag, text);
+}
+
+inline static void
+_print_data_string(Eina_Strbuf **tag, const char *param, int value)
+{
+   Eina_Stringshare *str_tmp;
+
+   eina_strbuf_append(*tag, param);
+   str_tmp = eina_stringshare_printf("%d", value);
+   eina_strbuf_append(*tag, str_tmp);
+   eina_stringshare_del(str_tmp);
+}
+
+inline static void
+_print_color_string(Eina_Strbuf **tag, const char *param, int r, int g, int b, int a)
+{
+   Eina_Stringshare *str_tmp;
+
+   eina_strbuf_append(*tag, param);
+   str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+   eina_strbuf_append(*tag, str_tmp);
+   eina_stringshare_del(str_tmp);
+}
+
+static void
+_update_style()
+{
+   Eina_Strbuf *tag = eina_strbuf_new();
+   Eina_Stringshare *str_tmp;
+
+   TODO("Implement or think about next params in a comment below")
+   /* "font_fallback" "font_source" "font_style" "lang" "outline_color"
+      "linegap" "linerelgap" "item" "linefill" */
+   _print_string(&tag, " font=", tpd.font);
+
+   _print_data_string(&tag, " font_size=", tpd.font_size);
+   _print_data_string(&tag, " font_weight=", tpd.font_style_weight);
+   _print_data_string(&tag, " font_width=", tpd.font_style_width);
+
+   _print_color_string(&tag, " color=", tpd.color.r, tpd.color.g, tpd.color.b, tpd.color.a);
+   _print_color_string(&tag, " underline_color=", tpd.underone_color.r, tpd.underone_color.g, tpd.underone_color.b, tpd.underone_color.a);
+   _print_color_string(&tag, " underline2_color=", tpd.undertwo_color.r, tpd.undertwo_color.g, tpd.undertwo_color.b, tpd.undertwo_color.a);
+   _print_color_string(&tag, " underline_dash_color=", tpd.dash_color.r, tpd.dash_color.g, tpd.dash_color.b, tpd.dash_color.a);
+   _print_color_string(&tag, " shadow_color=", tpd.shadow_color.r, tpd.shadow_color.g, tpd.shadow_color.b, tpd.shadow_color.a);
+   _print_color_string(&tag, " glow_color=", tpd.inner_color.r, tpd.inner_color.g, tpd.inner_color.b, tpd.inner_color.a);
+   _print_color_string(&tag, " glow2_color=", tpd.outer_color.r, tpd.outer_color.g, tpd.outer_color.b, tpd.outer_color.a);
+   _print_color_string(&tag, " backing_color=", tpd.bg_color.r, tpd.bg_color.g, tpd.bg_color.b, tpd.bg_color.a);
+   _print_color_string(&tag, " strikethrough_color=", tpd.strikethrough_color.r, tpd.strikethrough_color.g, tpd.strikethrough_color.b, tpd.strikethrough_color.a);
+
+   _print_string(&tag, " align=", font_horizontal_align[tpd.font_align_hor]);
+   _print_string(&tag, " valign=", font_horizontal_valign[tpd.font_valign_hor]);
+   _print_string(&tag, " wrap=", text_wrap[tpd.wrap]);
+
+   _print_data_string(&tag, " left_margin=", tpd.left_margin);
+   _print_data_string(&tag, " right_margin=", tpd.right_margin);
+
+   _print_string(&tag, " underline=", underl_styles[tpd.underline]);
+   _print_string(&tag, " strikethrough=", (tpd.strikethrough_check) ? "on " : "off ");
+   _print_string(&tag, " backing=", (tpd.bg_check) ? "on " : "off ");
+
+   /* unique case with style and direction for glow shadow */
+   eina_strbuf_append(tag, " style=");
+   eina_strbuf_append(tag, font_glow_list[tpd.glow_style]);
+   if (strstr(font_glow_list[tpd.glow_style], "shadow"))
+     {
+        eina_strbuf_append(tag, ",");
+        eina_strbuf_append(tag, direction_list[tpd.direction]);
+     }
+
+   _print_data_string(&tag, " tabstops=", tpd.tabstops);
+   _print_data_string(&tag, " linesize=", tpd.linesize);
+   _print_data_string(&tag, " linerelsize=", tpd.linerelsize);
+   _print_data_string(&tag, " underline_dash_width=", tpd.dash_width);
+   _print_data_string(&tag, " underline_dash_gap=", tpd.dash_gap);
+   _print_string(&tag, " password=", (tpd.pass) ? "on " : "off ");
+   _entry_repch_update(tpd.pass);
+
+   /* unique case with ellipsis */
+   if (tpd.ellipsis_check)
+     {
+        eina_strbuf_append(tag, " ellipsis=");
+        str_tmp = eina_stringshare_printf("%f", (double)tpd.ellipsis_value / 100);
+        eina_strbuf_append(tag, str_tmp);
+        eina_stringshare_del(str_tmp);
+     }
+
+   edje_edit_style_tag_value_set(ap.project->global_object, tpd.current_style.st_name,
+                                 tpd.current_style.st_tag, eina_strbuf_string_get(tag));
+   eina_stringshare_del(tpd.current_style.stvalue);
+   tpd.current_style.stvalue = eina_stringshare_add(eina_strbuf_string_get(tag));
+   eina_strbuf_free(tag);
+}
+
+static void
 _style_edit_update()
 {
    Evas_Textblock_Style *ts = NULL;
    Eina_Strbuf *style = eina_strbuf_new();
+
+   _update_style();
 
    eina_strbuf_append(style, FONT_DEFAULT);
    eina_strbuf_append(style, tpd.current_style.stvalue);
@@ -344,109 +418,6 @@ _style_edit_update()
                                  EVAS_HINT_FILL);
    eina_strbuf_free(style);
    evas_textblock_style_free(ts);
-}
-
-static void
-_entry_repch_update(Eina_Bool password)
-{
-   if (password)
-     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, "*");
-   else
-     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, NULL);
-}
-
-static void
-_tag_parse(const char *value, const char *text)
-{
-   Evas_Object *edje_edit_obj = NULL;
-   Eina_Strbuf *tag = eina_strbuf_new();
-   char *stolen_buf;
-   char *token;
-   int i = 0, k = 0, exist = 0, style_length = 0;
-
-   assert(value != NULL);
-   assert(text != NULL);
-
-   eina_strbuf_append(tag, tpd.current_style.stvalue);
-   edje_edit_obj = ap.project->global_object;
-   stolen_buf = eina_strbuf_string_steal(tag);
-
-   token = strtok(stolen_buf, " =+");
-   while (token)
-     {
-        if ((i + 1) % 2 != 0)
-          {
-             for (k = 0; style_table[k][0] != NULL; k++)
-               {
-                  if (!strcmp(style_table[k][0], token)) exist = k;
-               }
-          }
-        else if (strstr(token, "shadow"))
-          {
-             style_table[DIRECTION_NUM][1] = eina_stringshare_add(strchr(token, ','));
-             if (style_table[DIRECTION_NUM][1])
-               {
-                  style_length = (int)(strlen(token) - strlen(style_table[DIRECTION_NUM][1]));
-                  style_table[exist][1] = eina_stringshare_add_length(token, style_length);
-               }
-          }
-        else
-          {
-             style_table[exist][1] = eina_stringshare_add(token);
-          }
-        token= strtok(NULL, " =+");
-        i++;
-     }
-   free(stolen_buf);
-   if (!strcmp(text, "password"))
-     _entry_repch_update(!strcmp(value, "on"));
-
-   if (!strcmp(text, "direction"))
-     {
-        if (style_table[DIRECTION_NUM][1]) eina_stringshare_del(style_table[DIRECTION_NUM][1]);
-        style_table[DIRECTION_NUM][1] = eina_stringshare_printf(",%s", value);
-     }
-   else
-     {
-        for (k = 0; style_table[k][0] != NULL; k++)
-          {
-             if (!strcmp(style_table[k][0], text))
-               {
-                  eina_stringshare_del(style_table[k][1]);
-                  style_table[k][1] = eina_stringshare_add(value);
-               }
-          }
-     }
-   if ((!strcmp(text, "style")) && (!style_table[DIRECTION_NUM][1]))
-     style_table[DIRECTION_NUM][1] = eina_stringshare_add(",bottom_right");
-   eina_strbuf_append(tag, "+ ");
-   for (k = 0; style_table[k][0] != NULL; k++)
-      {
-         if ((style_table[k][1] != NULL) && (!strstr(style_table[k][1], "shadow")))
-           {
-              eina_strbuf_append(tag, style_table[k][0]);
-              eina_strbuf_append(tag, "=");
-              eina_strbuf_append(tag, style_table[k][1]);
-              eina_strbuf_append(tag, " ");
-              eina_stringshare_del(style_table[k][1]);
-              style_table[k][1] = NULL;
-           }
-         else if ((style_table[k][1] != NULL) && (strstr(style_table[k][1], "shadow")))
-           {
-              eina_strbuf_append(tag, style_table[k][0]);
-              eina_strbuf_append(tag, "=");
-              eina_strbuf_append(tag, style_table[k][1]);
-              eina_strbuf_append(tag, style_table[DIRECTION_NUM][1]);
-              eina_strbuf_append(tag, " ");
-              eina_stringshare_del(style_table[k][1]);
-              style_table[k][1] = NULL;
-           }
-      }
-   edje_edit_style_tag_value_set(edje_edit_obj, tpd.current_style.st_name,
-                                 tpd.current_style.st_tag, eina_strbuf_string_get(tag));
-   eina_stringshare_del(tpd.current_style.stvalue);
-   tpd.current_style.stvalue = eina_stringshare_add(eina_strbuf_string_get(tag));
-   eina_strbuf_free(tag);
 }
 
 /************************************************************************/
@@ -536,7 +507,7 @@ _subitems_get(Property_Attribute *pa)
 static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
-   Eina_Stringshare *str_val1 = NULL, *str_tmp = NULL;
+   Eina_Stringshare *str_val1 = NULL;
    Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
    Eina_Bool bool_val1 = false;
@@ -576,7 +547,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (tpd.font)
            eina_stringshare_del(tpd.font);
          tpd.font = eina_stringshare_add(str_val1);
-         _tag_parse(tpd.font, "font");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -584,7 +554,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          assert(cb_item != NULL);
          tpd.font_style_weight = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "font_weight");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -593,7 +562,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
          assert(cb_item != NULL);
          tpd.font_style_width = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "font_width");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -604,18 +572,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.color.g = g;
          tpd.color.b = b;
          tpd.color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
          tpd.font_size = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "font_size");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -624,7 +586,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
          assert(cb_item != NULL);
          tpd.font_align_hor = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "align");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -633,7 +594,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
          assert(cb_item != NULL);
          tpd.font_valign_hor = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "valign");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -641,18 +601,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
          tpd.left_margin = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "left_margin");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT:
          tpd.right_margin = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "right_margin");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -660,7 +614,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          assert(cb_item != NULL);
          tpd.wrap = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "wrap");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -669,30 +622,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
          tpd.tabstops = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "tabstops");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
          tpd.linesize = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "linesize");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
          tpd.bg_check = bool_val1;
-         if (bool_val1)
-           str_tmp = eina_stringshare_add("on");
-         else
-           str_tmp = eina_stringshare_add("off");
-         _tag_parse(str_tmp, "backing");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -702,21 +643,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.bg_color.g = g;
          tpd.bg_color.b = b;
          tpd.bg_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "backing_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
          tpd.pass = bool_val1;
-         if (bool_val1)
-           str_tmp = eina_stringshare_add("on");
-         else
-           str_tmp = eina_stringshare_add("off");
-         _tag_parse(str_tmp, "password");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -727,9 +659,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
            tpd.ellipsis_value = -100;
          else
            tpd.ellipsis_value = 0;
-         str_tmp = eina_stringshare_printf("%f", (double)tpd.ellipsis_value / 100);
-         _tag_parse(str_tmp, "ellipsis");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -737,18 +666,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
          tpd.ellipsis_value = double_val1;
-         str_tmp = eina_stringshare_printf("%f", (double)double_val1 / 100);
-         _tag_parse(str_tmp, "ellipsis");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
          tpd.linerelsize = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "linerelsize");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -757,7 +680,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
          assert(cb_item != NULL);
          tpd.glow_style = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "style");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -769,19 +691,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.shadow_color.g = g;
          tpd.shadow_color.b = b;
          tpd.shadow_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "shadow_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
          assert(cb_item != NULL);
-         eina_stringshare_del(style_table[DIRECTION_NUM][1]);
-         style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->data);
          tpd.direction = cb_item->index;
-         _tag_parse(cb_item->data, "direction");
          _style_edit_update();
          ap.project->changed = true;
          elm_object_text_set(action->control, direction_list[tpd.direction]);
@@ -791,9 +707,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.outer_color.g = g;
          tpd.outer_color.b = b;
          tpd.outer_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "glow2_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -803,22 +716,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.inner_color.g = g;
          tpd.inner_color.b = b;
          tpd.inner_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "glow_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
 
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK:
-         tpd.pass = bool_val1;
-         if (bool_val1)
-           str_tmp = eina_stringshare_add("on");
-         else
-           str_tmp = eina_stringshare_add("off");
-         _tag_parse(str_tmp, "strikethrough");
-         eina_stringshare_del(str_tmp);
+         tpd.strikethrough_check = bool_val1;
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -828,9 +732,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.strikethrough_color.g = g;
          tpd.strikethrough_color.b = b;
          tpd.strikethrough_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "strikethrough_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -838,7 +739,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
          assert(cb_item != NULL);
          tpd.underline = cb_item->index;
-         _tag_parse(eina_stringshare_add(cb_item->data), "underline");
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -850,9 +750,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.underone_color.g = g;
          tpd.underone_color.b = b;
          tpd.underone_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "underline_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -862,27 +759,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.undertwo_color.g = g;
          tpd.undertwo_color.b = b;
          tpd.undertwo_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "underline2_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH:
          tpd.dash_width = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "underline_dash_width");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP:
          tpd.dash_gap = double_val1;
-         str_tmp = eina_stringshare_printf("%f", double_val1);
-         _tag_parse(str_tmp, "underline_dash_gap");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -892,9 +780,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          tpd.dash_color.g = g;
          tpd.dash_color.b = b;
          tpd.dash_color.a = a;
-         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
-         _tag_parse(str_tmp, "underline_dash_color");
-         eina_stringshare_del(str_tmp);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -1067,6 +952,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_textblock)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
+         elm_entry_markup_filter_append(action->control,
+                                        elm_entry_filter_accept_set,
+                                        &accept_set);
+         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
@@ -1242,7 +1131,9 @@ _init_items()
               IT.name = "Font name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME,
                        _("Font description in fontconfig format. "
-                         "For example, \"Sans:style=Italic:lang=hi\" or \"Serif:style=Bold\"."));
+                         "For example, \"Sans:style=Italic:lang=hi\" or \"Serif:style=Bold\"."
+                         "Warning! All font names shouldn't contain spaces."
+                         "Font name \"Times New Roman\" should be written as \"TimesNewRoman\"!"));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
               IT.name = "Font style (weight)";
@@ -1545,10 +1436,7 @@ _on_style_selected(void *data,
         eina_tmpstr_del(tmp);
         tmp = _tag_value_get(value, "backing_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "backing_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.bg_color.r,
                          &tpd.bg_color.g,
@@ -1620,10 +1508,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "glow_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "glow_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.inner_color.r,
                          &tpd.inner_color.g,
@@ -1637,10 +1522,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "glow2_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "glow2_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.outer_color.r,
                          &tpd.outer_color.g,
@@ -1654,10 +1536,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "shadow_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "shadow_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.shadow_color.r,
                          &tpd.shadow_color.g,
@@ -1678,10 +1557,7 @@ _on_style_selected(void *data,
         eina_tmpstr_del(tmp);
         tmp = _tag_value_get(value, "strikethrough_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "strikethrough_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.strikethrough_color.r,
                          &tpd.strikethrough_color.g,
@@ -1705,10 +1581,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "underline_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "underline_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.underone_color.r,
                          &tpd.underone_color.g,
@@ -1722,10 +1595,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "underline2_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "underline2_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.undertwo_color.r,
                          &tpd.undertwo_color.g,
@@ -1749,10 +1619,7 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "underline_dash_color");
         if (!tmp)
-          {
-             tmp = eina_tmpstr_add(WHITE_COLOR);
-             _tag_parse(WHITE_COLOR, "underline_dash_color");
-          }
+          tmp = eina_tmpstr_add(WHITE_COLOR);
         if (!_hex_to_rgb(tmp,
                          &tpd.dash_color.r,
                          &tpd.dash_color.g,
