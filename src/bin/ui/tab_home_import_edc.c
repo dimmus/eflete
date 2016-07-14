@@ -458,6 +458,15 @@ _import(void *data __UNUSED__,
    evas_object_show(ap.splash);
 }
 
+void
+_tab_import_edc_del(void *data __UNUSED__,
+                    Evas *e __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   elm_validator_regexp_free(tab_edc.name_validator);
+}
+
 Evas_Object *
 _tab_import_edc_add(void)
 {
@@ -580,6 +589,7 @@ _tab_import_edc_add(void)
    tab_edc.log = eina_strbuf_new();
 
    evas_object_event_callback_add(tab_edc.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_edc.name);
+   evas_object_event_callback_add(tab_edc.layout, EVAS_CALLBACK_DEL, _tab_import_edc_del, NULL);
 
    return tab_edc.layout;
 }

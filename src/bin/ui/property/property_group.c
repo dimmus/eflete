@@ -5664,6 +5664,17 @@ _init_items()
 
 /* public */
 void
+property_group_del(void)
+{
+   if (group_pd.part_name_validator)
+     resource_name_validator_free(group_pd.part_name_validator);
+   if (group_pd.group_data_name_validator)
+     resource_name_validator_free(group_pd.group_data_name_validator);
+   group_pd.part_name_validator = NULL;
+   group_pd.group_data_name_validator = NULL;
+}
+
+void
 property_group_init(Property_Data *pd)
 {
    assert(pd != NULL);

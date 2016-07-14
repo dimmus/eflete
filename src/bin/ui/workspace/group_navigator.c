@@ -2487,6 +2487,11 @@ _group_navigator_del(void *data,
    evas_object_data_del(pl->menu, GROUP_NAVIGATOR_DATA);
    evas_object_data_del(pl->genlist, GROUP_NAVIGATOR_DATA);
 
+   resource_name_validator_free(pl->part_name_validator);
+   resource_name_validator_free(pl->program_name_validator);
+   resource_name_validator_free(pl->group_data_name_validator);
+   elm_validator_regexp_free(pl->name_validator);
+
    pl->group = NULL;
 
    free(pl);

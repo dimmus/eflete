@@ -572,6 +572,16 @@ _elipsis(void *data __UNUSED__,
                                     false);
 }
 
+void
+_tab_new_del(void *data __UNUSED__,
+                    Evas *e __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   elm_validator_regexp_free(tab_new.name_validator);
+}
+
+
 Evas_Object *
 _tab_new_project_add(void)
 {
@@ -627,6 +637,7 @@ _tab_new_project_add(void)
    elm_object_part_content_set(tab_new.layout, "swallow.widgets", tab_new.genlist);
 
    evas_object_event_callback_add(tab_new.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_new.name);
+   evas_object_event_callback_add(tab_new.layout, EVAS_CALLBACK_DEL, _tab_new_del, NULL);
 
    return tab_new.layout;
 }

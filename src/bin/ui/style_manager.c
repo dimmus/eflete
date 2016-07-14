@@ -169,9 +169,6 @@ _add_style_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(mng.win, _("Style name:"), "popup", "1swallow");
    mng.popup.item = item;
-   if (!mng.popup.validator)
-     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
    ENTRY_ADD(mng.popup.item, mng.popup.name, true);
    eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
    evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
@@ -193,6 +190,9 @@ _style_add_cb(void *data __UNUSED__,
    Popup_Button btn_res;
    const char *style_name;
    Elm_Object_Item *glit;
+   if (!mng.popup.validator)
+     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
 
    btn_res = popup_want_action(_("Add textblock style"), NULL, _add_style_content_get,
                                BTN_OK|BTN_CANCEL,
@@ -226,6 +226,7 @@ _style_add_cb(void *data __UNUSED__,
    ap.project->changed = true;
 
 close:
+   resource_name_validator_free(mng.popup.validator);
    evas_object_del(mng.popup.item);
 }
 
@@ -315,6 +316,7 @@ close:
    EINA_LIST_FREE(resources, res)
       resource_free(res);
    evas_object_del(mng.popup.item);
+   resource_name_validator_free(mng.popup.validator);
    eina_stringshare_del(buf);
 }
 

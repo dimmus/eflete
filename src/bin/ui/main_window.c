@@ -62,6 +62,7 @@ ui_main_window_del(void)
    cursor_main_free();
 
    config_save();
+   evas_object_del(ap.property.group);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    elm_exit();
 

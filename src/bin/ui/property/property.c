@@ -157,6 +157,18 @@ _unrealized_cb(void *data,
    elm_object_focus_set(pd->genlist, true);
 }
 
+void
+_property_del(void *data,
+              Evas *e __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Property_Mode *pd = (Property_Mode *)data;
+
+   property_group_del();
+   free(pd);
+}
+
 Evas_Object *
 property_add(Evas_Object *parent, Property_Mode mode)
 {
@@ -239,6 +251,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    _items_add(pd->genlist, &items, NULL);
    GENLIST_FILTER_APPLY(pd->genlist);
 
+   evas_object_event_callback_add(pd->layout, EVAS_CALLBACK_DEL, _property_del, pd);
    return pd->layout;
 }
 

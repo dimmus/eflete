@@ -383,6 +383,8 @@ _tone_add_cb(void *data __UNUSED__,
    _tone_add();
 
 close:
+   resource_name_validator_free(mng.tone_validator);
+   elm_validator_regexp_free(mng.frq_validator);
    evas_object_del(mng.box);
 }
 

@@ -575,6 +575,9 @@ property_dummy_items_get(void);
 
 /* property group */
 void
+property_group_del(void);
+
+void
 property_group_init(Property_Data *pd);
 
 Eina_List *

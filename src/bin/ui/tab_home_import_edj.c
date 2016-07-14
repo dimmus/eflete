@@ -580,6 +580,16 @@ _combobox_item_del(void *data,
    eina_stringshare_del(data);
 }
 
+void
+_tab_import_edj_del(void *data __UNUSED__,
+                    Evas *e __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   elm_validator_regexp_free(tab_edj.name_validator);
+}
+
+
 Evas_Object *
 _tab_import_edj_add(void)
 {
@@ -652,6 +662,7 @@ _tab_import_edj_add(void)
    evas_object_smart_callback_add(tab_edj.genlist, "contracted", _contracted_cb, NULL);
 
    elm_object_part_content_set(tab_edj.layout, "swallow.widgets", tab_edj.genlist);
+   evas_object_event_callback_add(tab_edj.layout, EVAS_CALLBACK_DEL, _tab_import_edj_del, NULL);
 
    return tab_edj.layout;
 }
