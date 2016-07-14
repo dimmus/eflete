@@ -1039,6 +1039,7 @@ _part_select(void *data,
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
+   groupview_hard_update(wd->normal.content);
    groupview_part_select(wd->normal.content, (part) ? part->name : NULL);
 }
 
