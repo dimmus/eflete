@@ -638,6 +638,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          elm_object_disabled_set(pa->action2.control, !tpd.bg_check);
+         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
          tpd.bg_color.r = r;
          tpd.bg_color.g = g;
