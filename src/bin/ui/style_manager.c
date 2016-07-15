@@ -27,20 +27,6 @@
 
 #define STYLE_DEFAULT         "DEFAULT"
 #define STYLE_DEFAULT_VALUE "align=middle font=Sans font_size=24 color=#000000 "
-#define TEST_TEXT \
-"<\t>By the time London returned home, his stepfather had died." \
-"It then became his responsibility to provide for his family all by himself." \
-"Desperate for a job, he spent entire days walking around the Oakland business district." \
-"Occasionally he found a temporary job. He pawned his watch, bicycle," \
-"Mackintosh, and started writing again.<br/>" \
-"<\t>He carefully studied different stories published in magazines," \
-"trying to learn the secret of their popularity." \
-"He referred to the works of famous writers." \
-"By reading many of them he learned about the craft of constructing a plot," \
-"about creating a particular style. Rudyard Kipling captured his attention." \
-"He reached the conclusion that to write well he needed to write concisely" \
-"and he needed to tell about strong human emotions and vivid characters.<br/>" \
-"(c) Jack London. THE NORTHERN TALES. (NEW BATTLES. CHAPTER 5)"
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;

@@ -391,7 +391,10 @@ _update_style()
         str_tmp = eina_stringshare_printf("%f", (double)tpd.ellipsis_value / 100);
         eina_strbuf_append(tag, str_tmp);
         eina_stringshare_del(str_tmp);
+        evas_object_textblock_text_markup_set(tpd.current_style.textblock_style, TEST_TEXT_SINGLE);
      }
+   else
+     evas_object_textblock_text_markup_set(tpd.current_style.textblock_style, TEST_TEXT);
 
    edje_edit_style_tag_value_set(ap.project->global_object, tpd.current_style.st_name,
                                  tpd.current_style.st_tag, eina_strbuf_string_get(tag));
@@ -656,10 +659,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
          tpd.ellipsis_check = bool_val1;
-         if (!bool_val1)
-           tpd.ellipsis_value = -100;
-         else
-           tpd.ellipsis_value = 0;
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
@@ -861,8 +860,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_check_state_set(action->control, tpd.ellipsis_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
-         elm_object_disabled_set(action->control, !tpd.ellipsis_check);
          elm_spinner_value_set(action->control, tpd.ellipsis_value);
+         elm_object_disabled_set(action->control, !tpd.ellipsis_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
          elm_spinner_value_set(action->control, tpd.linerelsize);
@@ -1001,9 +1000,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_combobox_with_enum(action->control, text_wrap);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
-         /* because ellipsis SIGSEV on a lot of values sadly... */
          elm_spinner_min_max_set(action->control, 0, 100);
-         elm_spinner_step_set(action->control, 50);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
          _fill_combobox_with_enum(action->control, font_glow_list);
@@ -1458,18 +1455,12 @@ _on_style_selected(void *data,
 
         tmp = _tag_value_get(value, "ellipsis");
         if (!tmp) tmp = eina_tmpstr_add("0");
+        else tpd.ellipsis_check = true;
         tpd.ellipsis_value = atof(tmp);
         eina_tmpstr_del(tmp);
 
-        tmp = _tag_value_get(value, "check_ellipsis");
-        if ((!tmp) || (!strcmp(tmp, "off")))
-          {
-             tpd.ellipsis_value = -100;
-             tpd.ellipsis_check = false;
-          }
-        else
-          tpd.ellipsis_check = true;
-        eina_tmpstr_del(tmp);
+        evas_object_textblock_text_markup_set(tpd.current_style.textblock_style,
+                                              (tpd.ellipsis_check) ? TEST_TEXT_SINGLE : TEST_TEXT);
 
         tmp = _tag_value_get(value, "linerelsize");
         if (!tmp) tmp = eina_tmpstr_add("0");
