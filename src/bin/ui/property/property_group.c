@@ -1161,7 +1161,7 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
 
    itc = evas_object_data_get(combo, "COMMON_ITC");
 
-   if (strcmp(selected, ""))
+   if (!selected || strcmp(selected, ""))
      elm_object_text_set(combo, selected);
    else
      elm_object_text_set(combo, STR_NONE);
@@ -1200,7 +1200,7 @@ _tone_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_non
 
    itc = evas_object_data_get(combo, "COMMON_ITC");
 
-   if (strcmp(selected, ""))
+   if (!selected || strcmp(selected, ""))
      elm_object_text_set(combo, selected);
    else
      elm_object_text_set(combo, STR_NONE);
