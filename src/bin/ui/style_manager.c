@@ -176,8 +176,7 @@ _style_add_cb(void *data __UNUSED__,
    Popup_Button btn_res;
    const char *style_name;
    Elm_Object_Item *glit;
-   if (!mng.popup.validator)
-     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
 
    btn_res = popup_want_action(_("Add textblock style"), NULL, _add_style_content_get,
@@ -268,8 +267,7 @@ _tag_add_cb(void *data __UNUSED__,
         resource_insert(&resources, res);
      }
    edje_edit_string_list_free(tags);
-   if (!mng.popup.validator)
-     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &resources, true);
 
    buf = eina_stringshare_printf(_("Add tag for style: %s"), style_name);
