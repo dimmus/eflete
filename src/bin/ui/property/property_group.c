@@ -623,6 +623,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SAMPLE_NAME);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_TONE_NAME);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_CHANNEL);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_TONE_DURATION);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SAMPLE_SPEED);
@@ -877,6 +879,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
       case ATTRIBUTE_PROGRAM_STATE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
       case ATTRIBUTE_STATE_MAP_LIGHT:
       case ATTRIBUTE_STATE_MAP_ON:
@@ -1141,6 +1145,84 @@ _groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
                                      combobox_item, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
           }
+     }
+}
+
+static void
+_sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
+{
+   Eina_List *l;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
+   Resource *sample;
+
+   assert(with_none || selected != NULL);
+
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
+   if (strcmp(selected, ""))
+     elm_object_text_set(combo, selected);
+   else
+     elm_object_text_set(combo, STR_NONE);
+
+   if (with_none)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(STR_NONE);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+
+   EINA_LIST_FOREACH(ap.project->sounds, l, sample)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(sample->name);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+}
+
+static void
+_tone_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
+{
+   Eina_List *l;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+   unsigned int i = 0;
+   Resource *tone;
+
+   assert(with_none || selected != NULL);
+
+   itc = evas_object_data_get(combo, "COMMON_ITC");
+
+   if (strcmp(selected, ""))
+     elm_object_text_set(combo, selected);
+   else
+     elm_object_text_set(combo, STR_NONE);
+
+   if (with_none)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(STR_NONE);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+
+   EINA_LIST_FOREACH(ap.project->tones, l, tone)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(tone->name);
+        elm_genlist_item_append(combo, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 }
 
@@ -2303,6 +2385,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          return editor_program_tone_duration_default_is(EDIT_OBJ, PROGRAM_ARGS);
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+         elm_genlist_clear(action->control);
+         str_val1 = edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS);
+         _sample_combobox_fill(action->control, str_val1, 1);
+         edje_edit_string_free(str_val1);
+         return editor_program_sample_name_default_is(EDIT_OBJ, PROGRAM_ARGS);
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
+         elm_genlist_clear(action->control);
+         str_val1 = edje_edit_program_tone_name_get(EDIT_OBJ, PROGRAM_ARGS);
+         _tone_combobox_fill(action->control, str_val1, 1);
+         edje_edit_string_free(str_val1);
+         return editor_program_tone_name_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_CHANNEL:
          elm_object_text_set(action->control, edje_channel[(int) edje_edit_program_channel_get(EDIT_OBJ, PROGRAM_ARGS)]);
          return editor_program_channel_default_is(EDIT_OBJ, PROGRAM_ARGS);
@@ -2963,6 +3057,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TONE_DURATION:
          group_pd.history.format = _("program's tone duration changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+         group_pd.history.format = _("program's sample changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
+         group_pd.history.format = _("program's tone changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_tone_name_get(EDIT_OBJ, PROGRAM_ARGS));
          break;
       case ATTRIBUTE_PROGRAM_CHANNEL:
          group_pd.history.format = _("program's channel changed from \"%s\" to \"%s\"");
@@ -3890,6 +3992,20 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_tone_duration_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : "";
+         CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
+         assert(cb_item_combo != NULL);
+         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : "";
+         CRIT_ON_FAIL(editor_program_tone_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PROGRAM_CHANNEL:
          assert(cb_item_combo != NULL);
          str_val1 = eina_stringshare_add(cb_item_combo->data);
@@ -4254,6 +4370,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_CHANNEL:
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -5693,6 +5811,18 @@ _init_items()
               IT.filter_data.action_types = ACTION_STATE_SET | ACTION_ACTION_STOP |
                  ACTION_SIGNAL_EMIT | ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP |
                  ACTION_DRAG_VAL_PAGE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_SAMPLE_NAME:
+              IT.name = "Sample";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_SAMPLE_NAME,
+                       _("Name of sample to be played"));
+              IT.filter_data.action_types = ACTION_SOUND_SAMPLE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_TONE_NAME:
+              IT.name = "Tone";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TONE_NAME,
+                       _("Name of tone to be played"));
+              IT.filter_data.action_types = ACTION_SOUND_TONE;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_CHANNEL:
               IT.name = "Channel";
