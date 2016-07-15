@@ -367,13 +367,9 @@ _tone_add_cb(void *data __UNUSED__,
 {
    Popup_Button btn_res;
 
-   if (!mng.tone_validator)
-     {
-        mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
-        resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
-     }
-   if (!mng.frq_validator)
-     mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
+   mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
+   mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
    popup_buttons_disabled_set(BTN_OK, true);
    btn_res = popup_want_action(_("Create a new layout"), NULL, _add_tone_content_get,
