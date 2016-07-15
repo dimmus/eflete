@@ -21,6 +21,7 @@ includesub_HEADERS = \
 	editor/diff.h \
 	editor/editor.h \
 	editor/editor_macro.h \
+	editor/editor_private.h \
 	editor/history.h \
 	external/enventor_module.h \
 	external/syntax_color.h \
