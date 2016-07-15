@@ -549,10 +549,12 @@ _project_import_edc(void *data,
     * | if group has scripts it waits for child(compiler)
     * | process termination, but never receives it because of blocked SIGCHLD
     */
+#ifndef _WIN32
    sigset_t oldset, newset;
    sigemptyset(&newset);
    sigaddset(&newset, SIGCHLD);
    sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+#endif
 
    Eina_Bool send_end_child;
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
@@ -1602,10 +1604,12 @@ _release_export(void *data __UNUSED__,
     * | if group has scripts it waits for child(compiler)
     * | process termination, but never receives it because of blocked SIGCHLD
     */
+#ifndef _WIN32
    sigset_t oldset, newset;
    sigemptyset(&newset);
    sigaddset(&newset, SIGCHLD);
    sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+#endif
 
    Eina_Tmpstr *tmp_dirname;
    Eina_Strbuf *cmd;
@@ -1794,10 +1798,12 @@ _enventor_save(void *data __UNUSED__,
     * | if group has scripts it waits for child(compiler)
     * | process termination, but never receives it because of blocked SIGCHLD
     */
+#ifndef _WIN32
    sigset_t oldset, newset;
    sigemptyset(&newset);
    sigaddset(&newset, SIGCHLD);
    sigprocmask(SIG_UNBLOCK, &newset, &oldset);
+#endif
 
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
