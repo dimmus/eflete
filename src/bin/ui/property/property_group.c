@@ -191,6 +191,15 @@ transition_type_strings[] = { STR_NONE,
                               "cubic bezier",
                               NULL};
 
+static const char *edje_channel[] = { "EFFECT",
+                                      "BACKGROUND",
+                                      "MUSIC",
+                                      "FOREGROUND",
+                                      "INTERFACE",
+                                      "INPUT",
+                                      "ALERT",
+                                      NULL};
+
 static const char *image_border_fill_strings[] = { STR_NONE,
                                                    "Default",
                                                    "Solid",
@@ -614,6 +623,9 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_CHANNEL);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_TONE_DURATION);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SAMPLE_SPEED);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_AFTER);
          break;
       case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
@@ -938,6 +950,16 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+         elm_spinner_min_max_set(action->control, 0.1, 10.0);
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
+         elm_spinner_min_max_set(action->control, 0.0, 100.0);
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
       case ATTRIBUTE_STATE_ALIGN_X:
       case ATTRIBUTE_STATE_ALIGN_Y:
@@ -979,6 +1001,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          _fill_combobox_with_enum(action->control, transition_type_strings);
+         break;
+      case ATTRIBUTE_PROGRAM_CHANNEL:
+         _fill_combobox_with_enum(action->control, edje_channel);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          _fill_combobox_with_enum(action->control, aspect_preference_strings);
@@ -2274,6 +2299,17 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          return editor_program_transition_bezier_y2_default_is(EDIT_OBJ, PROGRAM_ARGS);
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+         double_val1 = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         return editor_program_tone_duration_default_is(EDIT_OBJ, PROGRAM_ARGS);
+      case ATTRIBUTE_PROGRAM_CHANNEL:
+         elm_object_text_set(action->control, edje_channel[(int) edje_edit_program_channel_get(EDIT_OBJ, PROGRAM_ARGS)]);
+         return editor_program_channel_default_is(EDIT_OBJ, PROGRAM_ARGS);
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
+         double_val1 = edje_edit_program_sample_speed_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         return editor_program_sample_speed_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
@@ -2923,6 +2959,18 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
          group_pd.history.format = _("program's transition bezier_y2 changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+         group_pd.history.format = _("program's tone duration changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_CHANNEL:
+         group_pd.history.format = _("program's channel changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_channel[edje_edit_program_channel_get(EDIT_OBJ, PROGRAM_ARGS)]);
+         break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
+         group_pd.history.format = _("program's sample speed changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_sample_speed_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          group_pd.history.format = _("program drag value x changed from %.2f to %.2f");
@@ -3838,6 +3886,21 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_transition_bezier_y2_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+         CRIT_ON_FAIL(editor_program_tone_duration_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_tone_duration_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_CHANNEL:
+         assert(cb_item_combo != NULL);
+         str_val1 = eina_stringshare_add(cb_item_combo->data);
+         CRIT_ON_FAIL(editor_program_channel_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item_combo->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
+         CRIT_ON_FAIL(editor_program_sample_speed_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_sample_speed_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          CRIT_ON_FAIL(editor_program_drag_value_x_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
@@ -4190,6 +4253,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_FILTER_PART:
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+      case ATTRIBUTE_PROGRAM_CHANNEL:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -4283,6 +4347,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
       case ATTRIBUTE_PROGRAM_VALUE:
@@ -5627,6 +5693,26 @@ _init_items()
               IT.filter_data.action_types = ACTION_STATE_SET | ACTION_ACTION_STOP |
                  ACTION_SIGNAL_EMIT | ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP |
                  ACTION_DRAG_VAL_PAGE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_CHANNEL:
+              IT.name = "Channel";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_CHANNEL,
+                       _("PLAY_SAMPLE (optional) channel can be one of: "
+                         "EFFECT/FX, BACKGROUND/BG ,MUSIC/MUS, FOREGROUND/FG, "
+                         "INTERFACE/UI, INPUT, ALERT"));
+              IT.filter_data.action_types = ACTION_SOUND_SAMPLE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_TONE_DURATION:
+              IT.name = "Duration";
+              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TONE_DURATION,
+                       _("Range of tone playing from 0.1 to 10 seconds."));
+              IT.filter_data.action_types = ACTION_SOUND_TONE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_SAMPLE_SPEED:
+              IT.name = "Duration";
+              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
+                       _("Range of sample playing speed is from 0 to 100."));
+              IT.filter_data.action_types = ACTION_SOUND_SAMPLE;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_AFTER:
               IT.name = "Afters";
