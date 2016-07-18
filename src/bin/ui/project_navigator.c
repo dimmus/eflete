@@ -566,25 +566,41 @@ _folder_del(const char *prefix)
 {
    Eina_List *folders = NULL, *groups = NULL;
    Eina_Stringshare *tmp, *msg;
-   Group *group;
+   Group *group, *alias;
 
    _tree_items_get(prefix, &folders, &groups);
    EINA_LIST_FREE(folders, tmp)
      {
        _folder_del(tmp);
      }
+
    EINA_LIST_FREE(groups, group)
      {
-       tmp = eina_stringshare_add(group->name);
-       if (editor_group_del(ap.project->global_object, tmp))
-         gm_group_del(ap.project, group);
-       else
-         {
-            msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
-            popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
-            eina_stringshare_del(msg);
-         }
-       eina_stringshare_del(tmp);
+        if (group->main_group) continue;
+        EINA_LIST_FREE(group->aliases, alias)
+          {
+             tmp = eina_stringshare_add(alias->name);
+             if (editor_group_del(ap.project->global_object, tmp))
+               gm_group_del(ap.project, alias);
+             else
+               {
+                  msg = eina_stringshare_printf(_("Can't delete alias layout \"%s\""), alias->name);
+                  popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
+                  eina_stringshare_del(msg);
+               }
+             eina_stringshare_del(tmp);
+          }
+
+        tmp = eina_stringshare_add(group->name);
+        if (editor_group_del(ap.project->global_object, tmp))
+          gm_group_del(ap.project, group);
+        else
+          {
+             msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
+             popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
+             eina_stringshare_del(msg);
+          }
+        eina_stringshare_del(tmp);
      }
 }
 
