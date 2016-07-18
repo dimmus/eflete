@@ -143,7 +143,7 @@ style_name_check(const Eina_Stringshare *group_name, const char *style_name)
    return !strcmp(style_name, style);
 }
 
-char* strrstr(char* str, const char* ptn)
+char* _strrstr(char* str, const char* ptn)
 {
    unsigned int ptnlen = 0;
    unsigned int i = 0, j = 0;
@@ -223,7 +223,7 @@ item_style_name_get(const Eina_Stringshare *group_name, Eina_List *style_list)
      {
         char *str;
 
-        str = strrstr(style, style_item->name);
+        str = _strrstr(style, style_item->name);
         if (str)
           {
              style[strlen(style) - strlen(str) - 1] = '\0';
