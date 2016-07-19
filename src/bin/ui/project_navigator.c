@@ -436,9 +436,9 @@ _alias_ch(void *data __UNUSED__,
           void *event_info __UNUSED__)
 {
    if (elm_check_state_get(layout_p.check))
-     elm_layout_text_set(layout_p.layout_combo, NULL, _("alias of"));
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("Alias of"));
    else
-     elm_layout_text_set(layout_p.layout_combo, NULL, _("copy of"));
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("Copy of"));
 }
 
 static void
@@ -478,7 +478,7 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    BOX_ADD(ap.win, layout_p.box, false, false)
    elm_box_padding_set(layout_p.box, 0, 10);
    /* name: entry */
-   LAYOUT_PROP_ADD(layout_p.box, _("name"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
    eo_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
@@ -488,14 +488,14 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    if (glit && (elm_genlist_item_item_class_get(glit) == project_navigator.itc_folder))
      elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
-   LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("Copy of"), "popup", "1swallow")
    layout_p.layout_combo = item;
    COMBOBOX_ADD(item, layout_p.combobox)
    evas_object_smart_callback_add(layout_p.combobox, "item,pressed", _group_sel, NULL);
    elm_layout_content_set(item, NULL, layout_p.combobox);
    elm_box_pack_end(layout_p.box, item);
    /* alias: check */
-   LAYOUT_PROP_ADD(layout_p.box, _("alias"), "popup", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("Alias"), "popup", "1swallow")
    CHECK_ADD(item, layout_p.check)
    evas_object_smart_callback_add(layout_p.check, "changed", _alias_ch, NULL);
    elm_object_disabled_set(layout_p.check, true);
