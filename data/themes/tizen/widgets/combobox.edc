@@ -260,11 +260,15 @@ group { name: "elm/button/base/combobox_vertical/library";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             color: 88 88 88 255;
-            min: 65 19;
+            min: 50 19;
             rel1 {
                relative: 1.0 0.0;
                offset: 8 0;
                to_x: "icon";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right.offset";
             }
          }
       }
