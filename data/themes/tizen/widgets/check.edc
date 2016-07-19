@@ -212,9 +212,11 @@ group { name: "elm/check/base/toggle";
 
 group { name: "elm/check/base/default";
    images {
-      image: "control-bg.png" COMP;
+      image: "check_nor.png" COMP;
       image: "control-bg-disabled.png" COMP;
-      image: "checkbox-white.png" COMP;
+      image: "check_nor_disable.png" COMP;
+      image: "check_sel.png" COMP;
+      image: "check_sel_disable.png" COMP;
       image: "control-shadow.png" COMP;
    }
    parts {
@@ -224,27 +226,14 @@ group { name: "elm/check/base/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 18 19;
-            max: 18 19;
+            min: 14 14;
+            max: 14 14;
             aspect: 1.0 1.0;
-            color_class: "bg_entry";
-            image {
-               normal: "control-bg.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
+            image.normal: "check_nor.png";
          }
          description { state: "disabled" 0.0;
-            align: 0.0 0.5;
-            min: 18 19;
-            max: 18 19;
-            aspect: 1.0 1.0;
-            color_class: "bg_entry";
-            image {
-               normal: "control-bg-disabled.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            image.normal: "check_nor_disable.png";
          }
       }
       part { name: "check";
@@ -254,81 +243,33 @@ group { name: "elm/check/base/default";
          clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
-            color_class: "main_alternative";
-            rel1 {
-               offset: 2 2;
-               to: "bg";
-            }
-            rel2 {
-               offset: -3 -4;
-               to: "bg";
-            }
-            image {
-               normal: "checkbox-white.png";
-               middle: DEFAULT;
-            }
+            image.normal: "check_sel.png";
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
          description { state: "visible" 0.0;
+            inherit: "default" 0.00;
             visible: 1;
-            color_class: "main_alternative";
-            rel1 {
-               offset: 0 0;
-               to: "bg";
-            }
-            rel2 {
-               offset: -1 -2;
-               to: "bg";
-            }
-            image {
-               normal: "checkbox-white.png";
-               middle: DEFAULT;
-            }
          }
-         description { state: "visible" 1.0;
-            visible: 1;
-            color_class: "main_alternative";
-            rel1 {
-               offset: 1 1;
-               to: "bg";
-            }
-            rel2 {
-               offset: -2 -3;
-               to: "bg";
-            }
-            image {
-               normal: "checkbox-white.png";
-               middle: DEFAULT;
-            }
+         description { state: "disable" 0.0;
+            inherit: "visible" 0.00;
+            image.normal: "check_sel_disable.png";
          }
       }
       part { name: "shadow";
          type: IMAGE;
          description { state: "default" 0.0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
+            visible: 0;
             image {
                normal: "control-shadow.png";
                border: 8 8 8 8;
-               middle: DEFAULT;
             }
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
          }
       }
       part { name: "elm.swallow.content";
@@ -338,8 +279,8 @@ group { name: "elm/check/base/default";
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
-            max: 0 -1;
             fixed: 1 0;
+            max: 0 -1;
             rel1 {
                relative: 1.0 0.0;
                to_x: "bg";
@@ -350,17 +291,9 @@ group { name: "elm/check/base/default";
             }
          }
          description { state: "visible" 0.0;
-            align: 0.0 0.5;
-            max: 0 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "bg";
-            }
-            rel2 {
-               offset: 1 -2;
-               to_x: "bg";
-            }
+            inherit: "default" 0.00;
+            visible: 1;
+            rel1.offset: 6 0;
          }
       }
       part { name: "elm.text";
@@ -370,51 +303,34 @@ group { name: "elm/check/base/default";
          description { state: "default" 0.0;
             visible: 0;
             fixed: 0 1;
+            text {
+               font: FN;
+               size: 10;
+               min: 1 1;
+               align: 0.0 0.5;
+               ellipsis: -1.0;
+            }
             rel1 {
                relative: 1.0 0.0;
                to_x: "elm.swallow.content";
                to_y: "bg";
             }
-            rel2 {
-               to_y: "bg";
-            }
-            text {
-               align: 0.0 0.5;
-               font: FN;
-               size: 12;
-               min: 1 1;
-               ellipsis: -1;
-            }
+            rel2.to_y: "bg";
          }
          description { state: "visible" 0.0;
+            inherit: "default" 0.00;
             visible: 1;
-            fixed: 0 1;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.content";
-               to_y: "bg";
-            }
-            rel2 {
-               to_y: "bg";
-            }
-            text {
-               align: 0.0 0.5;
-               font: FN;
-               size: 12;
-               min: 1 1;
-               ellipsis: -1;
-            }
+            color_class: "genlist_text_tree";
+            rel1.offset: 6 0;
          }
       }
       part { name: "clipper";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            color_class: "main";
          }
          description { state: "disabled" 0.0;
-            color_class: "main_disabled";
+            inherit: "default" 0.00;
          }
       }
       part { name: "events";
@@ -424,8 +340,8 @@ group { name: "elm/check/base/default";
             color: 0 0 0 0;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
          }
       }
    }
@@ -440,12 +356,6 @@ group { name: "elm/check/base/default";
          source: "elm";
          action: STATE_SET "visible" 0.00;
          transition: LINEAR 0.08;
-         target: "check";
-         after: "check_on_end";
-      }
-      program { name: "check_on_end";
-         action: STATE_SET "visible" 1.00;
-         transition: LINEAR 0.045;
          target: "check";
       }
       program { name: "check_off";
@@ -497,8 +407,14 @@ group { name: "elm/check/base/default";
          target: "events";
          target: "clipper";
       }
+      program { name: "check_on_end";
+         action: STATE_SET "visible" 1.00;
+         transition: LINEAR 0.04500;
+         target: "check";
+      }
    }
 }
+
 group { name: "elm/check/base/eye";
    images {
       image: "group_eye_off_nor.png" COMP;
