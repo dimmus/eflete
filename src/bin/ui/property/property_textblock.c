@@ -1188,9 +1188,9 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN:
               IT.name = "Margin";
-              _action1(&IT, "left", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT,
+              _action1(&IT, "left:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT,
                        _("Sets the left margin of the text in pixel."));
-              _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT,
+              _action2(&IT, "right:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT,
                        _("Sets the right margin of the text in pixel."));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:

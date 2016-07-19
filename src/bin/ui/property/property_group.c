@@ -4644,19 +4644,19 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_GROUP_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W,
                        _("The minimum width for the container defined by "
                          "the composition of the parts. This value is not enforced."));
-             _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H,
+             _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H,
                        _("The minimum height for the container defined by "
                          "the composition of the parts. This value is not enforced."));
               break;
            case PROPERTY_GROUP_ITEM_GROUP_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W,
                        _("The maximum width for the container defined by "
                          "the composition of the parts. This value is not enforced."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H,
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H,
                         _("The maximum height for the container defined by "
                           "the composition of the parts. This value is not enforced."));
              break;
@@ -4752,21 +4752,21 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
               IT.name = "Enable";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X,
                        _("Enables or disables dragging along the X axis. "
                          "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
-             _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y,
+             _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y,
                        _("Enables or disables dragging along the Y axis. "
                          "When enabled, 1 sets the starting point at 0.0 and -1 at 1.0."));
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP:
               IT.name = "Step";
-              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X,
+              _action1(&IT, "x:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X,
                        _("This parameter takes any integer and limits movement "
                          "to values divisible by it, causing the part to jump from "
                          "position to position. If the step is set to 0, it is "
                          "calculated as the width of the confined part divided by count."));
-             _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y,
+             _action2(&IT, "y:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y,
                        _("This parameter takes any integer and limits movement "
                          "to values divisible by it, causing the part to jump from "
                          "position to position. If the step is set to 0, it is "
@@ -4774,8 +4774,8 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT:
               IT.name = "Count";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y, NULL);
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X, NULL);
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
               IT.name = "Confine";
@@ -4838,35 +4838,35 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W,
                        _("Sets the minimum width for this state."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H,
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H,
                        _("Sets the minimum height for this state."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W,
                        _("Sets the maximum width for this state."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H,
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H,
                        _("Sets the maximum height for this state."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL:
               IT.name = "Minmul";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W,
+              _action1(&IT, "w:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W,
                        _("A width multiplier forcibly applied to whatever the "
                          "minimum size is only during minimum size calculation."));
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H,
+              _action2(&IT, "h:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H,
                        _("A height multiplier forcibly applied to whatever the "
                          "minimum size is only during minimum size calculation."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED:
               IT.name = "Fixed";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W,
+              _action1(&IT, "w:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W,
                        _("Tells the minimum size calculation routine that this "
                          "part does not change size in width. ON for enabled "
                          "OFF for disabled. When enabled, the routine does not try "
                          "and expand or contract the part."));
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H,
+              _action2(&IT, "h:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H,
                         _("Tells the minimum size calculation routine that this "
                           "part does not change size in height. ON for enabled "
                           "OFF for disabled. When enabled, the routine does not try "
@@ -4879,11 +4879,11 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
               IT.name = "Aspect";
-              _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN,
+              _action1(&IT, "min:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN,
                        _("Normally the width and height can be resized to any values "
                          "independently. The aspect property forces the width to height "
                          "ratio to be kept from the minimum."));
-              _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX,
+              _action2(&IT, "max:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX,
                        _("Normally the width and height can be resized to any values "
                          "independently. The aspect property forces the width to height "
                          "ratio to be kept to the maximum."));
@@ -4896,29 +4896,29 @@ _init_items()
               IT.expand_cb = _subitems_get;
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ON:
-              IT.name = "Map on:";
+              IT.name = "Map on";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ON,
                        _("Enables or disables mapping for the part."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ON:
-              IT.name = "Perspective on:";
+              IT.name = "Perspective on";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON,
                        _("Enables or disables perspective when rotating."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH:
-              IT.name = "Smooth:";
+              IT.name = "Smooth";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_SMOOTH,
                        _("Enables or disables smooth map rendering. "
                          "This can be linear interpolation, anisotropic filtering, "
                          "or anything the engine decides is \"smooth\"."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA:
-              IT.name = "Alpha:";
+              IT.name = "Alpha";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ALPHA,
                        _("Enables or disables the alpha channel when rendering the map."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_BACKFACE_CULL:
-              IT.name = "Backface Cull:";
+              IT.name = "Backface Cull";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_BACKFACE_CULL,
                      _("Enables or disables backface culling (such as when the "
                        "rotated part that normally faces the camera is facing "
@@ -4926,7 +4926,7 @@ _init_items()
                        "is hidden when \"backface culled\""));
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE:
-              IT.name = "Perspective:";
+              IT.name = "Perspective";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_PERSPECTIVE,
                        _("Sets the part that is used as the \"perspective point\" "
                          "for giving a part a \"3d look\". The perspective point "
@@ -4941,33 +4941,33 @@ _init_items()
                          "the part's surface is facing the light source point)"));
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_FOCAL:
-              IT.name = "perspective focal";
+              IT.name = "Perspective focal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL,
                        _("Sets the distance from the focal z plane (zplane) and the camera."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ZPLANE:
-              IT.name = "perspective zplane";
+              IT.name = "Perspective zplane";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE,
                        _("Sets the z value that is not scaled."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_CENTER:
-              IT.name = "rotation center";
+              IT.name = "Rotation center";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
                        _("Sets the part that is used as the center of "
                          "rotation when rotating the part with this description."));
              break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_X:
-              IT.name = "rotation X";
+              IT.name = "Rotation X";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_X,
                        _("Rotation (in degrees) around the X axis of the part considering the center set."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Y:
-              IT.name = "rotation Y";
+              IT.name = "Rotation Y";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Y,
                        _("Rotation (in degrees) around the Y axis of the part considering the center set."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Z:
-              IT.name = "rotation Z";
+              IT.name = "Rotation Z";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Z,
                        _("Rotation (in degrees) around the Z axis of the part considering the center set."));
               break;
@@ -5098,7 +5098,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X,
                        _("When the displayed object's size is smaller "
                          "(or bigger) than its container, this property moves "
                          "it relatively along the X axis inside its container. "
@@ -5106,7 +5106,7 @@ _init_items()
                          "container's respective ones, while 1.0 stands for "
                          "right and bottom edges of the object on horizonal axis. "
                          "The default value is 0.5."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y,
                        _("When the displayed object's size is smaller "
                          "(or bigger) than its container, this property moves "
                          "it relatively along the Y axis inside its container. "
@@ -5122,14 +5122,14 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X,
                        _("Causes the left-up corner to be positioned relatively to the X "
                          "axis of another part's container. Affects the first parameter "
                          "of \"relative\". Setting to NONE unsets this value for inherited parts."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y,
+              _action1(&IT, "y:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y,
                         _("Causes the left-up corner to be positioned relatively to the Y "
                           "axis of another part's container. Affects the first parameter "
                           "of \"relative\". Setting to NONE unsets this value for inherited parts."));
@@ -5137,11 +5137,11 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X,
                         _("Moves the left-up corner to a relative position inside the "
                           "container of the relative \"to\" part. Values from 0.0 "
                           "(0%, beginning) to 1.0 (100%, end) of the X axis."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y,
                        _("Moves the left-up corner to a relative position inside the "
                          "container of the relative \"to\" part. Values from 0.0 "
                          "(0%, beginning) to 1.0 (100%, end) of the Y axis."));
@@ -5149,10 +5149,10 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X,
                        _("Affects the left-up corner position for a fixed "
                          "number of pixels along the X axis."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y,
                        _("Affects the left-up corner position for a fixed "
                          "number of pixels along the Y axis."));
               break;
@@ -5163,7 +5163,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X,
                        _("Causes the right-down corner to be positioned relatively "
                          "to the X axis of another part's container. Affects the "
                          "first parameter of \"relative\". Setting to NONE unsets "
@@ -5171,7 +5171,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y,
+              _action1(&IT, "y:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y,
                         _("Causes the right-down corner to be positioned relatively "
                           "to the Y axis of another part's container. Affects the "
                           "first parameter of \"relative\". Setting to NONE unsets "
@@ -5180,11 +5180,11 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X,
                         _("Moves the right-down corner to a relative position inside "
                           "the container of the relative \"to\" part. Values from 0.0 "
                           "(0%, beginning) to 1.0 (100%, end) of the X axis."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y,
                        _("Moves the right-down corner to a relative position inside "
                          "the container of the relative \"to\" part. Values from 0.0 "
                          "(0%, beginning) to 1.0 (100%, end) of the Y axis."));
@@ -5192,10 +5192,10 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X,
                        _("Affects the right-down corner position for a fixed "
                          "number of pixels along the X axis."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y,
+               _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y,
                        _("Affects the right-down corner position for a fixed "
                          "number of pixels along the Y axis."));
                break;
@@ -5225,22 +5225,22 @@ _init_items()
              break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
               IT.name = "Border";
-              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
+              _action1(&IT, "left:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
                        _("If set, the area (in pixels) of each side of the image "
                          "is displayed as a fixed size border, from the side "
                          "inwards, preventing the corners from being changed on a resize."));
-              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
+              _action2(&IT, "right:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
                         _("If set, the area (in pixels) of each side of the image "
                          "is displayed as a fixed size border, from the side "
                          "inwards, preventing the corners from being changed on a resize."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V:
               IT.name = "";
-              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
+              _action1(&IT, "top:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
                          _("If set, the area (in pixels) of each side of the image "
                          "is displayed as a fixed size border, from the side "
                          "inwards, preventing the corners from being changed on a resize."));
-              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
+              _action2(&IT, "bottom:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
                          _("If set, the area (in pixels) of each side of the image "
                         "is displayed as a fixed size border, from the side "
                         "inwards, preventing the corners from being changed on a resize."));
@@ -5287,19 +5287,19 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X,
                        _("Sets the left-up corner X coordinate "
                          "relative to the displayed element's content."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y,
                        _("Sets the left-up corner Y coordinate "
                          "relative to the displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X,
                        _("Affects the left-up corner for a fixed number of pixels along the X axis."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y,
                        _("Affects the left-up corner for a fixed number of pixels along the Y axis."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
@@ -5310,20 +5310,20 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X,
                        _("Sets the right-bottom corner X coordinate "
                          "relative to the displayed element's content."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y,
+               _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y,
                         _("Sets the right-bottom corner Y coordinate "
                          "relative to the displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X,
                        _("Affects the right-bottom corner for a "
                          "fixed number of pixels along the X axis."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y,
+               _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y,
                        _("Affects the right-bottom corner for a "
                          "fixed number of pixels along the Y axis."));
                break;
@@ -5377,31 +5377,31 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X,
                        _("Changes the position on the X axis of "
                          "the point of balance inside the container."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y,
                        _("Changes the position on the Y axis of "
                          "the point of balance inside the container."));
                break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN:
               IT.name = "Min";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X,
                        _("When this parameter is enabled, it forces the minimum "
                          "width of the container to be equal to the minimum size "
                          "of the text."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y,
                         _("When this parameter is enabled, it forces the minimum "
                           "height of the container to be equal to the minimum size "
                           "of the text."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX:
               IT.name = "Max";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X,
                        _("When this parameter is enabled, it forces the maximum "
                          "width of the container to be equal to the maximum size "
                          "of the text."));
-               _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y,
+               _action2(&IT, "y:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y,
                         _("When this parameter is enabled, it forces the maximum "
                           "height of the container to be equal to the maximum size "
                           "of the text."));
@@ -5425,10 +5425,10 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FIT:
               IT.name = "Fit";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X,
                        _("When this parameter is enabled, Edje resizes "
                          "the text width to fit in it's container."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y,
                         _("When this parameter is enabled, Edje resizes "
                           "the text height to fit in it's container."));
               break;
@@ -5480,23 +5480,23 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
                        _("Changes the position of the point of balance "
                          "by the X axis inside the container."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
                        _("Changes the position of the point of balance "
                          "by the Y axis inside the container."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
               IT.name = "Padding";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X,
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X,
                        _("Sets the space between cells by the X axis in pixels."));
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y,
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y,
                        _("Sets the space between cells by the Y axis in pixels."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               IT.name = "Min";
-              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H,
+              _action1(&IT, "h:", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H,
                        _("When this parameter is enabled, it forces the "
                          "minimum horizonal size of the box/table to be equal to "
                          "the minimum horizonal size of the items."));
@@ -5532,37 +5532,37 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W,
+              _action1(&IT, "w:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W,
                        _("Sets the minimum size hints of width for this object."));
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H,
+              _action2(&IT, "h:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H,
                        _("Sets the minimum size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W,
+              _action1(&IT, "w:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W,
                        _("Sets the maximum size hints of width for this object."));
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H,
+              _action2(&IT, "h:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H,
                        _("Sets the maximum size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
               IT.name = "Prefer";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W,
                        _("Sets the prederred size hints of width for this object."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H,
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H,
                        _("Sets the prederred size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X,
+              _action1(&IT, "x:", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X,
                        _("Sets the alignment size hints for this object by X axis."));
-              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y,
+              _action2(&IT, "y:", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y,
                        _("Sets the alignment size hints for this object by Y axis."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT:
               IT.name = "Weight";
-              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X,
+              _action1(&IT, "x:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X,
                        _("Sets the weight size hints for this object by X axis."));
-              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y,
+              _action2(&IT, "y:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y,
                        _("Sets the weight size hints for this object by Y axis."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
@@ -5572,9 +5572,9 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
               IT.name = "Aspect";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W,
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W,
                        _("Sets the aspect width hints for this object."));
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H,
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H,
                        _("Sets the aspect height hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
@@ -5672,21 +5672,21 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_IN:
               IT.name = "In";
-              _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM,
+              _action1(&IT, "from:", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM,
                        _("Wait 'from' seconds before executing the program."));
               _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE,
                        _("Add a number of seconds (from 0 to 'range') to the total waiting time."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
               IT.name = "Filter";
-              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
+              _action1(&IT, "part:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
                        _("Filter signals to be only accepted if the part [part] is in "
                          "state named [state]. Only 1 filter per program can be used. "
                          "If [state] is not given, the source of the event is used instead."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
-              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
+              _action1(&IT, "state:", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
                         _("Filter signals to be only accepted if the part [part] is in "
                          "state named [state]. Only 1 filter per program can be used. "
                          "If [state] is not given, the source of the event is used instead."));
@@ -5726,8 +5726,8 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE:
               IT.name = "Drag value";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y, NULL);
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_X, NULL);
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y, NULL);
               IT.filter_data.action_types = ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP | ACTION_DRAG_VAL_PAGE;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
@@ -5794,14 +5794,14 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1:
               IT.name = "Point 1";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1, NULL);
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1, NULL);
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2:
               IT.name = "Point 2";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2, NULL);
+              _action1(&IT, "x:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2, NULL);
+              _action2(&IT, "y:", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET:
               IT.name = "Targets";

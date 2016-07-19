@@ -522,15 +522,15 @@ _init_items()
               IT.name = "Min";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H);
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W);
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
               IT.name = "Max";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H);
+              _action1(&IT, "w:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W);
+              _action2(&IT, "h:", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H);
               break;
 
            case PROPERTY_DEMO_ITEM_PROGRAM_TITLE:
