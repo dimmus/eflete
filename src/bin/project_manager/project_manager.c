@@ -1675,33 +1675,10 @@ static void *
 _release_export(void *data __UNUSED__,
                 Eina_Thread *thread __UNUSED__)
 {
-   /**
-    * Comment by Andrii:
-    * | problem with edje_cc is that it uses child process itself:
-    * | when we create thread SIGCHLD is blocked for that
-    * | thread by commit aeeda1f77d1b21b15e916852baac06bb530618e2,
-    * | when we run edje_cc from that thread it's process
-    * | inherits all blocked signals edje_cc starts embryo compiler
-    * | if group has scripts it waits for child(compiler)
-    * | process termination, but never receives it because of blocked SIGCHLD
-    */
-#ifndef _WIN32
-   sigset_t oldset, newset;
-   sigemptyset(&newset);
-   sigaddset(&newset, SIGCHLD);
-   sigprocmask(SIG_UNBLOCK, &newset, &oldset);
-#endif
-
    Eina_Tmpstr *tmp_dirname;
    Eina_Strbuf *cmd;
-   Ecore_Exe *exe_cmd;
-   pid_t exe_pid;
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
-   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
-                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                            ECORE_EXE_PIPE_ERROR |
-                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    int waitpid_res = 0, edje_cc_res = 0;
 
    PROGRESS_SEND(_("Export project as release file"));
@@ -1719,13 +1696,20 @@ _release_export(void *data __UNUSED__,
         cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, NULL);
      }
    cmd = eina_strbuf_new();
+   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
    eina_strbuf_append_printf(cmd, "edje_cc -v -id %s/images/ -sd %s/sounds/ -fd %s/fonts/ %s/generated.edc %s",
                              tmp_dirname, tmp_dirname, tmp_dirname, tmp_dirname, worker.edj);
+   edje_cc_data->cmd = eina_stringshare_add(eina_strbuf_string_get(cmd));
+   edje_cc_data->flags  = ECORE_EXE_PIPE_READ |
+                          ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                          ECORE_EXE_PIPE_ERROR |
+                          ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    THREAD_TESTCANCEL;
-   exe_cmd = ecore_exe_pipe_run(eina_strbuf_string_get(cmd), flags, NULL);
-   exe_pid = ecore_exe_pid_get(exe_cmd);
+   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_cc_data);
    THREAD_TESTCANCEL;
-   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
+   waitpid_res = waitpid(edje_cc_data->exe_pid, &edje_cc_res, 0);
+   eina_stringshare_del(edje_cc_data->cmd);
+   free(edje_cc_data);
    if (worker.func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
@@ -1869,32 +1853,9 @@ static void *
 _enventor_save(void *data __UNUSED__,
                Eina_Thread *thread __UNUSED__)
 {
-   /**
-    * Comment by Andrii:
-    * | problem with edje_cc is that it uses child process itself:
-    * | when we create thread SIGCHLD is blocked for that
-    * | thread by commit aeeda1f77d1b21b15e916852baac06bb530618e2,
-    * | when we run edje_cc from that thread it's process
-    * | inherits all blocked signals edje_cc starts embryo compiler
-    * | if group has scripts it waits for child(compiler)
-    * | process termination, but never receives it because of blocked SIGCHLD
-    */
-#ifndef _WIN32
-   sigset_t oldset, newset;
-   sigemptyset(&newset);
-   sigaddset(&newset, SIGCHLD);
-   sigprocmask(SIG_UNBLOCK, &newset, &oldset);
-#endif
-
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
-   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
-                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                            ECORE_EXE_PIPE_ERROR |
-                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    Eina_Stringshare *cmd, *edj, *dir;
-   Ecore_Exe *exe_cmd;
-   pid_t exe_pid;
    Eina_List *l;
    Eina_Strbuf *buf = NULL;
    int edje_cc_res = 0, edje_pick_res = 0, waitpid_res = 0;
@@ -1919,15 +1880,21 @@ _enventor_save(void *data __UNUSED__,
      {
         eina_strbuf_append_printf(buf, " -sd %s", dir);
      }
-   cmd = eina_stringshare_printf("edje_cc -v %s %s %s", eina_strbuf_string_get(buf),
-                                 worker.project->enventor->file, edj);
+   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
+   edje_cc_data->cmd = eina_stringshare_printf("edje_cc -v %s %s %s", eina_strbuf_string_get(buf),
+                                               worker.project->enventor->file, edj);
+   edje_cc_data->flags  = ECORE_EXE_PIPE_READ |
+                          ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                          ECORE_EXE_PIPE_ERROR |
+                          ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    eina_strbuf_free(buf);
    THREAD_TESTCANCEL;
-   DBG("Run command for compile: %s", cmd);
-   exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
-   exe_pid = ecore_exe_pid_get(exe_cmd);
+   DBG("Run command for compile: %s", edje_cc_data->cmd);
+   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_cc_data);
    THREAD_TESTCANCEL;
-   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
+   waitpid_res = waitpid(edje_cc_data->exe_pid, &edje_cc_res, 0);
+   eina_stringshare_del(edje_cc_data->cmd);
+   free(edje_cc_data);
 
    if (worker.func_progress)
      {
