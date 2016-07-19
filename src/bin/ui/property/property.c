@@ -191,7 +191,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
 
    pd->genlist = elm_genlist_add(parent);
    elm_genlist_block_count_set(pd->genlist, 256);
-   elm_scroller_policy_set(pd->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_policy_set(pd->genlist, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    elm_object_style_set(pd->genlist, "property");
    elm_object_content_set(pd->layout, pd->genlist);
 
