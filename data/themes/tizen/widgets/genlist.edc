@@ -1500,7 +1500,18 @@ group { name: "elm/genlist/item/state/default";
             color: 255 255 255 255;
          }
       }
-      part { name: "separator";
+      part { name: "bg1";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+            color_class: "over";
+            color: 255 255 255 255;
+         }
+      }
+       part { name: "separator";
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
@@ -1542,6 +1553,7 @@ group { name: "elm/genlist/item/state/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         clip_to: "text_clip";
          description { state: "default" 0.0;
             min: 0 16;
             max: -1 16;
@@ -1558,6 +1570,45 @@ group { name: "elm/genlist/item/state/default";
             }
             rel2.offset: -7 -5;
          }
+         description { state: "selected";
+            inherit: "default" 0.0;
+            color_class: "";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text1";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            min: 0 16;
+            max: -1 16;
+            color_class: "select";
+            text {
+               text_source: "elm.text";
+               font: FN;
+               size: 13;
+               align: 0.0 0.5;
+            }
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color_class: "genlist_text_tree";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "text_clip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            color: 255 255 255 0;
+         }
       }
       part { name: "disclip";
          type: RECT;
@@ -1573,14 +1624,32 @@ group { name: "elm/genlist/item/state/default";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
+         target: "elm.text";
       }
       program { name: "unselected";
          signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+         target: "elm.text";
       }
-   }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "disclip";
+         action: STATE_SET "over" 0.0;
+         target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "disclip";
+         action: STATE_SET "default" 0.0;
+         target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
+      }
+    }
 }
 
 group { name: "elm/genlist/item/item/default";
@@ -1684,7 +1753,18 @@ group { name: "elm/genlist/item/state_selected/default";
             color: 255 255 255 255;
          }
       }
-      part { name: "separator";
+      part { name: "bg1";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+            color_class: "over";
+            color: 255 255 255 255;
+         }
+      }
+       part { name: "separator";
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
@@ -1726,6 +1806,7 @@ group { name: "elm/genlist/item/state_selected/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         clip_to: "text_clip";
          description { state: "default" 0.0;
             min: 0 16;
             max: -1 16;
@@ -1742,6 +1823,43 @@ group { name: "elm/genlist/item/state_selected/default";
             }
             rel2.offset: -7 -5;
          }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color_class: "";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text1";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            color_class: "select";
+            text {
+               text_source: "elm.text";
+               font: FN;
+               size: 13;
+               align: 0.0 0.5;
+            }
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color_class: "genlist_text_tree";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "text_clip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            color: 255 255 255 0;
+         }
       }
       part { name: "disclip";
          type: RECT;
@@ -1757,12 +1875,30 @@ group { name: "elm/genlist/item/state_selected/default";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
+         target: "elm.text";
       }
       program { name: "unselected";
          signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+         target: "elm.text";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "disclip";
+         action: STATE_SET "over" 0.0;
+         target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "disclip";
+         action: STATE_SET "default" 0.0;
+         target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
       }
    }
 }
