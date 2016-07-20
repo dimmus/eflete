@@ -515,6 +515,7 @@ group { name: "elm/genlist/item/aligned/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         clip_to: "text_clip";
          description { state: "default" 0.0;
             min: 0 16;
             max: -1 16;
@@ -538,6 +539,33 @@ group { name: "elm/genlist/item/aligned/default";
          description { state: "hide" 0.0;
             inherit: "default" 0.00;
             visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color_class: "";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text1";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            color_class: "select";
+            text {
+               text_source: "elm.text";
+               font: FN;
+               size: 13;
+               align: 0.0 0.5;
+            }
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color_class: "genlist_text_tree";
+            color: 255 255 255 255;
          }
       }
       part { name: "elm.swallow.end";
@@ -563,7 +591,17 @@ group { name: "elm/genlist/item/aligned/default";
             max: -1 -1;
          }
       }
-      part { name: "disclip";
+      part { name: "text_clip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+       part { name: "disclip";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
@@ -578,6 +616,7 @@ group { name: "elm/genlist/item/aligned/default";
          action: STATE_SET "selected" 0.00;
          target: "bg";
          target: "elm.swallow.icon1";
+         target: "elm.text";
          after: "select_icon";
       }
       program { name: "select_icon";
@@ -590,6 +629,7 @@ group { name: "elm/genlist/item/aligned/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+         target: "elm.text";
          target: "elm.swallow.icon";
          after: "unselect_icon";
       }
@@ -615,6 +655,8 @@ group { name: "elm/genlist/item/aligned/default";
          signal: "mouse,in";
          source: "disclip";
          action: STATE_SET "over" 0.00;
+         target: "elm.text1";
+         target: "text_clip";
          target: "bg1";
          after: "over_icon";
          target: "elm.swallow.icon2";
@@ -628,6 +670,8 @@ group { name: "elm/genlist/item/aligned/default";
          signal: "mouse,out";
          source: "disclip";
          action: STATE_SET "default" 0.00;
+         target: "elm.text1";
+         target: "text_clip";
          target: "bg1";
          target: "elm.swallow.icon";
          after: "unover_icon";
@@ -973,6 +1017,7 @@ group { name: "elm/genlist/tree/default/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         clip_to: "text_clip";
          description { state: "default" 0.0;
             min: 0 16;
             max: -1 16;
@@ -999,6 +1044,33 @@ group { name: "elm/genlist/tree/default/default";
             rel1.offset: 5 0;
             rel2.offset: -7 -1;
          }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color_class: "";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text1";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            color_class: "select";
+            text {
+               text_source: "elm.text";
+               font: FN;
+               size: 13;
+               align: 0.0 0.5;
+            }
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color_class: "genlist_text_tree";
+            color: 255 255 255 255;
+         }
       }
       part { name: "elm.swallow.end";
          type: SWALLOW;
@@ -1020,6 +1092,16 @@ group { name: "elm/genlist/tree/default/default";
             visible: 0;
             min: 0 0;
             max: -1 -1;
+         }
+      }
+      part { name: "text_clip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            color: 255 255 255 0;
          }
       }
       part { name: "events";
@@ -1048,6 +1130,7 @@ group { name: "elm/genlist/tree/default/default";
          action: STATE_SET "selected" 0.00;
          target: "bg";
          target: "elm.swallow.icon1";
+         target: "elm.text";
          after: "select_icon";
       }
       program { name: "select_icon";
@@ -1061,6 +1144,7 @@ group { name: "elm/genlist/tree/default/default";
          action: STATE_SET "default" 0.00;
          target: "bg";
          target: "elm.swallow.icon";
+         target: "elm.text";
          after: "unselect_icon";
       }
       program { name: "unselect_icon";
@@ -1102,6 +1186,8 @@ group { name: "elm/genlist/tree/default/default";
          source: "disclip";
          action: STATE_SET "over" 0.00;
          target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
          after: "over_icon";
          target: "elm.swallow.icon2";
       }
@@ -1115,6 +1201,8 @@ group { name: "elm/genlist/tree/default/default";
          source: "disclip";
          action: STATE_SET "default" 0.00;
          target: "bg1";
+         target: "elm.text1";
+         target: "text_clip";
          target: "elm.swallow.icon";
          after: "unover_icon";
       }
@@ -1144,12 +1232,14 @@ group { name: "elm/genlist/tree/default/default";
          signal: "elm,state,selected";
          source: "elm";
          action: STATE_SET "selected" 0.00;
+         target: "elm.text";
          target: "bg";
       }
       program { name: "go_passive";
          signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
+         target: "elm.text";
          target: "bg";
       }
       program { name: "go_disabled";
