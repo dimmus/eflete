@@ -644,6 +644,18 @@ group { name: "elm/hover/base/combobox_vertical/default";
       }
    }
    parts {
+      part { name: "outline";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "text_tabs_selected";
+            rel1.to: "button_image";
+            rel1.relative: 0.0 0.0;
+            rel1.offset: -1 -1;
+            rel2.to: "button_image";
+            rel2.relative: 1.0 1.0;
+            rel2.offset: 0 0;
+        }
+      }
       part { name: "elm.swallow.offset"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
@@ -670,11 +682,13 @@ group { name: "elm/hover/base/combobox_vertical/default";
             rel1.to_y: "elm.swallow.slot.top";
             rel2.to_x: "limit1";
             rel2.to_y: "elm.swallow.slot.middle";
+            rel2.offset: -1 -3;
             rel2.relative: 1.0 0.0;
          }
          description { state: "bottom" 0.0;
             rel1.to_x: "limit0";
             rel1.to_y: "elm.swallow.slot.middle";
+            rel1.offset: 0 2;
             rel1.relative: 0.0 1.0;
             rel2.to_x: "limit1";
             rel2.to_y: "elm.swallow.slot.bottom";
@@ -683,7 +697,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
       part { name: "limit0"; type: SPACER;
          description { state: "default" 0.0;
             rel1.to_x: "elm.swallow.slot.top";
-            rel1.offset: 1 0;
+            rel1.offset: 0 0;
             rel2.to_x: "elm.swallow.slot.middle";
             rel2.offset: 0 0;
             rel2.relative: 0.0 1.0;
@@ -699,7 +713,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
       part { name: "limit1"; type: SPACER;
          description { state: "default" 0.0;
             rel1.to_x: "elm.swallow.slot.middle";
-            rel1.offset: -1 0;
+            rel1.offset: -1 2;
             rel1.relative: 1.0 0.0;
             rel2.to_x: "elm.swallow.slot.top";
             rel2.offset: -2 0;
@@ -734,7 +748,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
             rel1.to: "elm.swallow.slot.middle";
             rel1.relative: 0.0 0.0;
-            rel1.offset: 0 -1;
+            rel1.offset: 1 -1;
             rel2.to: "elm.swallow.slot.middle";
             rel2.relative: 1.0 0.0;
          }
@@ -764,7 +778,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
             rel1.to: "elm.swallow.slot.middle";
             rel1.relative: 0.0 1.0;
-            rel1.offset: 0 0;
+            rel1.offset: 1 0;
             rel2.to: "elm.swallow.slot.middle";
             rel2.relative: 1.0 1.0;
          }
