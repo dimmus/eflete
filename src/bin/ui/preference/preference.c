@@ -339,7 +339,7 @@ preferences_window_add(Project *project)
    evas_object_event_callback_add(preference->mwin, EVAS_CALLBACK_FREE,
                                   _on_preferences_close, preference);
    window_layout = elm_layout_add(preference->mwin);
-   elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
+   elm_layout_file_set(window_layout, ap.path.layout_edj, "eflete/editor/default");
    elm_win_inwin_content_set(preference->mwin, window_layout);
 
    panes = elm_panes_add(preference->mwin);

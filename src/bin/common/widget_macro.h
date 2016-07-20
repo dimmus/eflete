@@ -122,7 +122,7 @@ TODO("see large comment below")
 
 #define IMAGE_ADD_NEW(PARENT, IMAGE, NAME, STYLE) \
    IMAGE = elm_image_add(PARENT); \
-   elm_image_file_set(IMAGE, EFLETE_THEME, "elm/image/"NAME"/"STYLE);
+   elm_image_file_set(IMAGE, ap.path.theme_edj, "elm/image/"NAME"/"STYLE);
 
 #define HOVERSEL_ADD(PARENT, HOVERSEL, ISHORIZONTAL) \
    HOVERSEL = elm_hoversel_add(PARENT); \

@@ -753,15 +753,15 @@ _color_class_colors_fill(void *data __UNUSED__,
         FIXME: this is bad solition, user shoud not use edje object for add contnent to a
          * combobox item. Need to move combobox from edje ocject to layout.
         color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        edje_object_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
         evas_object_color_set(color, cc_val[0], cc_val[1], cc_val[2], cc_val[3]);
         edje_object_part_swallow(item->content, "swallow.color1", color);
         color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        edje_object_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
         evas_object_color_set(color, cc_val[4], cc_val[5], cc_val[6], cc_val[7]);
         edje_object_part_swallow(item->content, "swallow.color2", color);
         color = edje_object_add(canvas);
-        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        edje_object_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
         evas_object_color_set(color, cc_val[8], cc_val[9], cc_val[10], cc_val[11]);
         edje_object_part_swallow(item->content, "swallow.color3", color);
      }
@@ -1046,17 +1046,17 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_object_style_set(action->control, "color_class");
 
          color = elm_image_add(action->control);
-         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         elm_image_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
          elm_object_part_content_set(action->control, "swallow.color1", color);
          evas_object_data_set(action->control, "color1", color);
 
          color = elm_image_add(action->control);
-         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         elm_image_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
          elm_object_part_content_set(action->control, "swallow.color2", color);
          evas_object_data_set(action->control, "color2", color);
 
          color = elm_image_add(action->control);
-         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         elm_image_file_set(color, ap.path.theme_edj, "elm/image/color/color_set");
          elm_object_part_content_set(action->control, "swallow.color3", color);
          evas_object_data_set(action->control, "color3", color);
 

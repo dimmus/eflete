@@ -90,7 +90,7 @@ _image_manager_image_setup(Evas_Object *image,
         if (ecore_file_exists(it->source))
           elm_thumb_file_set(image, it->source, NULL);
         else
-          elm_thumb_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
+          elm_thumb_file_set(image, ap.path.theme_edj, "elm/image/icon/attention");
      }
    else
      {
@@ -141,7 +141,7 @@ _grid_content_get(void *data,
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
-             elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
+             elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");
              evas_object_show(image_obj);
              it->is_used = false;
           }
@@ -187,6 +187,7 @@ _grid_sel_cb(void *data __UNUSED__,
    Eina_List *l;
    Eina_List *sel_list;
    Elm_Object_Item *grid_item = NULL;
+   char buf[PATH_MAX];
 
    sel_list = (Eina_List *)elm_gengrid_selected_items_get(mng.gengrid);
    int selected_images_count = eina_list_count(sel_list);
@@ -209,7 +210,7 @@ _grid_sel_cb(void *data __UNUSED__,
               if (ecore_file_exists(item->source))
                 elm_image_file_set(mng.image, item->source, NULL);
               else
-                elm_image_file_set(mng.image, EFLETE_THEME, "elm/image/icon/attention");
+                elm_image_file_set(mng.image, ap.path.theme_edj, "elm/image/icon/attention");
            }
          else
            {
@@ -229,7 +230,8 @@ _grid_sel_cb(void *data __UNUSED__,
                   break;
                }
           }
-        elm_image_file_set(mng.image, EFLETE_IMG_PATH EFLETE_DUMMY_IMAGE_NAME, NULL);
+        snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
+        elm_image_file_set(mng.image, buf, NULL);
      }
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, item);
 }

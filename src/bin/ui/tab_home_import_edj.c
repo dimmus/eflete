@@ -246,7 +246,7 @@ _edj_set(Eina_Stringshare *title)
    char buf[256];
    if (title)
      {
-        snprintf(buf, sizeof(buf), "%s/%s", EFLETE_TEMPLATE_EDJ_PATH, title);
+        snprintf(buf, sizeof(buf), "%s/template/edj/%s", ap.path.edj_path, title);
         elm_entry_entry_set(tab_edj.edj, buf);
      }
    else elm_entry_entry_set(tab_edj.edj, "");
@@ -595,6 +595,7 @@ _tab_import_edj_add(void)
 {
    Eina_List *themes = NULL, *l = NULL;
    char *theme;
+   char buf[PATH_MAX];
 
    tab_edj.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
@@ -644,7 +645,8 @@ _tab_import_edj_add(void)
    tab_edj.itc->func.del = _combobox_item_del;
    elm_object_part_content_set(tab_edj.layout, "swallow.template_themes", tab_edj.themes);
    elm_object_text_set(tab_edj.themes, "template themes");
-   themes = ecore_file_ls(EFLETE_TEMPLATE_EDJ_PATH);
+   snprintf(buf, sizeof(buf), "%stemplate/edj", ap.path.edj_path);
+   themes = ecore_file_ls(buf);
    EINA_LIST_FOREACH(themes, l, theme)
      {
         elm_genlist_item_append(tab_edj.themes, tab_edj.itc,

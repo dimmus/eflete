@@ -483,7 +483,7 @@ colorclass_manager_add(void)
    evas_object_show(bg);
 
    mng.edje_preview = edje_object_add(evas_object_evas_get(mng.preview_layout));
-   if (!edje_object_file_set(mng.edje_preview, EFLETE_THEME,
+   if (!edje_object_file_set(mng.edje_preview, ap.path.theme_edj,
                              "elm/layout/colorclass_manager/preview"))
      {
         ERR("Couldn't load layout for text example field!");

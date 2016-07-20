@@ -123,6 +123,12 @@ struct _App_Data
       Evas_Object *history;
       Elm_Object_Item *item_history, *item_property;
    } block;
+   struct {
+      Eina_Stringshare *theme_edj;
+      Eina_Stringshare *layout_edj;
+      Eina_Stringshare *edj_path;
+      Eina_Stringshare *image_path;
+   } path;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 #ifdef HAVE_ENVENTOR

@@ -353,7 +353,7 @@ _slider_changed_cb(void *data,
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(item, EFLETE_EDJ, "property/item/"style); \
+   elm_layout_file_set(item, ap.path.layout_edj, "property/item/"style); \
    elm_object_part_text_set(item, "elm.text", text); \
    evas_object_show(item);
 

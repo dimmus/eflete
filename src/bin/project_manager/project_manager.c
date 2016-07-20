@@ -438,6 +438,7 @@ _project_dummy_image_add(Project *project)
 {
    Evas *e;
    Evas_Object *edje_edit_obj;
+   char buf[PATH_MAX];
 
    assert(project != NULL);
 
@@ -448,7 +449,8 @@ _project_dummy_image_add(Project *project)
    edje_edit_obj = edje_edit_object_add(e);
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
-   edje_edit_image_add(edje_edit_obj, EFLETE_IMG_PATH EFLETE_DUMMY_IMAGE_NAME);
+   snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
+   edje_edit_image_add(edje_edit_obj, buf);
 
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);

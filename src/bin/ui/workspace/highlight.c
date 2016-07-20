@@ -505,7 +505,7 @@ _handler_object_add(Evas_Object *parent,
    assert(style != NULL);
 
    border = edje_object_add(evas_object_evas_get(parent));
-   if (!edje_object_file_set(border, EFLETE_EDJ, style))
+   if (!edje_object_file_set(border, ap.path.layout_edj, style))
      {
         ERR("Could not load style for handler's border!");
         abort();
@@ -588,7 +588,7 @@ _smart_add(Evas_Object *parent)
    _highlight_parent_sc->add(parent);
 
    border = edje_object_add(evas_object_evas_get(parent));
-   if (!edje_object_file_set(border, EFLETE_EDJ, "eflete/highlight/border/default"))
+   if (!edje_object_file_set(border, ap.path.layout_edj, "eflete/highlight/border/default"))
      {
         ERR("Could not load style for main border!");
         abort();

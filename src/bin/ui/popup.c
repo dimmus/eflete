@@ -701,7 +701,7 @@ _grid_content_get(void *data,
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
-             elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
+             elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");
              evas_object_show(image_obj);
           }
      }

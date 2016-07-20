@@ -235,6 +235,7 @@ ui_menu_add(void)
    Evas_Object *window_menu;
    Menu *menu;
    int i = 0;
+   char buf[PATH_MAX];
 
    assert(ap.win != NULL);
    assert(ap.win_layout != NULL);
@@ -267,6 +268,8 @@ ui_menu_add(void)
 #define ___(PARENT_ID) \
    elm_menu_item_separator_add(window_menu, menu->items[PARENT_ID]);
 
+   snprintf(buf, sizeof(buf), "%sicon-save.png", ap.path.image_path);
+
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
 #if !HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
@@ -274,7 +277,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"), NULL)
       ___(MENU_FILE);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"), "Ctrl-S")
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, buf, _("Save"), "Ctrl-S")
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)

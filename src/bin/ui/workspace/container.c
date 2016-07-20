@@ -141,20 +141,20 @@ _style_set(Evas_Object *o, const char *style)
       snprintf(group, BUFF_MAX, "eflete/container/%s/%s", item, style);
 
    GROUP_NAME("base", style)
-   if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
+   if (!edje_object_file_set(sd->container, ap.path.layout_edj, group))
      {
         GROUP_NAME("base", "default")
-        if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
+        if (!edje_object_file_set(sd->container, ap.path.layout_edj, group))
           {
              ERR("Couldn't load default style for base border of container.");
              abort();
           }
      }
    GROUP_NAME("handler_BR", style)
-   if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
+   if (!edje_object_file_set(sd->handler_BR.obj, ap.path.layout_edj, group))
      {
         GROUP_NAME("handler_BR", "default")
-        if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
+        if (!edje_object_file_set(sd->handler_BR.obj, ap.path.layout_edj, group))
           {
              ERR("Couldn't load default style for bottom-right handler of container.");
              abort();

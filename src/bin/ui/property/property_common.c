@@ -438,7 +438,7 @@ _caption_content_get(void *data,
    if (pa->icon_name != NULL)
      {
         content = elm_image_add(obj);
-        res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
+        res = elm_image_file_set(content, ap.path.theme_edj, pa->icon_name);
         assert(res == true);
 
         evas_object_data_set(content, PROPERTY_DATA, pd);
@@ -466,7 +466,7 @@ _1swallow_content_get(void *data,
    if ((pa->icon_name != NULL) && (!strcmp(part, "swallow.icon")))
      {
         content = elm_image_add(obj);
-        res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
+        res = elm_image_file_set(content, ap.path.theme_edj, pa->icon_name);
         assert(res == true);
 
         evas_object_data_set(content, PROPERTY_DATA, pd);
@@ -508,7 +508,7 @@ _2swallow_content_get(void *data,
    if ((pa->icon_name != NULL) && (!strcmp(part, "swallow.icon")))
      {
         content = elm_image_add(obj);
-        res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
+        res = elm_image_file_set(content, ap.path.theme_edj, pa->icon_name);
         assert(res == true);
 
         evas_object_data_set(content, PROPERTY_DATA, pd);

@@ -93,12 +93,19 @@ app_init()
         CRIT("Can't initialize the Ewe library");
         return false;
      }
+   elm_app_info_set(NULL, "eflete", NULL);
+
+   ap.path.theme_edj = eina_stringshare_printf("%s/themes/default/eflete_elm.edj", elm_app_data_dir_get());
+   ap.path.layout_edj = eina_stringshare_printf("%s/layouts/eflete.edj", elm_app_data_dir_get());
+   ap.path.edj_path = eina_stringshare_printf("%s/themes/default/", elm_app_data_dir_get());
+   ap.path.image_path = eina_stringshare_printf("%s/images/", elm_app_data_dir_get());
 
    ap.theme = elm_theme_new();
+
 #ifndef _WIN32
-   char *theme = strdup(EFLETE_THEME);
+   char *theme = strdup(ap.path.theme_edj);
 #else
-   char *theme = escape_colons(EFLETE_THEME);
+   char *theme = escape_colons(ap.path.theme_edj);
 #endif
    elm_theme_set(ap.theme, theme);
    free(theme);
@@ -116,6 +123,14 @@ app_shutdown()
 {
    if (ap.last_path)
      eina_stringshare_del(ap.last_path);
+   if (ap.path.theme_edj)
+     eina_stringshare_del(ap.path.theme_edj);
+   if (ap.path.layout_edj)
+     eina_stringshare_del(ap.path.layout_edj);
+   if (ap.path.edj_path)
+     eina_stringshare_del(ap.path.edj_path);
+   if (ap.path.image_path)
+     eina_stringshare_del(ap.path.image_path);
 
    config_shutdown();
    elm_theme_free(ap.theme);
