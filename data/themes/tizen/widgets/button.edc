@@ -42,20 +42,19 @@ group { name: "elm/button/base/default";
          type: RECT;
          description { state: "default" 0.0;
             color_class: "button";
-            rel1.offset: -1 -1;
-            rel2.offset: 0 0;
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
          }
          description { state: "focused" 0.0;
             color_class: "button_focused";
-            rel1.offset: -2 -2;
-            rel2.offset: 1 1;
+            rel1.offset: 2 2;
+            rel2.offset: -3 -3;
           }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
             color_class: "over";
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
             color_class: "button_pressed";
          }
          description { state: "disabled" 0.0;
@@ -104,7 +103,7 @@ group { name: "elm/button/base/default";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 11;
+               size: 10;
                text_class: "button";
             }
             rel1 {
@@ -178,7 +177,7 @@ group { name: "elm/button/base/default";
             visible: 0;
             text {
                font: FN;
-               size: 11;
+               size: 10;
                text_class: "button";
             }
          }
@@ -187,7 +186,7 @@ group { name: "elm/button/base/default";
             text {
                text: "M";
                font: FN;
-               size: 11;
+               size: 10;
                text_class: "button";
                min: 1 1;
                ellipsis: -1;
@@ -2216,6 +2215,9 @@ group { name: "elm/button/base/fit";
             image {
                normal: "WYSIWG/tool_autofit_mv.png";
             }
+         }
+          description { state: "focused" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "border";

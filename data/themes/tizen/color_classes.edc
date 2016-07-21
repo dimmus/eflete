@@ -80,7 +80,7 @@ color_classes {
       color3: 0 0 0 0;
    }
    color_class { name: "button_border";
-      color: 225 225 225 255;
+      color: 173 173 173 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
