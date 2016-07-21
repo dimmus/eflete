@@ -43,7 +43,7 @@ group { name: "elm/notify/center/popup/default";
          type: IMAGE;
          description { state: "default" 0.0;
             image {
-               normal: "shadow.png";
+               normal: "POP UP/popup_shadow.png";
                border: 20 20 20 20;
             }
             rel1 {
@@ -104,7 +104,7 @@ group { name: "elm/label/base/popup/default";
 }
 group { name: "elm/popup/base/default";
    images {
-      image: "cd_icon.png" COMP;
+      image: "General/cd_icon.png" COMP;
    }
    parts {
       part { name: "base";
@@ -203,7 +203,7 @@ group { name: "elm/popup/base/default";
             align: 0.0 0.0;
             min: 16 16;
             max: 16 16;
-            image.normal: "cd_icon.png";
+            image.normal: "General/cd_icon.png";
             rel1.offset: 10 7;
             rel2 {
                offset: -1 -8;

@@ -1,21 +1,21 @@
 group { name: "elm/scroller/base/default";
    images {
-      image: "scroll_down_icon_dim.png" COMP;
-      image: "scroll_up_icon_sel.png" COMP;
-      image: "scroll_up_icon_nor.png" COMP;
-      image: "scroll_up_icon_mv.png" COMP;
-      image: "scroll_up_icon_dim.png" COMP;
-      image: "scroll_down_icon_sel.png" COMP;
-      image: "scroll_down_icon_nor.png" COMP;
-      image: "scroll_down_icon_mv.png" COMP;
-      image: "scroll_left_icon_dim.png" COMP;
-      image: "scroll_left_icon_sel.png" COMP;
-      image: "scroll_left_icon_nor.png" COMP;
-      image: "scroll_left_icon_mv.png" COMP;
-      image: "scroll_right_icon_mv.png" COMP;
-      image: "scroll_right_icon_dim.png" COMP;
-      image: "scroll_right_icon_nor.png" COMP;
-      image: "scroll_right_icon_sel.png" COMP;
+      image: "Scroll/scroll_down_icon_dim.png" COMP;
+      image: "Scroll/scroll_up_icon_sel.png" COMP;
+      image: "Scroll/scroll_up_icon_nor.png" COMP;
+      image: "Scroll/scroll_up_icon_mv.png" COMP;
+      image: "Scroll/scroll_up_icon_dim.png" COMP;
+      image: "Scroll/scroll_down_icon_sel.png" COMP;
+      image: "Scroll/scroll_down_icon_nor.png" COMP;
+      image: "Scroll/scroll_down_icon_mv.png" COMP;
+      image: "Scroll/scroll_left_icon_dim.png" COMP;
+      image: "Scroll/scroll_left_icon_sel.png" COMP;
+      image: "Scroll/scroll_left_icon_nor.png" COMP;
+      image: "Scroll/scroll_left_icon_mv.png" COMP;
+      image: "Scroll/scroll_right_icon_mv.png" COMP;
+      image: "Scroll/scroll_right_icon_dim.png" COMP;
+      image: "Scroll/scroll_right_icon_nor.png" COMP;
+      image: "Scroll/scroll_right_icon_sel.png" COMP;
    }
    data {
       item: "focus_highlight" "on";
@@ -448,7 +448,7 @@ group { name: "elm/scroller/base/default";
             fixed: 1 1;
             min: 14 14;
             max: 14 14;
-            image.normal: "scroll_up_icon_nor.png";
+            image.normal: "Scroll/scroll_up_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a1";
             rel2.to: "sb_vbar_a1";
@@ -456,17 +456,17 @@ group { name: "elm/scroller/base/default";
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
             fixed: 0 0;
-            image.normal: "scroll_up_icon_sel.png";
+            image.normal: "Scroll/scroll_up_icon_sel.png";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
             fixed: 0 0;
-            image.normal: "scroll_up_icon_mv.png";
+            image.normal: "Scroll/scroll_up_icon_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
             fixed: 0 0;
-            image.normal: "scroll_up_icon_dim.png";
+            image.normal: "Scroll/scroll_up_icon_dim.png";
          }
       }
       part { name: "arrow2_vbar";
@@ -476,22 +476,22 @@ group { name: "elm/scroller/base/default";
          description { state: "default" 0.0;
             min: 14 14;
             max: 14 14;
-            image.normal: "scroll_down_icon_nor.png";
+            image.normal: "Scroll/scroll_down_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a2";
             rel2.to: "sb_vbar_a2";
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_down_icon_sel.png";
+            image.normal: "Scroll/scroll_down_icon_sel.png";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_down_icon_mv.png";
+            image.normal: "Scroll/scroll_down_icon_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_down_icon_dim.png";
+            image.normal: "Scroll/scroll_down_icon_dim.png";
          }
       }
       part { name: "base_vbar_border";
@@ -578,22 +578,22 @@ group { name: "elm/scroller/base/default";
             fixed: 1 1;
             min: 13 13;
             max: 13 13;
-            image.normal: "scroll_left_icon_nor.png";
+            image.normal: "Scroll/scroll_left_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_hbar_a1";
             rel2.to: "sb_hbar_a1";
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_left_icon_sel.png";
+            image.normal: "Scroll/scroll_left_icon_sel.png";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_left_icon_mv.png";
+            image.normal: "Scroll/scroll_left_icon_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_left_icon_dim.png";
+            image.normal: "Scroll/scroll_left_icon_dim.png";
          }
       }
       part { name: "arrow2_hbar";
@@ -604,22 +604,22 @@ group { name: "elm/scroller/base/default";
             fixed: 1 1;
             min: 13 13;
             max: 13 13;
-            image.normal: "scroll_right_icon_nor.png";
+            image.normal: "Scroll/scroll_right_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_hbar_a2";
             rel2.to: "sb_hbar_a2";
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_right_icon_sel.png";
+            image.normal: "Scroll/scroll_right_icon_sel.png";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_right_icon_mv.png";
+            image.normal: "Scroll/scroll_right_icon_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            image.normal: "scroll_right_icon_dim.png";
+            image.normal: "Scroll/scroll_right_icon_dim.png";
          }
       }
    }

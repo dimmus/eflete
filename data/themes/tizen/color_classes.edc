@@ -1,5 +1,10 @@
 color_classes {
-   color_class { name: "scrollbar_bg";
+   color_class { name: "separator";
+      color: 177 177 177 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+    color_class { name: "scrollbar_bg";
       color: 231 231 231 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
@@ -74,6 +79,41 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
+   color_class { name: "button_border";
+      color: 225 225 225 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+    color_class { name: "button_border_over";
+      color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "button_border_dim";
+      color: 191 192 191 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+    color_class { name: "button";
+      color: 225 225 225 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "button_focused";
+      color: 238 238 238 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "button_pressed";
+      color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "button_dim";
+      color: 204 204 204 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
    color_class { name: "border";
       color: 170 170 170 255;
       color2: 0 0 0 0;
@@ -81,6 +121,16 @@ color_classes {
    }
    color_class { name: "border_focused";
       color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "entry_cursor";
+      color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "gengrid_item_border";
+      color: 204 204 204 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }

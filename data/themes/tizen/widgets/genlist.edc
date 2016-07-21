@@ -696,135 +696,6 @@ group { name: "elm/genlist/item/aligned/default";
    }
 }
 
-group { name: "elm/genlist/item/title/default";
-   data {
-      item: "texts" "elm.text";
-      item: "selectraise" "on";
-   }
-   images {
-      image: "treemenu-lvl1-item-current-bg.png" COMP;
-      image: "treemenu-lvl1-item-current-pressed.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image {
-               normal: "treemenu-lvl1-item-current-bg.png";
-               middle: DEFAULT;
-            }
-         }
-         description { state: "selected" 0.0;
-            image {
-               normal: "treemenu-lvl1-item-current-pressed.png";
-               middle: DEFAULT;
-            }
-         }
-         description { state: "reorder" 0.0;
-            image {
-               normal: "treemenu-lvl1-item-current-pressed.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: 0 26;
-            color: 214 214 214 255;
-            rel1 {
-               offset: 25 0;
-            }
-            rel2 {
-               offset: -7 -1;
-            }
-            text {
-               font: FN;
-               size: 12;
-               align: 0.0 0.5;
-            }
-         }
-      }
-      part { name: "disclip";
-         repeat_events: 1;
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-      }
-   }
-   programs {
-      program { name: "selected";
-         signal: "elm,state,selected";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-      }
-      program { name: "unselected";
-         signal: "elm,state,unselected";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "bg";
-      }
-      program { name: "reorder";
-         signal: "elm,state,reorder,enable";
-         source: "elm";
-         action: STATE_SET "reorder" 0.00;
-         target: "bg";
-      }
-      program { name: "unreorder";
-         signal: "elm,state,reorder,disable";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-         after: "selected";
-      }
-   }
-}
-
-group { name: "elm/genlist/item/group_index/default";
-   data {
-      item: "texts" "elm.text";
-   }
-   parts {
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            min: 0 27;
-            image {
-               normal: "treemenu-lvl1-item-current-bg.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 214 214 214 255;
-            rel1 {
-               offset: 25 0;
-            }
-            rel2 {
-               offset: -11 -1;
-            }
-            text {
-               font: FN;
-               size: 12;
-               align: 0.0 0.5;
-            }
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-      }
-   }
-}
-
 group { name: "elm/genlist/item/program_after/default";
    inherit: "elm/genlist/item/default/default";
    parts{
@@ -846,8 +717,8 @@ group { name: "elm/genlist/tree/default/default";
       item: "selectraise" "on";
    }
    images {
-      image: "view_arrow_right_nor.png" COMP;
-      image: "view_arrow_down_nor.png" COMP;
+      image: "Group navigator/view_arrow_right_nor.png" COMP;
+      image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -912,7 +783,7 @@ group { name: "elm/genlist/tree/default/default";
             fixed: 1 1;
             min: 9 9;
             max: 9 9;
-            image.normal: "view_arrow_right_nor.png";
+            image.normal: "Group navigator/view_arrow_right_nor.png";
             rel1 {
                relative: 1.0 0.0;
                to_x: "elm.swallow.pad";
@@ -924,7 +795,7 @@ group { name: "elm/genlist/tree/default/default";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "view_arrow_down_nor.png";
+            image.normal: "Group navigator/view_arrow_down_nor.png";
          }
       }
       part { name: "elm.swallow.icon1";
@@ -1269,8 +1140,8 @@ group { name: "elm/genlist/tree/part/default";
       item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.end1 elm.swallow.end2";
    }
    images {
-      image: "view_arrow_right_nor.png" COMP;
-      image: "view_arrow_down_nor.png" COMP;
+      image: "Group navigator/view_arrow_right_nor.png" COMP;
+      image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -1494,7 +1365,7 @@ group { name: "elm/genlist/tree/part/default";
             align: 0.0 0.5;
             min: 9 9;
             max: 9 9;
-            image.normal: "view_arrow_right_nor.png";
+            image.normal: "Group navigator/view_arrow_right_nor.png";
             rel1 {
                relative: 1.0 0.0;
                offset: 24 0;
@@ -1504,7 +1375,7 @@ group { name: "elm/genlist/tree/part/default";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "view_arrow_down_nor.png";
+            image.normal: "Group navigator/view_arrow_down_nor.png";
          }
       }
    }
@@ -2307,8 +2178,8 @@ group { name: "elm/genlist/tree/items_caption/default";
       item: "treesize" "20";
    }
    images {
-      image: "view_arrow_right_nor.png" COMP;
-      image: "view_arrow_down_nor.png" COMP;
+      image: "Group navigator/view_arrow_right_nor.png" COMP;
+      image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -2478,7 +2349,7 @@ group { name: "elm/genlist/tree/items_caption/default";
             align: 0.0 0.5;
             min: 9 9;
             max: 9 9;
-            image.normal: "view_arrow_right_nor.png";
+            image.normal: "Group navigator/view_arrow_right_nor.png";
             rel1 {
                relative: 1.0 0.0;
                offset: 20 0;
@@ -2488,7 +2359,7 @@ group { name: "elm/genlist/tree/items_caption/default";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "view_arrow_down_nor.png";
+            image.normal: "Group navigator/view_arrow_down_nor.png";
          }
       }
       part { name: "disclip";
@@ -2594,8 +2465,8 @@ group { name: "elm/genlist/tree/caption/default";
       item: "contents" "elm.swallow.icon";
    }
    images {
-      image: "view_arrow_right_nor.png" COMP;
-      image: "view_arrow_down_nor.png" COMP;
+      image: "Group navigator/view_arrow_right_nor.png" COMP;
+      image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -2774,7 +2645,7 @@ group { name: "elm/genlist/tree/caption/default";
             align: 0.0 0.5;
             min: 9 9;
             max: 9 9;
-            image.normal: "view_arrow_right_nor.png";
+            image.normal: "Group navigator/view_arrow_right_nor.png";
             fill.smooth: 0;
             rel1 {
                relative: 1.0 0.0;
@@ -2784,7 +2655,7 @@ group { name: "elm/genlist/tree/caption/default";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "view_arrow_down_nor.png";
+            image.normal: "Group navigator/view_arrow_down_nor.png";
          }
       }
       part { name: "disclip";
@@ -3105,91 +2976,6 @@ group { name: "elm/genlist/item/message/default";
          action: STATE_SET "selected" 0.00;
          target: "bg";
          after: "selected";
-      }
-   }
-}
-
-group { name: "elm/genlist/item/mode/default";
-   alias: "elm/genlist/item_odd/mode/default";
-   data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
-   data.item: "treesize" 20;
-   images.image: "treemenu-lvl2-item-bg.png" COMP;
-
-   parts {
-      part { name: "bg";
-         clip_to: "disclip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            image {
-               normal: "treemenu-lvl2-item-bg.png";
-               border: 0 0 1 1;
-            }
-            fill.smooth: 0;
-         }
-      }
-      part { name: "end.bottom.pad";
-         type: SPACER;
-         description {
-            SET_SIZE(5, 5);
-            align: 1.0 1.0;
-         }
-      }
-      part { name: "elm.swallow.modeicon";
-         clip_to: "disclip";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            rel1 {
-               relative: 0.0  1.0;
-               to_x: "end.bottom.pad";
-               to_y: "start.top.pad";
-            }
-            rel2 {
-               relative: 0.0  0.0;
-               to: "end.bottom.pad";
-            }
-         }
-      }
-      part { name: "elm.swallow.container";
-         type: SWALLOW;
-         clip_to: "disclip";
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel1 {
-               to_x: "start.top.pad";
-               to_y: "elm.swallow.modeicon";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "elm.swallow.modeicon";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "start.top.pad";
-         type:SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(5, 5);
-            rel2.offset: 0 0;
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
       }
    }
 }

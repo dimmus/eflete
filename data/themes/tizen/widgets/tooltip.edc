@@ -24,7 +24,7 @@ group { name: "elm/tooltip/base/default";
    data.item: "hide_timeout" "0.35";
    // if in a window... it's transparent!
    data.item: "transparent" "enabled";
-   images.image: "text_box_02.png" COMP;
+   images.image: "Property/text_box_02.png" COMP;
    parts {
       part { name: "clipper"; type: RECT;
          description { state: "default" 0.0;
@@ -44,7 +44,7 @@ group { name: "elm/tooltip/base/default";
             min: 200 30;
             max: 200 -1;
             image {
-               normal: "text_box_02.png";
+               normal: "Property/text_box_02.png";
                border: 10 10 10 10;
             }
          }

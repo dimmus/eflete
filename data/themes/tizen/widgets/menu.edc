@@ -272,7 +272,7 @@ group { name: "elm/menu/item/default";
 
 group { name: "elm/menu/item_with_submenu/default";
    images {
-      image: "context_menu-arrow.png" COMP;
+      image: "Custom/context_menu-arrow.png" COMP;
    }
    parts {
       part { name: "base";
@@ -386,7 +386,7 @@ group { name: "elm/menu/item_with_submenu/default";
                to_y: "base";
             }
             image {
-               normal: "context_menu-arrow.png";
+               normal: "Custom/context_menu-arrow.png";
                middle: DEFAULT;
             }
          }
@@ -779,7 +779,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
    alias: "elm/hover/base/menu/default";
    images {
       image: "bg_tip_popup.png" COMP;
-      image: "shadow.png" COMP;
+      image: "POP UP/popup_shadow.png" COMP;
    }
    parts {
       part { name: "shadow";
@@ -787,7 +787,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
           type: IMAGE;
           description { state: "default" 0.0;
              image {
-                normal: "shadow.png";
+                normal: "POP UP/popup_shadow.png";
                 border: 20 20 20 20;
              }
              rel1 {

@@ -1,5 +1,5 @@
 group { name: "elm/layout/workspace/bg";
-   images.image: "bg_grid.png" COMP;
+   images.image: "Custom/bg_grid.png" COMP;
    parts {
       part { name: "bg0";
          type: RECT;
@@ -16,7 +16,7 @@ group { name: "elm/layout/workspace/bg";
          type: IMAGE;
          description { state: "default" 0.0;
             image {
-               normal: "bg_grid.png";
+               normal: "Custom/bg_grid.png";
                middle: DEFAULT;
             }
             fill {
@@ -24,25 +24,12 @@ group { name: "elm/layout/workspace/bg";
             }
          }
          description { state: "black" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 0;
-            image {
-               normal: "bg_grid.png";
-               middle: DEFAULT;
-            }
-            fill {
-               type: TILE;
-            }
          }
          description { state: "white" 0.0;
-            color: 255 255 255 0;
-            image {
-               normal: "bg_grid.png";
-               middle: DEFAULT;
-            }
-            fill {
-               type: TILE;
-            }
-         }
+            inherit: "default" 0.0;
+        }
       }
    }
    programs {

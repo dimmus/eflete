@@ -141,9 +141,6 @@ group { name: "elm/layout/popup/hint";
 }
 
 group { name: "elm/layout/popup/hint_title";
-   images {
-      image: "hint-background.png" COMP;
-   }
    parts {
       part { name: "event";
          type: RECT;
@@ -157,8 +154,10 @@ group { name: "elm/layout/popup/hint_title";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 138 238 255;
-            rel1.offset: -7 -7;
-            rel2.offset: 7 7;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: -1 -1;
+            rel2.offset: 0 0;
          }
       }
       part { name: "bg";
@@ -1563,7 +1562,6 @@ group { name: "elm/layout/live_view/toolbar";
    }
 }
 group { name: "elm/layout/dialog/item";
-   images.image: "separator-vertical.png" COMP;
    parts {
       part { name: "items.swallow";
          type: SWALLOW;
@@ -1615,7 +1613,7 @@ group { name: "elm/layout/dialog/item";
          }
       }
       part { name: "separator.image";
-         type: IMAGE;
+         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
             min: 2 0;
@@ -1625,7 +1623,7 @@ group { name: "elm/layout/dialog/item";
                to_x: "preview.padding";
                offset: 0 0;
             }
-            image.normal: "separator-vertical.png";
+            color_class: "separator";
          }
       }
       part { name: "right.padding";
@@ -1650,21 +1648,21 @@ group { name: "elm/layout/dialog/item";
 group { name: "elm/layout/groupview/default";
    parts {
       images {
-         image: "bg_proxy.png" COMP;
-         image: "bg_swallow.png" COMP;
-         image: "bg_spacer.png" COMP;
-         image: "bg_group.png" COMP;
-         image: "bg_table.png" COMP;
-         image: "bg_box.png" COMP;
-         image: "bg_part_item.png" COMP;
-         image: "bg_object_area.png" COMP;
+         image: "Custom/bg_proxy.png" COMP;
+         image: "Custom/bg_swallow.png" COMP;
+         image: "Custom/bg_spacer.png" COMP;
+         image: "Custom/bg_group.png" COMP;
+         image: "Custom/bg_table.png" COMP;
+         image: "Custom/bg_box.png" COMP;
+         image: "Custom/bg_part_item.png" COMP;
+         image: "Custom/bg_object_area.png" COMP;
       }
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
             visible: 0;
             image {
-               normal: "bg_proxy.png";
+               normal: "Custom/bg_proxy.png";
             }
             fill.type: TILE;
          }
@@ -1677,42 +1675,31 @@ group { name: "elm/layout/groupview/default";
       visible: 1; \
       image.normal: #IMG; \
    }
-         BG(proxy,         bg_proxy.png)
-         BG(swallow,       bg_swallow.png)
-         BG(spacer,        bg_spacer.png)
-         BG(group,         bg_group.png)
-         BG(table,         bg_table.png)
-         BG(box,           bg_box.png)
-         BG(object_area,   bg_object_area.png)
+         BG(proxy,         Custom/bg_proxy.png)
+         BG(swallow,       Custom/bg_swallow.png)
+         BG(spacer,        Custom/bg_spacer.png)
+         BG(group,         Custom/bg_group.png)
+         BG(table,         Custom/bg_table.png)
+         BG(box,           Custom/bg_box.png)
+         BG(object_area,   Custom/bg_object_area.png)
 #undef BG
          description { state: "part_item" 0.0;
             inherit: "default" 0.0;
          }
          description { state: "part_item_hilight" 0.0;
             inherit: "default" 0.0;
-            image.normal: "bg_part_item.png";
+            image.normal: "Custom/bg_part_item.png";
          }
          description { state: "part_item_hilight" 1.0;
             inherit: "default" 0.0;
             visible: 1;
-            image.normal: "bg_part_item.png";
+            image.normal: "Custom/bg_part_item.png";
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "border";
-         type: IMAGE;
+     part { name: "border";
+         type: RECT;
          description { state: "default" 0.0;
             color:  0 0 0 0;
-            image {
-               normal: "border_1.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
          }
 #define BORDER(NAME, COLOR) \
    description { state: #NAME 0.0; \
@@ -1730,7 +1717,17 @@ group { name: "elm/layout/groupview/default";
          BORDER(object_area,  49 140 141 255)
 #undef BORDER
       }
-   }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            visible: 0;
+            rel1.to: "border";
+            rel2.to: "border";
+            rel1.offset: -1 -1;
+            rel2.offset: 0 0;
+        }
+      }
+    }
    programs {
 #define PROGRAM(SIGNAL) \
    program { name: #SIGNAL; \
@@ -1771,28 +1768,27 @@ group { name: "elm/layout/groupview/default";
 group { name: "elm/layout/groupview/object_area";
    parts {
       images {
-         image: "bg_object_area.png" COMP;
-         image: "border_1.png" COMP;
+         image: "Custom/bg_object_area.png" COMP;
+      }
+      part { name: "border";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "border_focused";
+         }
       }
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
             color_class: "select";
             image {
-               normal: "bg_object_area.png";
+               normal: "Custom/bg_object_area.png";
                middle: SOLID;
             }
             fill.type: TILE;
-         }
-      }
-      part { name: "border";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            color_class: "select";
-            image {
-               normal: "border_1.png";
-               border: 1 1 1 1;
-            }
+            rel1.to: "border";
+            rel2.to: "border";
+            rel1.offset: -1 -1;
+            rel2.offset: 0 0;
          }
       }
    }

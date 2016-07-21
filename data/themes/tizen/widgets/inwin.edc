@@ -1,5 +1,5 @@
 group { name: "elm/win/inwin/modal_window";
-   images.image: "shadow.png" COMP;
+   images.image: "POP UP/popup_shadow.png" COMP;
    parts {
       part { name: "block_events";
          type: RECT;
@@ -16,7 +16,7 @@ group { name: "elm/win/inwin/modal_window";
           type: IMAGE;
           description { state: "default" 0.0;
              image {
-                normal: "shadow.png";
+                normal: "POP UP/popup_shadow.png";
                 border: 20 20 20 20;
              }
              rel1 {
@@ -301,8 +301,8 @@ group { name: "elm/win/inwin/splash";
      image: "splash/Comp_1_00000_00042.png" COMP;
      image: "splash/Comp_1_00000_00043.png" COMP;
      image: "splash/Comp_1_00000_00044.png" COMP;
-     image: "cd_splash_img.png" COMP;
-     image: "shadow.png" COMP;
+     image: "Splash/cd_splash_img.png" COMP;
+     image: "POP UP/popup_shadow.png" COMP;
    }
    broadcast_signal: 0;
    parts {
@@ -310,7 +310,7 @@ group { name: "elm/win/inwin/splash";
          type: IMAGE;
          description { state: "default" 0.0;
             image {
-               normal: "shadow.png";
+               normal: "POP UP/popup_shadow.png";
                border: 20 20 20 20;
             }
             rel1 {
@@ -496,7 +496,7 @@ group { name: "elm/win/inwin/splash";
             align: 0.5 0.0;
             min: 0 270;
             max: -1 270;
-            image.normal: "cd_splash_img.png";
+            image.normal: "Splash/cd_splash_img.png";
             rel1.to: "bg";
             rel2.to: "bg";
          }

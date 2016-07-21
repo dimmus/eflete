@@ -117,7 +117,7 @@ group { name: "elm/fileselector/base/default";
          }
       }
       part { name: "separator";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             min: 0 2;
@@ -127,10 +127,7 @@ group { name: "elm/fileselector/base/default";
                offset: -1 -7;
                to_y: "elm.swallow.ok";
             }
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
+            color_class: "separator";
          }
       }
       part { name: "elm.swallow.filters";

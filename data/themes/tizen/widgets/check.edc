@@ -1,7 +1,7 @@
 group { name: "elm/check/base/toggle";
    images {
-      image: "toggle-off.png" COMP;
-      image: "toggle-on.png" COMP;
+      image: "General/toggle_off.png" COMP;
+      image: "General/toggle_on.png" COMP;
    }
 
    parts {
@@ -132,13 +132,13 @@ group { name: "elm/check/base/toggle";
             rel1.to: "base";
             rel2.to: "base";
             image {
-               normal: "toggle-off.png";
+               normal: "General/toggle_off.png";
                middle: DEFAULT;
             }
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
-            image.normal: "toggle-on.png";
+            image.normal: "General/toggle_on.png";
          }
       }
       part { name: "event.button";
@@ -212,12 +212,10 @@ group { name: "elm/check/base/toggle";
 
 group { name: "elm/check/base/default";
    images {
-      image: "check_nor.png" COMP;
-      image: "control-bg-disabled.png" COMP;
-      image: "check_nor_disable.png" COMP;
-      image: "check_sel.png" COMP;
-      image: "check_sel_disable.png" COMP;
-      image: "control-shadow.png" COMP;
+      image: "Tizen general/check_nor.png" COMP;
+      image: "Tizen general/check_nor_disable.png" COMP;
+      image: "Tizen general/check_sel.png" COMP;
+      image: "Tizen general/check_sel_disable.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -229,11 +227,11 @@ group { name: "elm/check/base/default";
             min: 14 14;
             max: 14 14;
             aspect: 1.0 1.0;
-            image.normal: "check_nor.png";
+            image.normal: "Tizen general/check_nor.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            image.normal: "check_nor_disable.png";
+            image.normal: "Tizen general/check_nor_disable.png";
          }
       }
       part { name: "check";
@@ -243,7 +241,7 @@ group { name: "elm/check/base/default";
          clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
-            image.normal: "check_sel.png";
+            image.normal: "Tizen general/check_sel.png";
             rel1.to: "bg";
             rel2.to: "bg";
          }
@@ -253,23 +251,7 @@ group { name: "elm/check/base/default";
          }
          description { state: "disable" 0.0;
             inherit: "visible" 0.00;
-            image.normal: "check_sel_disable.png";
-         }
-      }
-      part { name: "shadow";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            visible: 0;
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 8;
-            }
-            rel1.to: "bg";
-            rel2.to: "bg";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.00;
-            visible: 0;
+            image.normal: "Tizen general/check_sel_disable.png";
          }
       }
       part { name: "elm.swallow.content";
@@ -394,7 +376,6 @@ group { name: "elm/check/base/default";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         target: "shadow";
          target: "events";
          target: "clipper";
       }
@@ -403,7 +384,6 @@ group { name: "elm/check/base/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "shadow";
          target: "events";
          target: "clipper";
       }
@@ -417,12 +397,12 @@ group { name: "elm/check/base/default";
 
 group { name: "elm/check/base/eye";
    images {
-      image: "group_eye_off_nor.png" COMP;
-      image: "group_eye_off_mv.png" COMP;
-      image: "group_eye_off_sel.png" COMP;
-      image: "group_eye_on_nor.png" COMP;
-      image: "group_eye_on_mv.png" COMP;
-      image: "group_eye_on_sel.png" COMP;
+      image: "Group contents navigator/group_eye_off_nor.png" COMP;
+      image: "Group contents navigator/group_eye_off_mv.png" COMP;
+      image: "Group contents navigator/group_eye_off_sel.png" COMP;
+      image: "Group contents navigator/group_eye_on_nor.png" COMP;
+      image: "Group contents navigator/group_eye_on_mv.png" COMP;
+      image: "Group contents navigator/group_eye_on_sel.png" COMP;
    }
    parts {
       part { name: "dummy.state";
@@ -458,11 +438,11 @@ group { name: "elm/check/base/eye";
             min: 16 16;
             max: 16 16;
             aspect: 1.0 1.0;
-            image.normal: "group_eye_off_nor.png";
+            image.normal: "Group contents navigator/group_eye_off_nor.png";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "group_eye_off_mv.png";
+            image.normal: "Group contents navigator/group_eye_off_mv.png";
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.00;
@@ -472,7 +452,7 @@ group { name: "elm/check/base/eye";
          description { state: "selected" 0.0;
             inherit: "hovered" 0.00;
             image {
-               normal: "group_eye_off_sel.png";
+               normal: "Group contents navigator/group_eye_off_sel.png";
                border: 8 8 8 8;
             }
          }
@@ -485,18 +465,18 @@ group { name: "elm/check/base/eye";
          description { state: "default" 0.0;
             min: 16 16;
             max: 16 16;
-            image.normal: "group_eye_on_nor.png";
+            image.normal: "Group contents navigator/group_eye_on_nor.png";
             fill.smooth: 0;
             rel1.to: "bg";
             rel2.to: "bg";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "group_eye_on_mv.png";
+            image.normal: "Group contents navigator/group_eye_on_mv.png";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "group_eye_on_sel.png";
+            image.normal: "Group contents navigator/group_eye_on_sel.png";
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.00;
@@ -754,8 +734,8 @@ group { name: "elm/check/base/eye";
 
 group { name: "elm/check/base/locker";
    images {
-      image: "tool_s_lock_nor.png" COMP;
-      image: "tool_s_lock_over.png" COMP;
+      image: "WYSIWG/tool_s_lock_nor.png" COMP;
+      image: "WYSIWG/tool_s_lock_sel.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -775,13 +755,13 @@ group { name: "elm/check/base/locker";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            image.normal: "tool_s_lock_nor.png";
+            image.normal: "WYSIWG/tool_s_lock_nor.png";
             rel1.to: "bg";
             rel2.to: "bg";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.00;
-            image.normal: "tool_s_lock_over.png";
+            image.normal: "WYSIWG/tool_s_lock_sel.png";
          }
       }
       part { name: "clipper";
@@ -843,8 +823,8 @@ group { name: "elm/check/base/locker";
 
 group { name: "elm/check/base/chain";
    images {
-      image: "tool_s_ratio_nor.png" COMP;
-      image: "tool_s_ratio_sel.png" COMP;
+      image: "WYSIWG/tool_s_ratio_nor.png" COMP;
+      image: "WYSIWG/tool_s_ratio_sel.png" COMP;
    }
    parts {
       part { name: "check";
@@ -855,11 +835,11 @@ group { name: "elm/check/base/chain";
          description { state: "default" 0.0;
             min: 20 20;
             max: 20 20;
-            image.normal: "tool_s_ratio_nor.png";
+            image.normal: "WYSIWG/tool_s_ratio_nor.png";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.00;
-            image.normal: "tool_s_ratio_sel.png";
+            image.normal: "WYSIWG/tool_s_ratio_sel.png";
             fill.smooth: 0;
          }
       }
@@ -923,8 +903,8 @@ group { name: "elm/check/base/chain";
 
 group { name: "elm/check/base/demo";
    images {
-      image:"tool_s_run_nor.png" COMP;
-      image:"tool_s_run_sel.png" COMP;
+      image:"WYSIWG/tool_s_run_nor.png" COMP;
+      image:"WYSIWG/tool_s_run_sel.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -944,13 +924,13 @@ group { name: "elm/check/base/demo";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            image.normal: "tool_s_run_nor.png";
+            image.normal: "WYSIWG/tool_s_run_nor.png";
             rel1.to: "bg";
             rel2.to: "bg";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.00;
-            image.normal: "tool_s_run_sel.png";
+            image.normal: "WYSIWG/tool_s_run_sel.png";
          }
       }
       part { name: "clipper";

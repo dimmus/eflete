@@ -1,15 +1,7 @@
 images {
-   image: "inset_shadow.png" COMP;
-   image: "bevel_in.png" COMP;
-   image: "bg_demo.png" COMP;
-   image: "color-sight.png" COMP;
-   image: "color-shadow.png" COMP;
-   image: "color-background-3.png" COMP;
-   image: "color_focus.png" COMP;
-
-   image: "ring_shadow.png" COMP;
-   image: "ring_white_blue_glow.png" COMP;
-   image: "ring_white_middle.png" COMP;
+   image: "Custom/bg_demo.png" COMP;
+   image: "Custom/color-sight.png" COMP;
+   image: "Tizen general/color_pin_nor.png" COMP;
 }
 
 group { name: "elm/colorselector/palette/default";
@@ -261,7 +253,7 @@ group { name: "elm/colorselector/picker/default";
                to: "elm.picker";
             }
             image {
-               normal: "bg_demo.png";
+               normal: "Custom/bg_demo.png";
                middle: DEFAULT;
             }
             fill {
@@ -277,47 +269,7 @@ group { name: "elm/colorselector/picker/default";
             max: 51 52;
          }
       }
-      part { name: "shadow";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "elm.picker";
-            }
-            rel2 {
-               to: "elm.picker";
-            }
-            image {
-               normal: "inset_shadow.png";
-               border: 5 5 7 3;
-               middle: NONE;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "inset";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "elm.picker";
-            }
-            rel2 {
-               to: "elm.picker";
-            }
-            image {
-               normal: "bevel_in.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "cross";
+     part { name: "cross";
          type: IMAGE;
          description { state: "default" 0.0;
             min: 35 35;
@@ -331,7 +283,7 @@ group { name: "elm/colorselector/picker/default";
                to: "elm.picker";
             }
             image {
-               normal: "color-sight.png";
+               normal: "Custom/color-sight.png";
                middle: DEFAULT;
             }
          }
@@ -350,18 +302,10 @@ group { name: "elm/colorselector/item/default";
          }
       }
       part { name: "bg";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             min: 18 19;
             max: 18 19;
-            image {
-               normal: "color-background-3.png";
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-               type: TILE;
-            }
          }
       }
       part { name: "color_obj";
@@ -373,19 +317,7 @@ group { name: "elm/colorselector/item/default";
             rel1.offset: -1 -1;
          }
       }
-      part { name: "shadow";
-         type: IMAGE;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            image {
-               normal: "color-shadow.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "glow";
+     part { name: "glow";
          type: IMAGE;
          mouse_events: 0;
          repeat_events: 1;
@@ -395,24 +327,12 @@ group { name: "elm/colorselector/item/default";
             visible: 0;
             rel1.to: "bg";
             rel2.to: "bg";
-            image {
-               normal: "color_focus.png";
-               border: 7 7 7 7;
-               middle: NONE;
-            }
-            fill.smooth: 0;
+            rel1.offset: -1 -1;
+            rel2.offset: 0 0;
          }
          description { state: "focused" 0.0;
-            min: 22 23;
-            max: 22 23;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            image {
-               normal: "color_focus.png";
-               border: 7 7 7 7;
-               middle: NONE;
-            }
-            fill.smooth: 0;
+            inherit: "default" 0.0;
+            color_class: "over";
          }
       }
       part { name: "clipper";
@@ -490,7 +410,7 @@ group { name: "elm/button/base/colorselector/left/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-down.png";
+               normal: "General/zoom_btn_l_nor.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -499,7 +419,7 @@ group { name: "elm/button/base/colorselector/left/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-down-clicked.png";
+               normal: "General/zoom_btn_l_sel.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -508,7 +428,7 @@ group { name: "elm/button/base/colorselector/left/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-down.png";
+               normal: "General/zoom_btn_l_dim.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -595,7 +515,7 @@ group { name: "elm/button/base/colorselector/right/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-up.png";
+               normal: "General/zoom_btn_r_nor.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -604,7 +524,7 @@ group { name: "elm/button/base/colorselector/right/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-up-clicked.png";
+               normal: "General/zoom_btn_r_sel.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -613,7 +533,7 @@ group { name: "elm/button/base/colorselector/right/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-up.png";
+               normal: "General/zoom_btn_r_dim.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -759,19 +679,7 @@ group { name: "elm/colorselector/base/default";
             }
          }
       }
-      part { name: "arrow_under";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.arrow_icon";
-            rel2.to: "elm.arrow_icon";
-            image {
-               normal: "ring_shadow.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "elm.arrow_icon";
+     part { name: "elm.arrow_icon";
          type: SWALLOW;
          mouse_events: 0;
          scale: 1;
@@ -796,25 +704,12 @@ group { name: "elm/colorselector/base/default";
             rel1.to: "elm.arrow_icon";
             rel2.to: "elm.arrow_icon";
             image {
-               normal: "ring_white_blue_glow.png";
+               normal: "Tizen general/color_pin_nor.png";
                middle: DEFAULT;
             }
          }
       }
-      part { name: "bg";
-         type: IMAGE;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            rel1.to_y: "elm.l_button";
-            rel2.to_y: "elm.r_button";
-            image {
-               normal: "color-shadow.png";
-               border: 3 3 5 3;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "elm.r_button";
+     part { name: "elm.r_button";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -923,7 +818,7 @@ group { name: "elm/colorselector/bg_image/colorbar_3/default";
          type: IMAGE;
          description { state: "default" 0.0;
             image {
-               normal: "bg_demo.png";
+               normal: "Custom/bg_demo.png";
                middle: DEFAULT;
             }
             fill {

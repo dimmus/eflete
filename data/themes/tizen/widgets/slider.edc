@@ -78,7 +78,7 @@ group { name: "elm/slider/horizontal/indicator/default";
          }
       }
       part { name: "bevel";
-         type: IMAGE;
+         type: RECT;
          mouse_events: 0;
          clip_to: "clip";
          description { state: "default" 0.0;
@@ -91,32 +91,9 @@ group { name: "elm/slider/horizontal/indicator/default";
                offset: 11 11;
                to: "elm.indicator";
             }
-            image {
-               normal: "hint-background.png";
-               border: 15 15 15 15;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
          description { state: "visible" 0.0;
-            rel1 {
-               offset: -12 -12;
-               to: "elm.indicator";
-            }
-            rel2 {
-               offset: 11 11;
-               to: "elm.indicator";
-            }
-            image {
-               normal: "hint-background.png";
-               border: 15 15 15 15;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
+            inherit: "default" 0.0;
          }
       }
       part { name: "elm.indicator";

@@ -1,6 +1,6 @@
 group { name: "elm/layout/zoom/controls";
    images {
-      image: "tool_percent_nor.png" COMP;
+      image: "WYSIWG/tool_percent_nor.png" COMP;
    }
    parts {
       part { name: "swallow.slider";
@@ -29,7 +29,7 @@ group { name: "elm/layout/zoom/controls";
             align: 1.0 0.5;
             min: 9 9;
             max: 9 9;
-            image.normal: "tool_percent_nor.png";
+            image.normal: "WYSIWG/tool_percent_nor.png";
             fill.smooth: 0;
          }
       }

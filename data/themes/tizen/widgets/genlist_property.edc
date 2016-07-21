@@ -84,8 +84,8 @@ group { name: "elm/genlist/tree/caption/property";
       item: "selectraise" "on";
    }
    images {
-      image: "view_arrow_right_nor.png" COMP;
-      image: "view_arrow_down_nor.png" COMP;
+      image: "Group navigator/view_arrow_right_nor.png" COMP;
+      image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
    parts {
       part { name: "elm.swallow.pad";
@@ -124,7 +124,7 @@ group { name: "elm/genlist/tree/caption/property";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 9 9;
-            image.normal: "view_arrow_right_nor.png";
+            image.normal: "Group navigator/view_arrow_right_nor.png";
             rel1 {
                relative: 1.0 0.0;
                offset: 16 0;
@@ -133,7 +133,7 @@ group { name: "elm/genlist/tree/caption/property";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "view_arrow_down_nor.png";
+            image.normal: "Group navigator/view_arrow_down_nor.png";
             rel1.offset: 16 0;
          }
       }

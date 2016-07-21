@@ -133,9 +133,6 @@ group { name: "elm/layout/tabs/property";
 }
 
 group { name: "elm/layout/tab_home/default";
-   images {
-      image: "section-border.png" COMP;
-   }
    parts {
       part { name: "bg";
          type: RECT;
@@ -150,12 +147,9 @@ group { name: "elm/layout/tab_home/default";
          }
       }
       part { name: "border";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
-            image {
-               normal: "section-border.png";
-               border: 10 10 10 11;
-            }
+            color_class: "genlist_bg";
             rel1 {
                relative: 1.0 0.0;
                to: "elm.swallow.toolbar";
@@ -274,10 +268,6 @@ group { name: "elm/layout/tab_home/open_project";
 }
 
 group { name: "elm/layout/tab_home/new_project";
-   images {
-      image: "separator-vertical.png" COMP;
-      image: "separator-horizontal.png" COMP;
-   }
    parts {
       part { name: "elm.swallow.btn_create";
          type: SWALLOW;
@@ -293,15 +283,12 @@ group { name: "elm/layout/tab_home/new_project";
          }
       }
       part { name: "separator_hor";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             min: 0 2;
             max: -1 2;
             align: 0.5 1.0;
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
+            color_class: "separator";
             rel2 {
                to: "elm.swallow.btn_create";
                relative: 1.0 0.0;
@@ -314,10 +301,7 @@ group { name: "elm/layout/tab_home/new_project";
          description { state: "default" 0.0;
             min: 2 0;
             max: 2 -1;
-            image {
-               normal: "separator-vertical.png";
-               middle: DEFAULT;
-            }
+            color_class: "separator";
             rel2 {
                to: "separator_hor";
                relative: 1.0 0.0;
@@ -727,12 +711,8 @@ group { name: "elm/layout/tab_home/import_edj";
       }
    }
 }
-   
+
 group { name: "elm/layout/tab_home/import_edc";
-   images {
-      image: "separator-vertical.png" COMP;
-      image: "separator-horizontal.png" COMP;
-   }
    parts {
       part { name: "elm.swallow.btn_create";
          type: SWALLOW;
@@ -748,15 +728,12 @@ group { name: "elm/layout/tab_home/import_edc";
          }
       }
       part { name: "separator_hor";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             min: 0 2;
             max: -1 2;
             align: 0.5 1.0;
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
+            color_class: "separator";
             rel2 {
                to: "elm.swallow.btn_create";
                relative: 1.0 0.0;
@@ -765,14 +742,11 @@ group { name: "elm/layout/tab_home/import_edc";
          }
       }
       part { name: "separator";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             min: 2 0;
             max: 2 -1;
-            image {
-               normal: "separator-vertical.png";
-               middle: DEFAULT;
-            }
+            color_class: "separator";
             rel2 {
                to: "separator_hor";
                relative: 1.0 0.0;
