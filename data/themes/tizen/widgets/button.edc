@@ -1489,6 +1489,7 @@ group { name: "elm/button/base/plus";
       image: "create_icon_nor.png" COMP;
       image: "create_icon_over.png" COMP;
       image: "create_icon_sel.png" COMP;
+      image: "create_icon_dim.png" COMP;
    }
    parts {
       part { name: "icon";
@@ -1507,7 +1508,7 @@ group { name: "elm/button/base/plus";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            color_class: "bg_scroller_disabled";
+            image.normal: "create_icon_dim.png";
          }
       }
       part { name: "event";
@@ -1594,6 +1595,7 @@ group { name: "elm/button/base/minus";
       image: "delete_icon_nor.png" COMP;
       image: "delete_icon_over.png" COMP;
       image: "delete_icon_sel.png" COMP;
+      image: "delete_icon_dim.png" COMP;
    }
    parts {
       part { name: "icon";
@@ -1612,7 +1614,7 @@ group { name: "elm/button/base/minus";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            color_class: "bg_scroller_disabled";
+            image.normal: "delete_icon_dim.png";
          }
       }
       part { name: "event";
@@ -1699,6 +1701,7 @@ group { name: "elm/button/base/up";
       image: "up_icon_nor.png" COMP;
       image: "up_icon_over.png" COMP;
       image: "up_icon_sel.png" COMP;
+      image: "up_icon_dim.png" COMP;
    }
    parts {
       part { name: "icon";
@@ -1717,7 +1720,7 @@ group { name: "elm/button/base/up";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            color_class: "bg_scroller_disabled";
+            image.normal: "up_icon_dim.png";
          }
       }
       part { name: "event";
@@ -2013,6 +2016,7 @@ group { name: "elm/button/base/down";
    images {
       image: "down_icon_nor.png" COMP;
       image: "down_icon_over.png" COMP;
+      image: "down_icon_dim.png" COMP;
       image: "down_icon_sel.png" COMP;
    }
    parts {
@@ -2032,7 +2036,7 @@ group { name: "elm/button/base/down";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            color_class: "bg_scroller_disabled";
+            image.normal: "down_icon_dim.png";
          }
       }
       part { name: "event";
