@@ -52,7 +52,7 @@ typedef struct
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
    Ecore_Exe_Flags flags;
-} Edje_CC_Data;
+} Edje_Exe_Data;
 
 /* A handler for Project process. */
 typedef struct
@@ -245,6 +245,17 @@ _end_send(void *data __UNUSED__)
    result = worker.result;
    udata = worker.data;
    func(udata, result);
+}
+
+static void *
+_ecore_exe_edje_exe(void *data)
+{
+   Edje_Exe_Data *edje_exe_data = (Edje_Exe_Data *)data;
+
+   edje_exe_data->exe_cmd = ecore_exe_pipe_run(edje_exe_data->cmd, edje_exe_data->flags, NULL);
+   edje_exe_data->exe_pid = ecore_exe_pid_get(edje_exe_data->exe_cmd);
+
+   return NULL;
 }
 
 static Eina_Bool
@@ -542,17 +553,6 @@ _exe_data(void *data __UNUSED__,
 }
 
 static void *
-_ecore_exe_edje_cc(void *data)
-{
-   Edje_CC_Data *edje_cc_data = (Edje_CC_Data *)data;
-
-   edje_cc_data->exe_cmd = ecore_exe_pipe_run(edje_cc_data->cmd, edje_cc_data->flags, NULL);
-   edje_cc_data->exe_pid = ecore_exe_pid_get(edje_cc_data->exe_cmd);
-
-   return NULL;
-}
-
-static void *
 _project_import_edc(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
@@ -573,7 +573,7 @@ _project_import_edc(void *data,
      }
    eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
    worker.edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
-   Edje_CC_Data *edje_cc_data = mem_malloc(sizeof(Edje_CC_Data));
+   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
    edje_cc_data->cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
                                                worker.edc,
                                                worker.edj,
@@ -583,7 +583,7 @@ _project_import_edc(void *data,
       ECORE_EXE_PIPE_ERROR |
       ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    THREAD_TESTCANCEL;
-   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_cc, edje_cc_data);
+   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_cc_data);
    THREAD_TESTCANCEL;
    waitpid_res = waitpid(edje_cc_data->exe_pid, &edje_cc_res, 0);
    eina_stringshare_del(edje_cc_data->cmd);
