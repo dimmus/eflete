@@ -54,7 +54,6 @@
 EFLETE_TEST (config_panes_sizes_data_update_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    Eina_Bool result = EINA_FALSE;
 
    app_init();
