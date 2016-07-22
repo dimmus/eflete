@@ -247,6 +247,7 @@ group { name: "elm/button/base/default";
          action: STATE_SET "clicked" 0.00;
          target: "button_image";
          target: "over3";
+         target: "elm.text";
          after: "button_unpressed_anim";
       }
       program { name: "button_click2";
