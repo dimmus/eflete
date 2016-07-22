@@ -20,6 +20,24 @@
 #ifndef WIDGET_MACRO_H
 #define WIDGET_MACRO_H
 
+#ifdef HAVE_TIZEN
+static void
+__UNUSED__ _combobox_widget_expanded_cb(void *data __UNUSED__,
+                             Evas_Object *obj,
+                             void *ei __UNUSED__)
+{
+   edje_object_signal_emit(elm_layout_edje_get(obj), "expanded", "elm");
+}
+
+static void
+__UNUSED__ _combobox_widget_dismissed_cb(void *data __UNUSED__,
+                              Evas_Object *obj,
+                              void *ei __UNUSED__)
+{
+   edje_object_signal_emit(elm_layout_edje_get(obj), "dismissed", "elm");
+}
+#endif
+
 TODO("see large comment below")
 /**
  * ITEM_ADD use old kind of adding items and style that looks like
@@ -86,12 +104,22 @@ TODO("see large comment below")
    elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
    evas_object_show(ENTRY);
 
+#ifndef HAVE_TIZEN
 /* ap.win for now, because only this parent allow combobox to show it's genlist */
 #define COMBOBOX_ADD(PARENT, COMBOBOX) \
    COMBOBOX = elm_combobox_add(ap.win); \
    evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, 0); \
    evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, 0); \
    evas_object_show(COMBOBOX);
+#else
+#define COMBOBOX_ADD(PARENT, COMBOBOX) \
+   COMBOBOX = elm_combobox_add(ap.win); \
+   evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, 0); \
+   evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, 0); \
+   evas_object_show(COMBOBOX); \
+   evas_object_smart_callback_add(COMBOBOX, "expanded",  _combobox_widget_expanded_cb, NULL); \
+   evas_object_smart_callback_add(COMBOBOX, "dismissed", _combobox_widget_dismissed_cb, NULL);
+#endif
 
 #define SEGMENT_CONTROL_ADD(PARENT, SC) \
    SC = elm_segment_control_add(PARENT); \
