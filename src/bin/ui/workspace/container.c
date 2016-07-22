@@ -22,7 +22,7 @@
 
 #define MY_CLASS_NAME "Container"
 
-#define BASE_PADDING 100
+#define BASE_PADDING 10
 
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
