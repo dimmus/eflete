@@ -100,11 +100,10 @@ group { name: "elm/button/base/default";
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
-            color_class: "genlist_text_tree";
+            color_class: "button_text";
             text {
                font: FN;
                size: 10;
-               text_class: "button";
             }
             rel1 {
                relative: 1.0 0.0;
@@ -125,10 +124,20 @@ group { name: "elm/button/base/default";
          }
          description { state: "disabled_visible" 0.0;
             inherit: "visible" 0.00;
-            color: 128 128 128 255;
+            color_class: "button_text_disabled";
             text.ellipsis: -1;
          }
-      }
+         description { state: "focused" 0.0;
+            inherit: "visible" 0.00;
+            color_class: "button_text_focused";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "visible" 0.00;
+            color_class: "";
+            color: 255 255 255 255;
+            text.font: FN_B;
+         }
+        }
       part { name: "over2";
          type: RECT;
          repeat_events: 1;
@@ -207,6 +216,11 @@ group { name: "elm/button/base/default";
          action: STATE_SET "hovered" 0.00;
          target: "button_image";
          target: "border";
+         after: "_text_mouse_in";
+      }
+      program { name: "_text_mouse_in";
+         action: STATE_SET "visible" 0.00;
+         target: "elm.text";
       }
       program { name: "button_mouse_out";
          signal: "mouse,out";
@@ -357,23 +371,30 @@ group { name: "elm/button/base/default";
                               }
       }
       program { name: "focused";
-         signal: "elm,state,focused";
+         signal: "elm,action,focus";
          source: "elm";
          action: STATE_SET "focused" 0.00;
+         target: "elm.text";
          target: "button_image";
          target: "border";
       }
       program { name: "unfocused";
-         signal: "elm,state,unfocused";
+         signal: "elm,action,unfocus";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "button_image";
          target: "border";
+         after: "_text_normal";
+      }
+      program { name: "_text_normal";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.text";
       }
       program { name: "button_click_anim";
          action: STATE_SET "clicked" 0.00;
          target: "button_image";
          target: "border";
+         target: "elm.text";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.00;
@@ -385,6 +406,7 @@ group { name: "elm/button/base/default";
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.00;
          target: "button_image";
+         after: "_text_normal";
          target: "border";
       }
    }
