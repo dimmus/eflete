@@ -86,6 +86,10 @@ styles {
       base: "font="FN" font_size=14 color=#585858 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_ENABLED
    }
+   style { name: "entry_main_fail_text";
+      base: "font="FN" font_size=14 color=#ff0101 wrap=word text_class=entry ellipsis=-1.0";
+      TEXTBLOCK_TAGS_ENABLED
+   }
    style { name: "entry_main_spinner_text";
       base: "font="FN" align=middle font_size=14 color=#585858 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_ENABLED
