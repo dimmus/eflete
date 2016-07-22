@@ -3,6 +3,7 @@ group { name: "elm/gengrid/item/default/default";
       item: "texts" "elm.text";
       item: "contents" "elm.swallow.icon elm.swallow.end";
    }
+   images.image: "Custom/border_1.png" COMP;
    parts {
       part { name: "highlight";
          type: RECT;
@@ -30,9 +31,14 @@ group { name: "elm/gengrid/item/default/default";
          }
       }
       part { name: "icon_border";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
             color_class: "gengrid_item_border";
+            image {
+               normal: "Custom/border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
             rel1.offset: 12 12;
             rel2 {
                relative: 1.0 0.0;
@@ -160,11 +166,12 @@ group { name: "elm/gengrid/item/sound_editor/default";
       item: "texts" "elm.text elm.text.type";
       item: "contents" "elm.swallow.icon";
    }
+   images.image: "Custom/border_1.png" COMP;
    parts {
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "select_dark";
+            color_class: "gengrid_item_bg";
             rel1 {
                to: "icon_border";
             }
@@ -222,9 +229,14 @@ group { name: "elm/gengrid/item/sound_editor/default";
          }
       }
       part { name: "icon_border";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
             color_class: "gengrid_item_border";
+            image {
+               normal: "Custom/border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
             rel1.offset: 12 12;
             rel2 {
                relative: 1.0 0.0;
