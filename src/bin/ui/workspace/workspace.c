@@ -66,6 +66,7 @@ typedef struct _Ruler Ruler;
 struct _Scroll_Area {
    Evas_Object *layout;  /* layout for rulers and scroller */
    Evas_Object *scroller;
+   Evas_Object *helper;
    Evas_Object *bg;
    Bg_Preview bg_preview;
    Evas_Object *container;
@@ -857,17 +858,23 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
    /* create scroller for normal mode and set bg */
    area->scroller = elm_scroller_add(area->layout);
-   elm_scroller_policy_set(area->scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
+   //elm_scroller_policy_set(area->scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
    evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_MOVE, _rulers_pointer_move, area);
    elm_layout_content_set(area->layout, "elm.swallow.scroller", area->scroller);
    area->bg = elm_layout_add(area->layout);
    elm_layout_theme_set(area->bg, "layout", "workspace", "bg");
    elm_object_part_content_set(area->scroller, "elm.swallow.background", area->bg);
 
+   area->helper = elm_layout_add(area->layout);
+   elm_layout_theme_set(area->helper, "layout", "workspace", "helper");
+   evas_object_size_hint_weight_set(area->helper, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_content_set(area->scroller, area->helper);
+
    area->container = container_add(area->scroller);
+   evas_object_size_hint_weight_set(area->container, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    container_handler_size_set(area->container, 8, 8);
    evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
-   elm_object_content_set(area->scroller, area->container);
+   elm_object_content_set(area->helper, area->container);
    container_container_size_set(area->container, 350, 350);
 
    if (wd->mode == MODE_NORMAL)

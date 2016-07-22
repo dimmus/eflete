@@ -267,3 +267,13 @@ group { name: "elm/layout/workspace/toolbar";
       }
    }
 }
+
+group { name: "elm/layout/workspace/helper";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+   }
+}
