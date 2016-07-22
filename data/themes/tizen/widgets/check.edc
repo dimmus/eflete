@@ -213,10 +213,21 @@ group { name: "elm/check/base/default";
    images {
       image: "Tizen general/check_nor.png" COMP;
       image: "Tizen general/check_nor_disable.png" COMP;
+      image: "Tizen general/check_nor_focused.png" COMP;
+      image: "Tizen general/check_nor_hover.png" COMP;
       image: "Tizen general/check_sel.png" COMP;
       image: "Tizen general/check_sel_disable.png" COMP;
+      image: "Tizen general/check_sel_focused.png" COMP;
+      image: "Tizen general/check_sel_hover.png" COMP;
    }
    parts {
+      part { name: "dummy";
+         type: SPACER;
+         description { state: "default";
+         }
+         description { state: "visible";
+         }
+      }
       part { name: "bg";
          type: IMAGE;
          mouse_events: 0;
@@ -232,7 +243,15 @@ group { name: "elm/check/base/default";
             inherit: "default" 0.00;
             image.normal: "Tizen general/check_nor_disable.png";
          }
-      }
+         description { state: "hovered" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/check_nor_hover.png";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/check_nor_focused.png";
+         }
+       }
       part { name: "check";
          type: IMAGE;
          mouse_events: 0;
@@ -248,9 +267,17 @@ group { name: "elm/check/base/default";
             inherit: "default" 0.00;
             visible: 1;
          }
-         description { state: "disable" 0.0;
+         description { state: "disabled" 0.0;
             inherit: "visible" 0.00;
             image.normal: "Tizen general/check_sel_disable.png";
+         }
+         description { state: "hovered" 0.0;
+            inherit: "visible" 0.00;
+            image.normal: "Tizen general/check_sel_hover.png";
+         }
+         description { state: "focused" 0.0;
+            inherit: "visible" 0.00;
+            image.normal: "Tizen general/check_sel_focused.png";
          }
       }
       part { name: "elm.swallow.content";
@@ -332,19 +359,19 @@ group { name: "elm/check/base/default";
          source: "events";
          action: SIGNAL_EMIT "elm,action,check,toggle" "";
       }
-      program { name: "check_on_start";
+      program { name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
          action: STATE_SET "visible" 0.00;
-         transition: LINEAR 0.08;
          target: "check";
+         target: "dummy";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
          action: STATE_SET "default" 0.00;
-         transition: LINEAR 0.125;
          target: "check";
+         target: "dummy";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
@@ -370,26 +397,97 @@ group { name: "elm/check/base/default";
          action: STATE_SET "default" 0.00;
          target: "elm.swallow.content";
       }
-      program { name: "disable";
+     program { name: "mouse_in_bg";
+         signal: "mouse,in";
+         source: "events";
+         filter: "dummy" "default";
+         action: STATE_SET "hovered" 0.00;
+         target: "bg";
+      }
+      program { name: "mouse_in_check";
+         signal: "mouse,in";
+         source: "events";
+         filter: "dummy" "visible";
+         action: STATE_SET "hovered" 0.00;
+         target: "check";
+      }
+      program { name: "mouse_out_bg";
+         signal: "mouse,out";
+         source: "events";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "mouse_out_check";
+         signal: "mouse,out";
+         source: "events";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+      }
+      program { name: "disable_check";
          signal: "elm,state,disabled";
          source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "disabled" 0.00;
+         target: "check";
+         target: "events";
+         target: "clipper";
+      }
+      program { name: "enable_check";
+         signal: "elm,state,enabled";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+         target: "events";
+         target: "clipper";
+      }
+      program { name: "focused_bg";
+         signal: "elm,action,focus";
+         source: "elm";
+         filter: "dummy" "default";
+         action: STATE_SET "focused" 0.00;
+         target: "bg";
+      }
+      program { name: "unfocused_bg";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "focused_check";
+         signal: "elm,action,focus";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "focused" 0.00;
+         target: "check";
+      }
+      program { name: "unfocused_check";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+      }
+      program { name: "disable_bg";
+         signal: "elm,state,disabled";
+         source: "elm";
+         filter: "dummy" "default";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
          target: "events";
          target: "clipper";
       }
-      program { name: "enable";
+      program { name: "enable_bg";
          signal: "elm,state,enabled";
          source: "elm";
+         filter: "dummy" "default";
          action: STATE_SET "default" 0.00;
          target: "bg";
          target: "events";
          target: "clipper";
-      }
-      program { name: "check_on_end";
-         action: STATE_SET "visible" 1.00;
-         transition: LINEAR 0.04500;
-         target: "check";
       }
    }
 }
