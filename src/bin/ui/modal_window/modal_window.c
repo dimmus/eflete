@@ -113,7 +113,7 @@ _anim_hide_finish(void *data,
    evas_object_image_source_visible_set(img, true);
    evas_object_del(obj);
    shortcuts_object_check_pop(mw);
-   evas_object_del(mw);
+   evas_object_hide(mw);
 }
 
 #define ANIM_ACTION(NAME) \
@@ -187,26 +187,30 @@ mw_del(Evas_Object *mw)
 Evas_Object *
 mw_add(void)
 {
-   Evas_Object *mw, *btn;
+   Evas_Object *btn;
+   static Evas_Object *mw = NULL;
 
-   mw = elm_win_inwin_add(ap.win);
-   elm_object_style_set(mw, "modal_window");
-   evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
+   if (!mw)
+     {
+        mw = elm_win_inwin_add(ap.win);
+        elm_object_style_set(mw, "modal_window");
+        evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
 
-   evas_object_focus_set(mw, true);
+        evas_object_focus_set(mw, true);
 
-   BUTTON_ADD(mw, btn, NULL);
-   elm_object_style_set(btn, "close");
-   evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
-   elm_object_part_content_set(mw, "elm.swallow.close", btn);
+        BUTTON_ADD(mw, btn, NULL);
+        elm_object_style_set(btn, "close");
+        evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
+        elm_object_part_content_set(mw, "elm.swallow.close", btn);
 
-   BUTTON_ADD(mw, btn, _("Cancel"))
-   evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
-   elm_object_part_content_set(mw, "eflete.swallow.btn_close", btn);
+        BUTTON_ADD(mw, btn, _("Cancel"))
+           evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
+        elm_object_part_content_set(mw, "eflete.swallow.btn_close", btn);
 
-   BUTTON_ADD(mw, btn, _("Ok"))
-   evas_object_smart_callback_add(btn, "clicked", _mw_done, mw);
-   elm_object_part_content_set(mw, "eflete.swallow.btn_ok", btn);
+        BUTTON_ADD(mw, btn, _("Ok"))
+           evas_object_smart_callback_add(btn, "clicked", _mw_done, mw);
+        elm_object_part_content_set(mw, "eflete.swallow.btn_ok", btn);
+     }
 
    shortcuts_object_push(mw);
 
