@@ -116,8 +116,8 @@ group { name: "elm/check/base/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 78 26;
-            max: 78 26;
+            min: 76 24;
+            max: 76 24;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.text";
@@ -133,7 +133,6 @@ group { name: "elm/check/base/toggle";
             rel2.to: "base";
             image {
                normal: "General/toggle_off.png";
-               middle: DEFAULT;
             }
          }
          description { state: "on" 0.0;
