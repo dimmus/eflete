@@ -480,7 +480,7 @@ _project_import_edj(void *data,
    Eina_Tmpstr *tmp_dirname;
    Eina_Stringshare *edj_in, *edj_out;
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
-   Eina_List *l;
+   Eina_List *l, *groups;
    Eina_Stringshare *group;
    Evas_Object *obj = NULL;
    Eina_Strbuf *strbuf;
@@ -501,71 +501,80 @@ _project_import_edj(void *data,
         END_SEND(PM_PROJECT_LOCKED);
         return NULL;
      }
+   groups = edje_file_collection_list(worker.edj);
 
-   eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
-   edj_in = eina_stringshare_printf("%s/in.edj", tmp_dirname);
-   edj_out = eina_stringshare_printf("%s/out.edj", tmp_dirname);
-   ecore_file_cp(worker.edj, edj_in);
-
-   /* prepare the cmd string for run edje_pick */
-   strbuf = eina_strbuf_new();
-   eina_strbuf_append_printf(strbuf, "edje_pick -o %s -i %s", edj_out, edj_in);
-
-   /* load any group for coping */
-   if (worker.widgets)
+   if (eina_list_count(groups) != eina_list_count(worker.widgets))
      {
-        obj = edje_edit_object_add(evas_object_evas_get(ap.win));
-        if (!edje_object_file_set(obj, edj_in, eina_list_data_get(worker.widgets)))
+        eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
+        edj_in = eina_stringshare_printf("%s/in.edj", tmp_dirname);
+        edj_out = eina_stringshare_printf("%s/out.edj", tmp_dirname);
+        ecore_file_cp(worker.edj, edj_in);
+
+        /* prepare the cmd string for run edje_pick */
+        strbuf = eina_strbuf_new();
+        eina_strbuf_append_printf(strbuf, "edje_pick -o %s -i %s", edj_out, edj_in);
+
+        /* load any group for coping */
+        if (worker.widgets)
           {
-             CRIT("Can't load object");
-             abort();
-          }
-     }
-   EINA_LIST_FOREACH(worker.widgets, l, group)
-     {
-        if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
-          {
-             char **arr = eina_str_split(group, "***", 0);
-             THREAD_CONTEXT_SWITCH_BEGIN;
-             you_shall_not_pass_editor_signals(NULL);
-             if (!editor_group_copy(obj, arr[1], arr[2]))
+             obj = edje_edit_object_add(evas_object_evas_get(ap.win));
+             if (!edje_object_file_set(obj, edj_in, eina_list_data_get(worker.widgets)))
                {
-                  CRIT("Can not copy group %s, to %s", arr[1], arr[2]);
+                  CRIT("Can't load object");
                   abort();
                }
-             you_shall_not_pass_editor_signals(NULL);
-             THREAD_CONTEXT_SWITCH_END;
-             eina_strbuf_append_printf(strbuf, " -g %s", arr[2]);
-             free(arr[0]);
-             free(arr);
           }
-        else
-          eina_strbuf_append_printf(strbuf, " -g %s", group);
-     }
-   edje_pick_data = mem_malloc(sizeof(Edje_Exe_Data));
-   edje_pick_data->cmd = eina_stringshare_add(eina_strbuf_string_get(strbuf));
-   edje_pick_data->flags  = ECORE_EXE_PIPE_READ |
-                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                            ECORE_EXE_PIPE_ERROR |
-                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   THREAD_TESTCANCEL;
-   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_pick_data);
-   THREAD_TESTCANCEL;
-   waitpid_res = waitpid(edje_pick_data->exe_pid, &edje_cc_res, 0);
-   eina_stringshare_del(edje_pick_data->cmd);
-   free(edje_pick_data);
+        EINA_LIST_FOREACH(worker.widgets, l, group)
+          {
+             if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
+               {
+                  char **arr = eina_str_split(group, "***", 0);
+                  THREAD_CONTEXT_SWITCH_BEGIN;
+                  you_shall_not_pass_editor_signals(NULL);
+                  if (!editor_group_copy(obj, arr[1], arr[2]))
+                    {
+                       CRIT("Can not copy group %s, to %s", arr[1], arr[2]);
+                       abort();
+                    }
+                  you_shall_not_pass_editor_signals(NULL);
+                  THREAD_CONTEXT_SWITCH_END;
+                  eina_strbuf_append_printf(strbuf, " -g %s", arr[2]);
+                  free(arr[0]);
+                  free(arr);
+               }
+             else
+               eina_strbuf_append_printf(strbuf, " -g %s", group);
+          }
+        edje_pick_data = mem_malloc(sizeof(Edje_Exe_Data));
+        edje_pick_data->cmd = eina_stringshare_add(eina_strbuf_string_get(strbuf));
+        edje_pick_data->flags  = ECORE_EXE_PIPE_READ |
+           ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+           ECORE_EXE_PIPE_ERROR |
+           ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+        THREAD_TESTCANCEL;
+        ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_pick_data);
+        THREAD_TESTCANCEL;
+        waitpid_res = waitpid(edje_pick_data->exe_pid, &edje_cc_res, 0);
+        eina_stringshare_del(edje_pick_data->cmd);
+        free(edje_pick_data);
 
-   if ((waitpid_res == -1) ||
-       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
-     {
-        END_SEND(PM_PROJECT_ERROR);
-        return NULL;
-     }
+        if ((waitpid_res == -1) ||
+            (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
+          {
+             END_SEND(PM_PROJECT_ERROR);
+             return NULL;
+          }
+        ecore_file_unlink(eina_strbuf_string_get(strbuf));
+        eina_strbuf_free(strbuf);
 
-   eina_stringshare_del(worker.edj);
-   worker.edj = eina_stringshare_ref(edj_out);
-   eina_stringshare_del(edj_in);
-   eina_stringshare_del(edj_out);
+        eina_stringshare_del(worker.edj);
+        worker.edj = eina_stringshare_ref(edj_out);
+        eina_stringshare_del(edj_in);
+        eina_stringshare_del(edj_out);
+
+
+     }
+   edje_edit_string_list_free(groups);
 
    PROGRESS_SEND(_("Import processing"));
    _project_edj_file_copy();
@@ -574,10 +583,6 @@ _project_import_edj(void *data,
    _project_dummy_image_add(worker.project);
    _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
-
-   ecore_file_unlink(eina_strbuf_string_get(strbuf));
-   eina_strbuf_free(strbuf);
-   eina_strbuf_free(strbuf);
 
    PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
    if (send_end) END_SEND(PM_PROJECT_SUCCESS);
