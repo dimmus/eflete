@@ -64,9 +64,15 @@ _validation(void *data __UNUSED__,
             void *event_info __UNUSED__)
 {
   if (ELM_REG_NOERROR != resource_name_validator_status_get(mng.name_validator))
-    popup_buttons_disabled_set(BTN_OK, true);
-  else
-    popup_buttons_disabled_set(BTN_OK, false);
+     {
+       popup_buttons_disabled_set(BTN_OK, true);
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+     }
+   else
+     {
+       popup_buttons_disabled_set(BTN_OK, false);
+       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+     }
 }
 
 Evas_Object *

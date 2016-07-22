@@ -776,9 +776,15 @@ _on_part_name_changed(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->part_name_validator) != ELM_REG_NOERROR)
-     popup_buttons_disabled_set(BTN_OK, true);
+     {
+       popup_buttons_disabled_set(BTN_OK, true);
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+     }
    else
-     popup_buttons_disabled_set(BTN_OK, false);
+     {
+       popup_buttons_disabled_set(BTN_OK, false);
+       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+     }
 }
 
 static void
@@ -799,9 +805,15 @@ _state_validate(void *data,
 
    if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
        (edje_edit_state_exist(pl->group->edit_object, pl->part->name, name, val)))
-     popup_buttons_disabled_set(BTN_OK, true);
+     {
+       popup_buttons_disabled_set(BTN_OK, true);
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+     }
    else
-     popup_buttons_disabled_set(BTN_OK, false);
+     {
+       popup_buttons_disabled_set(BTN_OK, false);
+       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+     }
 }
 
 static void
@@ -839,7 +851,11 @@ _item_validate(void *data,
 
    name = elm_entry_entry_get(pl->popup.entry_name);
    if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
-     goto item_data_invalidated;
+     {
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+       goto item_data_invalidated;
+     }
+   edje_object_signal_emit(obj, "validation,default,pass", "elm");
 
    if ((!pl->popup.item_selected) || (pl->popup.item_selected && (pl->popup.item_selected->data == NULL)) ||
        !strcmp(_("Select the name of the source group."), elm_object_text_get(pl->popup.combobox)))
@@ -869,9 +885,15 @@ _program_validate(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->program_name_validator) != ELM_REG_NOERROR)
-     popup_buttons_disabled_set(BTN_OK, true);
+     {
+       popup_buttons_disabled_set(BTN_OK, true);
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+     }
    else
-     popup_buttons_disabled_set(BTN_OK, false);
+     {
+       popup_buttons_disabled_set(BTN_OK, false);
+       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+     }
 }
 
 static void
@@ -1167,9 +1189,15 @@ _on_group_data_name_changed(void *data,
    assert(pl != NULL);
 
    if (resource_name_validator_status_get(pl->group_data_name_validator) != ELM_REG_NOERROR)
-     popup_buttons_disabled_set(BTN_OK, true);
+     {
+       popup_buttons_disabled_set(BTN_OK, true);
+       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+     }
    else
-     popup_buttons_disabled_set(BTN_OK, false);
+     {
+       popup_buttons_disabled_set(BTN_OK, false);
+       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+     }
 }
 
 static void

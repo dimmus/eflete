@@ -1735,9 +1735,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          return !int_val1;
       case ATTRIBUTE_PART_NAME:
          property_entry_set(action->control, PART_ARGS);
+         edje_object_signal_emit(action->control, "validation,default,pass", "elm");
          return true;
       case ATTRIBUTE_GROUP_DATA_NAME:
          property_entry_set(action->control, GROUP_DATA_ARGS);
+         edje_object_signal_emit(action->control, "validation,default,pass", "elm");
          return true;
       case ATTRIBUTE_GROUP_DATA_VALUE:
          str_val1 = edje_edit_group_data_value_get(EDIT_OBJ, GROUP_DATA_ARGS);
@@ -3417,14 +3419,28 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_NAME:
          if (resource_name_validator_status_get(group_pd.part_name_validator) != ELM_REG_NOERROR)
-           break;
+           {
+              edje_object_signal_emit(action->control, "validation,default,fail", "elm");
+              break;
+           }
+         else
+           {
+              edje_object_signal_emit(action->control, "validation,default,pass", "elm");
+           }
          CRIT_ON_FAIL(editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_GROUP_DATA_NAME:
          if (resource_name_validator_status_get(group_pd.group_data_name_validator) != ELM_REG_NOERROR)
-           break;
+           {
+              edje_object_signal_emit(action->control, "validation,default,fail", "elm");
+              break;
+           }
+         else
+           {
+              edje_object_signal_emit(action->control, "validation,default,pass", "elm");
+           }
          CRIT_ON_FAIL(editor_group_data_name_set(EDIT_OBJ, CHANGE_NO_MERGE, GROUP_DATA_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;

@@ -319,11 +319,34 @@ _validation(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   if ((resource_name_validator_status_get(mng.tone_validator) != ELM_REG_NOERROR) ||
-       (elm_validator_regexp_status_get(mng.frq_validator) != ELM_REG_NOERROR))
-     popup_buttons_disabled_set(BTN_OK, true);
+   Eina_Bool validate = EINA_FALSE;
+   if (resource_name_validator_status_get(mng.tone_validator) != ELM_REG_NOERROR)
+     {
+        validate = EINA_FALSE;
+        edje_object_signal_emit(mng.tone_entry, "validation,default,fail", "elm");
+     }
    else
-     popup_buttons_disabled_set(BTN_OK, false);
+     {
+        validate = EINA_TRUE;
+        edje_object_signal_emit(mng.tone_entry, "validation,default,pass", "elm");
+     }
+
+   if (elm_validator_regexp_status_get(mng.frq_validator) != ELM_REG_NOERROR)
+     {
+        validate &= EINA_FALSE;
+        edje_object_signal_emit(mng.frq_entry, "validation,default,fail", "elm");
+     }
+   else
+     {
+        validate &= EINA_TRUE;
+        edje_object_signal_emit(mng.frq_entry, "validation,default,pass", "elm");
+     }
+
+
+   if (!validate)
+       popup_buttons_disabled_set(BTN_OK, true);
+   else
+       popup_buttons_disabled_set(BTN_OK, false);
 }
 
 Evas_Object *
