@@ -1063,11 +1063,21 @@ group { name: "elm/layout/property/color";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            min: 50 19;
-            max: 50 19;
+            rel1.to: "border";
+            rel1.offset: 1 1;
+            rel2.to: "border";
+            rel2.offset: -2 -2;
          }
       }
-      part { name: "bg";
+      part { name: "border";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "border";
+            min: 51 24;
+            max: 51 24;
+         }
+      }
+       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
             image.normal: "Custom/color-background-50x19.png";
@@ -1095,15 +1105,7 @@ group { name: "elm/layout/property/color";
             visible: 1;
          }
       }
-      part { name: "border";
-         type: RECT;
-         description { state: "default" 0.0;
-            color_class: "border";
-            rel1.to: "bg";
-            rel2.to: "bg";
-         }
-      }
-      part { name: "event";
+     part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
