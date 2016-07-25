@@ -697,61 +697,6 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
              eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", widget_name);
              first_not_found = false;
           }
-        /*
-        EINA_LIST_FOREACH(widget_list, wl, widget)
-          {
-             if (!strcasecmp(widget_name, widget->name))
-               {
-                  if (!style_list)
-                    {
-                       EINA_LIST_FOREACH(widget->list, wll, style)
-                         {
-                            EINA_LIST_FOREACH(style->list, wlll, item_style)
-                              {
-                                 item_style->check = true;
-                              }
-                            style->check = true;
-                         }
-                       widget->check = true;
-                    }
-                  else
-                    {
-                       EINA_LIST_FOREACH(style_list, wlll, style_name)
-                         {
-                            style_name = option_style_name_get(style_name, &cp_style_list);
-
-                            EINA_LIST_FOREACH(widget->list, wll, style)
-                              {
-                                 if (!strcasecmp(style_name, style->name))
-                                   {
-                                      style->copy = cp_style_list;
-                                      if (!(style->copy))
-                                        {
-                                           EINA_LIST_FOREACH(style->list, wllll, item_style)
-                                             {
-                                                item_style->check = true;
-                                             }
-                                           style->check = true;
-                                        }
-                                      break;
-                                   }
-                              }
-                            if (!style)
-                              {
-                                 eina_strbuf_append_printf(buf, first_not_found ? "%s(%s)" : ", %s(%s)", widget_name, style_name);
-                                 first_not_found = false;
-                              }
-                         }
-                    }
-                  break;
-               }
-          }
-        if (!widget)
-          {
-             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", widget_name);
-             first_not_found = false;
-          }
-          */
      }
    elm_genlist_realized_items_update(tab_edj.genlist);
    if (eina_strbuf_length_get(buf))
