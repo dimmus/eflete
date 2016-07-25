@@ -236,13 +236,31 @@ group { name: "elm/spinner/base/vertical";
       program { name: "down_press";
          signal: "mouse,down,1";
          source: "button.down";
-         action: STATE_SET "default" 0.00;
+         filter: "dummy_enable" "default";
+         action: STATE_SET "clicked" 0.00;
          target: "button.down";
          after: "decrement_start";
       }
       program { name: "down_unpress";
          signal: "mouse,up,1";
          source: "button.down";
+         filter: "dummy_enable" "default";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         after: "decrement_stop";
+      }
+      program { name: "down_press_active";
+         signal: "mouse,down,1";
+         source: "button.down";
+         filter: "dummy_enable" "active";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         after: "decrement_start";
+      }
+      program { name: "down_unpress_active";
+         signal: "mouse,up,1";
+         source: "button.down";
+         filter: "dummy_enable" "active";
          action: STATE_SET "clicked" 0.00;
          target: "button.down";
          after: "decrement_stop";
@@ -250,18 +268,36 @@ group { name: "elm/spinner/base/vertical";
       program { name: "up_press";
          signal: "mouse,down,1";
          source: "button.up";
-         action: STATE_SET "default" 0.00;
+         filter: "dummy_enable" "default";
+         action: STATE_SET "clicked" 0.00;
          target: "button.up";
          after: "increment_start";
       }
       program { name: "up_unpress";
          signal: "mouse,up,1";
          source: "button.up";
+         filter: "dummy_enable" "default";
+         action: STATE_SET "" 0.00;
+         target: "button.up";
+         after: "increment_stop";
+      }
+       program { name: "up_press_active";
+         signal: "mouse,down,1";
+         source: "button.up";
+         filter: "dummy_enable" "active";
+         action: STATE_SET "default" 0.00;
+         target: "button.up";
+         after: "increment_start";
+      }
+      program { name: "up_unpress_active";
+         signal: "mouse,up,1";
+         source: "button.up";
+         filter: "dummy_enable" "active";
          action: STATE_SET "clicked" 0.00;
          target: "button.up";
          after: "increment_stop";
       }
-      program { name: "toggle_entry";
+     program { name: "toggle_entry";
          signal: "mouse,clicked,1";
          source: "elm.dragable.slider";
          action: SIGNAL_EMIT "elm,action,entry,toggle" "elm";
@@ -589,13 +625,31 @@ group { name: "elm/spinner/base/default";
       program { name: "down_press";
          signal: "mouse,down,1";
          source: "button.down";
-         action: STATE_SET "default" 0.00;
+         filter: "dummy_enable" "default";
+         action: STATE_SET "clicked" 0.00;
          target: "button.down";
          after: "decrement_start";
       }
       program { name: "down_unpress";
          signal: "mouse,up,1";
          source: "button.down";
+         filter: "dummy_enable" "default";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         after: "decrement_stop";
+      }
+      program { name: "down_press_active";
+         signal: "mouse,down,1";
+         source: "button.down";
+         filter: "dummy_enable" "active";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         after: "decrement_start";
+      }
+      program { name: "down_unpress_active";
+         signal: "mouse,up,1";
+         source: "button.down";
+         filter: "dummy_enable" "active";
          action: STATE_SET "clicked" 0.00;
          target: "button.down";
          after: "decrement_stop";
@@ -603,13 +657,31 @@ group { name: "elm/spinner/base/default";
       program { name: "up_press";
          signal: "mouse,down,1";
          source: "button.up";
-         action: STATE_SET "default" 0.00;
+         filter: "dummy_enable" "default";
+         action: STATE_SET "clicked" 0.00;
          target: "button.up";
          after: "increment_start";
       }
       program { name: "up_unpress";
          signal: "mouse,up,1";
          source: "button.up";
+         filter: "dummy_enable" "default";
+         action: STATE_SET "" 0.00;
+         target: "button.up";
+         after: "increment_stop";
+      }
+       program { name: "up_press_active";
+         signal: "mouse,down,1";
+         source: "button.up";
+         filter: "dummy_enable" "active";
+         action: STATE_SET "default" 0.00;
+         target: "button.up";
+         after: "increment_start";
+      }
+      program { name: "up_unpress_active";
+         signal: "mouse,up,1";
+         source: "button.up";
+         filter: "dummy_enable" "active";
          action: STATE_SET "clicked" 0.00;
          target: "button.up";
          after: "increment_stop";
