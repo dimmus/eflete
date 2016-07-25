@@ -153,6 +153,22 @@ group { name: "elm/button/base/combobox_vertical/default";
          target: "border";
          target: "bg";
       }
+      program { name: "unfocus";
+         source: "elm";
+         signal: "elm,action,unfocus";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.0;
+         target: "border";
+         target: "bg";
+      }
+      program { name: "focus";
+         source: "elm";
+         signal: "elm,action,focus";
+         filter: "dummy" "default";
+         action: STATE_SET "focus" 0.0;
+         target: "border";
+         target: "bg";
+      }
       program { name: "expanded";
          source: "elm";
          signal: "expanded";
