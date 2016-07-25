@@ -641,6 +641,8 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                        widget_list = eina_list_append(widget_list, tmp);
                     }
                }
+             eina_stringshare_del(style_name);
+             EINA_LIST_STRINGSHARE_FREE(cp_style_list);
           }
      }
 }
@@ -649,7 +651,8 @@ void
 _tab_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
 {
    Eina_List *style_list = NULL;
-   const char *str, *widget_name;
+   const char *str;
+   Eina_Stringshare *widget_name;
    Eina_Strbuf *buf = eina_strbuf_new();
    Eina_Bool first_not_found = true;
 
@@ -697,6 +700,8 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
              eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", widget_name);
              first_not_found = false;
           }
+        eina_stringshare_del(widget_name);
+        EINA_LIST_STRINGSHARE_FREE(style_list);
      }
    elm_genlist_realized_items_update(tab_edj.genlist);
    if (eina_strbuf_length_get(buf))

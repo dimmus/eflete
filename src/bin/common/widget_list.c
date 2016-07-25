@@ -133,7 +133,7 @@ style_name_get(const Eina_Stringshare *group_name)
    return strdup(style);
 }
 
-const char *
+Eina_Stringshare *
 option_widget_name_get(const char *str, Eina_List **style_list)
 {
    int len = strlen(str);
@@ -166,7 +166,7 @@ option_widget_name_get(const char *str, Eina_List **style_list)
              if (!copying && str[i] == ',')
                {
                   style[i - first] = '\0';
-                  list = eina_list_append(list, strdup(style));
+                  list = eina_list_append(list, eina_stringshare_add(style));
                   first = i + 1;
                   continue;
                }
@@ -179,15 +179,15 @@ option_widget_name_get(const char *str, Eina_List **style_list)
    else
      {
         style[i - first] = '\0';
-        list = eina_list_append(list, strdup(style));
+        list = eina_list_append(list, eina_stringshare_add(style));
      }
 
    *style_list = list;
 
-   return strdup(widget);
+   return eina_stringshare_add(widget);
 }
 
-const char *
+Eina_Stringshare *
 option_style_name_get(const char *str, Eina_List **cp_style_list)
 {
    int len = strlen(str);
@@ -217,7 +217,7 @@ option_style_name_get(const char *str, Eina_List **cp_style_list)
              if (str[i] == ',')
                {
                   cp_style[i - first] = '\0';
-                  list = eina_list_append(list, strdup(cp_style));
+                  list = eina_list_append(list, eina_stringshare_add(cp_style));
                   first = i + 1;
                   continue;
                }
@@ -230,12 +230,12 @@ option_style_name_get(const char *str, Eina_List **cp_style_list)
    else
      {
         cp_style[i - first] = '\0';
-        list = eina_list_append(list, strdup(cp_style));
+        list = eina_list_append(list, eina_stringshare_add(cp_style));
      }
 
    *cp_style_list = list;
 
-   return strdup(style);
+   return eina_stringshare_add(style);
 }
 
 Eina_List *
