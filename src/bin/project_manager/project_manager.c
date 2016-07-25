@@ -503,7 +503,7 @@ _project_import_edj(void *data,
      }
    groups = edje_file_collection_list(worker.edj);
 
-   if (eina_list_count(groups) != eina_list_count(worker.widgets))
+   if (worker.widgets && (eina_list_count(groups) != eina_list_count(worker.widgets)))
      {
         eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
         edj_in = eina_stringshare_printf("%s/in.edj", tmp_dirname);
