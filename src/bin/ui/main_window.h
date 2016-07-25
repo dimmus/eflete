@@ -85,6 +85,7 @@ enum Menu_Item
 
    MENU_HELP,
       MENU_HELP_ABOUT,
+      MENU_HELP_SHORTCUTS,
 
    /* Needed for menu array init */
    MENU_ITEMS_COUNT
@@ -547,5 +548,15 @@ sound_manager_add(void);
  */
 Evas_Object *
 about_window_add(void);
+
+/**
+ * Show popup with shortcuts info
+ *
+ * @return window
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+shortcuts_window_add(void);
 
 #endif /* UI_MAIN_WINDOW_H */
