@@ -631,7 +631,12 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
              EINA_LIST_FOREACH(styles, l, name)
                {
                   style_name = option_style_name_get(name, &cp_style_list);
-                  if (!strcmp(style, style_name))
+                  if (!strcmp(style_name, "default"))
+                    {
+                       pos = strstr(item->name, "base/default");
+                       if (pos) widget_list = eina_list_append(widget_list, item->name);
+                    }
+                  else if (!strcmp(style, style_name))
                     {
                        item->check = selected;
                        widget_list = eina_list_append(widget_list, item->name);
