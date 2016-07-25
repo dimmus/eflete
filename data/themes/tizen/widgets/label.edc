@@ -117,3 +117,31 @@ group { name: "elm/label/base/slide_about";
       }
    }
 }
+
+group { name: "elm/label/base/help";
+   data {
+      item: "min_font_size" "6";
+      item: "max_font_size" "60";
+      item: "default_font_size" "11";
+   }
+   parts {
+      part { name: "label.text.clip";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "label.text.clip";
+         description { state: "default" 0.0;
+            text {
+               style: "eflete_textblock_style";
+               min: 1 1;
+            }
+         }
+      }
+   }
+}
