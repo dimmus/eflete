@@ -626,23 +626,32 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
         pos = strrchr(item->name, '/');
         if (pos) style = pos + 1;
         else style = item->name;
-        EINA_LIST_FOREACH(styles, l, name)
+        if (styles)
           {
-             style_name = option_style_name_get(name, &cp_style_list);
-             if (!strcmp(style, style_name))
+             EINA_LIST_FOREACH(styles, l, name)
                {
-                  item->check = selected;
-                  widget_list = eina_list_append(widget_list, item->name);
-                  EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                  style_name = option_style_name_get(name, &cp_style_list);
+                  if (!strcmp(style, style_name))
                     {
-                       strncpy(cp_style, item->name, pos - item->name);
-                       cp_style[pos - item->name] = '\0';
-                       tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
-                       widget_list = eina_list_append(widget_list, tmp);
+                       item->check = selected;
+                       widget_list = eina_list_append(widget_list, item->name);
+                       EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                         {
+                            strncpy(cp_style, item->name, pos - item->name);
+                            cp_style[pos - item->name] = '\0';
+                            tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
+                            widget_list = eina_list_append(widget_list, tmp);
+                         }
                     }
+                  eina_stringshare_del(style_name);
+                  EINA_LIST_STRINGSHARE_FREE(cp_style_list);
                }
-             eina_stringshare_del(style_name);
-             EINA_LIST_STRINGSHARE_FREE(cp_style_list);
+          }
+        else
+          {
+             /* if list of style empty need to select all available widget styles */
+             item->check = selected;
+             widget_list = eina_list_append(widget_list, item->name);
           }
      }
 }
