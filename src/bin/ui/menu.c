@@ -330,7 +330,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_COLORCLASS, "color", _("Color class manager"), "F10")
 
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
-      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_SHORTCUTS, NULL, _("Shortcuts"), NULL)
+      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_SHORTCUTS, NULL, _("Shortcuts"), "F1")
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)
 
    elm_menu_item_separator_add(window_menu, menu->items[MENU_FILE_IMPORT_EDC]);

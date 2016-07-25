@@ -46,6 +46,14 @@ _close_request(void *data __UNUSED__,
    ui_main_window_del();
 }
 
+static void
+_help(void *data __UNUSED__,
+      Evas_Object *obj __UNUSED__,
+      void *event_info __UNUSED__)
+{
+   shortcuts_window_add();
+}
+
 Eina_Bool
 ui_main_window_del(void)
 {
@@ -93,6 +101,7 @@ ui_main_window_add(void)
 
    evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _close_request, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_HELP, _help, NULL);
 
 #if 0 // turn off the eflete main cursor, while not used elementary combobox, and not fixed bug with double cursors
    if (!cursor_main_set(ap.win, CURSOR_ARROW))
@@ -216,9 +225,10 @@ _shortcuts_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
    Evas_Object *label = elm_label_add(scroller);
    elm_object_text_set(label, _(
                        "Global:<br>"
-                       "<b>F1</b> - normal mode<br>"
-                       "<b>F2</b> - code mode<br>"
-                       "<b>F3</b> - demo mode<br>"
+                       "<b>F1</b> - show shortcuts list (this dialog)<br>"
+                       "<b>F2</b> - normal mode<br>"
+                       "<b>F3</b> - code mode<br>"
+                       "<b>F4</b> - demo mode<br>"
                        "<b>F7</b> - open image manager<br>"
                        "<b>F8</b> - open sound manager<br>"
                        "<b>F9</b> - open style manager<br>"
@@ -273,7 +283,7 @@ shortcuts_window_add(void)
 
    evas_object_size_hint_min_set(content, 0, 300);
 
-   popup_want_action(_("Shortcuts"), NULL, _shortcuts_window_content_get, BTN_OK, NULL, content);
+   popup_want_action(_("Help: shortcuts"), NULL, _shortcuts_window_content_get, BTN_OK, NULL, content);
    evas_object_del(content);
    return NULL;
 }

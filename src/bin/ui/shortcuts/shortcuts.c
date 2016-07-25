@@ -86,6 +86,7 @@ _keycode_convert(unsigned int keycode)
       KEY(122, 67) /* F1 */
       KEY(120, 68) /* F2 */
       KEY(99, 69) /* F3 */
+      KEY(118, 70) /* F4 */
       KEY(98, 73) /* F7 */
       KEY(100, 74) /* F8 */
       KEY(101, 75) /* F9 */
@@ -201,6 +202,7 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(OBJECT_AREA);
         SHORTCUT(CANCEL);
         SHORTCUT(DONE);
+        SHORTCUT(HELP);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -465,12 +467,14 @@ _default_shortcuts_add()
    _add_shortcut(SHORTCUT_TYPE_TAB_CLOSE, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 25/*w*/);
 
-   _add_shortcut(SHORTCUT_TYPE_MODE_NORMAL, SHORTCUT_TYPE_NONE,
+   _add_shortcut(SHORTCUT_TYPE_HELP, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 67/*F1*/);
-   _add_shortcut(SHORTCUT_TYPE_MODE_CODE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(SHORTCUT_TYPE_MODE_NORMAL, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 68/*F2*/);
-   _add_shortcut(SHORTCUT_TYPE_MODE_DEMO, SHORTCUT_TYPE_NONE,
+   _add_shortcut(SHORTCUT_TYPE_MODE_CODE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 69/*F3*/);
+   _add_shortcut(SHORTCUT_TYPE_MODE_DEMO, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 70/*F4*/);
 
    _add_shortcut(SHORTCUT_TYPE_TAB_IMAGE_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 73/*F7*/);
