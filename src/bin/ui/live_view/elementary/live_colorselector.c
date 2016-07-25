@@ -45,6 +45,20 @@ widget_colorselector_create(Evas_Object *parent, const Group *group)
         free(style_parsed);
      }
 
+#if HAVE_TIZEN
+   elm_colorselector_palette_clear(object);
+   elm_colorselector_palette_name_set(object, "eflete_tizen");
+   elm_colorselector_palette_color_add(object, 229, 3, 3, 255);
+   elm_colorselector_palette_color_add(object, 20, 218, 20, 255);
+   elm_colorselector_palette_color_add(object, 25, 46, 201, 255);
+   elm_colorselector_palette_color_add(object, 236, 196, 9, 255);
+   elm_colorselector_palette_color_add(object, 237, 10, 234, 255);
+   elm_colorselector_palette_color_add(object, 26, 234, 217, 255);
+   elm_colorselector_palette_color_add(object, 0, 0, 0, 255);
+   elm_colorselector_palette_color_add(object, 255, 255, 255, 255);
+   elm_colorselector_palette_color_add(object, 200, 200, 200, 255);
+#endif
+
    evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
    evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
    evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);

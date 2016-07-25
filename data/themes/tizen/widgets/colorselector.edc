@@ -1,37 +1,619 @@
-images {
-   image: "Custom/bg_demo.png" COMP;
-   image: "Custom/color-sight.png" COMP;
-   image: "Tizen general/color_pin_nor.png" COMP;
+
+group { name: "elm/layout/popup/colorselector";
+   parts {
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.offset: -9999 -9999;
+            rel2.offset: 9999 9999;
+         }
+      }
+      part { name: "border";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 404 263;
+            max: 404 263;
+            color_class: "popup_helper_border";
+            rel1.offset: -1 -1;
+            rel2.offset: 0 0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "border";
+            rel2.to: "border";
+         }
+      }
+   }
+   programs {
+      program { name: "dismiss";
+         signal: "mouse,up,*";
+         source: "event";
+         action: SIGNAL_EMIT "hint,dismiss" "eflete";
+      }
+   }
 }
 
-group { name: "elm/colorselector/palette/default";
-   data {
-      item: "vertical_pad" "0";
-      item: "horizontal_pad" "0";
+group { name: "elm/button/base/colorselector/default";
+   parts {
+      part { name: "elm.text";
+         type: TEXT;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            text {
+               font: FN;
+               size: 1;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/button/base/colorselector/right/default";
+   images {
+      image: "Tizen general/colorbar_btn_r_nor.png" COMP;
+      image: "Tizen general/colorbar_btn_r_mv.png" COMP;
+      image: "Tizen general/colorbar_btn_r_sel.png" COMP;
    }
    parts {
+      part { name: "border_bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 24 24;
+            max: 24 24;
+            color: 117 117 117 255;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            color: 0 137 236 255;
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            color: 51 51 51 255;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 1 1;
+               to: "border_bg";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "border_bg";
+            }
+         }
+      }
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 22 22;
+            max: 22 22;
+            image.normal: "Tizen general/colorbar_btn_r_nor.png";
+            fill.smooth: 0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/colorbar_btn_r_sel.png";
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/colorbar_btn_r_mv.png";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { name: "button_click";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "";
+         after: "button_unclick_anim";
+      }
+      program { name: "button_pressed_anim";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         target: "border_bg";
+         after: "button_unpressed_anim";
+      }
+      program { name: "button_unclick2";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "event";
+         action: STATE_SET "hilighted" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "event";
+         filter: "icon" "hilighted";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+   }
+}
+
+group { name: "elm/button/base/colorselector/left/default";
+   images {
+      image: "Tizen general/colorbar_btn_l_nor.png" COMP;
+      image: "Tizen general/colorbar_btn_l_mv.png" COMP;
+      image: "Tizen general/colorbar_btn_l_sel.png" COMP;
+   }
+   parts {
+      part { name: "border_bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 24 24;
+            max: 24 24;
+            color: 117 117 117 255;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            color: 0 137 236 255;
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            color: 51 51 51 255;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 1 1;
+               to: "border_bg";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "border_bg";
+            }
+         }
+      }
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 22 22;
+            max: 22 22;
+            image.normal: "Tizen general/colorbar_btn_l_nor.png";
+            fill.smooth: 0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/colorbar_btn_l_sel.png";
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/colorbar_btn_l_mv.png";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "button_click";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "";
+         after: "button_unclick_anim";
+      }
+      program { name: "button_pressed_anim";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         target: "border_bg";
+         after: "button_unpressed_anim";
+      }
+      program { name: "button_unclick2";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "event";
+         action: STATE_SET "hilighted" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "event";
+         filter: "icon" "hilighted";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+         target: "border_bg";
+      }
+   }
+}
+
+group { name: "elm/colorselector/base/default";
+   images {
+      image: "Tizen general/color_pin_mv.png" COMP;
+      image: "Tizen general/color_pin_sel.png" COMP;
+      image: "Tizen general/color_pin_nor.png" COMP;
+   }
+   parts {
+      part { name: "elm.bar_bg";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 32 24;
+            max: -1 24;
+            rel1.to: "elm.arrow_bg";
+            rel2.to: "elm.arrow_bg";
+         }
+      }
+      part { name: "elm.bar";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.bar_bg";
+            rel2.to: "elm.bar_bg";
+         }
+      }
+      part { name: "elm.arrow_bg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 5 0;
+               to: "elm.l_button";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to: "elm.r_button";
+            }
+         }
+      }
+      part { name: "elm.arrow";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "elm.arrow_bg";
+         }
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            min: 1 1;
+            rel1.to_x: "elm.arrow_bg";
+            rel2.to_x: "elm.arrow_bg";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         dragable {
+            events: "elm.arrow";
+         }
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "elm.arrow_icon";
+            rel2 {
+               to_x: "elm.arrow_icon";
+               to_y: "elm.arrow_bg";
+            }
+         }
+      }
+      part { name: "cursor";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 1 1;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 0 -3;
+               to: "elm.arrow_icon";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               offset: 0 -1;
+               to_x: "elm.arrow_icon";
+               to_y: "elm.bar_bg";
+            }
+         }
+      }
+      part { name: "elm.arrow_icon";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 13 13;
+            max: 13 13;
+            rel1.to_x: "elm.arrow";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "elm.arrow";
+               to_y: "elm.bar_bg";
+            }
+         }
+      }
+      part { name: "arrow_over";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 13 13;
+            max: 13 13;
+            image.normal: "Tizen general/color_pin_nor.png";
+            rel1.to: "elm.arrow_icon";
+            rel2.to: "elm.arrow_icon";
+         }
+         description { state: "hovered" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/color_pin_mv.png";
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "Tizen general/color_pin_sel.png";
+         }
+      }
+      part { name: "elm.r_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 24 24;
+            max: 24 24;
+            rel1.relative: 1.0 0.0;
+            rel2.offset: -2 -1;
+         }
+      }
+      part { name: "elm.l_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 24 24;
+            max: 24 24;
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "arrow_over_event";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "arrow_over";
+            rel2.to: "arrow_over";
+         }
+      }
+   }
+   programs {
+      program { name: "mouse_over";
+         signal: "mouse,in";
+         source: "arrow_over_event";
+         action: STATE_SET "hovered" 0.00;
+         target: "arrow_over";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "arrow_over_event";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_over";
+      }
+      program { name: "mouse_down";
+         signal: "mouse,down,1";
+         source: "arrow_over_event";
+         action: STATE_SET "selected" 0.00;
+         target: "arrow_over";
+      }
+      program { name: "mouse_up";
+         signal: "mouse,up,1";
+         source: "arrow_over_event";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_over";
+      }
+   }
+}
+
+
+group { name: "elm/colorselector/bg_image/colorbar_3/default";
+   images.image: "Custom/bg_demo.png" COMP;
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "Custom/bg_demo.png";
+            fill {
+               smooth: 0;
+               type: TILE;
+            }
+         }
+      }
+   }
+}
+group { name: "elm/colorselector/picker/default";
+   images.image: "Custom/bg_demo.png" COMP;
+   parts {
+      part { name: "pat";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "Custom/bg_demo.png";
+            fill.type: TILE;
+            rel1.to: "elm.picker";
+            rel2.to: "elm.picker";
+         }
+      }
       part { name: "elm.picker";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
             fixed: 1 1;
-            rel1.offset: 0 12;
-            rel2.relative: 1.0 0.0;
+            min: 51 52;
+            max: 51 52;
+         }
+      }
+   }
+}
+group { name: "elm/colorselector/palette/default";
+   data {
+      item: "vertical_pad" "8";
+      item: "horizontal_pad" "8";
+   }
+   parts {
+      part { name: "bg_border";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 402 261;
+            max: 402 261;
+            color_class: "colorselector_border_bg";
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "colorselector_bg";
+            rel1 {
+               offset: 5 5;
+               to: "bg_border";
+            }
+            rel2 {
+               offset: -6 -6;
+               to: "bg_border";
+            }
+         }
+      }
+      part { name: "elm.picker";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 96 169;
+            max: 96 169;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 16 25;
+               to_x: "elm.selector";
+               to_y: "bg_border";
+            }
+            rel2 {
+               offset: -26 -11;
+               to: "bg_border";
+            }
          }
       }
       part { name: "elm.palette";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.5 1.0;
+            align: 0.5 0.0;
             fixed: 1 1;
+            min: 0 32;
+            max: -1 32;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 14;
-               to_y: "elm.picker";
+               offset: 0 10;
+               to: "elm.selector";
             }
             rel2 {
-               relative: 1.0 0.0;
                offset: -1 -26;
+               to_x: "elm.picker";
                to_y: "elm.selector";
             }
          }
@@ -44,10 +626,18 @@ group { name: "elm/colorselector/palette/default";
       part { name: "elm.selector";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 1.0;
+            align: 0.0 0.0;
             fixed: 1 1;
-            min: 0 100;
-            rel1.relative: 0.0 1.0;
+            min: 240 159;
+            max: 240 159;
+            rel1 {
+               offset: 25 34;
+               to: "bg_border";
+            }
+            rel2 {
+               offset: -17 -11;
+               to: "bg_border";
+            }
          }
       }
    }
@@ -97,663 +687,6 @@ group { name: "elm/colorselector/palette/default";
    }
 }
 
-group { name: "elm/colorselector/picker/base/default";
-   parts {
-      part { name: "elm.swallow.picker";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 72 76;
-            max: 72 76;
-            rel1 {
-               offset: 21 0;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "elm.label.red";
-            }
-         }
-      }
-      part { name: "elm.label.red";
-         type: TEXT;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 15 0;
-            max: 15 -1;
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.red";
-            }
-            text {
-               font: FN;
-               size: 10;
-               ellipsis: -1.0;
-            }
-         }
-      }
-      part { name: "elm.swallow.red";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 60 19;
-            max: 60 19;
-         }
-      }
-      part { name: "elm.label.green";
-         type: TEXT;
-         description { state: "default" 0.0;
-            min: 15 0;
-            max: 15 -1;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "elm.label.red";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.green";
-            }
-            text {
-               font: FN;
-               size: 10;
-               ellipsis: -1.0;
-            }
-         }
-      }
-      part { name: "elm.swallow.green";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 60 19;
-            max: 60 19;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.red";
-            }
-         }
-      }
-      part { name: "elm.label.blue";
-         type: TEXT;
-         description { state: "default" 0.0;
-            min: 15 0;
-            max: 15 -1;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "elm.label.green";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.blue";
-            }
-            text {
-               font: FN;
-               size: 10;
-               ellipsis: -1.0;
-            }
-         }
-      }
-      part { name: "elm.swallow.blue";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 60 19;
-            max: 60 19;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.green";
-            }
-         }
-      }
-      part { name: "elm.label.alpha";
-         type: TEXT;
-         description { state: "default" 0.0;
-            min: 15 0;
-            max: 15 -1;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "elm.label.blue";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.alpha";
-            }
-            text {
-               font: FN;
-               size: 10;
-               ellipsis: -1.0;
-            }
-         }
-      }
-      part { name: "elm.swallow.alpha";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 60 19;
-            max: 60 19;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.blue";
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/colorselector/picker/default";
-   parts {
-      part { name: "pat";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "elm.picker";
-            }
-            rel2 {
-               to: "elm.picker";
-            }
-            image {
-               normal: "Custom/bg_demo.png";
-               middle: DEFAULT;
-            }
-            fill {
-               type: TILE;
-            }
-         }
-      }
-      part { name: "elm.picker";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            min: 51 52;
-            max: 51 52;
-         }
-      }
-     part { name: "cross";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            min: 35 35;
-            max: 35 35;
-            align: 0 0;
-            rel1 {
-               to: "elm.picker";
-               offset: 8 8;
-            }
-            rel2 {
-               to: "elm.picker";
-            }
-            image {
-               normal: "Custom/color-sight.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/colorselector/item/default";
-   parts {
-      part { name: "base";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 27 28;
-            max: 27 28;
-            visible: 0;
-         }
-      }
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 18 19;
-            max: 18 19;
-         }
-      }
-      part { name: "color_obj";
-         type: SWALLOW;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            min: 16 17;
-            max: 16 17;
-            rel1.offset: -1 -1;
-         }
-      }
-     part { name: "glow";
-         type: IMAGE;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: 18 19;
-            max: 18 19;
-            visible: 0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            rel1.offset: -1 -1;
-            rel2.offset: 0 0;
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color_class: "over";
-         }
-      }
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1.to: "color_obj";
-            rel2.to: "color_obj";
-         }
-         description { state: "disabled" 0.0;
-            color_class: "main_disabled";
-            rel1.to: "color_obj";
-            rel2.to: "color_obj";
-         }
-      }
-      part { name: "disabler";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      program { name: "program_0x1be4380";
-         signal: "elm,state,selected";
-         source: "elm";
-         action: STATE_SET "focused" 0.00;
-         transition: DECELERATE 0.10000;
-         target: "glow";
-      }
-      program { name: "program_0x1be4870";
-         signal: "elm,state,unselected";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
-         target: "glow";
-      }
-      program { name: "program_0x1be4d60";
-         signal: "elm,anim,activate";
-         source: "elm";
-         action: STATE_SET "focused" 0.00;
-         transition: DECELERATE 0.10000;
-         target: "glow";
-         after: "active2";
-      }
-      program { name: "active2";
-         action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.80000;
-         target: "glow";
-      }
-      program {
-         signal: "elm,state,disabled"; source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "clipper";
-         target: "disabler";
-      }
-      program {
-         signal: "elm,state,enabled"; source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "clipper";
-         target: "disabler";
-      }
-   }
-}
-
-group { name: "elm/button/base/colorselector/left/default";
-   parts {
-      part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_l_nor.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "clicked" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_l_sel.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "disabled" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_l_dim.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-      }
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "disabler";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      program { name: "program_0x1b41e70";
-         signal: "mouse,down,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,press" "elm";
-         after: "button_click_anim";
-      }
-      program { name: "button_unclick";
-         signal: "mouse,up,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,unpress" "elm";
-         after: "button_unclick_anim";
-      }
-      program { name: "buttonactivate";
-         signal: "elm,anim,activate";
-         source: "elm";
-         action: STATE_SET "clicked" 0.00;
-         target: "base";
-         after: "button_unpressed_anim";
-      }
-      program { name: "program_0x1b42fc0";
-         signal: "mouse,clicked,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-      }
-      program { name: "button_click_anim";
-         action: STATE_SET "clicked" 0.00;
-         target: "base";
-      }
-      program { name: "button_unclick_anim";
-         action: STATE_SET "default" 0.00;
-         target: "base";
-      }
-      program { name: "button_unpressed_anim";
-         action: STATE_SET "default" 0.00;
-         in: 0.50000 0.00000;
-         target: "base";
-      }
-      program {
-         signal: "elm,state,enabled";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "base";
-         target: "disabler";
-      }
-      program {
-         signal: "elm,state,disabled"; source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "base";
-         target: "disabler";
-      }
-   }
-}
-
-
-group { name: "elm/button/base/colorselector/right/default";
-   parts {
-      part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_r_nor.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "clicked" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_r_sel.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "disabled" 0.0;
-            min: 10 17;
-            max: 10 17;
-            image {
-               normal: "General/zoom_btn_r_dim.png";
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-      }
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "disabled" 0.0;
-            visible: 0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "disabler";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      program { name: "program_0x1b41e70";
-         signal: "mouse,down,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,press" "elm";
-         after: "button_click_anim";
-      }
-      program { name: "button_unclick";
-         signal: "mouse,up,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,unpress" "elm";
-         after: "button_unclick_anim";
-      }
-      program { name: "buttonactivate";
-         signal: "elm,anim,activate";
-         source: "elm";
-         action: STATE_SET "clicked" 0.00;
-         target: "base";
-         after: "button_unpressed_anim";
-      }
-      program { name: "program_0x1b42fc0";
-         signal: "mouse,clicked,1";
-         source: "event";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-      }
-      program { name: "button_click_anim";
-         action: STATE_SET "clicked" 0.00;
-         target: "base";
-      }
-      program { name: "button_unclick_anim";
-         action: STATE_SET "default" 0.00;
-         target: "base";
-      }
-      program { name: "button_unpressed_anim";
-         action: STATE_SET "default" 0.00;
-         in: 0.50000 0.00000;
-         target: "base";
-      }
-      program {
-         signal: "elm,state,enabled";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "base";
-         target: "disabler";
-      }
-      program {
-         signal: "elm,state,disabled"; source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "base";
-         target: "disabler";
-      }
-   }
-}
-
-group { name: "elm/colorselector/base/default";
-   parts {
-      part { name: "elm.bar_bg";
-         type: SWALLOW;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: 32 15;
-            rel1 {
-               offset: 1 1;
-               to: "elm.arrow_bg";
-            }
-            rel2 {
-               offset: -2 -3;
-               to: "elm.arrow_bg";
-            }
-         }
-      }
-      part { name: "elm.bar";
-         type: SWALLOW;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.bar_bg";
-            rel2.to: "elm.bar_bg";
-         }
-      }
-      part { name: "elm.arrow_bg";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.l_button";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.r_button";
-            }
-         }
-      }
-      part { name: "elm.arrow";
-         type: RECT;
-         dragable {
-            x: 1 1 0;
-            y: 0 0 0;
-            confine: "elm.arrow_bg";
-         }
-         description { state: "default" 0.0;
-            visible: 0;
-            fixed: 1 1;
-            min: 1 1;
-            rel1.to_x: "elm.arrow_bg";
-            rel2.to_x: "elm.arrow_bg";
-         }
-      }
-      part { name: "event";
-         type: RECT;
-         dragable.events: "elm.arrow";
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.to: "elm.arrow_icon";
-            rel2 {
-               to_x: "elm.arrow_icon";
-               to_y: "elm.arrow_bg";
-            }
-         }
-      }
-     part { name: "elm.arrow_icon";
-         type: SWALLOW;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            fixed: 1 1;
-            min: 16 16;
-            max: 16 16;
-            rel1.to_x: "elm.arrow";
-            rel2 {
-               relative: 1.0 0.0;
-               offset: -1 0;
-               to_x: "elm.arrow";
-               to_y: "elm.bar_bg";
-            }
-         }
-      }
-      part { name: "arrow_over";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.arrow_icon";
-            rel2.to: "elm.arrow_icon";
-            image {
-               normal: "Tizen general/color_pin_nor.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-     part { name: "elm.r_button";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            fixed: 1 1;
-            min: 10 19;
-            max: 10 19;
-            rel1.relative: 1.0 0.0;
-            rel2.offset: -2 -1;
-         }
-      }
-      part { name: "elm.l_button";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 1;
-            min: 10 19;
-            max: 10 19;
-            rel1.offset: 1 0;
-            rel2.relative: 0.0 1.0;
-         }
-      }
-      part { name: "cursor";
-         type: RECT;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            min: 1 1;
-            rel1 {
-               relative: 0.5 1.0;
-               offset: 0 -3;
-               to: "elm.arrow_icon";
-            }
-            rel2 {
-               relative: 0.5 1.0;
-               offset: 0 -1;
-               to_x: "elm.arrow_icon";
-               to_y: "elm.bar_bg";
-            }
-         }
-      }
-   }
-}
-
 group { name: "elm/colorselector/bg/default";
    min: 0 115;
    parts {
@@ -763,11 +696,11 @@ group { name: "elm/colorselector/bg/default";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
-            min: 0 19;
-            max: -1 19;
+            min: 0  24;
+            max: -1 24;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
+               offset: -1 -22;
                to_y: "elm.colorbar_1";
             }
          }
@@ -777,11 +710,11 @@ group { name: "elm/colorselector/bg/default";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
-            min: 0 19;
-            max: -1 19;
+            min: 0  24;
+            max: -1 24;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
+               offset: -1 -22;
                to_y: "elm.colorbar_2";
             }
          }
@@ -791,11 +724,11 @@ group { name: "elm/colorselector/bg/default";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
-            min: 0 19;
-            max: -1 19;
+            min: 0  24;
+            max: -1 24;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
+               offset: -1 -22;
                to_y: "elm.colorbar_3";
             }
          }
@@ -805,27 +738,255 @@ group { name: "elm/colorselector/bg/default";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
-            min: 0 19;
-            max: -1 19;
+            min: 0  22;
+            max: -1 22;
          }
+      }
+   }
+}
+group { name: "elm/colorselector/picker/base/default";
+   parts {
+      part { name: "elm.swallow.picker";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 0;
+            min: 96 48;
+            max: 96 48;
+         }
+      }
+      part { name: "elm.label.red";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 15 24;
+            max: 15 24;
+            color_class: "genlist_text_tree";
+            text {
+               text: "R :";
+               font: "Breeze";
+               size: 10;
+               ellipsis: -1.0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 10;
+               to: "elm.swallow.picker";
+            }
+            rel2.to: "elm.swallow.picker";
+         }
+      }
+      part { name: "elm.swallow.red";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 0 24;
+            max: 76 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 5 0;
+               to: "elm.label.red";
+            }
+            rel2 {
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.red";
+            }
+         }
+      }
+      part { name: "elm.label.green";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 15 24;
+            max: 15 24;
+            color_class: "genlist_text_tree";
+            text {
+               text: "G :";
+               font: "Breeze";
+               size: 10;
+               ellipsis: -1.0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 5;
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.red";
+            }
+            rel2.to: "elm.swallow.picker";
+         }
+      }
+      part { name: "elm.swallow.green";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 0 24;
+            max: 76 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 5 1;
+               to: "elm.label.green";
+            }
+            rel2 {
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.green";
+            }
+         }
+      }
+      part { name: "elm.label.blue";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 15 24;
+            max: 15 24;
+            color_class: "genlist_text_tree";
+            text {
+               text: "B :";
+               font: "Breeze";
+               size: 10;
+               ellipsis: -1.0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 5;
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.green";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.green";
+            }
+         }
+      }
+      part { name: "elm.swallow.blue";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 0 24;
+            max: 76 24;
+            rel1 {
+               offset: 5 0;
+               to: "elm.label.blue";
+            }
+            rel2 {
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.blue";
+            }
+         }
+      }
+      part { name: "elm.label.alpha";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 0 1;
+            min: 15 24;
+            max: 15 24;
+            color_class: "genlist_text_tree";
+            text {
+               text: "A :";
+               font: "Breeze";
+               size: 10;
+               ellipsis: -1.0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 5;
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.blue";
+            }
+            rel2 {
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.blue";
+            }
+         }
+      }
+      part { name: "elm.swallow.alpha";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 0 1;
+            min: 0 24;
+            max: 76 24;
+            rel1.to: "elm.label.alpha";
+            rel2 {
+               to_x: "elm.swallow.picker";
+               to_y: "elm.label.alpha";
+            }
+         }
+      }
+   }
+}
+group { name: "elm/colorselector/item/default";
+   parts {
+      part { name: "base";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            min: 27 28;
+            max: 27 28;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 32 32;
+            max: 32 32;
+            align: 0.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "color_obj";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            min: 32 32;
+            max: 32 32;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "color_obj";
+            rel2.to: "color_obj";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            color_class: "main_disabled";
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "program_0x55c45a54a420";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "clipper";
+         target: "disabler";
+      }
+      program { name: "program_0x55c45a54a920";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "clipper";
+         target: "disabler";
       }
    }
 }
 
-group { name: "elm/colorselector/bg_image/colorbar_3/default";
-   parts {
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image {
-               normal: "Custom/bg_demo.png";
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-               type: TILE;
-            }
-         }
-      }
-   }
-}
+

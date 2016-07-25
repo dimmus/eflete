@@ -320,6 +320,7 @@ _helper_colorclass_dismiss(void *data,
    ecore_job_add(_delete_object_job, helper);
 }
 
+#if !HAVE_TIZEN
 static void
 _colorclass_done(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -327,6 +328,7 @@ _colorclass_done(void *data,
 {
    _helper_colorclass_dismiss(data, NULL, NULL, NULL);
 }
+#endif
 
 static void
 _helper_dismiss(void *data __UNUSED__,
@@ -866,7 +868,13 @@ popup_colorselector_helper(Evas_Object *follow_up,
 
    evas_object_del(helper);
    helper = elm_layout_add(ap.win);
+
+#if HAVE_TIZEN
+   elm_layout_theme_set(helper, "layout", "popup", "colorselector");
+#else
    elm_layout_theme_set(helper, "layout", "popup", "hint");
+#endif
+
    evas_object_data_set(helper, "STRUCT", helper_data);
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_colorclass_dismiss, helper_data);
 
@@ -877,6 +885,19 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(fs);
 
+#if HAVE_TIZEN
+   elm_colorselector_palette_clear(fs);
+   elm_colorselector_palette_name_set(fs, "eflete_tizen");
+   elm_colorselector_palette_color_add(fs, 229, 3, 3, 255);
+   elm_colorselector_palette_color_add(fs, 20, 218, 20, 255);
+   elm_colorselector_palette_color_add(fs, 25, 46, 201, 255);
+   elm_colorselector_palette_color_add(fs, 236, 196, 9, 255);
+   elm_colorselector_palette_color_add(fs, 237, 10, 234, 255);
+   elm_colorselector_palette_color_add(fs, 26, 234, 217, 255);
+   elm_colorselector_palette_color_add(fs, 0, 0, 0, 255);
+   elm_colorselector_palette_color_add(fs, 255, 255, 255, 255);
+   elm_colorselector_palette_color_add(fs, 200, 200, 200, 255);
+#endif
    evas_object_smart_callback_add(fs, "changed", func_change, data);
    evas_object_smart_callback_add(fs, "color,item,selected", func_change, data);
    evas_object_smart_callback_add(fs, "color,item,longpressed", func_change, data);
@@ -886,10 +907,12 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_size_hint_min_set(helper, COLOR_W, COLOR_H);
    evas_object_resize(helper, COLOR_W, COLOR_H);
 
+#if !HAVE_TIZEN
    BUTTON_ADD(fs, helper_data->button, _("Ok"))
    elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
    evas_object_smart_callback_add(helper_data->button, "clicked", _colorclass_done, helper_data);
    evas_object_show(helper_data->button);
+#endif
 
    elm_layout_content_set(helper, "elm.swallow.content", fs);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

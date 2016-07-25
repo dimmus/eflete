@@ -382,10 +382,26 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_COLORSEL:
          content = elm_colorselector_add(parent);
          elm_colorselector_mode_set(content, ELM_COLORSELECTOR_ALL);
-         evas_object_size_hint_min_set(content, 200, 270);
          TODO("start/stop callbacks for this item type would be incorrect. Add correct one if needed");
          evas_object_smart_callback_add(content, "changed,user", _start_change_stop_cb, pa);
          evas_object_smart_callback_add(content, "color,item,selected", _start_change_stop_cb, pa);
+
+#if HAVE_TIZEN
+         evas_object_size_hint_min_set(content, 402, 261);
+         elm_colorselector_palette_clear(content);
+         elm_colorselector_palette_name_set(content, "eflete_tizen");
+         elm_colorselector_palette_color_add(content, 229, 3, 3, 255);
+         elm_colorselector_palette_color_add(content, 20, 218, 20, 255);
+         elm_colorselector_palette_color_add(content, 25, 46, 201, 255);
+         elm_colorselector_palette_color_add(content, 236, 196, 9, 255);
+         elm_colorselector_palette_color_add(content, 237, 10, 234, 255);
+         elm_colorselector_palette_color_add(content, 26, 234, 217, 255);
+         elm_colorselector_palette_color_add(content, 0, 0, 0, 255);
+         elm_colorselector_palette_color_add(content, 255, 255, 255, 255);
+         elm_colorselector_palette_color_add(content, 200, 200, 200, 255);
+#else
+         evas_object_size_hint_min_set(content, 200, 270);
+#endif
          break;
       case PROPERTY_CONTROL_LABEL:
          content = elm_label_add(parent);
