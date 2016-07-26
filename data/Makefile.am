@@ -39,18 +39,32 @@ alayoutsdir = $(datadir)/eflete/layouts
 alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
+if WANT_TIZEN
+aimages_DATA = \
+	${srcdir}/images/*.png \
+	${srcdir}/themes/tizen/images/General/cd_icon.png \
+	${srcdir}/images/toolbar_icons/*.png
+else
 aimages_DATA = \
 	${srcdir}/images/*.png \
 	${srcdir}/images/eflete.svg \
 	${srcdir}/images/toolbar_icons/*.png
-
+endif
 aresourcesdir = $(datadir)/eflete/
 
 shortcutdir = $(datadir)/applications
+if WANT_TIZEN
+shortcut_DATA = component_designer.desktop
+else
 shortcut_DATA = eflete.desktop
+endif
 
 icondir = $(datadir)/icons
+if WANT_TIZEN
+icon_DATA = ${srcdir}/themes/tizen/images/General/cd_icon.png
+else
 icon_DATA = ${srcdir}/images/eflete.svg
+endif
 
 colorsdir = $(datadir)/eflete/themes/default/color
 colors_DATA = color.eet
