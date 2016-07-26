@@ -97,6 +97,7 @@ build/*
 *.in
 !src/config.h.in
 !data/eflete.desktop.in
+!data/component_designer.desktop.in
 aclocal.m4
 autom4te.cache/*
 compile
@@ -129,6 +130,7 @@ po/en@quot.insert-header
 po/stamp-po
 config.cache
 data/eflete.desktop
+data/component_designer.desktop
 eflete_config.h
 *.deps
 stamp-h1
