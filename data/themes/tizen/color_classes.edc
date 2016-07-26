@@ -4,7 +4,12 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
-    color_class { name: "scrollbar_bg";
+   color_class { name: "toolbar_separator";
+      color: 180 180 180 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "scrollbar_bg";
       color: 231 231 231 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
