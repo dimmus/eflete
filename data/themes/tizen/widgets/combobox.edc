@@ -216,9 +216,17 @@ group { name: "elm/button/base/combobox_vertical/library";
       image: "WYSIWG/tool_s_library_sel.png" COMP;
    }
    parts {
-      part { name: "base";
+      part { name: "dummy";
          type: SPACER;
          description { state: "default" 0.0;
+         }
+         description { state: "focus" 0.0;
+         }
+       }
+       part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 24;
             max: -1 24;
          }
       }
@@ -226,25 +234,32 @@ group { name: "elm/button/base/combobox_vertical/library";
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
-            color: 174 174 174 255;
+            color_class: "combobox_border";
          }
          description { state: "focus" 0.0;
             inherit: "default" 0.00;
-            visible: 1;
-            color: 5 140 238 255;
+            color_class: "combobox_border_over";
          }
-      }
-      part { name: "left.offset";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 10 0;
-            max: 10 -1;
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
+            rel1.offset: 1 1;
+            rel1.to: "border";
+            rel2.offset: -2 -2;
+            rel2.to: "border";
+            color: 255 255 255 255;
+         }
+         description { state: "focus";
+            inherit: "default";
+            color_class: "combobox_over";
+         }
+         description { state: "disabled";
+            inherit: "default";
+            color_class: "combobox";
          }
       }
       part { name: "icon";
@@ -263,13 +278,28 @@ group { name: "elm/button/base/combobox_vertical/library";
             inherit: "default" 0.00;
             image.normal: "WYSIWG/tool_s_library_dim.png";
          }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "WYSIWG/tool_s_library_sel.png";
-         }
          description { state: "expanded" 0.0;
             inherit: "default" 0.00;
             image.normal: "WYSIWG/tool_s_library_sel.png";
+         }
+         description { state: "focus" 0.0;
+            inherit: "expanded" 0.00;
+         }
+       }
+       rect { "icon_clip";
+         desc { "default";
+         }
+         desc { "disabled";
+            inherit: "default";
+            color: 255 255 255 180;
+         }
+      }
+      part { name: "left.offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 10 0;
+            max: 10 -1;
          }
       }
       part { name: "right.offset";
@@ -280,36 +310,12 @@ group { name: "elm/button/base/combobox_vertical/library";
             max: 20 -1;
          }
       }
-      part { name: "select_line";
-         type: IMAGE;
-         clip_to: "disabler";
-         description { state: "default" 0.0;
-            min: 9 9;
-            max: 9 9;
-            image.normal: "WYSIWG/tool_s_ic_arrow_nor.png";
-            fill.smooth: 0;
-            rel1.to: "right.offset";
-            rel2.to: "right.offset";
-         }
-         description { state: "expanded" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "WYSIWG/tool_s_ic_arrow_sel.png";
-         }
-         description { state: "clicked" 0.0;
-            inherit: "expanded" 0.0;
-         }
-         description { state: "hovered" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "WYSIWG/tool_s_ic_arrow_mv.png";
-         }
-      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "disabler";
+         clip_to: "icon_clip";
          description { state: "default" 0.0;
-            align: 0.0 0.5;
-            color: 88 88 88 255;
             min: 50 19;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                offset: 8 0;
@@ -318,19 +324,28 @@ group { name: "elm/button/base/combobox_vertical/library";
             rel2 {
                relative: 0.0 1.0;
                to_x: "right.offset";
+               to_y: "base";
             }
          }
       }
-      part { name: "expand.btn";
-         type: RECT;
+      part { name: "select_line";
+         type: IMAGE;
+         clip_to: "disabler";
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            max: 9 9;
+            image.normal: "WYSIWG/tool_s_ic_arrow_nor.png";
+            rel1.to: "right.offset";
+            rel2.to: "right.offset";
          }
-         description { state: "unvisible" 0.0;
+         description { state: "focus" 0.0;
             inherit: "default" 0.00;
-            visible: 0;
+            image.normal: "WYSIWG/tool_s_ic_arrow_sel.png";
          }
-      }
+         description { state: "hovered" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "WYSIWG/tool_s_ic_arrow_mv.png";
+         }
+       }
       part { name: "disabler";
          type: RECT;
          description { state: "default" 0.0;
@@ -354,51 +369,76 @@ group { name: "elm/button/base/combobox_vertical/library";
       program {
          signal: "mouse,down,1"; source: "event";
          action: SIGNAL_EMIT "elm,action,press" "elm";
-         after: "button_click_anim";
-      }
-      program { name: "button_click_anim";
-         action: STATE_SET "clicked" 0.0;
-         target: "base";
-         target: "select_line";
       }
       program { name: "button_unclick";
          signal: "mouse,up,1"; source: "event";
          action: SIGNAL_EMIT "elm,action,unpress" "elm";
-         after: "button_unclick_anim";
-      }
-      program { name: "button_unclick_anim";
-         action: STATE_SET "default" 0.0;
-         target: "base";
-         target: "select_line";
-      }
-      program { name: "buttonactivate";
-         signal: "elm,anim,activate"; source: "elm";
-         action: STATE_SET "clicked" 0.0;
-         target: "base";
-         target: "select_line";
-         after: "button_unpressed_anim";
-      }
-      program { name: "button_unpressed_anim";
-         action: STATE_SET "default" 0.0;
-         in: 0.5 0.0;
-         target: "base";
-         target: "select_line";
       }
       program {
          signal: "mouse,clicked,1"; source: "event";
          action: SIGNAL_EMIT "elm,action,click" "elm";
       }
+
+      program { name: "mouse_in";
+         source: "event";
+         signal: "mouse,in";
+         filter: "dummy" "default";
+         action: STATE_SET "hovered" 0.0;
+         target: "icon";
+         target: "select_line";
+      }
+      program { name: "mouse_out";
+         source: "event";
+         signal: "mouse,out";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.0;
+         target: "icon";
+         target: "select_line";
+      }
+      program { name: "unfocus";
+         source: "elm";
+         signal: "elm,action,unfocus";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.0;
+         target: "icon";
+      }
+      program { name: "focus";
+         source: "elm";
+         signal: "elm,action,focus";
+         filter: "dummy" "default";
+         action: STATE_SET "focus" 0.0;
+         target: "icon";
+      }
+      program { name: "expanded";
+         source: "elm";
+         signal: "expanded";
+         action: STATE_SET "focus" 0.0;
+         target: "dummy";
+         target: "select_line";
+         target: "icon";
+      }
+      program { name: "dismiss";
+         source: "elm";
+         signal: "dismissed";
+         action: STATE_SET "default" 0.0;
+         target: "dummy";
+         target: "select_line";
+         target: "icon";
+      }
       program { name: "button_state_disabled";
          signal: "elm,state,disabled"; source: "elm";
          action: STATE_SET "disabled" 0.0;
+         target: "icon_clip";
          target: "event";
-         target: "disabler";
+         target: "icon";
       }
       program { name: "button_state_enabled";
          signal: "elm,state,enabled"; source: "elm";
          action: STATE_SET "default" 0.0;
+         target: "icon_clip";
          target: "event";
          target: "disabler";
+         target: "icon";
       }
    }
 }
