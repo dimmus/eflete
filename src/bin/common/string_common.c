@@ -71,3 +71,29 @@ string_cat(const char *str1, const char *str2)
 
    return string;
 }
+
+const char *
+string_rstr(const char *str1, const char *str2)
+{
+   unsigned int str2len = 0;
+   unsigned int i = 0, j = 0;
+
+   str2len = strlen(str2) - 1;
+
+   for (i = strlen(str1) - 1; i != 0; i--)
+     {
+        if (str1[i] == str2[str2len])
+          {
+             if (str2len == 0)
+               return &str1[i];
+             for (j = 1; (j < strlen(str2)) & (i > j); j++)
+               {
+                  if (str1[i - j] != str2[str2len - j])
+                    break;
+                  if (j + 1 == strlen(str2))
+                    return &str1[i - j];
+               }
+          }
+     }
+   return NULL;
+}

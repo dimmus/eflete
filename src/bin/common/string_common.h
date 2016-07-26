@@ -62,4 +62,7 @@ string_char_replace(char *str, char src, char rep);
 char *
 string_cat(const char *str1, const char *str2);
 
+const char *
+string_rstr(const char *str1, const char *str2);
+
 #endif /* STRING_MACRO_H */
