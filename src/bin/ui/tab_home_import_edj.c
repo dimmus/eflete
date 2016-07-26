@@ -609,7 +609,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
    Eina_List *l, *l1, *cp_style_list;
    Node *node;
    Eina_Stringshare *name, *name1, *style_name, *tmp;
-   const char *pos, *style;
+   const char *pos;
    char cp_style[256];
 
    assert (item != NULL);
@@ -623,9 +623,6 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
      }
    else
      {
-        pos = strrchr(item->name, '/');
-        if (pos) style = pos + 1;
-        else style = item->name;
         if (styles)
           {
              EINA_LIST_FOREACH(styles, l, name)
@@ -633,19 +630,23 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                   style_name = option_style_name_get(name, &cp_style_list);
                   if (!strcmp(style_name, "default"))
                     {
-                       pos = strstr(item->name, "base/default");
+                       pos = string_rstr(item->name, "base/default");
                        if (pos) widget_list = eina_list_append(widget_list, item->name);
                     }
-                  else if (!strcmp(style, style_name))
+                  else
                     {
-                       item->check = selected;
-                       widget_list = eina_list_append(widget_list, item->name);
-                       EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                       pos = string_rstr(item->name, style_name);
+                       if (pos)
                          {
-                            strncpy(cp_style, item->name, pos - item->name);
-                            cp_style[pos - item->name] = '\0';
-                            tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
-                            widget_list = eina_list_append(widget_list, tmp);
+                            item->check = selected;
+                            widget_list = eina_list_append(widget_list, item->name);
+                            EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                              {
+                                 strncpy(cp_style, item->name, pos - item->name - 1);
+                                 cp_style[pos - item->name] = '\0';
+                                 tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
+                                 widget_list = eina_list_append(widget_list, tmp);
+                              }
                          }
                     }
                   eina_stringshare_del(style_name);
