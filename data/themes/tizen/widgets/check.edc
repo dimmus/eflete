@@ -859,7 +859,6 @@ group { name: "elm/check/base/locker";
          type: IMAGE;
          mouse_events: 0;
          scale: 1;
-         clip_to: "clipper";
          description { state: "default" 0.0;
             image.normal: "WYSIWG/tool_s_lock_nor.png";
             rel1.to: "bg";
@@ -886,6 +885,7 @@ group { name: "elm/check/base/locker";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
+            visible: 0;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
@@ -1164,8 +1164,17 @@ group { name: "elm/check/base/demo";
    images {
       image:"WYSIWG/tool_s_run_nor.png" COMP;
       image:"WYSIWG/tool_s_run_sel.png" COMP;
-   }
+      image:"WYSIWG/tool_s_run_dim.png" COMP;
+      image:"WYSIWG/tool_s_run_mv.png" COMP;
+    }
    parts {
+      part { name: "dummy";
+         type: SPACER;
+         description { state: "default";
+         }
+         description { state: "visible";
+         }
+      }
       part { name: "bg";
          type: SPACER;
          mouse_events: 0;
@@ -1181,7 +1190,6 @@ group { name: "elm/check/base/demo";
          type: IMAGE;
          mouse_events: 0;
          scale: 1;
-         clip_to: "clipper";
          description { state: "default" 0.0;
             image.normal: "WYSIWG/tool_s_run_nor.png";
             rel1.to: "bg";
@@ -1191,15 +1199,26 @@ group { name: "elm/check/base/demo";
             inherit: "default" 0.00;
             image.normal: "WYSIWG/tool_s_run_sel.png";
          }
-      }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "WYSIWG/tool_s_run_dim.png";
+         }
+          description { state: "focused" 0.0;
+            inherit: "visible" 0.00;
+         }
+          description { state: "hovered" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "WYSIWG/tool_s_run_mv.png";
+         }
+       }
       part { name: "clipper";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
+            visible: 0;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.00;
-            color_class: "main_disabled";
          }
       }
       part { name: "events";
@@ -1224,12 +1243,14 @@ group { name: "elm/check/base/demo";
          signal: "elm,state,check,on";
          source: "elm";
          action: STATE_SET "visible" 0.00;
+         target: "dummy";
          target: "check";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
          action: STATE_SET "default" 0.00;
+         target: "dummy";
          target: "check";
       }
       program { name: "disable";
@@ -1237,14 +1258,70 @@ group { name: "elm/check/base/demo";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "events";
-         target: "clipper";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "events";
+      }
+      program { name: "mouse_in_check";
+         signal: "mouse,in";
+         source: "events";
+         action: STATE_SET "hovered" 0.00;
+         target: "check";
+      }
+      program { name: "mouse_out_check";
+         signal: "mouse,out";
+         source: "events";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+      }
+      program { name: "mouse_out_check_def";
+         signal: "mouse,out";
+         source: "events";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+      }
+       program { name: "disable_check";
+         signal: "elm,state,disabled";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "disabled" 0.00;
+         target: "check";
+         target: "events";
          target: "clipper";
+      }
+      program { name: "enable_check";
+         signal: "elm,state,enabled";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+         target: "events";
+         target: "clipper";
+      }
+      program { name: "focused_check";
+         signal: "elm,action,focus";
+         source: "elm";
+         action: STATE_SET "focused" 0.00;
+         target: "check";
+      }
+      program { name: "unfocused_check";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+      }
+      program { name: "unfocused_check_def";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         filter: "dummy" "visible";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
       }
    }
 }
