@@ -2366,3 +2366,130 @@ group { name: "elm/button/base/fit";
        }
    }
 }
+
+group { name: "elm/button/base/minus_zoom";
+   inherit: "elm/button/base/default";
+   images {
+      image: "WYSIWG/tool_zoom_out_nor.png" COMP;
+      image: "WYSIWG/tool_zoom_out_sel.png" COMP;
+      image: "WYSIWG/tool_zoom_out_mv.png" COMP;
+   }
+   parts {
+      part { name: "button_image";
+         type: IMAGE;
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            min: 7 7;
+            max: 7 7;
+            color_class: "";
+            image {
+               normal: "WYSIWG/tool_zoom_out_nor.png";
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "WYSIWG/tool_zoom_out_sel.png";
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit:  "default" 0.0;
+         }
+         description { state: "hovered" 0.0;
+            inherit:  "default" 0.0;
+            image.normal: "WYSIWG/tool_zoom_out_mv.png";
+         }
+          description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "border";
+         type: RECT;
+         description { state: "default";
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "visible" 0.00;
+         }
+         description { state: "hovered" 0.0;
+            inherit: "clicked" 0.00;
+         }
+         description { state: "focused" 0.0;
+            inherit: "hovered" 0.00;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "hovered" 0.00;
+         }
+       }
+   }
+}
+group { name: "elm/button/base/plus_zoom";
+   inherit: "elm/button/base/default";
+   images {
+      image: "WYSIWG/tool_zoom_in_nor.png" COMP;
+      image: "WYSIWG/tool_zoom_in_sel.png" COMP;
+      image: "WYSIWG/tool_zoom_in_mv.png" COMP;
+   }
+   parts {
+      part { name: "button_image";
+         type: IMAGE;
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            min: 7  7;
+            max: 7  7;
+            color_class: "";
+            image {
+               normal: "WYSIWG/tool_zoom_in_nor.png";
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "WYSIWG/tool_zoom_in_sel.png";
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit:  "default" 0.0;
+         }
+         description { state: "hovered" 0.0;
+            inherit:  "default" 0.0;
+            image {
+               normal: "WYSIWG/tool_zoom_in_mv.png";
+            }
+         }
+          description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "border";
+         type: RECT;
+         description { state: "default";
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "visible" 0.00;
+         }
+         description { state: "hovered" 0.0;
+            inherit: "clicked" 0.00;
+         }
+         description { state: "focused" 0.0;
+            inherit: "hovered" 0.00;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "hovered" 0.00;
+         }
+       }
+   }
+}

@@ -359,6 +359,32 @@ _combobox_item_del(void *data,
 
 #if HAVE_TIZEN
 static void
+_btn_minus_zoom_cb(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = (Workspace_Data *)data;
+
+   wd->zoom_factor -= 0.5 ;
+   elm_slider_value_set(wd->toolbar.zoom.slider, (int) (wd->zoom_factor * 100));
+
+   _members_zoom_set(wd);
+}
+
+static void
+_btn_plus_zoom_cb(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = (Workspace_Data *)data;
+
+   wd->zoom_factor += 0.5 ;
+   elm_slider_value_set(wd->toolbar.zoom.slider, (int) (wd->zoom_factor * 100));
+
+   _members_zoom_set(wd);
+}
+
+static void
 _spinner_zoom_cb(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
@@ -395,7 +421,6 @@ static void
 _zoom_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
-   Evas_Object *img;
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
    evas_object_smart_callback_add(wd->toolbar.zoom.fit, "clicked", _fit_cb, wd);
@@ -416,10 +441,24 @@ _zoom_controls_add(Workspace_Data *wd)
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,start", _slider_zoom_start_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,stop", _slider_zoom_stop_cb, wd);
+#if HAVE_TIZEN
+   Evas_Object *btn = elm_button_add(wd->toolbar.obj);
+   elm_object_style_set(btn, "minus_zoom");
+   evas_object_show(btn);
+   evas_object_smart_callback_add(btn, "clicked", _btn_minus_zoom_cb, wd);
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", btn);
+   btn = elm_button_add(wd->toolbar.obj);
+   elm_object_style_set(btn, "plus_zoom");
+   evas_object_show(btn);
+   evas_object_smart_callback_add(btn, "clicked", _btn_plus_zoom_cb, wd);
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", btn);
+#else
+   Evas_Object *img;
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
+#endif
 #if HAVE_TIZEN
    evas_object_size_hint_min_set(wd->toolbar.zoom.slider, 134, 0);
    Evas_Object *zoom_layout = elm_layout_add(wd->toolbar.obj);
