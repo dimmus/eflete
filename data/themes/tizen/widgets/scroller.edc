@@ -83,7 +83,7 @@ group { name: "elm/scroller/base/default";
             color: 0 0 0 0;
             rel1 {
                relative: 0.0 1.0;
-               to: "sb_vbar_a1";
+               to: "sb_vbar_a1_border";
             }
             rel2 {
                relative: 1.0 0.0;
@@ -103,7 +103,7 @@ group { name: "elm/scroller/base/default";
             }
             rel2 {
                relative: 1.0 0.0;
-               to: "sb_vbar_a2";
+               to: "sb_vbar_a2_border";
             }
          }
       }
@@ -165,14 +165,8 @@ group { name: "elm/scroller/base/default";
             min: 13 13;
             max: 13 13;
             minmul: 0.0 0.0;
-            rel1 {
-               offset: 1 1;
-               to: "sb_vbar_a1_border";
-            }
-            rel2 {
-               offset: -2 -2;
-               to: "sb_vbar_a1_border";
-            }
+            rel1.to: "sb_vbar_a1_border";
+            rel2.to: "sb_vbar_a1_border";
          }
       }
       part { name: "sb_vbar_a2_border";
@@ -181,7 +175,7 @@ group { name: "elm/scroller/base/default";
          description { state: "default" 0.0;
             align: 0.0 1.0;
             fixed: 1 1;
-            min: 15 15;
+            min: 0 15;
             max: 15 15;
             aspect: 1.0 1.0;
             aspect_preference: HORIZONTAL;
@@ -207,17 +201,11 @@ group { name: "elm/scroller/base/default";
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 13 13;
+            min: 0 13;
             max: 13 13;
             minmul: 0.0 0.0;
-            rel1 {
-               offset: 1 1;
-               to: "sb_vbar_a2_border";
-            }
-            rel2 {
-               offset: -2 -2;
-               to: "sb_vbar_a2_border";
-            }
+            rel1.to: "sb_vbar_a2_border";
+            rel2.to: "sb_vbar_a2_border";
          }
       }
       part { name: "sb_hbar_show";
@@ -446,8 +434,8 @@ group { name: "elm/scroller/base/default";
          clip_to: "sb_vbar_show";
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 14 14;
-            max: 14 14;
+            min: 0 13;
+            max: 13 13;
             image.normal: "Scroll/scroll_up_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a1";
@@ -474,8 +462,8 @@ group { name: "elm/scroller/base/default";
          mouse_events: 0;
          clip_to: "sb_vbar_show";
          description { state: "default" 0.0;
-            min: 14 14;
-            max: 14 14;
+            min: 0 13;
+            max: 13 13;
             image.normal: "Scroll/scroll_down_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a2";
@@ -520,7 +508,7 @@ group { name: "elm/scroller/base/default";
          repeat_events: 1;
          clip_to: "sb_vbar_show";
          description { state: "default" 0.0;
-            min: 13 13;
+            min: 0 13;
             max: 13 -1;
             rel1 {
                offset: 0 1;
