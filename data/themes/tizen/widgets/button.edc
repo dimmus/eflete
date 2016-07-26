@@ -2313,7 +2313,7 @@ group { name: "elm/button/base/fit";
          description { state: "default" 0.0;
             min: 20 20;
             max: 20 20;
-            color: 255 255 255 255;
+            color_class: "";
             image {
                normal: "WYSIWG/tool_autofit_nor.png";
             }
