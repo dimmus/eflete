@@ -29,6 +29,8 @@ typedef struct {
    Evas_Object *layout;
    Evas_Object *undo_cmbx;
    Evas_Object *redo_cmbx;
+   Evas_Object *btn_undo;
+   Evas_Object *btn_redo;
    History *history;
    Group *group;
    int to_undo;
@@ -39,6 +41,32 @@ typedef struct {
 #define HISTORY_DATA_GET(OBJ) \
    History_New_UI_data *hd = evas_object_data_get(OBJ, HISTORY_DATA); \
    assert(hd != NULL);
+
+static void
+_update_ui_controls(History_New_UI_data *hd)
+{
+   if (hd->to_undo == 0)
+     {
+        elm_object_disabled_set(hd->btn_undo, true);
+        elm_object_disabled_set(hd->undo_cmbx , true);
+     }
+   else
+     {
+        elm_object_disabled_set(hd->btn_undo, false);
+        elm_object_disabled_set(hd->undo_cmbx, false);
+     }
+
+   if (hd->to_redo == 0)
+     {
+        elm_object_disabled_set(hd->btn_redo, true);
+        elm_object_disabled_set(hd->redo_cmbx, true);
+     }
+   else
+     {
+        elm_object_disabled_set(hd->btn_redo, false);
+        elm_object_disabled_set(hd->redo_cmbx, false);
+     }
+}
 
 /* first invoke this function, then second */
 static void
@@ -131,6 +159,7 @@ _undo_item_selected(void *data,
         hd->to_undo--;
         hd->to_redo++;
      }
+   _update_ui_controls(hd);
 }
 
 static void
@@ -159,6 +188,7 @@ _redo_item_selected(void *data,
         hd->to_redo--;
         hd->to_undo++;
      }
+   _update_ui_controls(hd);
 }
 
 void
@@ -169,6 +199,7 @@ history_ui_undo(Evas_Object *obj)
    hd->to_undo--;
    hd->to_redo++;
    history_undo(hd->history);
+   _update_ui_controls(hd);
 }
 
 void
@@ -179,6 +210,7 @@ history_ui_redo(Evas_Object *obj)
    hd->to_redo--;
    hd->to_undo++;
    history_redo(hd->history);
+   _update_ui_controls(hd);
 }
 
 void
@@ -187,6 +219,7 @@ history_ui_update(Evas_Object *obj)
    HISTORY_DATA_GET(obj);
    hd->to_redo = 0;
    hd->to_undo++;
+   _update_ui_controls(hd);
 }
 
 static void
@@ -224,6 +257,7 @@ history_ui_add(Evas_Object *parent, History *history)
    elm_object_style_set(btn, "undo");
    evas_object_show(btn);
    evas_object_smart_callback_add(btn, "clicked", _btn_undo_cb, hd);
+   hd->btn_undo = btn;
 
    Evas_Object *undo_layout = elm_layout_add(hd->layout);
    elm_layout_theme_set(undo_layout, "layout", "history", "control");
@@ -248,6 +282,7 @@ history_ui_add(Evas_Object *parent, History *history)
    elm_object_style_set(btn, "redo");
    evas_object_show(btn);
    evas_object_smart_callback_add(btn, "clicked", _btn_redo_cb, hd);
+   hd->btn_redo = btn;
 
    Evas_Object *redo_layout = elm_layout_add(hd->layout);
    elm_layout_theme_set(redo_layout, "layout", "history", "control");
@@ -267,5 +302,6 @@ history_ui_add(Evas_Object *parent, History *history)
    elm_object_part_content_set(redo_layout, "arrow", hd->redo_cmbx);
    elm_object_part_content_set(hd->layout, "redo", redo_layout);
 
+   _update_ui_controls(hd);
    return hd->layout;
 }
