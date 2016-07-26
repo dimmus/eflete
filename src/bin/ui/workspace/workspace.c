@@ -427,6 +427,7 @@ _zoom_controls_add(Workspace_Data *wd)
 #if HAVE_TIZEN
    elm_object_style_set(wd->toolbar.zoom.fit, "fit");
 #else
+   Evas_Object *img;
    IMAGE_ADD_NEW(wd->toolbar.zoom.fit, img, "icon", "fit")
    elm_object_part_content_set(wd->toolbar.zoom.fit, NULL, img);
 #endif
@@ -453,7 +454,6 @@ _zoom_controls_add(Workspace_Data *wd)
    evas_object_smart_callback_add(btn, "clicked", _btn_plus_zoom_cb, wd);
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", btn);
 #else
-   Evas_Object *img;
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
