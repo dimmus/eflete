@@ -1948,6 +1948,264 @@ group { name: "elm/layout/popup/1swallow_subtext";
       }
    }
 }
+group { name: "elm/layout/about/default";
+  images.image: "General/title_bg.png" COMP;
+  broadcast_signal: 0;
+   parts {
+      part { name: "header";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 510 90;
+            max: -1 90;
+            image.normal: "General/title_bg.png";
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 510 175;
+          //  max: 430 135;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "header";
+            }
+         }
+      }
+      part { name: "tizen_studio";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 13;
+            max: -1 13;
+            text {
+               text: "TIZEN STUDIO";
+               font: FN_B;
+               size: 12;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               offset: 28 20;
+               to: "header";
+            }
+            rel2 {
+               offset: -53 -1;
+               to: "header";
+            }
+         }
+      }
+      part { name: "CD.label";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 30;
+            max: -1 30;
+            text {
+               text: "Component Designer";
+               font: FN_B;
+               size: 23;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 10;
+               to: "tizen_studio";
+            }
+            rel2 {
+               to_x: "tizen_studio";
+               to_y: "header";
+            }
+         }
+      }
+      part { name: "ver.label";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 104 13;
+            max: 104 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "Version";
+               font: FN_B;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               offset: 28 21;
+               to: "bg";
+            }
+            rel2.to: "bg";
+         }
+      }
+      part { name: "ver.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 0 13;
+            max: -1 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "Cd-2016-06-27";
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 47 0;
+               to: "ver.label";
+            }
+            rel2 {
+               offset: -54 0;
+               to_x: "bg";
+               to_y: "ver.label";
+            }
+         }
+      }
+      part { name: "build.label";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 104 13;
+            max: 104 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "Build time";
+               font: FN_B;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 28 14;
+               to_x: "bg";
+               to_y: "ver.label";
+            }
+            rel2.to: "bg";
+         }
+      }
+      part { name: "build.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 0 13;
+            max: -1 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "BC10000-1818";
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 47 0;
+               to: "build.label";
+            }
+            rel2 {
+               offset: -54 0;
+               to_x: "bg";
+               to_y: "build.label";
+            }
+         }
+      }
+      part { name: "site.label";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 104 13;
+            max: 104 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "Tizen site";
+               font: FN_B;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 28 14;
+               to_x: "bg";
+               to_y: "build.label";
+            }
+            rel2.to: "bg";
+         }
+      }
+      part { name: "site.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 0 13;
+            max: -1 13;
+            color_class: "popup_helper_border";
+            text {
+               text: "http://tizen.org";
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 47 0;
+               to: "site.label";
+            }
+            rel2 {
+               offset: -54 0;
+               to_x: "bg";
+               to_y: "site.label";
+            }
+         }
+      }
+      part { name: "note.label";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 104 13;
+            max: 104 13;
+            color_class: "genlist_text_tree";
+            text {
+               text: "Release Note";
+               font: FN_B;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 28 14;
+               to_x: "bg";
+               to_y: "site.label";
+            }
+            rel2.to: "bg";
+         }
+      }
+      part { name: "note.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 0 13;
+            max: -1 13;
+            color_class: "popup_helper_border";
+            text {
+               text: "http://xx.xx.xx";
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 47 0;
+               to: "note.label";
+            }
+            rel2 {
+               offset: -54 0;
+               to_x: "bg";
+               to_y: "note.label";
+            }
+         }
+      }
+   }
+}
 
 #include "layouts/manager.edc"
 #include "layouts/colorclass_manager.edc"

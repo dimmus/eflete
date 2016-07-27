@@ -174,6 +174,7 @@ ui_main_window_add(void)
    return true;
 }
 
+#if !HAVE_TIZEN
 Evas_Object *
 _about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
 {
@@ -217,6 +218,27 @@ about_window_add(void)
    return NULL;
 }
 
+#else
+Evas_Object *
+_about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
+{
+  Evas_Object *layout = (Evas_Object *)data;
+  elm_layout_theme_set(layout, "layout", "about", "default");
+  evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+  return layout;
+}
+
+Evas_Object *
+about_window_add(void)
+{
+   Evas_Object *content = elm_layout_add(ap.win);
+   popup_want_action(_("About Component Designer"), NULL, _about_window_content_get, BTN_OK, NULL, content);
+   evas_object_del(content);
+   return NULL;
+}
+
+#endif
 static Evas_Object *
 _shortcuts_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
 {
