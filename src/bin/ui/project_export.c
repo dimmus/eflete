@@ -89,10 +89,10 @@ project_export_develop(void)
      popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
    else
      {
-        Eina_List *l;
+        Eina_List *l = NULL;
         l = eina_list_append(l, ap.path.export_edj);
         _export_dev(NULL, NULL, l);
-		eina_list_free(l);
+        eina_list_free(l);
      }
 
    buf = eina_strbuf_new();
