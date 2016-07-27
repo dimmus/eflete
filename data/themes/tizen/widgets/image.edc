@@ -71,6 +71,8 @@ IM("icon",     "group_navigator_sel","Group contents navigator/view_s_group_sel.
 IM("icon",     "group_navigator_mv", "Group contents navigator/view_s_group_mv.png",    16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "external",       "Custom/icon-external.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
 
+IM("icon",     "logo",    "General/cd_icon.png",    16 16,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "attention",      "Custom/attention.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "alias_link",     "WYSIWG/tool_loop_nor.png",     16 16,   0 0 0 0,    SCALE,   SOLID)

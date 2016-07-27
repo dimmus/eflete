@@ -439,8 +439,12 @@ colorclass_manager_add(void)
    mw_title_set(mng.win, _("Color class manager"));
    evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
+#if !HAVE_TIZEN
    ic = elm_icon_add(mng.win);
-   elm_icon_standard_set(ic, "color");
+   elm_icon_standard_set(ic, "image2");
+#else
+   IMAGE_ADD_NEW(mng.win, ic, "icon", "logo");
+#endif
    mw_icon_set(mng.win, ic);
    mng.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(mng.layout, "layout", "manager", "internal");

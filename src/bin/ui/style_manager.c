@@ -795,7 +795,12 @@ style_manager_add()
    mw_title_set(mng.win, _("Textblock style manager"));
    evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
+#if !HAVE_TIZEN
    ic = elm_icon_add(mng.win);
+   elm_icon_standard_set(ic, "image2");
+#else
+   IMAGE_ADD_NEW(mng.win, ic, "icon", "logo");
+#endif
    elm_icon_standard_set(ic, "text2");
    mw_icon_set(mng.win, ic);
 

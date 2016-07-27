@@ -87,7 +87,6 @@ group { name: "elm/win/inwin/modal_window";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         clip_to: "icon_painter";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -99,14 +98,6 @@ group { name: "elm/win/inwin/modal_window";
                to_y: "elm.text.title";
             }
             rel2.to_y: "elm.text.title";
-         }
-      }
-      part { name: "icon_painter";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 138 237 255;
-            rel1.to: "elm.swallow.icon";
-            rel2.to: "elm.swallow.icon";
          }
       }
       part { name: "elm.swallow.close";
