@@ -1947,8 +1947,9 @@ void
 workspace_container_fit(Evas_Object *obj)
 {
    int w, h;
-   double zoom;
+   double zoom, c_zoom;
    int r, t, l, b;
+   int base_con, base_works;
    Scroll_Area *area;
    const Container_Geom *geom;
 
@@ -1961,11 +1962,15 @@ workspace_container_fit(Evas_Object *obj)
    evas_object_geometry_get(area->bg, NULL, NULL, &w, &h);
    geom = container_geom_get(area->container);
    container_padding_size_get(area->container, &r, &t, &l, &b);
+   c_zoom = workspace_zoom_factor_get(obj);
 
-   if (geom->w >= geom->h)
-     zoom = (w - l - r) / (double)geom->w;
+   if (geom->w == geom->h)
+     base_con = geom->w;
    else
-     zoom = (h - t - b) / (double)geom->h;
+     base_con = (geom->w > geom->h) ? geom->w : geom->h;
+   base_works = (w >= h) ? h : w;
+
+   zoom = (base_works - l * 3) / ((double)base_con / c_zoom);
 
    workspace_zoom_factor_set(obj, zoom);
 }
