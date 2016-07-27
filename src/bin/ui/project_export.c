@@ -65,7 +65,7 @@ _export_dev(void *data __UNUSED__,
    eina_strbuf_append_printf(buf,
                              _("<font_size=16>A project file '%s' already exist."
                                "Do you want to replace it?</font_size>"), path);
-   if (!exist_permission_check(elm_fileselector_path_get(obj),
+   if (obj && !exist_permission_check(elm_fileselector_path_get(obj),
                                elm_fileselector_current_name_get(obj),
                                _("Export to develop edj-file"),
                                eina_strbuf_string_get(buf), EINA_TRUE))
@@ -85,7 +85,16 @@ project_export_develop(void)
 {
    Eina_Strbuf *buf;
 
-   popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
+   if (!ap.path.export_edj)
+     popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
+   else
+     {
+        Eina_List *l;
+        l = eina_list_append(l, ap.path.export_edj);
+        _export_dev(NULL, NULL, l);
+		eina_list_free(l);
+     }
+
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s-develop.edj", ap.project->name);
    popup_fileselector_file_set(eina_strbuf_string_get(buf));

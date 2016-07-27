@@ -109,6 +109,10 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_FILE_SAVE:
          project_save();
+#if HAVE_TIZEN
+         if (ap.path.export_edj)
+           project_export_develop();
+#endif
          break;
       case MENU_FILE_EXPORT_EDC_GROUP:
          project_export_edc_group();

@@ -31,6 +31,7 @@
 static char *file = NULL;
 static char *pro_name = NULL;
 static char *pro_path = NULL;
+static char *export_edj = NULL;
 static Eina_List *img_dirs = NULL;
 static Eina_List *snd_dirs = NULL;
 static Eina_List *fnt_dirs = NULL;
@@ -61,6 +62,7 @@ static const Ecore_Getopt options = {
    {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path to project directory")),
+      ECORE_GETOPT_STORE_STR(0, "export-edj", N_("Export file path")),
       ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
@@ -181,6 +183,7 @@ elm_main(int argc, char **argv)
    Ecore_Getopt_Value values[] = {
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
+     ECORE_GETOPT_VALUE_STR(export_edj),
      ECORE_GETOPT_VALUE_LIST(img_dirs),
      ECORE_GETOPT_VALUE_LIST(snd_dirs),
      ECORE_GETOPT_VALUE_LIST(fnt_dirs),
@@ -321,6 +324,7 @@ elm_main(int argc, char **argv)
           }
 
 run:
+        ap.path.export_edj = export_edj;
         if (!ui_main_window_add())
           {
              app_shutdown();
