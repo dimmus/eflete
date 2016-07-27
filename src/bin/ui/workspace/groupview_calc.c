@@ -530,7 +530,7 @@ _part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
         Evas_Coord ro_w, ro_h;
         ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
         evas_object_geometry_get(ro, NULL, NULL, &ro_w, &ro_h);
-        evas_object_resize(gp->proxy_part, ro_w, ro_h);
+        evas_object_resize(gp->proxy_part, ro_w * sd->zoom, ro_h * sd->zoom);
 
         x_align = edje_edit_state_text_align_x_get(sd->group->edit_object,
                                                    gp->part->name,
