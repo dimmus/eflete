@@ -367,6 +367,7 @@ _btn_minus_zoom_cb(void *data,
 
    wd->zoom_factor -= 0.5 ;
    elm_slider_value_set(wd->toolbar.zoom.slider, (int) (wd->zoom_factor * 100));
+   elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, (int)(wd->zoom_factor * 100));
 
    _members_zoom_set(wd);
 }
@@ -380,6 +381,7 @@ _btn_plus_zoom_cb(void *data,
 
    wd->zoom_factor += 0.5 ;
    elm_slider_value_set(wd->toolbar.zoom.slider, (int) (wd->zoom_factor * 100));
+   elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, (int)(wd->zoom_factor * 100));
 
    _members_zoom_set(wd);
 }
