@@ -516,7 +516,8 @@ _folder_del(const char *prefix)
           gm_group_del(ap.project, group);
         else
           {
-             msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
+             msg = eina_stringshare_printf(_("Can't delete layout \"%s\". "
+                                            "Please close a tab with given group."), group->name);
              popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
              eina_stringshare_del(msg);
           }
