@@ -216,7 +216,9 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
- 
-
-
+    color_class { name: "manager_content_border";
+      color: 204 204 204 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
 }

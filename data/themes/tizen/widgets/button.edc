@@ -1606,12 +1606,15 @@ group { name: "elm/button/base/minus_managers";
       image: "POP UP/library_btn_minus_nor.png" COMP;
       image: "POP UP/library_btn_minus_sel.png" COMP;
       image: "POP UP/library_btn_minus_mv.png" COMP;
+      image: "POP UP/library_btn_minus_dim.png" COMP;
    }
    parts {
       part { name: "icon";
          type: IMAGE;
          description { state: "default" 0.0;
+            min: 24 24;
             max: 24 24;
+            fixed: 1 1;
             image.normal: "POP UP/library_btn_minus_nor.png";
          }
          description { state: "clicked" 0.0;
@@ -1620,11 +1623,11 @@ group { name: "elm/button/base/minus_managers";
          }
          description { state: "hilighted" 0.0;
             inherit: "default" 0.00;
+            image.normal: "POP UP/library_btn_minus_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "clicked" 0.00;
-            color_class: "bg_scroller_disabled";
-            image.normal: "POP UP/library_btn_minus_mv.png";
+            image.normal: "POP UP/library_btn_minus_dim.png";
          }
       }
       part { name: "event";
@@ -1711,12 +1714,15 @@ group { name: "elm/button/base/plus_managers";
       image: "POP UP/library_btn_plus_nor.png" COMP;
       image: "POP UP/library_btn_plus_sel.png" COMP;
       image: "POP UP/library_btn_plus_mv.png" COMP;
+      image: "POP UP/library_btn_plus_dim.png" COMP;
    }
    parts {
       part { name: "icon";
          type: IMAGE;
          description { state: "default" 0.0;
+            min: 24 24;
             max: 24 24;
+            fixed: 1 1;
             image.normal: "POP UP/library_btn_plus_nor.png";
          }
          description { state: "clicked" 0.0;
@@ -1725,11 +1731,11 @@ group { name: "elm/button/base/plus_managers";
          }
          description { state: "hilighted" 0.0;
             inherit: "default" 0.00;
+            image.normal: "POP UP/library_btn_plus_mv.png";
          }
          description { state: "disabled" 0.0;
             inherit: "clicked" 0.00;
-            color_class: "bg_scroller_disabled";
-            image.normal: "POP UP/library_btn_plus_mv.png";
+            image.normal: "POP UP/library_btn_plus_dim.png";
          }
       }
       part { name: "event";

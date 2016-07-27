@@ -305,6 +305,8 @@ group { name: "elm/scroller/entry_single/default";
             visible: 0;
             align: 1.0 0.5;
             max: 0 -1;
+            min: 16 16;
+            max: 16 16;
             rel1.to: "bg";
             rel2 {
                offset: -2 -1;
@@ -425,6 +427,73 @@ group { name: "elm/scroller/entry_single/default";
       }
    }
 }
+
+group { name: "elm/scroller/entry_single/search";
+   inherit: "elm/scroller/entry_single/default";
+   images {
+      image: "POP UP/library_search_info_mv.png" COMP;
+      image: "POP UP/library_search_info_sel.png" COMP;
+      image: "POP UP/library_search_info_nor.png" COMP;
+   }
+   parts {
+      part { name: "icon_search";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "POP UP/library_search_info_nor.png";
+            rel1.to: "elm.swallow.end";
+            rel2.to: "elm.swallow.end";
+            fill.smooth: 0;
+         }
+         description { state: "hovered" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "POP UP/library_search_info_mv.png";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "POP UP/library_search_info_sel.png";
+         }
+      }
+   }
+   programs {
+      program { name: "hovered";
+         signal: "mouse,in";
+         source: "events";
+         filter: "dummy" "default";
+         action: STATE_SET "hovered" 0.00;
+         target: "bg";
+         target: "icon_search";
+         target: "border";
+      }
+     program { name: "unhovered";
+         signal: "mouse,out";
+         source: "events";
+         filter: "dummy" "default";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "border";
+         target: "icon_search";
+      }
+     program { name: "focused";
+         signal: "elm,action,focus";
+         source: "elm";
+         action: STATE_SET "focused" 0.00;
+         target: "bg";
+         target: "dummy";
+         target: "border";
+         target: "icon_search";
+      }
+      program { name: "unfocused";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "dummy";
+         target: "border";
+         target: "icon_search";
+      }
+   }
+}
+
 
 group { name: "elm/scroller/entry_single/fileselector/default";
    inherit: "elm/scroller/entry_single/default";

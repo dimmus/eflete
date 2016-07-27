@@ -413,14 +413,20 @@ _find_next_cb(void *data __UNUSED__,
 static inline Evas_Object *
 _image_manager_search_field_create(Evas_Object *parent)
 {
-   Evas_Object *entry, *icon;
+   Evas_Object *entry;
 
    assert(parent != NULL);
 
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
+#if !HAVE_TIZEN
+   Evas_Object *icon;
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
+#else
+   elm_object_style_set(entry, "search");
+#endif
+
    return entry;
 }
 

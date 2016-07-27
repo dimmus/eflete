@@ -6,44 +6,44 @@ group { name: "elm/layout/manager/internal";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 0 1;
-            max: -1 19;
+            max: -1 13;
             color_class: "genlist_text_tree";
             text {
-               font: FN;
+               font: "Breeze";
                size: 13;
                max: 1 0;
             }
-            rel2.offset: -7 -1;
+            rel1.to_x: "border";
+            rel2.to_x: "border";
          }
       }
-      part { name: "border_preview";
+      part { name: "border";
          type: RECT;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            max: -1 173;
-            color: 204 204 204 255;
+            min: 549 480;
+            max: 549 480;
+            color_class: "manager_content_border";
             rel1 {
                relative: 0.0 1.0;
                offset: 0 8;
                to_y: "elm.text";
             }
-            rel2.offset: -1 -1;
          }
       }
-      part { name: "bg_preview";
+      part { name: "bg";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 1 1;
-            max: -1 173;
             rel1 {
                offset: 1 1;
-               to: "border_preview";
+               to: "border";
             }
             rel2 {
                offset: -2 -2;
-               to: "border_preview";
+               to: "border";
             }
          }
       }
@@ -53,81 +53,27 @@ group { name: "elm/layout/manager/internal";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 1 1;
-            max: -1 173;
-            rel1 {
-               offset: 1 1;
-               to: "border_preview";
-            }
-            rel2 {
-               offset: -2 -2;
-               to: "border_preview";
-            }
+            min: 0 171;
+            max: -1 171;
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
       }
-      part { name: "border_list";
+      part { name: "preview_bottom_line";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
+            align: 0.5 1.0;
             fixed: 0 1;
-            color: 204 204 204 255;
+            min: 0 2;
+            max: -1 2;
+            color_class: "separator";
             rel1 {
-               relative: 0.0 1.0;
-               to_y: "elm.swallow.search";
-            }
-            rel2.offset: -1 -1;
-         }
-      }
-      part { name: "elm.swallow.list";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            rel1 {
-               offset: 1 1;
-               to: "border_list";
-            }
-            rel2 {
-               offset: -2 -2;
-               to: "border_list";
-            }
-         }
-      }
-      part { name: "elm.swallow.btn_del";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 24 0;
-            max: 24 23;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 15;
+               to_x: "bg";
                to_y: "elm.swallow.preview";
             }
             rel2 {
-               offset: -1 -1;
-               to_y: "elm.swallow.search";
-            }
-         }
-      }
-      part { name: "elm.swallow.btn_add";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 24 23;
-            max: 24 23;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 15;
+               to_x: "bg";
                to_y: "elm.swallow.preview";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -6 -1;
-               to_x: "elm.swallow.btn_del";
-               to_y: "elm.swallow.search";
             }
          }
       }
@@ -136,17 +82,102 @@ group { name: "elm/layout/manager/internal";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            max: -1 30;
+            min: 466 24;
+            max: 466 24;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 10;
-               to_x: "elm.swallow.list";
-               to_y: "elm.swallow.preview";
+               offset: 11 10;
+               to_x: "bg";
+               to_y: "preview_bottom_line";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -10 4;
+               offset: -10 0;
+               to: "bg";
+            }
+         }
+      }
+      part { name: "border_list";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 249;
+            max: -1 249;
+            color_class: "manager_content_border";
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 12 5;
+               to_x: "bg";
+               to_y: "elm.swallow.search";
+            }
+            rel2 {
+               offset: -12 -1;
+               to: "bg";
+            }
+         }
+      }
+      part { name: "bg_list";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 1 1;
+               to: "border_list";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "border_list";
+            }
+         }
+      }
+      part { name: "elm.swallow.list";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            min: 0 247;
+            max: -1 247;
+            rel1.to: "bg_list";
+            rel2.to: "bg_list";
+         }
+      }
+      part { name: "elm.swallow.btn_del";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 24 24;
+            max: 24 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 5 0;
                to_x: "elm.swallow.btn_add";
+               to_y: "elm.swallow.search";
+            }
+            rel2 {
+               to_x: "elm.swallow.btn_add";
+               to_y: "elm.swallow.search";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_add";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 24 24;
+            max: 24 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 9 0;
+               to: "elm.swallow.search";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.search";
             }
          }
       }
