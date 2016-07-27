@@ -181,11 +181,26 @@ property_add(Evas_Object *parent, Property_Mode mode)
    property_common_itc_init(pd);
 
    pd->layout = elm_layout_add(parent);
-   elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
-#ifdef HAVE_TIZEN
+#if HAVE_TIZEN
    Evas_Object *icon;
-   IMAGE_ADD_NEW(pd->layout, icon, "navigator", "property");
-   elm_object_part_content_set(pd->layout, "elm.swallow.icon", icon);
+   switch (mode)
+     {
+      case PROPERTY_MODE_NONE:
+      case PROPERTY_MODE_DEMO:
+      case PROPERTY_MODE_GROUP:
+        elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
+        IMAGE_ADD_NEW(pd->layout, icon, "navigator", "property");
+        elm_object_part_content_set(pd->layout, "elm.swallow.icon", icon);
+      break;
+      case PROPERTY_MODE_STYLE:
+      case PROPERTY_MODE_COLOR_CLASS:
+      case PROPERTY_MODE_IMAGE:
+      case PROPERTY_MODE_SOUND:
+        elm_layout_theme_set(pd->layout, "layout", "manager", "property");
+      break;
+     }
+#else
+   elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
 #endif
    elm_object_text_set(pd->layout, "Property");
 

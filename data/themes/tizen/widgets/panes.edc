@@ -292,7 +292,7 @@ group { name: "elm/panes/vertical/manager";
          description { state: "default" 0.0;
             min: 15 0;
             max: 15 -1;
-            color: 244 244 244 255;
+            color_class: "manager_bg";
             rel1 {
                to: "bar";
             }
@@ -302,13 +302,9 @@ group { name: "elm/panes/vertical/manager";
          }
          description { state: "focused" 0.0;
             inherit: "default" 0.00;
-            color: 191 193 196 255;
-            rel1.offset: 0 0;
-            rel2.offset: -1 -1;
          }
          description { state: "clicked" 0.0;
             inherit: "focused" 0.00;
-            color: 185 187 190 255;
          }
       }
       part { name: "events";

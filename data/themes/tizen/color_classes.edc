@@ -221,4 +221,9 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
-}
+   color_class { name: "manager_bg";
+      color: 248 248 248 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+ }
