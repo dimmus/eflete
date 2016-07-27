@@ -307,10 +307,19 @@ _combobox_expanded_cb(void *data __UNUSED__,
 
 static void
 _combobox_dismissed_cb(void *data __UNUSED__,
-                            Evas_Object *obj,
-                            void *event_info __UNUSED__)
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
 {
    shortcuts_object_check_pop(obj);
+   TODO("remove this dirty hack");
+   /* after dissmissing combobox its entry remains focused.
+      this makes problems for shortcuts */
+   Evas_Object *focused = elm_object_focused_object_get(ap.win);
+   if (!strcmp("elm_entry", evas_object_type_get(focused)))
+     {
+        elm_object_focus_allow_set(focused, false);
+        elm_object_focus_set(focused, false);
+     }
 }
 
 static Evas_Object *
