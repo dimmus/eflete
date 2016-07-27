@@ -103,9 +103,15 @@ _validate()
        !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
        !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)) ||
        (widget_list && !_checked_get()))
-     elm_object_disabled_set(tab_edj.btn_create, true);
+     {
+        elm_object_disabled_set(tab_edj.btn_create, true);
+        elm_object_disabled_set(tab_edj.ch_all, true);
+     }
    else
-     elm_object_disabled_set(tab_edj.btn_create, false);
+     {
+        elm_object_disabled_set(tab_edj.btn_create, false);
+        elm_object_disabled_set(tab_edj.ch_all, false);
+     }
 }
 
 static void
@@ -572,6 +578,7 @@ _tab_import_edj_add(void)
    /* check all */
    CHECK_ADD(tab_edj.layout, tab_edj.ch_all);
    evas_object_smart_callback_add(tab_edj.ch_all, "changed", _on_check_all, NULL);
+   elm_object_disabled_set(tab_edj.ch_all, true);
    elm_object_part_content_set(tab_edj.layout, "swallow.all_widgets_check", tab_edj.ch_all);
    elm_object_part_text_set(tab_edj.layout, "label.widgets", _("Widgets:"));
 
