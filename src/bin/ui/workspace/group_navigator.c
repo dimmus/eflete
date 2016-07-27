@@ -86,27 +86,27 @@ typedef struct
 } Part_List;
 
 static char *part_types[] = {
-     N_("RECTANGLE"),
-     N_("TEXT"),
-     N_("IMAGE"),
-     N_("SWALLOW"),
-     N_("TEXTBLOCK"),
-     N_("GROUP"),
-     N_("BOX"),
-     N_("TABLE"),
-     N_("PROXY"),
-     N_("SPACER")
+     N_("Rectangle"),
+     N_("Text"),
+     N_("Image"),
+     N_("Swallow"),
+     N_("Textblock"),
+     N_("Group"),
+     N_("Box"),
+     N_("Table"),
+     N_("Proxy"),
+     N_("Spacer")
 };
 static const char *program_actions[] = {
-     N_("NONE"),
-     N_("STATE SET"),
-     N_("SIGNAL EMIT"),
-     N_("DRAG VALUE SET"),
-     N_("DRAG VALUE STEP"),
-     N_("DRAG VALUE PAGE"),
-     N_("PLAY SAMPLE"),
-     N_("PLAY TONE"),
-     N_("ACTION STOP"),
+     N_("None"),
+     N_("State set"),
+     N_("Signal emit"),
+     N_("Drag value set"),
+     N_("Drag value step"),
+     N_("Drag value page"),
+     N_("Play sample"),
+     N_("Play tone"),
+     N_("Action stop"),
      NULL
 };
 
