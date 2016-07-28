@@ -445,6 +445,7 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          signal: "mouse,down,1";
          source: "event";
          action: STATE_SET "selected" 0.00;
+         target: "elm.text";
          target: "bg_solid";
       }
       program { name: "mouse_up";
@@ -456,16 +457,13 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
-
-
-      new st[31];
-      new Float:vl;
-      get_state(PART:"elm.swallow.icon", st, 30, vl);
-      if (!strcmp(st, "visible")) {
-         set_state(PART:"elm.swallow.icon", "icononly", 0.0);
-      }
-      set_state(PART:"elm.text", "default", 0.0);
-                           }
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (!strcmp(st, "visible")) {
+               set_state(PART:"elm.swallow.icon", "icononly", 0.0);
+            }
+         }
       }
       program { name: "selected";
          signal: "elm,state,selected";
@@ -481,13 +479,7 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          target: "elm.text";
          target: "bg_solid";
       }
-      program { name: "text_show";
-         signal: "elm,state,text,visible";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "elm.text";
-      }
-      program { name: "icon_hide";
+     program { name: "icon_hide";
          signal: "elm,state,icon,hidden";
          source: "elm";
          action: STATE_SET "default" 0.00;
