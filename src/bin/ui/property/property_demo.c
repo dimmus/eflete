@@ -227,6 +227,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (demo_pd.part->content_style)
            eina_stringshare_del(demo_pd.part->content_style);
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
+         demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
