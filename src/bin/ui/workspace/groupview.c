@@ -185,6 +185,8 @@ _groupview_smart_move(Evas_Object *o,
    evas_object_move(sd->group->edit_object,x ,y);
    evas_object_move(sd->box, x, y);
 
+   sd->geom.x = x;
+   sd->geom.y = y;
    sd->zoom1.x = x;
    sd->zoom1.y = y;
 }
