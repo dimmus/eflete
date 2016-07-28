@@ -224,6 +224,7 @@ _about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
 {
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
+  elm_object_part_text_set(layout, "ver.text", VERSION);
   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
   return layout;
