@@ -42,9 +42,6 @@ static void
 _item_draw_del(Groupview_Item *ge_item);
 
 static void
-_part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp);
-
-static void
 _common_param_update(Groupview_Part *gp, Evas_Object *edit_obj);
 
 static void
@@ -1045,7 +1042,7 @@ _table_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
    PART_STATE_FREE
 }
 
-static void
+void
 _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    Eina_Stringshare *rel_to;
@@ -1140,7 +1137,6 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
    sd->protrusion.h = 0;
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
-        _part_object_area_calc(sd, gp);
         _part_calc(sd, gp);
         _part_update(sd, gp);
 
@@ -1160,6 +1156,7 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
 
    if (sd->selected)
      {
+        _part_object_area_calc(sd, sd->selected);
         evas_object_geometry_set(sd->highlight,
                                  sd->selected->geom.x,
                                  sd->selected->geom.y,

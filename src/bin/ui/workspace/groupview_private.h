@@ -136,6 +136,9 @@ _parts_stack_layout(Evas_Object          *o,
                     Evas_Object_Box_Data *p,
                     void                 *data);
 
+void
+_part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp);
+
 /**
  * Stack part below below in groupview module.
  * If part_below param is NULL, then part will restack below by one position,
