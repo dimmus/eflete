@@ -478,6 +478,7 @@ close:
    evas_object_del(layout_p.box);
    resource_name_validator_free(validator);
    validator = NULL;
+   layout_p.selected = NULL;
 }
 
 static void
