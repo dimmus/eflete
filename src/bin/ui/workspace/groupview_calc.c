@@ -1050,7 +1050,6 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    Eina_Stringshare *rel_to;
    int xc, yc, wc, hc;
-   int xg, yg, wg, hg; // groupview geometry
    int x = 0, w = 0, y = 0, h = 0;
    double relative;
    int offset;
@@ -1062,61 +1061,57 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
    PART_STATE_GET(sd->group->edit_object, gp->part->name)
    const char *name = gp->part->name;
 
-   evas_object_geometry_get(sd->group->edit_object, &xg, &yg, &wg, &hg);
-
-   xc = xg;
-   wc = wg;
+   xc = sd->geom.x;
+   wc = sd->geom.w;
    rel_to = edje_edit_state_rel1_to_x_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel1_relative_x_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel1_offset_x_get(sd->group->edit_object, name, state, value);
    if (rel_to)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
-        edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, &xc, NULL, &wc, NULL);
-        xc += xg;
+        evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
      }
-   x = (xc + (int)(wc * relative)) + offset;
+   x = xc + (int)(wc * relative) + offset;
    edje_edit_string_free(rel_to);
 
-   yc = yg;
-   hc = hg;
+   yc = sd->geom.y;
+   hc = sd->geom.h;
    rel_to = edje_edit_state_rel1_to_y_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel1_relative_y_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel1_offset_y_get(sd->group->edit_object, name, state, value);
    if (rel_to)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
-        edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, NULL, &yc, NULL, &hc);
-        yc += yg;
+        evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
      }
-   y = (yc + (int)(hc * relative)) + offset;
+   y = yc + (int)(hc * relative) + offset;
    edje_edit_string_free(rel_to);
 
-   xc = xg; wc = sd->geom.w;
+   xc = sd->geom.x;
+   wc = sd->geom.w;
    rel_to = edje_edit_state_rel2_to_x_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel2_relative_x_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel2_offset_x_get(sd->group->edit_object, name, state, value);
    if (rel_to)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
-        edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, &xc, NULL, &wc, NULL);
-        xc += xg;
+        evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
      }
-   w = ((xc - x) + (int)(wc * relative)) + offset + 1;
+   w = (xc - x) + (int)(wc * relative) + offset;
    if (w < 0) { x += w; w = 0; }
    edje_edit_string_free(rel_to);
 
-   yc = yg; hc = sd->geom.h;
+   yc = sd->geom.y;
+   hc = sd->geom.h;
    rel_to = edje_edit_state_rel2_to_y_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel2_relative_y_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel2_offset_y_get(sd->group->edit_object, name, state, value);
    if (rel_to)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
-        edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, NULL, &yc, NULL, &hc);
-        yc += yg;
+        evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
      }
-   h = ((yc - y) + (int)(hc * relative)) + offset + 1;
+   h = (yc - y) + (int)(hc * relative) + offset;
    if (h < 0) { y += h; h = 0; }
    edje_edit_string_free(rel_to);
 
