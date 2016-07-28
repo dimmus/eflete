@@ -140,79 +140,117 @@ group { name: "elm/layout/popup/hint";
    }
 }
 
-group { name: "elm/layout/popup/hint_title";
-   parts {
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1.offset: -9999 -9999;
-            rel2.offset: 9999 9999;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "border";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 138 238 255;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            rel1.offset: -1 -1;
-            rel2.offset: 0 0;
-         }
-      }
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 215 215 215 255;
-            rel1 {
-               to_y: "elm.text";
-               to_x: "elm.swallow.content";
-               offset: -7 -7;
-            }
-            rel2 {
-               to: "elm.swallow.content";
-               offset: 6 6;
+   group { name: "elm/layout/popup/hint_title";
+      parts {
+         part { name: "event";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.offset: -9999 -9999;
+               rel2.offset: 9999 9999;
             }
          }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            fixed: 1 1;
-            color_class: "main";
-            rel1 {
-               to_x: "elm.swallow.content";
-               offset: 0 6;
+         part { name: "border";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 138 238 255;
+               rel1.offset: -1 -1;
+               rel2.offset: 0 0;
             }
-            rel2 {
-               to: "elm.swallow.content";
-               relative: 1.0 0.0;
-               offset: 0 -7;
+         }
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 1 1;
+                  to: "border";
+               }
+               rel2 {
+                  offset: -2 -2;
+                  to: "border";
+               }
             }
-            text {
-               font: FN;
-               size: 16;
-               min: 1 1;
-               elipsis: -1;
+         }
+         part { name: "logo";
+            type: IMAGE;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               min: 16 16;
+               max: 16 16;
+               image.normal: "General/cd_icon.png";
+               fill.smooth: 0;
+               rel1 {
+                  offset: 10 7;
+                  to: "bg";
+               }
+               rel2.to: "bg";
+            }
+         }
+         part { name: "elm.text";
+            type: TEXT;
+            description { state: "default" 0.0;
+               align: 0.5 1.0;
+               fixed: 1 1;
+               color_class: "genlist_text_tree";
+               text {
+                  font: "Breeze";
+                  size: 13;
+                  min: 1 1;
+                  align: 0.0 0.5;
+                  ellipsis: -1.0;
+               }
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 8 0;
+                  to: "logo";
+               }
+               rel2 {
+                  to_x: "bg";
+                  to_y: "logo";
+               }
+            }
+         }
+         part { name: "separator";
+            type: RECT;
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               fixed: 0 1;
+               min: 0 1;
+               max: -1 1;
+               color_class: "separator";
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 7;
+                  to_x: "bg";
+                  to_y: "logo";
+               }
+               rel2 {
+                  to_x: "bg";
+                  to_y: "logo";
+               }
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "bg";
+                  to_y: "separator";
+               }
+               rel2.to: "bg";
             }
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
+      programs {
+         program { name: "dismiss";
+            signal: "mouse,up,*";
+            source: "event";
+            action: SIGNAL_EMIT "hint,dismiss" "eflete";
          }
       }
    }
-   programs {
-      program { name: "dismiss";
-         signal: "mouse,up,*";
-         source: "event";
-         action: SIGNAL_EMIT "hint,dismiss" "eflete";
-      }
-   }
-}
 
 group { name: "elm/layout/property/default";
    parts {

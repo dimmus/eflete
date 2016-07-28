@@ -612,15 +612,17 @@ group { name: "elm/entry/base-single/default";
 }
 
 group { name: "elm/entry/path/separator/default";
-   images.image: "Custom/entry-fileselector-separator.png" COMP;
+   images.image: "POP UP/route_arrow.png" COMP;
    parts {
       image { "icon"; nomouse;
          desc { "default";
-            image.normal: "Custom/entry-fileselector-separator.png";
-            min: 3 17;
-            max: 3 17;
+            image.normal: "POP UP/route_arrow.png";
+            min: 7 14;
+            max: 7 14;
             fixed: 1 1;
             rel1.offset: 3 0;
+            fill.smooth: 0;
+
          }
       }
    }
@@ -669,21 +671,17 @@ group { name: "elm/entry/selection/default";
 }
 
 group { name: "elm/entry/anchor/default";
-   images {
-      image: "Custom/entry-fileselector-href.png" COMP;
-   }
    parts {
       part { name: "bg";
-         type: IMAGE;
+         type: RECT;
          mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "Custom/entry-fileselector-href.png";
-            image.border: 0 4 0 0;
-            min: 4 17;
-            max: -1 17;
+            color: 255 255 255 0;
+            min: 4 14;
+            max: -1 14;
             fixed: 0 1;
             rel1.offset: -6 0;
-            rel2.offset: 10 -1;
+            rel2.offset: 15 -1;
          }
       }
    }

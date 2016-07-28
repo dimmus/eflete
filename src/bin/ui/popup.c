@@ -189,8 +189,13 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
      elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
 }
 
+#if HAVE_TIZEN
+#define FS_W 510
+#define FS_H 500
+#else
 #define FS_W 430
 #define FS_H 460
+#endif
 
 #define GENGRID_W 522
 #define GENGRID_H 388
@@ -415,6 +420,13 @@ _fileselector_helper(const char *title,
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_fileselector_add(ap.win);
+#if HAVE_TIZEN
+   /* Dirty Hack */
+   Evas_Object *files_list;
+   files_list = elm_object_part_content_get(fs, "elm.swallow.files");
+   elm_object_style_set(files_list, "manager");
+   /*------------*/
+#endif
    elm_fileselector_expandable_set(fs, false);
    elm_fileselector_is_save_set(fs, is_save);
    elm_fileselector_multi_select_set(fs, multi);

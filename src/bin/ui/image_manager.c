@@ -334,6 +334,15 @@ _image_add_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
+#if HAVE_TIZEN
+   popup_fileselector_image_helper(_("Choose image"),
+                                   NULL,
+                                   NULL,
+                                   _on_image_done,
+                                   data,
+                                   true,
+                                   false);
+#else
    popup_fileselector_image_helper(NULL,
                                    NULL,
                                    NULL,
@@ -341,6 +350,7 @@ _image_add_cb(void *data,
                                    data,
                                    true,
                                    false);
+#endif
 }
 
 static void
