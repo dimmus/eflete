@@ -130,7 +130,8 @@ _on_naviframe_text_check(void *data __UNUSED__,
    if (item_current != item_main)
      elm_naviframe_item_pop(obj);
 
-   elm_object_part_text_set(obj, part->name, part->text_content);
+   if (part->text_content)
+     elm_object_part_text_set(obj, part->name, part->text_content);
 }
 
 static void
@@ -182,7 +183,7 @@ widget_naviframe_create(Evas_Object *parent, const Group *group)
 
    it = elm_naviframe_item_push(nf, _("Page 1"), NULL, NULL, NULL, item_style_name);
    elm_object_item_part_text_set(it, "subtitle", _("Subtitle 1"));
-   elm_object_item_part_text_set(it, "title", _("Main Page"));
+   elm_object_item_part_text_set(it, "title1", _("Main Page"));
    evas_object_data_set(nf, "main_page", it);
 
    evas_object_smart_callback_add(nf, SIGNAL_DEMO_SWALLOW_SET, _on_naviframe_swallow_check, NULL);
