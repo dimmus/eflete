@@ -855,6 +855,9 @@ _ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
                                     Evas_Coord w,
                                     Evas_Coord h)
 {
+   Ewe_Ruler_Scale *scale;
+   Eina_List *l;
+
    if ((w == sd->geometry.width) && (h == sd->geometry.height)) return;
 
    sd->size_changed = EINA_TRUE;
@@ -864,6 +867,8 @@ _ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
    efl_canvas_group_resize(eo_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
+   EINA_LIST_FOREACH(sd->scales, l, scale)
+      evas_object_resize(scale->box, w, h);
 
    evas_object_smart_changed(obj);
 }
