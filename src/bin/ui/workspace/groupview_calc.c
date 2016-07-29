@@ -557,7 +557,7 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
          str = edje_edit_state_text_get(sd->group->edit_object, gp->part->name,
                                         gp->part->current_state->name,
                                         gp->part->current_state->val);
-         if (!str)
+         if (!str || !strcmp(str, ""))
            edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
          else
            edje_object_part_text_set(sd->group->edit_object, gp->part->name, str);
