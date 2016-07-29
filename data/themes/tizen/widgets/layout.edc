@@ -1813,10 +1813,14 @@ group { name: "elm/layout/groupview/object_area";
    parts {
       images {
          image: "Custom/bg_object_area.png" COMP;
+         image: "Custom/border_1.png" COMP;
       }
       part { name: "border";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
+            image.normal: "Custom/border_1.png";
+            image.middle: NONE;
+            image.border: 1 1 1 1;
             color_class: "border_focused";
          }
       }
@@ -1831,8 +1835,8 @@ group { name: "elm/layout/groupview/object_area";
             fill.type: TILE;
             rel1.to: "border";
             rel2.to: "border";
-            rel1.offset: -1 -1;
-            rel2.offset: 0 0;
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
          }
       }
    }
