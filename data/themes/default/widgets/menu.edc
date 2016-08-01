@@ -869,6 +869,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
    }
    parts {
       part { name: "base";
+         repeat_events: 1;
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -947,6 +948,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
       part { name: "pop";
          type: RECT;
          mouse_events: 1;
+         repeat_events: 1;
          description { state: "default" 0.0;
             visible: 0;
             fixed: 0 1;
@@ -962,6 +964,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
       }
       part { name: "elm.swallow.slot.middle";
          type: SWALLOW;
+         repeat_events: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.size";
             rel2.to: "elm.swallow.size";
