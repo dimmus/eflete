@@ -1238,7 +1238,7 @@ _init_items()
               IT.name = "Ellipsis";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK,
                        _("Enables or disables the ellipsis feature for text."));
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE,
+              _action2(&IT, NULL, "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE,
                        _("Sets the ellipsis mode. A value of 0 means ellipsizing "
                          "the leftmost portion of the text first, "
                          "1 on the other hand the rightmost portion."));
