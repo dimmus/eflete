@@ -563,7 +563,7 @@ _elipsis(void *data __UNUSED__,
          void *event_info __UNUSED__)
 {
    popup_fileselector_folder_helper(NULL,
-                                    tab_new.path,
+                                    NULL,
                                     elm_entry_entry_get(tab_new.path),
                                     entry_path_set,
                                     tab_new.path,

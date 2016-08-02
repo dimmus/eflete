@@ -110,7 +110,7 @@ _elipsis(void *data,
          void *event_info __UNUSED__)
 {
    popup_fileselector_folder_helper(NULL,
-                                    (Evas_Object *)data,
+                                    NULL,
                                     elm_entry_entry_get(data),
                                     entry_path_set,
                                     (Evas_Object *)data,
@@ -124,7 +124,7 @@ _elipsis_edc(void *data __UNUSED__,
              void *event_info __UNUSED__)
 {
    popup_fileselector_edc_helper(NULL,
-                                 tab_edc.edc,
+                                 NULL,
                                  NULL,
                                  entry_path_set,
                                  tab_edc.edc,
