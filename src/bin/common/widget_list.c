@@ -53,7 +53,7 @@ static const char *exception[] =
    NULL
 };
 
-const char *
+Eina_Stringshare *
 widget_name_get(const Eina_Stringshare *group_name)
 {
    int len = strlen(group_name);
@@ -72,10 +72,10 @@ widget_name_get(const Eina_Stringshare *group_name)
      }
    str[i - 4] = '\0';
 
-   return strdup(str);
+   return eina_stringshare_add(str);
 }
 
-const char *
+Eina_Stringshare *
 style_name_get(const Eina_Stringshare *group_name)
 {
    int len = strlen(group_name);
@@ -130,7 +130,7 @@ style_name_get(const Eina_Stringshare *group_name)
         style[i - first] = '\0';
      }
 
-   return strdup(style);
+   return eina_stringshare_add(style);
 }
 
 Eina_Stringshare *
@@ -244,8 +244,8 @@ widget_prefix_list_get(Eina_List *collections, const char *widget_name, const ch
    Eina_List *l, *list = NULL;
    Eina_Stringshare *group_name;
    char prefix[1024];
-   const char *widget = NULL;
-   const char *style = NULL;
+   Eina_Stringshare *widget = NULL;
+   Eina_Stringshare *style = NULL;
    int i, end = 0;
 
    EINA_LIST_FOREACH(collections, l, group_name)
@@ -262,9 +262,11 @@ widget_prefix_list_get(Eina_List *collections, const char *widget_name, const ch
                     prefix[i] = group_name[i];
                   prefix[i] = '\0';
 
-                  list = eina_list_append(list, strdup(prefix));
+                  list = eina_list_append(list, eina_stringshare_add(prefix));
                }
+             eina_stringshare_del(style);
           }
+        eina_stringshare_del(widget);
      }
    return list;
 }

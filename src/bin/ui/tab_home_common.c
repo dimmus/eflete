@@ -120,6 +120,8 @@ _group_copy(Project *pro, Eina_List *widgets)
                             gm_group_add(ap.project, cp_group_name, true);
                          }
                     }
+                  EINA_LIST_FREE(prefixs, prefix)
+                    eina_stringshare_del(prefix);
                }
           }
      }
