@@ -17,9 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "main_window.h"
 #include <Ecore_Getopt.h>
 #include <regex.h>
-#include "main_window.h"
 #include "project_navigator.h"
 #include "project_manager.h"
 #include "project_common.h"

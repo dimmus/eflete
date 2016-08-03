@@ -28,6 +28,10 @@
  * some functions that free/init base required components)
  */
 
+#ifndef EFL_BETA_API_SUPPORT
+   #define EFL_BETA_API_SUPPORT 1
+#endif
+
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
 #endif /* include eflete_config.h */

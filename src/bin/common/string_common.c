@@ -17,10 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "eflete.h"
 #include <string.h>
 #include <Eina.h>
 #include <assert.h>
-#include "eflete.h"
 
 int
 sort_cb(const void *data1, const void *data2)
