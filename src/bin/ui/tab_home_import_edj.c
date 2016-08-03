@@ -713,8 +713,11 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
           {
              EINA_LIST_FOREACH(node->list, l1, sub)
              {
-                if (strstr(sub->name, widget_name))
+                Eina_Stringshare *wname = widget_name_get(sub->name);
+
+                if (!strcmp(wname, widget_name))
                   _genlist_style_selected_set(sub, style_list, true);
+                eina_stringshare_del(wname);
              }
           }
         else
