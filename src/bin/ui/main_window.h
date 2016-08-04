@@ -148,6 +148,19 @@ typedef enum _Popup_Button
    BTN_APPEND     = (1 << 5)
 } Popup_Button;
 
+typedef enum _Popup_Current
+{
+   POPUP_NONE = 0,
+   POPUP_FILESELECTOR_SOUND_HELPER,
+   POPUP_FILESELECTOR_FOLDER_HELPER,
+   POPUP_FILESELECTOR_EDJ_HELPER,
+   POPUP_FILESELECTOR_EDC_HELPER,
+   POPUP_FILESELECTOR_IMAGE_HELPER,
+   POPUP_LOG_MESSAGE_HELPER,
+   POPUP_GENGRID_IMAGE_HELPER,
+   POPUP_COLORSELECTOR_HELPER
+} Popup_Current;
+
 /**
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
@@ -335,6 +348,13 @@ popup_want_action(const char *title,
                   Popup_Button p_btns,
                   Popup_Validator_Func func,
                   void *data);
+
+void
+popup_active_helper_close(void *data,
+                          Evas *e,
+                          Evas_Object *obj,
+                          void *event_info);
+
 /**
  * Disable the popup buttons.
  *

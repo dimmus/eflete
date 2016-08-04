@@ -73,5 +73,11 @@ property_image_selector_get(Evas_Object *parent)
    elm_entry_editable_set(content, false);
    evas_object_show(btn);
    evas_object_show(content);
+
+   evas_object_event_callback_add(content,
+                                  EVAS_CALLBACK_FREE,
+                                  popup_active_helper_close,
+                                  (void*)(uintptr_t)POPUP_FILESELECTOR_IMAGE_HELPER);
+
    return content;
 }

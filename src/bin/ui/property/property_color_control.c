@@ -85,6 +85,12 @@ property_color_control_add(Evas_Object *parent)
    elm_layout_theme_set(color, "image", "color", "color_set");
    elm_layout_signal_callback_add(control, "clicked", "eflete", _on_color_clicked, NULL);
    elm_layout_content_set(control, NULL, color);
+
+   evas_object_event_callback_add(control,
+                                  EVAS_CALLBACK_FREE,
+                                  popup_active_helper_close,
+                                  (void*)(uintptr_t)POPUP_COLORSELECTOR_HELPER);
+
    return control;
 }
 

@@ -37,6 +37,7 @@ static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
 static const Popup_Button _btn_cancel     = BTN_CANCEL;
 static Popup_Validator_Func validator     = NULL;
 static void *user_data                    = NULL;
+static Popup_Current current;
 
 struct _Search_Data
 {
@@ -66,6 +67,7 @@ static void
 _delete_object_job(void *data)
 {
    evas_object_del(data);
+   current = POPUP_NONE;
 }
 
 static void
@@ -472,6 +474,7 @@ popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, cons
                                  Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, NULL);
+   current = POPUP_FILESELECTOR_FOLDER_HELPER;
 }
 
 static Eina_Bool
@@ -492,6 +495,7 @@ popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const c
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edj_filter);
+   current = POPUP_FILESELECTOR_EDJ_HELPER;
 }
 
 static Eina_Bool
@@ -512,6 +516,7 @@ popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const c
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edc_filter);
+   current = POPUP_FILESELECTOR_EDC_HELPER;
 }
 
 static Eina_Bool
@@ -541,6 +546,7 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
                                 Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _images_filter);
+   current = POPUP_FILESELECTOR_IMAGE_HELPER;
 }
 
 static Eina_Bool
@@ -569,6 +575,7 @@ popup_fileselector_sound_helper(const char *title, Evas_Object *follow_up, const
                                 Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _sounds_filter);
+   current = POPUP_FILESELECTOR_SOUND_HELPER;
 }
 
 void
@@ -783,6 +790,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    evas_object_del(helper);
    helper = elm_layout_add(ap.win);
+   current = POPUP_GENGRID_IMAGE_HELPER;
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
    evas_object_data_set(helper, "STRUCT", helper_data);
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
@@ -890,6 +898,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_del(helper);
    helper = elm_layout_add(ap.win);
 
+   current = POPUP_COLORSELECTOR_HELPER;
 #if HAVE_TIZEN
    elm_layout_theme_set(helper, "layout", "popup", "colorselector");
 #else
@@ -958,6 +967,7 @@ popup_log_message_helper(const char *msg)
    Evas_Object *box, *en, *lab;
 
    helper = elm_layout_add(ap.win);
+   current = POPUP_LOG_MESSAGE_HELPER;
    elm_layout_theme_set(helper, "layout", "popup", "hint");
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, ap.win);
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
@@ -978,6 +988,17 @@ popup_log_message_helper(const char *msg)
    _helper_win_follow(NULL, NULL, NULL, NULL);
    evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
    evas_object_show(helper);
+}
+
+void
+popup_active_helper_close(void *data,
+                          Evas *e __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Popup_Current request = ((Popup_Current)(uintptr_t)data);
+   if (request == current)
+     elm_layout_signal_emit(helper, "hint,dismiss", "eflete");
 }
 
 #undef FS_W

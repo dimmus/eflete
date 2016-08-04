@@ -229,6 +229,11 @@ property_image_tween_control_add(Evas_Object *parent)
                                   item);
    elm_layout_content_set(item, "elm.swallow.del", button);
 
+   evas_object_event_callback_add(item,
+                                  EVAS_CALLBACK_FREE,
+                                  popup_active_helper_close,
+                                  (void*)(uintptr_t)POPUP_GENGRID_IMAGE_HELPER);
+
    evas_object_show(tween_list);
 
    return item;
