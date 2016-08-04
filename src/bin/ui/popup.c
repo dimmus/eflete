@@ -649,6 +649,12 @@ _image_gengrid_init(Helper_Data *helper_data)
 
    images = ap.project->images;
 
+   /* initial zero image */
+   it = (Item *)mem_malloc(sizeof(Item));
+   it->image_name = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
+   it->source = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
+   elm_gengrid_item_append(helper_data->gengrid, gic, it, NULL, NULL);
+
    if (images)
      {
         EINA_LIST_FOREACH(images, l, res)
@@ -682,6 +688,8 @@ _grid_label_get(void *data,
                 const char  *part __UNUSED__)
 {
    const Item *it = data;
+   if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) == 0)
+     return strdup("None");
    return strdup(it->image_name);
 }
 
@@ -704,10 +712,11 @@ _grid_content_get(void *data,
      {
         image_obj = elm_thumb_add(grid);
         elm_object_style_set(image_obj, "noframe");
-        elm_thumb_file_set(image_obj, it->source, NULL);
+        if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)
+          elm_thumb_file_set(image_obj, it->source, NULL);
         evas_object_show(image_obj);
      }
-   else if (!strcmp(part, "elm.swallow.end"))
+   else if ((!strcmp(part, "elm.swallow.end") && (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)))
      {
         request.resource_type = RESOURCE_TYPE_IMAGE;
         request.name = it->image_name;
