@@ -98,8 +98,10 @@ resource_cmp(Resource *res1, Resource *res2)
    /* stringshares */
    if (res1->name == res2->name)
      cmp = 0;
-   else
+   else if ((res1->name) && (res2->name))
      cmp = strcmp(res1->name, res2->name);
+   else
+     cmp = 1;
 
    if (!cmp && (res1->resource_type == RESOURCE_TYPE_STATE))
      {
