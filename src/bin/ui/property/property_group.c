@@ -923,10 +923,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
-         elm_spinner_min_max_set(action->control, -1, 1);
+         elm_spinner_min_max_set(action->control, 0.0, 99999);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
-         break;
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
       case ATTRIBUTE_STATE_ASPECT_MAX:
