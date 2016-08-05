@@ -90,10 +90,10 @@ static const char *font_width_list[] = { "Normal",
                                          "Ultracondensed",
                                          "Extracondensed",
                                          "Condensed",
-                                         "Extracondensed",
                                          "Semicondensed",
                                          "Semiexpanded",
                                          "Expanded",
+                                         "Extraexpanded",
                                          "Ultraexpanded",
                                          NULL};
 
