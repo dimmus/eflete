@@ -518,6 +518,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
    if (apply) \
      { \
        CRIT_ON_FAIL(edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)); \
+       CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
      } \

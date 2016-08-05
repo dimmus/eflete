@@ -223,6 +223,7 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -281,6 +282,7 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         CRIT_ON_FAIL(editor_save(edit_object));
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
@@ -322,6 +324,7 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, o4, o5, o6));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -360,6 +363,7 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, n4, o5, o6));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -398,6 +402,7 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, n5, o6));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -436,6 +441,7 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, o5, n6));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
