@@ -18,21 +18,15 @@
  */
 #define _GNU_SOURCE
 #include "project_manager.h"
+#include "project_manager_private.h"
 #include <fcntl.h>
 #ifndef _WIN32
 #include <sys/wait.h>
 #else
 #include <win32.h>
 #endif
-#define PROJECT_FILE_KEY      "project"
 
 #include "change.h"
-
-#define PROJECT_KEY_NAME         "edje/name"
-#define PROJECT_KEY_AUTHORS      "edje/authors"
-#define PROJECT_KEY_FILE_VERSION "edje/file_version"
-#define PROJECT_KEY_LICENSE      "edje/license"
-#define PROJECT_KEY_COMMENT      "edje/comment"
 
 #define THREAD_CONTEXT_SWITCH_BEGIN    ecore_thread_main_loop_begin()
 #define THREAD_CONTEXT_SWITCH_END      ecore_thread_main_loop_end()
@@ -53,36 +47,6 @@ typedef struct
    pid_t exe_pid;
    Ecore_Exe_Flags flags;
 } Edje_Exe_Data;
-
-/* A handler for Project process. */
-typedef struct
-{
-   /** The handler of Project thread. */
-   Eina_Thread thread;
-   /** The progress callback. See #PM_Project_Progress_Cb.*/
-   PM_Project_Progress_Cb func_progress;
-   /** The end callback. See #PM_Project_End_Cb. */
-   PM_Project_End_Cb func_end;
-   /** The project process result. */
-   PM_Project_Result result;
-   /** The user data. */
-   void *data;
-   /** The new project, was created in the Project process. This pointer will be
-    * NULL until the Project process finished it's job.*/
-   Project *project;
-   /** Name of project what must be created. */
-   const char *name;
-   /** Path to new project. */
-   const char *path;
-   /** Path to imported edj file. */
-   const char *edj;
-   /** Path to imported edc file. */
-   const char *edc;
-   /** edje_cc options. Used for 'new project' and 'import from edc'. */
-   const char *build_options;
-   /** The checked widgets. Used for loading just checked widgets. */
-   Eina_List *widgets;
-} Project_Thread;
 
 static Project_Thread worker;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
@@ -161,9 +125,8 @@ _project_dev_file_create(Project *pro)
    return result;
 }
 
-static Eet_Data_Descriptor *eed_project = NULL;
 
-static Eina_Bool
+Eina_Bool
 _lock_try(const char *path, Eina_Bool check)
 {
    struct flock lock, savelock;
@@ -191,7 +154,7 @@ _lock_try(const char *path, Eina_Bool check)
    return true;
 }
 
-static void
+void
 _project_descriptor_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
@@ -212,7 +175,7 @@ _project_descriptor_init(void)
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "fonts", res.fonts);
 }
 
-static void
+void
 _pm_project_descriptor_shutdown(void)
 {
    eet_data_descriptor_free(eed_project);
@@ -232,7 +195,7 @@ _progress_send(void *data)
    free(message);
 }
 
-static void
+void
 _end_send(void *data __UNUSED__)
 {
    PM_Project_End_Cb func;
@@ -396,7 +359,7 @@ _project_edj_file_copy(void)
    return result;
 }
 
-static void
+void
 _project_open_internal(Project *project)
 {
    assert(project != NULL);
@@ -422,7 +385,7 @@ _project_open_internal(Project *project)
    edje_file_cache_flush();
 }
 
-static void
+void
 _project_special_group_add(Project *project)
 {
    Evas *e;
@@ -448,7 +411,7 @@ _project_special_group_add(Project *project)
    THREAD_CONTEXT_SWITCH_END;
 }
 
-static void
+void
 _project_dummy_image_add(Project *project)
 {
    Evas *e;
