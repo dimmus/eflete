@@ -117,7 +117,6 @@ _teardown_save_splash(void *data __UNUSED__, Splash_Status status)
    ap.project->changed = false;
    pm_project_thread_free();
 
-   eflete_main_loop_quit();
    return true;
 }
 
@@ -140,7 +139,6 @@ project_save(void)
    if (!ap.enventor_mode)
 #endif /* HAVE_ENVENTOR */
      ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
-     eflete_main_loop_begin();
 }
 
 
