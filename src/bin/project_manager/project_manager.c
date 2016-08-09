@@ -889,7 +889,7 @@ _external_resources_export(Eina_List *resources, const char *dst)
    eina_strbuf_free(buf);
 }
 
-static void
+void
 _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const char *dst)
 {
    Eina_Strbuf *buf;
@@ -917,107 +917,6 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
    eina_strbuf_free(buf);
 }
 
-static void *
-_group_source_code_export(void *data, Eina_Thread *thread __UNUSED__)
-{
-   Eina_Stringshare *code;
-   FILE *f;
-   Group *group = (Group *)data;
-   Part *part;
-   State *state;
-   Eina_List *l, *ls;
-   Eina_Stringshare *resource;
-   Resource *res;
-   Eina_Strbuf *buf;
-   char *name;
-
-   PROGRESS_SEND(_("Generate group '%s' source code ..."), group->name);
-
-   name = strdup(group->name);
-   string_char_replace(name, '/', '_');
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "%s/%s", worker.path, name);
-   ecore_file_mkdir(eina_strbuf_string_get(buf));
-   eina_strbuf_reset(buf);
-
-   /* create and open file for collect the group source code */
-   eina_strbuf_append_printf(buf, "%s/%s/generated.edc", worker.path, name);
-   f = fopen(eina_strbuf_string_get(buf), "w");
-   if (!f)
-     {
-        ERR("Could't open file '%s'", eina_strbuf_string_get(buf))
-        END_SEND(PM_PROJECT_ERROR);
-        goto exit;
-     }
-
-   /* get the full source code of given project */
-   THREAD_CONTEXT_SWITCH_BEGIN;
-   code = edje_edit_source_generate(group->edit_object);
-   THREAD_CONTEXT_SWITCH_END;
-
-   fputs(code, f);
-   edje_edit_string_free(code);
-   fclose(f);
-
-   /* export images and fonts in accordance with parts  */
-   EINA_LIST_FOREACH(group->parts, l, part)
-     {
-        if (part->type == EDJE_PART_TYPE_IMAGE)
-          {
-             PROGRESS_SEND(_("Export images ..."));
-             eina_strbuf_reset(buf);
-             eina_strbuf_append_printf(buf, "%s/%s/images/", worker.path, name);
-             ecore_file_mkdir(eina_strbuf_string_get(buf));
-             EINA_LIST_FOREACH(part->states, ls, state)
-               {
-                  resource = edje_edit_state_image_get(group->edit_object, part->name, state->name, state->val);
-                  PROGRESS_SEND(_("Export image '%s'"), resource);
-                  _external_resource_export(worker.project->images, resource, eina_strbuf_string_get(buf));
-                  eina_stringshare_del(resource);
-               }
-          }
-        if (part->type == EDJE_PART_TYPE_TEXT)
-          {
-             PROGRESS_SEND(_("Export fonts ..."));
-             eina_strbuf_reset(buf);
-             eina_strbuf_append_printf(buf, "%s/%s/fonts/", worker.path, name);
-             ecore_file_mkdir(eina_strbuf_string_get(buf));
-             EINA_LIST_FOREACH(part->states, ls, state)
-               {
-                  resource = edje_edit_state_font_get(group->edit_object, part->name, state->name, state->val);
-                  Eina_Stringshare *font_res = edje_edit_font_path_get(group->edit_object, resource);
-                  PROGRESS_SEND(_("Export font '%s'"), font_res);
-                  _external_resource_export(worker.project->fonts, font_res, eina_strbuf_string_get(buf));
-                  eina_stringshare_del(resource);
-                  eina_stringshare_del(font_res);
-               }
-          }
-     }
-   PROGRESS_SEND(_("Export sounds ..."));
-   EINA_LIST_FOREACH(group->programs, l, res)
-     {
-        resource = edje_edit_program_sample_name_get(group->edit_object, res->name);
-        if (!resource) continue;
-
-        eina_strbuf_reset(buf);
-        eina_strbuf_append_printf(buf, "%s/%s/sounds/", worker.path, name);
-        ecore_file_mkdir(eina_strbuf_string_get(buf));
-        PROGRESS_SEND(_("Export sound '%s'"), res->name);
-        _external_resource_export(worker.project->sounds, resource, eina_strbuf_string_get(buf));
-        eina_stringshare_del(resource);
-     }
-
-   eina_strbuf_reset(buf);
-   eina_strbuf_append_printf(buf, "%s/%s/build.sh", worker.path, name);
-   _build_script_write(eina_strbuf_string_get(buf));
-
-   END_SEND(PM_PROJECT_SUCCESS);
-exit:
-   eina_strbuf_free(buf);
-   free(name);
-   return NULL;
-}
-
 void
 pm_group_source_code_export(Project *project,
                             Group *group,
@@ -1030,16 +929,21 @@ pm_group_source_code_export(Project *project,
    assert(group != NULL);
    assert(path != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, path, NULL, NULL, data, NULL);
+   Project_Thread *ptd;
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->path = eina_stringshare_add(path);
+   ptd->project = project;
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
+   ptd->group = group;
+   eina_lock_new(&ptd->mutex);
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_group_source_code_export, (void *)group))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   ecore_thread_feedback_run(_group_source_code_export_feedback_job, _group_source_code_export_feedback_cb,
+                             _group_source_code_export_end_cb, _group_source_code_export_cancel_cb, ptd,
+                             true);
 }
+
 
 void
 pm_project_source_code_export(Project *project,
