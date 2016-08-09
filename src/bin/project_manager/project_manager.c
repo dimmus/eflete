@@ -208,7 +208,7 @@ _ecore_exe_edje_exe(void *data)
    return NULL;
 }
 
-static Eina_Bool
+Eina_Bool
 _build_script_write(const char *path)
 {
    FILE *f;
@@ -864,7 +864,7 @@ pm_project_resource_export(Project *pro __UNUSED__, const char* dir_path __UNUSE
    return false;
 }
 
-static void
+void
 _external_resources_export(Eina_List *resources, const char *dst)
 {
    Eina_Strbuf *buf;
@@ -1041,84 +1041,6 @@ pm_group_source_code_export(Project *project,
      }
 }
 
-static Eina_Bool
-_project_src_export(const char *path)
-{
-   char *code;
-   Eina_Strbuf *buf;
-   FILE *f;
-
-   buf = eina_strbuf_new();
-   /* create a folder for collect the source files */
-   ecore_file_mkdir(path);
-   eina_strbuf_reset(buf);
-
-   /* create and open edc file for print the source code of collection (project) */
-   eina_strbuf_append_printf(buf, "%s/generated.edc", path);
-   f = fopen(eina_strbuf_string_get(buf), "w");
-   if (!f)
-     {
-        ERR("Could't open file '%s'", eina_strbuf_string_get(buf))
-        return false;
-     }
-   eina_strbuf_reset(buf);
-
-   /* get the full source code of given project */
-   THREAD_CONTEXT_SWITCH_BEGIN;
-   code = edje_edit_full_source_generate(worker.project->global_object);
-   THREAD_CONTEXT_SWITCH_END;
-
-   fputs(code, f);
-   free(code);
-   if (f) fclose(f);
-
-   /* export resource */
-   if (worker.project->images)
-     {
-        eina_strbuf_append_printf(buf, "%s/images/", path);
-        ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(worker.project->images, eina_strbuf_string_get(buf));
-        eina_strbuf_reset(buf);
-     }
-   if (worker.project->sounds)
-     {
-        eina_strbuf_append_printf(buf, "%s/sounds/", path);
-        ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(worker.project->sounds, eina_strbuf_string_get(buf));
-        eina_strbuf_reset(buf);
-     }
-   if (worker.project->fonts)
-     {
-        eina_strbuf_append_printf(buf, "%s/fonts/", path);
-        ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(worker.project->fonts, eina_strbuf_string_get(buf));
-        eina_strbuf_reset(buf);
-     }
-
-   eina_strbuf_reset(buf);
-   eina_strbuf_append_printf(buf, "%s/build.sh", path);
-   _build_script_write(eina_strbuf_string_get(buf));
-
-   eina_strbuf_free(buf);
-   return true;
-}
-
-static void *
-_source_code_export(void *data __UNUSED__, Eina_Thread *thread __UNUSED__)
-{
-   Eina_Strbuf *buf;
-
-   PROGRESS_SEND(_("Generate source code ..."));
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "%s/%s", worker.path, worker.project->name);
-   if (_project_src_export(eina_strbuf_string_get(buf)))
-     END_SEND(PM_PROJECT_SUCCESS)
-   else
-     END_SEND(PM_PROJECT_ERROR)
-   eina_strbuf_free(buf);
-   return NULL;
-}
-
 void
 pm_project_source_code_export(Project *project,
                               const char *path,
@@ -1129,15 +1051,21 @@ pm_project_source_code_export(Project *project,
    assert(project != NULL);
    assert(path != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, path, NULL, NULL, data, NULL);
+   Project_Thread *ptd;
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->path = eina_stringshare_add(path);
+   ptd->project = project;
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
+   eina_lock_new(&ptd->mutex);
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_source_code_export, NULL))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   ecore_thread_feedback_run(_project_source_code_export_feedback_job,
+                             _project_source_code_export_feedback_cb,
+                             _project_source_code_export_end_cb,
+                             _project_source_code_export_cancel_cb, ptd,
+                             true);
+
 }
 
 static void *
@@ -1154,11 +1082,12 @@ _release_export(void *data __UNUSED__,
    PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
 
    eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
-   if (!_project_src_export(tmp_dirname))
+/*   if (!_project_src_export(tmp_dirname))
      {
         END_SEND(PM_PROJECT_ERROR)
         goto exit0;
      }
+     */
    if (worker.func_progress)
      {
         cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, NULL);
@@ -1196,7 +1125,6 @@ _release_export(void *data __UNUSED__,
 
 exit1:
    eina_strbuf_free(cmd);
-exit0:
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
    return NULL;

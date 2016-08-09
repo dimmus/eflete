@@ -162,6 +162,16 @@ void _copy_meta_data_to_pro(Project_Thread *ptd);
  */
 Project *_project_files_create(Project_Thread *ptd);
 
+/* Export all items inside list resources into files.
+ * Exported files will be storet on dst destination
+ */
+void _external_resources_export(Eina_List *resources, const char *dst);
+
+/* Prepare build.sh script, that contanin
+ * instructions howto compile edc source back to edj file
+ */
+Eina_Bool _build_script_write(const char *path);
+
 /*------- Group tree load functions ---------*/
 void _gm_group_load_cancel_cb(void *data, Ecore_Thread *th);
 void _gm_group_load_end_cb(void *data, Ecore_Thread *th);
@@ -190,4 +200,9 @@ void _project_import_edj(void *data);
 /*------- Import form edc functions -----*/
 void _project_import_edc(Project_Thread *ptd);
 
+/*------- Export source -----------------*/
+void _project_source_code_export_cancel_cb(void *data, Ecore_Thread *th);
+void _project_source_code_export_end_cb(void *data, Ecore_Thread *th);
+void _project_source_code_export_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
+void _project_source_code_export_feedback_job(void *data, Ecore_Thread *th);
 #endif
