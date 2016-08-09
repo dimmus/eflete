@@ -31,7 +31,6 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
-Eet_Data_Descriptor *eed_project = NULL;
 
 /* A handler for Project process. */
 typedef struct
@@ -75,9 +74,27 @@ typedef struct
    Ecore_Event_Handler *error_handler;
    Ecore_Event_Handler *del_handler;
 
+   /** Desriptor for read data form eet file */
+   Eet_Data_Descriptor *eed_project;
+
    /** Mutext for resolve multithread resource usage */
    Eina_Lock mutex;
 } Project_Thread;
+
+/* A struture for pass data into ecore_exe callbacks */
+typedef struct
+{
+   /** Full command that was passed into exe_pipe. */
+   Eina_Stringshare *cmd;
+   /** A process handle to the spawned process.*/
+   Ecore_Exe *exe_cmd;
+   /** The process ID. */
+   pid_t exe_pid;
+   /** The flag parameters for how to deal with inter-process I/O. */
+   Ecore_Exe_Flags flags;
+   /** User data that will be passed into callback functions. */
+   void *data;
+} Edje_Exe_Data;
 
 
 /* General funcions */
@@ -90,10 +107,10 @@ typedef struct
 void _end_send(void *data);
 
 /* Prepare descriptor structure for reading *.pro file */
-void _project_descriptor_init(void);
+void _project_descriptor_init(Project_Thread *ptd);
 
 /* Destroy descriptor, that provide ability to read *.pro files */
-void _pm_project_descriptor_shutdown(void);
+void _pm_project_descriptor_shutdown(Project_Thread *ptd);
 
 /* Used for fill project structure with valid data.
  * Open shared file handler for a *.dev file.
@@ -129,6 +146,18 @@ void _project_special_group_add(Project *project);
  */
 void _project_dummy_image_add(Project *project);
 
+/* Copy current edj file into path, that stored for save */
+Eina_Bool _project_edj_file_copy(void);
+
+/* Direct read meta data from eet file and copy it
+ * inside *.pro file.
+ */
+void _copy_meta_data_to_pro(void);
+
+/* Allocate Project structure and prepare data
+ * for files tree of project.
+ */
+Project *_project_files_create(Project_Thread *ptd);
 
 /*------- Open Project functions --------*/
 void _project_open_cancel_cb(void *data, Ecore_Thread *th);
@@ -138,5 +167,8 @@ void _project_open_end_cb(void *data, Ecore_Thread *th);
 void _project_open_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
 
 void _project_open_feedback_job(void *data, Ecore_Thread *th);
+
+/*------- Import form edj functions -----*/
+void _project_import_edj(void *data);
 
 #endif

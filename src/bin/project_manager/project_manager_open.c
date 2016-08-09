@@ -26,7 +26,7 @@ _project_open_cancel_cb(void *data __UNUSED__, Ecore_Thread *th __UNUSED__)
    ERR("Project opening process canceled");
 
    /*Procedure of correct freing resources */
-   _pm_project_descriptor_shutdown();
+   _pm_project_descriptor_shutdown(ptd);
 
    ptd->result = PM_PROJECT_ERROR;
    _end_send(ptd);
@@ -53,7 +53,6 @@ _project_open_feedback_cb(void *data,
    ptd->func_progress(NULL, message);
    eina_stringshare_del(message);
 }
-
 
 void
 _project_open_feedback_job(void *data, Ecore_Thread *th)
@@ -87,11 +86,11 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
    message = eina_stringshare_printf(_("Opening project \"%s\""), ptd->path);
    ecore_thread_feedback(th, message);
 
-   _project_descriptor_init();
+   _project_descriptor_init(ptd);
    ef = eet_open(ptd->path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      {
-        _pm_project_descriptor_shutdown();
+        _pm_project_descriptor_shutdown(ptd);
         eina_lock_release(&ptd->mutex);
         ERR("Failed to open project file handler");
         ecore_thread_cancel(th);
@@ -101,8 +100,8 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
    message = eina_stringshare_add(_("Reading project descriptor"));
    ecore_thread_feedback(th, message);
 
-   ptd->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
-   _pm_project_descriptor_shutdown();
+   ptd->project = eet_data_read(ef, ptd->eed_project, PROJECT_FILE_KEY);
+   _pm_project_descriptor_shutdown(ptd);
    if (!ptd->project)
      {
         eina_lock_release(&ptd->mutex);
