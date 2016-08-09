@@ -558,68 +558,6 @@ _exe_data(void *data __UNUSED__,
    return ECORE_CALLBACK_PASS_ON;
 }
 
-static void *
-_project_import_edc(void *data,
-                    Eina_Thread *thread __UNUSED__)
-{
-//   Eina_Bool send_end_child;
-   Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
-
-   Eina_Tmpstr *tmp_dirname;
-   Ecore_Event_Handler *cb_msg_stdout = NULL,
-                       *cb_msg_stderr = NULL;
-   int edje_cc_res = 0, waitpid_res = 0;
-
-   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edc);
-   PROGRESS_SEND(_("Creating a specifiec file and folders"));
-   if (worker.func_progress)
-     {
-        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, NULL);
-        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, NULL);
-     }
-   eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
-   worker.edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
-   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
-   edje_cc_data->cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
-                                               worker.edc,
-                                               worker.edj,
-                                               worker.build_options);
-   edje_cc_data->flags  = ECORE_EXE_PIPE_READ |
-      ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-      ECORE_EXE_PIPE_ERROR |
-      ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   THREAD_TESTCANCEL;
-   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_cc_data);
-   THREAD_TESTCANCEL;
-   waitpid_res = waitpid(edje_cc_data->exe_pid, &edje_cc_res, 0);
-   eina_stringshare_del(edje_cc_data->cmd);
-   free(edje_cc_data);
-   if (worker.func_progress)
-     {
-        ecore_event_handler_del(cb_msg_stdout);
-        ecore_event_handler_del(cb_msg_stderr);
-     }
-
-   if ((waitpid_res == -1) ||
-       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
-     {
-        END_SEND(PM_PROJECT_ERROR);
-        return NULL;
-     }
-
-//   send_end_child = false;
-//   _project_import_edj(&send_end_child, NULL);
-
-   PROGRESS_SEND(_("Removing temporary files..."));
-   ecore_file_recursive_rm(tmp_dirname);
-   eina_tmpstr_del(tmp_dirname);
-   PROGRESS_SEND(_("Done."));
-
-   if (send_end) END_SEND(PM_PROJECT_SUCCESS)
-
-   return NULL;
-}
-
 void
 pm_project_import_edc(const char *name,
                       const char *path,
@@ -633,15 +571,18 @@ pm_project_import_edc(const char *name,
    assert(path != NULL);
    assert(edc != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, NULL,
-                 name, path, NULL, edc, import_options, NULL);
+   Project_Thread *ptd;
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
+   ptd->result = PM_PROJECT_LAST;
+   ptd->name = eina_stringshare_add(name);
+   ptd->path = eina_stringshare_add(path);
+   ptd->edc = eina_stringshare_add(edc);
+   ptd->build_options = eina_stringshare_add(import_options);
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_import_edc, NULL))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   _project_import_edc(ptd);
 }
 
 Eina_Bool

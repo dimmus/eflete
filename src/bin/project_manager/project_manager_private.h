@@ -180,14 +180,14 @@ void _resources_export_cancel_cb(void *data, Ecore_Thread *th);
 
 /*------- Open Project functions --------*/
 void _project_open_cancel_cb(void *data, Ecore_Thread *th);
-
 void _project_open_end_cb(void *data, Ecore_Thread *th);
-
 void _project_open_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
-
 void _project_open_feedback_job(void *data, Ecore_Thread *th);
 
 /*------- Import form edj functions -----*/
 void _project_import_edj(void *data);
+
+/*------- Import form edc functions -----*/
+void _project_import_edc(Project_Thread *ptd);
 
 #endif
