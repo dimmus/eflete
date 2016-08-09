@@ -957,6 +957,7 @@ pm_project_develop_export(Project *project,
 }
 
 #ifdef HAVE_ENVENTOR
+/*
 static void *
 _enventor_save(void *data __UNUSED__,
                Eina_Thread *thread __UNUSED__)
@@ -1078,7 +1079,7 @@ pm_project_enventor_save(Project *project,
         abort();
      }
 }
-
+*/
 #endif /* HAVE_ENVENTOR */
 
 Eina_Bool
