@@ -1055,79 +1055,6 @@ pm_project_release_export(Project *project,
      }
 }
 
-static void *
-_develop_export(void *data __UNUSED__,
-                Eina_Thread *thread __UNUSED__)
-{
-   Ecore_Event_Handler *cb_msg_stdout = NULL,
-                       *cb_msg_stderr = NULL;
-   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
-                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                            ECORE_EXE_PIPE_ERROR |
-                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   Eina_Tmpstr *tmp_filename = NULL;
-   Eina_Stringshare *cmd;
-   Eina_List *l;
-   Group *group;
-   Ecore_Exe *exe_cmd;
-   pid_t exe_pid;
-   int edje_pick_res = 0, waitpid_res = 0;
-
-   PROGRESS_SEND(_("Export project as develop file"));
-   PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
-   CRIT_ON_FAIL(editor_save_all(worker.project->global_object));
-
-   if (worker.func_progress)
-     {
-        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, NULL);
-        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, NULL);
-     }
-
-   if (!ecore_file_exists(worker.edj))
-     cmd = eina_stringshare_printf("edje_pick -o %s", worker.edj);
-   else
-     {
-        eina_file_mkstemp("eflete_export_XXXXXX", &tmp_filename);
-        cmd = eina_stringshare_printf("edje_pick -o %s", tmp_filename);
-        cmd = eina_stringshare_printf("%s -a %s", cmd, worker.edj);
-     }
-   cmd = eina_stringshare_printf("%s -i %s", cmd, worker.project->dev);
-
-   EINA_LIST_FOREACH(worker.project->groups, l, group)
-     {
-        cmd = eina_stringshare_printf("%s -g %s", cmd, group->name);
-     }
-   DBG("Run command for export: %s", cmd);
-   exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
-   exe_pid = ecore_exe_pid_get(exe_cmd);
-   THREAD_TESTCANCEL;
-   waitpid_res = waitpid(exe_pid, &edje_pick_res, 0);
-
-   if (worker.func_progress)
-     {
-        ecore_event_handler_del(cb_msg_stdout);
-        ecore_event_handler_del(cb_msg_stderr);
-     }
-
-   if ((waitpid_res == -1) ||
-       (WIFEXITED(edje_pick_res) && (WEXITSTATUS(edje_pick_res) != 0 )))
-     {
-        END_SEND(PM_PROJECT_ERROR);
-        return NULL;
-     }
-
-   if (tmp_filename)
-     {
-        ecore_file_recursive_rm(worker.edj);
-        ecore_file_mv(tmp_filename, worker.edj);
-     }
-
-   PROGRESS_SEND("Export done");
-
-   END_SEND(PM_PROJECT_SUCCESS);
-   return NULL;
-}
-
 void
 pm_project_develop_export(Project *project,
                           const char *path,
@@ -1138,15 +1065,17 @@ pm_project_develop_export(Project *project,
    assert(project != NULL);
    assert(path != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, path, NULL, data, NULL);
+   Project_Thread *ptd;
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_develop_export, NULL))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
+   ptd->project = project;
+   ptd->result = PM_PROJECT_LAST;
+   ptd->path = eina_stringshare_add(path);
+
+   _develop_export(ptd);
 }
 
 #ifdef HAVE_ENVENTOR
