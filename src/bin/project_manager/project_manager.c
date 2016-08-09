@@ -33,14 +33,6 @@
 #define THREAD_CONTEXT_SWITCH_END      ecore_thread_main_loop_end()
 
 static Eet_Compression compess_level = EET_COMPRESSION_HI;
-
-typedef struct
-{
-   Eina_Stringshare *str;
-   PM_Project_Progress_Cb func_print;
-   void *data;
-} Progress_Message;
-
 static Project_Thread worker;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS, WIDGET_LIST) \
@@ -65,29 +57,6 @@ static Project_Thread worker;
    eina_stringshare_del(worker.edj); \
    eina_stringshare_del(worker.edc); \
    eina_stringshare_del(worker.build_options); \
-}
-
-#define THREAD_TESTCANCEL pthread_testcancel()
-
-#define PROGRESS_SEND(FMT, ...) \
-{ \
-   if (worker.func_progress) \
-      { \
-         Progress_Message *message = mem_malloc(sizeof(Progress_Message)); \
-         message->str = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
-         message->func_print = worker.func_progress; \
-         message->data = worker.data; \
-         ecore_main_loop_thread_safe_call_async(_progress_send, message); \
-      } \
-}
-
-#define END_SEND(STATUS) \
-{ \
-   if (worker.func_end) \
-     { \
-        worker.result = STATUS; \
-        ecore_main_loop_thread_safe_call_async(_end_send, NULL); \
-     } \
 }
 
 static Eina_Bool
@@ -264,73 +233,6 @@ _gm_group_load_feedback_job(void *data, Ecore_Thread *th)
 
    gm_groups_load(project);
 }
-
-#define MKDIR(NAME) \
-   tmp = eina_stringshare_printf("%s/"#NAME, pro->develop_path); \
-   ecore_file_mkdir(tmp); \
-   pro->res.NAME = eina_list_append(pro->res.NAME, eina_stringshare_add(tmp)); \
-   eina_stringshare_del(tmp)
-
-Project *
-_project_files_create(Project_Thread *ptd)
-{
-   Project *pro;
-   Eina_Stringshare *folder_path, *pro_path, *tmp;
-   Eina_Bool error = false;
-
-   _project_descriptor_init(ptd);
-
-   folder_path = eina_stringshare_printf("%s/%s", ptd->path, ptd->name);
-   if (ecore_file_mkdir(folder_path))
-     {
-        DBG("Create the folder '%s' for new project '%s'", folder_path, ptd->name);
-     }
-   else
-     {
-        ERR("Could't create a project folder!");
-        error = true;
-     }
-   eina_stringshare_del(folder_path);
-   if (error) return NULL;
-
-   pro = (Project *)mem_calloc(1, sizeof(Project));
-   folder_path = eina_stringshare_printf("%s/%s", ptd->path, ptd->name);
-   pro->version = PROJECT_FILE_VERSION;
-   pro->name = eina_stringshare_add(ptd->name);
-   pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, ptd->name);
-   pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, ptd->name);
-   pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
-
-   pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, ptd->name);
-   pro->ef = eet_open(pro_path, EET_FILE_MODE_READ_WRITE);
-   ecore_file_mkdir(pro->develop_path);
-   MKDIR(images);
-   MKDIR(sounds);
-   MKDIR(fonts);
-   eina_stringshare_del(folder_path);
-
-   if (!eet_data_write(pro->ef, ptd->eed_project, PROJECT_FILE_KEY, pro, compess_level))
-     error = true;
-
-   DBG("Create a specific project file '%s': %s", pro_path, error ? "failed" : "success");
-   _pm_project_descriptor_shutdown(ptd);
-   eina_stringshare_del(pro_path);
-   if (error)
-     {
-        ERR("Could't create a .pro file! ")
-        eina_stringshare_del(pro->name);
-        eina_stringshare_del(pro->dev);
-        eina_stringshare_del(pro->saved_edj);
-        eina_stringshare_del(pro->develop_path);
-        free(pro);
-        pro = NULL;
-     }
-   else
-     eet_sync(pro->ef);
-
-   return pro;
-}
-#undef MKDIR
 
 void
 _copy_meta_data_to_pro(Project_Thread *ptd)
@@ -545,15 +447,9 @@ pm_project_import_edc(const char *name,
 Eina_Bool
 pm_project_thread_cancel()
 {
-   int ret;
-
-   ret = pthread_cancel((pthread_t)worker.thread);
-   if (ret)
-     return false;
-
-   END_SEND(PM_PROJECT_CANCEL);
+   TODO("Need to rework this function");
    DBG("Project Thread stoped by user!");
-   return true;
+   return false;
 }
 
 Eina_Bool

@@ -19,6 +19,76 @@
 #include "project_manager.h"
 #include "project_manager_private.h"
 
+static Eet_Compression compess_level = EET_COMPRESSION_HI;
+
+#define MKDIR(NAME) \
+   tmp = eina_stringshare_printf("%s/"#NAME, pro->develop_path); \
+   ecore_file_mkdir(tmp); \
+   pro->res.NAME = eina_list_append(pro->res.NAME, eina_stringshare_add(tmp)); \
+   eina_stringshare_del(tmp)
+
+static Project *
+_project_files_create(Project_Thread *ptd)
+{
+   Project *pro;
+   Eina_Stringshare *folder_path, *pro_path, *tmp;
+   Eina_Bool error = false;
+
+   _project_descriptor_init(ptd);
+
+   folder_path = eina_stringshare_printf("%s/%s", ptd->path, ptd->name);
+   if (ecore_file_mkdir(folder_path))
+     {
+        DBG("Create the folder '%s' for new project '%s'", folder_path, ptd->name);
+     }
+   else
+     {
+        ERR("Could't create a project folder!");
+        error = true;
+     }
+   eina_stringshare_del(folder_path);
+   if (error) return NULL;
+
+   pro = (Project *)mem_calloc(1, sizeof(Project));
+   folder_path = eina_stringshare_printf("%s/%s", ptd->path, ptd->name);
+   pro->version = PROJECT_FILE_VERSION;
+   pro->name = eina_stringshare_add(ptd->name);
+   pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, ptd->name);
+   pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, ptd->name);
+   pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
+
+   pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, ptd->name);
+   pro->ef = eet_open(pro_path, EET_FILE_MODE_READ_WRITE);
+   ecore_file_mkdir(pro->develop_path);
+   MKDIR(images);
+   MKDIR(sounds);
+   MKDIR(fonts);
+   eina_stringshare_del(folder_path);
+
+   if (!eet_data_write(pro->ef, ptd->eed_project, PROJECT_FILE_KEY, pro, compess_level))
+     error = true;
+
+   DBG("Create a specific project file '%s': %s", pro_path, error ? "failed" : "success");
+   _pm_project_descriptor_shutdown(ptd);
+   eina_stringshare_del(pro_path);
+   if (error)
+     {
+        ERR("Could't create a .pro file! ")
+        eina_stringshare_del(pro->name);
+        eina_stringshare_del(pro->dev);
+        eina_stringshare_del(pro->saved_edj);
+        eina_stringshare_del(pro->develop_path);
+        free(pro);
+        pro = NULL;
+     }
+   else
+     eet_sync(pro->ef);
+
+   return pro;
+}
+#undef MKDIR
+
+
 static Eina_Bool
 _data_from_edje_pick_cb(void *data,
                         int type __UNUSED__,

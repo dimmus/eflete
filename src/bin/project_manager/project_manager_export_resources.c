@@ -19,6 +19,9 @@
 #include "project_manager.h"
 #include "project_manager_private.h"
 /* --------------- Common functions ---------------------*/
+
+
+
 void
 _resources_export_feedback_cb(void *data __UNUSED__,
                              Ecore_Thread *th __UNUSED__,

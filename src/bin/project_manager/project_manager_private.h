@@ -31,7 +31,6 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
-
 /* A handler for Project process. */
 typedef struct
 {
@@ -156,11 +155,6 @@ Eina_Bool _project_edj_file_copy(Project_Thread *ptd);
  * inside *.pro file.
  */
 void _copy_meta_data_to_pro(Project_Thread *ptd);
-
-/* Allocate Project structure and prepare data
- * for files tree of project.
- */
-Project *_project_files_create(Project_Thread *ptd);
 
 /* Export all items inside list resources into files.
  * Exported files will be stored on dst destination
