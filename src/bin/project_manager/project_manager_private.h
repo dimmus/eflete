@@ -150,12 +150,12 @@ void _project_special_group_add(Project *project);
 void _project_dummy_image_add(Project *project);
 
 /* Copy current edj file into path, that stored for save */
-Eina_Bool _project_edj_file_copy(void);
+Eina_Bool _project_edj_file_copy(Project_Thread *ptd);
 
 /* Direct read meta data from eet file and copy it
  * inside *.pro file.
  */
-void _copy_meta_data_to_pro(void);
+void _copy_meta_data_to_pro(Project_Thread *ptd);
 
 /* Allocate Project structure and prepare data
  * for files tree of project.

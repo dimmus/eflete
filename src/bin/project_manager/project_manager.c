@@ -357,21 +357,21 @@ _project_files_create(Project_Thread *ptd)
 #undef MKDIR
 
 void
-_copy_meta_data_to_pro(void)
+_copy_meta_data_to_pro(Project_Thread *ptd)
 {
    Eet_File *ef;
    char *name, *authors, *version, *license, *comment;
 
-   ef = eet_open(worker.edj, EET_FILE_MODE_READ_WRITE);
+   ef = eet_open(ptd->edj, EET_FILE_MODE_READ_WRITE);
 
-   name = strdup(worker.name);
+   name = strdup(ptd->name);
    authors = eet_read(ef, PROJECT_KEY_AUTHORS, NULL);
    version = eet_read(ef, PROJECT_KEY_FILE_VERSION, NULL);
    license = eet_read(ef, PROJECT_KEY_LICENSE, NULL);
    comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
    eet_close(ef);
 
-   pm_project_meta_data_set(worker.project, name, authors,
+   pm_project_meta_data_set(ptd->project, name, authors,
                             version, license, comment);
 
    if (name) free(name);
@@ -382,13 +382,13 @@ _copy_meta_data_to_pro(void)
 }
 
 Eina_Bool
-_project_edj_file_copy(void)
+_project_edj_file_copy(Project_Thread *ptd)
 {
    Eina_Stringshare *src, *dst;
    Eina_Bool result;
 
-   src = eina_stringshare_ref(worker.edj);
-   dst = eina_stringshare_ref(worker.project->saved_edj);
+   src = eina_stringshare_ref(ptd->edj);
+   dst = eina_stringshare_ref(ptd->project->saved_edj);
    result = ecore_file_cp(src, dst);
 
    DBG("Copy the .edj file to project folder.");

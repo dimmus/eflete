@@ -61,10 +61,8 @@ _edje_pick_end_cb(void *data,
         return ECORE_CALLBACK_DONE;
      }
 
-   /* Replace void with ptd */
-   _project_edj_file_copy();
-   /* Replace void with ptd */
-   _copy_meta_data_to_pro();
+   _project_edj_file_copy(ptd);
+   _copy_meta_data_to_pro(ptd);
    _project_special_group_add(ptd->project);
    _project_dummy_image_add(ptd->project);
    _project_open_internal(ptd);
@@ -180,10 +178,8 @@ _project_import_edj(void *data)
         ptd->func_progress(NULL, msg);
         eina_stringshare_del(msg);
 
-        /* Replace void with ptd */
-        _project_edj_file_copy();
-        /* Replace void with ptd */
-        _copy_meta_data_to_pro();
+        _project_edj_file_copy(ptd);
+        _copy_meta_data_to_pro(ptd);
         _project_special_group_add(ptd->project);
         _project_dummy_image_add(ptd->project);
         _project_open_internal(ptd);
