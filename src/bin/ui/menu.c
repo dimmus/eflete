@@ -31,7 +31,7 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_EXPORT_EDC_PROJECT,
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
-/* MENU_FILE_EXPORT_RELEASE,*/
+   MENU_FILE_EXPORT_RELEASE,
    MENU_FILE_CLOSE_PROJECT,
    MENU_WINDOW_MANAGER_IMAGE,
    MENU_WINDOW_MANAGER_SOUND,
@@ -338,9 +338,6 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)
 
    elm_menu_item_separator_add(window_menu, menu->items[MENU_FILE_IMPORT_EDC]);
-
-   /* uncomment it, when release export will be implemented */
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
 
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);

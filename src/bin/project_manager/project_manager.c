@@ -197,17 +197,6 @@ _end_send(void *data)
    func(udata, result);
 }
 
-static void *
-_ecore_exe_edje_exe(void *data)
-{
-   Edje_Exe_Data *edje_exe_data = (Edje_Exe_Data *)data;
-
-   edje_exe_data->exe_cmd = ecore_exe_pipe_run(edje_exe_data->cmd, edje_exe_data->flags, NULL);
-   edje_exe_data->exe_pid = ecore_exe_pid_get(edje_exe_data->exe_cmd);
-
-   return NULL;
-}
-
 Eina_Bool
 _build_script_write(const char *path)
 {
@@ -538,25 +527,6 @@ pm_project_import_edj(const char *name,
    _project_import_edj(ptd);
 }
 
-static Eina_Bool
-_exe_data(void *data __UNUSED__,
-          int type __UNUSED__,
-          void *event)
-{
-   int i;
-   Ecore_Exe_Event_Data *ev = event;
-
-   if (ev->lines)
-     {
-        for (i = 0; ev->lines[i].line; i++)
-          {
-             DBG("%s", ev->lines[i].line);
-             PROGRESS_SEND("%s", ev->lines[i].line);
-          }
-     }
-
-   return ECORE_CALLBACK_PASS_ON;
-}
 
 void
 pm_project_import_edc(const char *name,
@@ -944,7 +914,6 @@ pm_group_source_code_export(Project *project,
                              true);
 }
 
-
 void
 pm_project_source_code_export(Project *project,
                               const char *path,
@@ -969,69 +938,6 @@ pm_project_source_code_export(Project *project,
                              _project_source_code_export_end_cb,
                              _project_source_code_export_cancel_cb, ptd,
                              true);
-
-}
-
-static void *
-_release_export(void *data __UNUSED__,
-                Eina_Thread *thread __UNUSED__)
-{
-   Eina_Tmpstr *tmp_dirname;
-   Eina_Strbuf *cmd;
-   Ecore_Event_Handler *cb_msg_stdout = NULL,
-                       *cb_msg_stderr = NULL;
-   int waitpid_res = 0, edje_cc_res = 0;
-
-   PROGRESS_SEND(_("Export project as release file"));
-   PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
-
-   eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
-/*   if (!_project_src_export(tmp_dirname))
-     {
-        END_SEND(PM_PROJECT_ERROR)
-        goto exit0;
-     }
-     */
-   if (worker.func_progress)
-     {
-        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, NULL);
-        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, NULL);
-     }
-   cmd = eina_strbuf_new();
-   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
-   eina_strbuf_append_printf(cmd, "edje_cc -v -id %s/images/ -sd %s/sounds/ -fd %s/fonts/ %s/generated.edc %s",
-                             tmp_dirname, tmp_dirname, tmp_dirname, tmp_dirname, worker.edj);
-   edje_cc_data->cmd = eina_stringshare_add(eina_strbuf_string_get(cmd));
-   edje_cc_data->flags  = ECORE_EXE_PIPE_READ |
-                          ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                          ECORE_EXE_PIPE_ERROR |
-                          ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   THREAD_TESTCANCEL;
-   ecore_main_loop_thread_safe_call_sync(_ecore_exe_edje_exe, edje_cc_data);
-   THREAD_TESTCANCEL;
-   waitpid_res = waitpid(edje_cc_data->exe_pid, &edje_cc_res, 0);
-   eina_stringshare_del(edje_cc_data->cmd);
-   free(edje_cc_data);
-   if (worker.func_progress)
-     {
-        ecore_event_handler_del(cb_msg_stdout);
-        ecore_event_handler_del(cb_msg_stderr);
-     }
-   if ((waitpid_res == -1) ||
-       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
-     {
-        END_SEND(PM_PROJECT_ERROR);
-        goto exit1;
-     }
-
-   PROGRESS_SEND("Export done");
-   END_SEND(PM_PROJECT_SUCCESS);
-
-exit1:
-   eina_strbuf_free(cmd);
-   ecore_file_recursive_rm(tmp_dirname);
-   eina_tmpstr_del(tmp_dirname);
-   return NULL;
 }
 
 void
@@ -1044,15 +950,15 @@ pm_project_release_export(Project *project,
    assert(project != NULL);
    assert(path != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, path, NULL, data, NULL);
+   Project_Thread *ptd;
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->path = eina_stringshare_add(path);
+   ptd->project = project;
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_release_export, NULL))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   _release_export(ptd);
 }
 
 void

@@ -112,3 +112,103 @@ _develop_export(Project_Thread *ptd)
    return;
 }
 
+/* Export release edj file */
+static Eina_Bool
+_data_from_edje_cc(void *data __UNUSED__,
+                   int type __UNUSED__,
+                   void *event_info)
+{
+   int i = 0;
+   Ecore_Exe_Event_Data *edje_cc_msg = (Ecore_Exe_Event_Data *)event_info;
+   Edje_Exe_Data *edje_cc_data = (Edje_Exe_Data*)data;
+   Project_Thread *ptd = (Project_Thread *)edje_cc_data->data;
+   if (!edje_cc_msg) return ECORE_CALLBACK_DONE;
+
+   for (i = 0; edje_cc_msg->lines[i].line != NULL; i++)
+         ptd->func_progress(NULL, edje_cc_msg->lines[i].line);
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static unsigned char
+_finish_from_release_edje_cc(void *data,
+                             int type __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Edje_Exe_Data *edje_cc_data = (Edje_Exe_Data *)data;
+   Project_Thread *ptd = (Project_Thread *)edje_cc_data->data;
+   Ecore_Exe_Event_Del *edje_cc_exit = (Ecore_Exe_Event_Del *)event_info;
+
+   eina_stringshare_del(edje_cc_data->cmd);
+   free(edje_cc_data);
+   if (edje_cc_exit->exit_code != 0)
+     {
+        ptd->result = PM_PROJECT_ERROR;
+        _end_send(ptd);
+        return ECORE_CALLBACK_DONE;
+     }
+
+   Eina_Stringshare *msg = eina_stringshare_printf(_("Data for importing prepared"));
+   ptd->func_progress(NULL, msg);
+   eina_stringshare_del(msg);
+
+   Eina_Stringshare *edj = eina_stringshare_printf("%s/out.edj", ptd->tmp_dirname);
+   ecore_file_cp(edj, ptd->tmp_path);
+   ptd->result = PM_PROJECT_SUCCESS;
+   _end_send(ptd);
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static void
+_project_source_code_release_export_end_cb(void *data,
+                                           Ecore_Thread *th __UNUSED__)
+{
+   Project_Thread *ptd = (Project_Thread *)data;
+
+   Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edc);
+   ptd->func_progress(NULL, msg);
+   eina_stringshare_del(msg);
+
+   ptd->edc = eina_stringshare_printf("%s/%s/generated.edc", ptd->tmp_dirname, ptd->project->name);
+   ptd->build_options = eina_stringshare_printf("-id \"%s/%s/images\" "
+                                                "-sd \"%s/%s/sounds\" "
+                                                "-fd \"%s/%s/fonts\" "
+                                                "-v",
+                                                ptd->tmp_dirname, ptd->project->name,
+                                                ptd->tmp_dirname, ptd->project->name,
+                                                ptd->tmp_dirname, ptd->project->name);
+
+   ptd->edj = eina_stringshare_printf("%s/out.edj", ptd->tmp_dirname);
+   Edje_Exe_Data *edje_cc_data = mem_malloc(sizeof(Edje_Exe_Data));
+   edje_cc_data->cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
+                                               ptd->edc,
+                                               ptd->edj,
+                                               ptd->build_options);
+   edje_cc_data->flags  = ECORE_EXE_PIPE_READ |
+      ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+      ECORE_EXE_PIPE_ERROR |
+      ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+   edje_cc_data->data = (void *)ptd;
+
+   edje_cc_data->exe_cmd = ecore_exe_pipe_run(edje_cc_data->cmd, edje_cc_data->flags, NULL);
+
+   ptd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _data_from_edje_cc, edje_cc_data);
+   ptd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _data_from_edje_cc, edje_cc_data);
+   ptd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_release_edje_cc, edje_cc_data);
+}
+
+void
+_release_export(Project_Thread *ptd)
+{
+   Eina_Stringshare *msg = eina_stringshare_printf(_("Export to file '%s'"), ptd->edj);
+   ptd->func_progress(NULL, msg);
+   eina_stringshare_del(msg);
+
+   eina_file_mkdtemp("eflete_build_XXXXXX", &ptd->tmp_dirname);
+   ptd->tmp_path = eina_stringshare_add(ptd->path);
+   ptd->path = eina_stringshare_add(ptd->tmp_dirname);
+   ecore_thread_feedback_run(_project_source_code_export_feedback_job, _project_source_code_export_feedback_cb,
+                             _project_source_code_release_export_end_cb, _project_source_code_export_cancel_cb, ptd,
+                             true);
+}

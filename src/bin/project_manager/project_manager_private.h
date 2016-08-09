@@ -219,4 +219,6 @@ void _group_source_code_export_cancel_cb(void *data, Ecore_Thread *th);
 /*------ Export edj binary--------------*/
 void _develop_export(Project_Thread *ptd);
 
+void _release_export(Project_Thread *ptd);
+
 #endif
