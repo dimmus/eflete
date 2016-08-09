@@ -158,19 +158,6 @@ _pm_project_descriptor_shutdown(Project_Thread *ptd)
    ptd->eed_project = NULL;
 }
 
-static void
-_progress_send(void *data)
-{
-   Progress_Message *message;
-
-   message = (Progress_Message *)data;
-   assert(message != NULL);
-
-   message->func_print(message->data, message->str);
-   eina_stringshare_del(message->str);
-   free(message);
-}
-
 void
 _end_send(void *data)
 {
@@ -618,24 +605,6 @@ pm_dev_file_reload(Project *pr)
    edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 }
 
-static void *
-_project_save(void *data __UNUSED__,
-              Eina_Thread *thread __UNUSED__)
-{
-   THREAD_CONTEXT_SWITCH_BEGIN;
-   PROGRESS_SEND(_("Save project '%s'"), worker.project->name);
-   CRIT_ON_FAIL(editor_save_all(worker.project->global_object));
-
-   ecore_file_cp(worker.project->dev, worker.project->saved_edj);
-
-   PROGRESS_SEND("Save done");
-
-   THREAD_CONTEXT_SWITCH_END;
-
-   END_SEND(PM_PROJECT_SUCCESS);
-   return NULL;
-}
-
 void
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
@@ -644,15 +613,18 @@ pm_project_save(Project *project,
 {
    assert(project != NULL);
 
-   WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, NULL, NULL, NULL, NULL);
+   Project_Thread *ptd;
+   ptd = mem_calloc(1, sizeof(Project_Thread));
+   ptd->func_progress = func_progress;
+   ptd->func_end = func_end;
+   ptd->data = (void *)data;
+   ptd->project = project;
+   eina_lock_new(&ptd->mutex);
 
-   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_save, NULL))
-     {
-        ERR("System error: can't create thread");
-        abort();
-     }
+   /* Launch save project routine inside thread with feedback */
+   ecore_thread_feedback_run(_project_save_feedback_job, _project_save_feedback_cb,
+                             _project_save_end_cb, _project_save_cancel_cb, ptd,
+                             true);
 }
 
 Eina_Bool

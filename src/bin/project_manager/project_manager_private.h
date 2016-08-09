@@ -199,6 +199,12 @@ void _project_open_end_cb(void *data, Ecore_Thread *th);
 void _project_open_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
 void _project_open_feedback_job(void *data, Ecore_Thread *th);
 
+/*------- Open Project functions --------*/
+void _project_save_cancel_cb(void *data, Ecore_Thread *th);
+void _project_save_end_cb(void *data, Ecore_Thread *th);
+void _project_save_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
+void _project_save_feedback_job(void *data, Ecore_Thread *th);
+
 /*------- Import form edj functions -----*/
 void _project_import_edj(void *data);
 
