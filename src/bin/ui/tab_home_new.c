@@ -492,7 +492,6 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 static Eina_Bool
 _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
-   pm_project_thread_free();
    ecore_file_recursive_rm(tab_new.tmp_dir_path);
    eina_stringshare_del(tab_new.tmp_dir_path);
    tab_new.tmp_dir_path = NULL;

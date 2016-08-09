@@ -93,7 +93,6 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 static Eina_Bool
 _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
-   pm_project_thread_free();
    return true;
 }
 

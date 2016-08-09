@@ -115,7 +115,6 @@ _teardown_save_splash(void *data __UNUSED__, Splash_Status status)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
    ap.project->changed = false;
-   pm_project_thread_free();
 
    return true;
 }

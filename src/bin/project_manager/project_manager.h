@@ -182,16 +182,6 @@ typedef void
 (* PM_Project_End_Cb)(void *data, PM_Project_Result result, Project *project);
 
 /**
- * Free the Project Thread object.
- *
- * @return EINA_TRUE on success, EINA_FALSE if thread running.
- *
- * @ingroup ProjectManager
- */
-Eina_Bool
-pm_project_thread_free(void);
-
-/**
  * Create a new project which based on the imported edj file.
  *
  * @param name The name of new project;

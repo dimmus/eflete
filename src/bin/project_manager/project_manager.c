@@ -33,31 +33,6 @@
 #define THREAD_CONTEXT_SWITCH_END      ecore_thread_main_loop_end()
 
 static Eet_Compression compess_level = EET_COMPRESSION_HI;
-static Project_Thread worker;
-#define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
-                      NAME, PATH, EDJ, EDC, BUILD_OPTIONS, WIDGET_LIST) \
-{ \
-   worker.func_progress = FUNC_PROGRESS; \
-   worker.func_end = FUNC_END; \
-   worker.data = (void *)DATA; \
-   worker.project = PROJECT; \
-   worker.result = PM_PROJECT_LAST; \
-   worker.name = eina_stringshare_add(NAME); \
-   worker.path = eina_stringshare_add(PATH); \
-   worker.edj = eina_stringshare_add(EDJ); \
-   worker.edc = eina_stringshare_add(EDC); \
-   worker.build_options = eina_stringshare_add(BUILD_OPTIONS); \
-   worker.widgets = WIDGET_LIST; \
-}
-
-#define WORKER_FREE() \
-{ \
-   eina_stringshare_del(worker.name); \
-   eina_stringshare_del(worker.path); \
-   eina_stringshare_del(worker.edj); \
-   eina_stringshare_del(worker.edc); \
-   eina_stringshare_del(worker.build_options); \
-}
 
 static Eina_Bool
 _project_dev_file_create(Project *pro)
@@ -450,13 +425,6 @@ pm_project_thread_cancel()
    TODO("Need to rework this function");
    DBG("Project Thread stoped by user!");
    return false;
-}
-
-Eina_Bool
-pm_project_thread_free()
-{
-   WORKER_FREE();
-   return true;
 }
 
 void
