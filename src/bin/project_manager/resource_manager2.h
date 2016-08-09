@@ -154,6 +154,7 @@ struct _Image
 
 /**************************************************/
 
+typedef struct _Resource Resource;
 typedef struct _Group Group;
 typedef struct _Part Part;
 typedef struct _Part_Item Part_Item;

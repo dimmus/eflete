@@ -82,6 +82,19 @@ struct _Project
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
+/*
+   Uncomment when structure filling will be done
+
+   struct {
+      Eina_List *images;
+      Eina_List *sounds;
+      Eina_List *tones;
+      Eina_List *fonts;
+      Eina_List *colorclasses;
+      Eina_List *styles;
+   } resource_manager;
+*/
+
    Eina_List *groups;
    Eina_List *images;
    Eina_List *sounds;

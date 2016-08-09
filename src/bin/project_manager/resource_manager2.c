@@ -19,9 +19,71 @@
 
 #include "resource_manager2.h"
 
-Eina_Bool
-resource_manager_init(Project *project __UNUSED__)
+static Eina_Bool __UNUSED__
+_resource_usage_resource_add(Resource *origin __UNUSED__, Resource *used __UNUSED__)
 {
+   return false;
+}
+
+
+static Eina_Bool __UNUSED__
+_resource_usage_resource_del(Resource *origin __UNUSED__, Resource *used __UNUSED__)
+{
+   return false;
+}
+
+/*********************************************/
+
+static Eina_Bool
+_image_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_sound_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_font_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_tones_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_colorclasses_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_styles_resources_load(Project *project __UNUSED__)
+{
+   return false;
+}
+
+/******************* public API ********************/
+
+Eina_Bool
+resource_manager_init(Project *project)
+{
+   _image_resources_load(project);
+   _sound_resources_load(project);
+   _font_resources_load(project);
+   _tones_resources_load(project);
+   _colorclasses_resources_load(project);
+   _styles_resources_load(project);
+
+//   gm_groups_load(project);
+
    return false;
 }
 
