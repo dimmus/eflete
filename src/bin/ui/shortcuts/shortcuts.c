@@ -233,6 +233,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
+   const char *obj_name;
 
    /*
     *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
@@ -264,6 +265,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
      }
 
    /* ignore hotkey if */
+   obj_name = evas_object_type_get(elm_object_focused_object_get(ap.win));
    if (/* it is without modifier or with shift-only */
       ((sc.modifiers == MOD_NONE) || (sc.modifiers == MOD_SHIFT)) &&
       /* is not F1 - F12 */
@@ -275,7 +277,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
          (sc.keycode == 104 /*KP_ENTER*/) ||
          (sc.keycode == 9 /*ESC*/)) ) &&
       /* elm_entry is in focus */
-      (!strcmp("elm_entry", evas_object_type_get(elm_object_focused_object_get(ap.win)))))
+      (obj_name ? (!strcmp("elm_entry", obj_name)) : false))
      {
         DBG("entry focused, ignoring hotkeys with MOD_SHIFT or MODE_NONE");
         return ECORE_CALLBACK_PASS_ON;
