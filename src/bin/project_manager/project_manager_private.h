@@ -96,6 +96,11 @@ typedef struct
    void *data;
 } Edje_Exe_Data;
 
+typedef struct {
+     int queue;
+     Eina_Lock mutex;
+     Eina_Condition condition;
+} Feedback_Thread_Data;
 
 /* General funcions */
 
@@ -117,10 +122,8 @@ void _pm_project_descriptor_shutdown(Project_Thread *ptd);
  * Create global edje_edit object.
  * Create and load all resource files.
  * Load Group tree structure.
- *
- * @param project - allocated structure that will be filled by valid data.
  */
-void _project_open_internal(Project *project);
+void _project_open_internal(Project_Thread *ptd);
 
 /* Try to lock *.pro file for avoid situations when two or more
  * instances of Eflete works with the same project in the same time.
@@ -158,6 +161,22 @@ void _copy_meta_data_to_pro(void);
  * for files tree of project.
  */
 Project *_project_files_create(Project_Thread *ptd);
+
+/*------- Group tree load functions ---------*/
+void _gm_group_load_cancel_cb(void *data, Ecore_Thread *th);
+void _gm_group_load_end_cb(void *data, Ecore_Thread *th);
+void _gm_group_load_feedback_job(void *data, Ecore_Thread *th);
+
+/*------- Export resources functions --------*/
+void _image_resources_feedback_job(void *data, Ecore_Thread *th);
+void _sound_resources_feedback_job(void *data, Ecore_Thread *th);
+void _font_resources_feedback_job(void *data, Ecore_Thread *th);
+void _tones_resources_feedback_job(void *data, Ecore_Thread *th);
+void _colorclasses_resources_feedback_job(void *data, Ecore_Thread *th);
+void _styles_resources_feedback_job(void *data, Ecore_Thread *th);
+void _resources_export_end_cb(void *data, Ecore_Thread *th);
+void _resources_export_feedback_cb(void *data, Ecore_Thread *th, void *msg_data);
+void _resources_export_cancel_cb(void *data, Ecore_Thread *th);
 
 /*------- Open Project functions --------*/
 void _project_open_cancel_cb(void *data, Ecore_Thread *th);

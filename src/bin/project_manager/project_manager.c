@@ -91,24 +91,6 @@ static Project_Thread worker;
 }
 
 static Eina_Bool
-_image_resources_load(Project *project);
-
-static Eina_Bool
-_sound_resources_load(Project *project);
-
-static Eina_Bool
-_font_resources_load(Project *project);
-
-static void
-_tones_resources_load(Project *project);
-
-static void
-_colorclasses_resources_load(Project *project);
-
-static void
-_styles_resources_load(Project *project);
-
-static Eina_Bool
 _project_dev_file_create(Project *pro)
 {
    Eina_Bool result;
@@ -190,17 +172,28 @@ _progress_send(void *data)
 }
 
 void
-_end_send(void *data __UNUSED__)
+_end_send(void *data)
 {
    PM_Project_End_Cb func;
+   Project_Thread *ptd = (Project_Thread *)data;
    PM_Project_Result result;
    void *udata;
 
    /** Copy the links to callback and meesage, to fast release worker resource. */
-   worker.func_progress = NULL;
-   func = worker.func_end;
-   result = worker.result;
-   udata = worker.data;
+   func = ptd->func_end;
+   result = ptd->result;
+   udata = ptd->data;
+   ecore_event_handler_del(ptd->del_handler);
+   ecore_event_handler_del(ptd->error_handler);
+   ecore_event_handler_del(ptd->data_handler);
+
+   if (ptd->tmp_dirname != NULL)
+     {
+        ecore_file_recursive_rm(ptd->tmp_dirname);
+        eina_tmpstr_del(ptd->tmp_dirname);
+     }
+
+   free(ptd);
    func(udata, result);
 }
 
@@ -240,6 +233,60 @@ _build_script_write(const char *path)
 exit:
    fclose(f);
    return res;
+}
+
+void
+_gm_group_load_cancel_cb(void *data,
+                         Ecore_Thread *th __UNUSED__)
+{
+   Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
+   Project_Thread *ptd = ecore_thread_global_data_find("ptd");
+   ecore_thread_global_data_del("ptd");
+   edje_file_cache_flush();
+   ptd->result = PM_PROJECT_ERROR;
+   ERR("Failed to load group tree.");
+
+   eina_lock_release(&ftd->mutex);
+   TODO("Remove static worker from this module");
+   worker.project = ptd->project;
+   free(ftd);
+   _end_send(ptd);
+}
+
+void
+_gm_group_load_end_cb(void *data,
+                      Ecore_Thread *th __UNUSED__)
+{
+   Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
+   Project_Thread *ptd = ecore_thread_global_data_find("ptd");
+   ecore_thread_global_data_del("ptd");
+   edje_file_cache_flush();
+   ptd->result = PM_PROJECT_SUCCESS;
+
+   eina_lock_release(&ftd->mutex);
+   TODO("Remove static worker from this module");
+   worker.project = ptd->project;
+   free(ftd);
+   _end_send(ptd);
+}
+
+void
+_gm_group_load_feedback_job(void *data, Ecore_Thread *th)
+{
+   Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
+   Project_Thread *ptd = ecore_thread_global_data_find("ptd");
+   if (!eina_lock_take(&ftd->mutex))
+     {
+       ERR("Failed access data");
+       ecore_thread_cancel(th);
+       return;
+     }
+   Project *project = (Project *) ptd->project;
+
+   Eina_Stringshare *message = eina_stringshare_printf(_("Load group tree"));
+   ecore_thread_feedback(th, message);
+
+   gm_groups_load(project);
 }
 
 #define MKDIR(NAME) \
@@ -351,9 +398,10 @@ _project_edj_file_copy(void)
 }
 
 void
-_project_open_internal(Project *project)
+_project_open_internal(Project_Thread *ptd)
 {
-   assert(project != NULL);
+   assert(ptd != NULL);
+   Project *project = ptd->project;
 
    _project_dev_file_create(project);
    project->mmap_file = eina_file_open(project->dev, false);
@@ -364,16 +412,52 @@ _project_open_internal(Project *project)
    project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
    edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 
-   _image_resources_load(project);
-   _sound_resources_load(project);
-   _font_resources_load(project);
-   _tones_resources_load(project);
-   _colorclasses_resources_load(project);
-   _styles_resources_load(project);
+   Feedback_Thread_Data *ftd;
+   ftd = mem_calloc(1, sizeof(Feedback_Thread_Data));
+   ftd->queue = 6;
+   eina_lock_new(&ftd->mutex);
+   ecore_thread_global_data_add("ptd", ptd, NULL, false);
+   /* Launch images load inside thread with feedback */
+   ecore_thread_feedback_run(_image_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
 
-   gm_groups_load(project);
+   /*------------------------------------------------*/
 
-   edje_file_cache_flush();
+   /* Launch sound load inside thread with feedback */
+   ecore_thread_feedback_run(_sound_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
+
+   /*------------------------------------------------*/
+
+   /* Launch font load inside thread with feedback */
+   ecore_thread_feedback_run(_font_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
+
+   /*------------------------------------------------*/
+
+   /* Launch tones load inside thread with feedback */
+   ecore_thread_feedback_run(_tones_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
+
+   /*------------------------------------------------*/
+
+   /* Launch colorclasses load inside thread with feedback */
+   ecore_thread_feedback_run(_colorclasses_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
+
+   /*------------------------------------------------*/
+
+   /* Launch colorclasses load inside thread with feedback */
+   ecore_thread_feedback_run(_styles_resources_feedback_job, _resources_export_feedback_cb,
+                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
+                             true);
+
+   /*------------------------------------------------*/
 }
 
 void
@@ -831,309 +915,6 @@ pm_project_meta_data_set(Project *project,
 
 #undef DATA_WRITE
    return res;
-}
-
-static Eina_Bool
-_image_resources_load(Project *project)
-{
-   External_Resource *res;
-   Eina_List *images;
-   Eina_Stringshare *resource_folder;
-   Eina_Stringshare *image_name, *source_file;
-   Eina_List *l;
-   Evas *e;
-   Evas_Object *im;
-   int id;
-   char *file_dir;
-   int im_total, im_proc;
-
-   assert(project != NULL);
-
-   resource_folder = eina_stringshare_printf("%s/images", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export images", resource_folder);
-        eina_stringshare_del(resource_folder);
-        return false;
-     }
-
-   images = edje_edit_images_list_get(project->global_object);
-
-   e = ecore_evas_get(project->ecore_evas);
-   im_total = eina_list_count(images);
-   im_proc = 0;
-   Edje_Edit_Image_Comp comp_type;
-   PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
-   EINA_LIST_FOREACH(images, l, image_name)
-     {
-        /* for supporting old themes, which were compilled
-         * with edje_cc version less than 1.10 */
-        if (!image_name) continue;
-
-        im_proc++;
-        PROGRESS_SEND(_("image processing (%d/%d): %s"),
-                      im_proc, im_total, image_name);
-
-        res = (External_Resource *) resource_add(image_name, RESOURCE_TYPE_IMAGE);
-        comp_type = edje_edit_image_compression_type_get(project->global_object,
-                                                         res->name);
-        if (comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-          res->source = eina_stringshare_add(image_name);
-        else
-          res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
-        resource_insert(&project->images, (Resource *)res);
-
-        if (!ecore_file_exists(res->source))
-          {
-             file_dir = ecore_file_dir_get(res->source);
-             ecore_file_mkpath(file_dir);
-             free(file_dir);
-             THREAD_CONTEXT_SWITCH_BEGIN;
-             im = evas_object_image_add(e);
-             id = edje_edit_image_id_get(project->global_object, image_name);
-             if (id < 0)
-               {
-                  WARN("Image %s coudn't be exported", image_name);
-                  THREAD_CONTEXT_SWITCH_END;
-                  continue;
-               }
-             source_file = eina_stringshare_printf("edje/images/%i", id);
-             evas_object_image_file_set(im, project->dev, source_file);
-             THREAD_CONTEXT_SWITCH_END;
-             evas_object_image_save(im, res->source, NULL, NULL);
-             THREAD_CONTEXT_SWITCH_BEGIN;
-             evas_object_del(im);
-             eina_stringshare_del(source_file);
-             THREAD_CONTEXT_SWITCH_END;
-          }
-     }
-
-   edje_edit_string_list_free(images);
-   eina_stringshare_del(resource_folder);
-   return true;
-}
-
-static Eina_Bool
-_sound_resources_load(Project *project)
-{
-   External_Resource *res;
-   Eina_List *sounds;
-   Eina_Stringshare *resource_folder;
-   Eina_Stringshare *sound_name, *sound_file;
-   Eina_List *l;
-   Eina_Binbuf *sound_bin;
-   FILE *f;
-   char *file_dir;
-   int snd_total, snd_proc;
-
-   assert(project != NULL);
-
-   resource_folder = eina_stringshare_printf("%s/sounds", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export sounds", resource_folder);
-        eina_stringshare_del(resource_folder);
-        return false;
-     }
-
-   sounds = edje_edit_sound_samples_list_get(project->global_object);
-
-   snd_total = eina_list_count(sounds);
-   snd_proc = 0;
-   PROGRESS_SEND(_("Start sound processing: total %d:"), snd_total);
-   EINA_LIST_FOREACH(sounds, l, sound_name)
-     {
-        sound_file = edje_edit_sound_samplesource_get(project->global_object, sound_name);
-        snd_proc++;
-        PROGRESS_SEND(_("sound processing (%d/%d): %s"),
-                      snd_proc, snd_total, sound_file);
-
-        res = (External_Resource*)resource_add(sound_name, RESOURCE_TYPE_SOUND);
-        res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
-        resource_insert(&project->sounds, (Resource *)res);
-
-        if (!ecore_file_exists(res->source))
-          {
-             file_dir = ecore_file_dir_get(res->source);
-             ecore_file_mkpath(file_dir);
-             free(file_dir);
-             sound_bin = edje_edit_sound_samplebuffer_get(project->global_object, sound_name);
-             if (!(f = fopen(res->source, "wb")))
-               {
-                  ERR("Could not open file: %s", res->source);
-                  continue;
-               }
-             if (fwrite(eina_binbuf_string_get(sound_bin),
-                        eina_binbuf_length_get(sound_bin), 1, f) != 1)
-               ERR("Could not write sound: %s", strerror(errno));
-             if (f) fclose(f);
-             eina_binbuf_free(sound_bin);
-          }
-        edje_edit_string_free(sound_file);
-     }
-
-   edje_edit_string_list_free(sounds);
-   eina_stringshare_del(resource_folder);
-   return true;
-}
-
-static Eina_Bool
-_font_resources_load(Project *project)
-{
-   External_Resource *res;
-   Eina_List *fonts;
-   Eina_Stringshare *resource_folder;
-   Eet_File *ef;
-   Eina_List *l;
-   Eina_Stringshare *font_name, *font_file;
-   void *font;
-   FILE *f;
-   int size, fnt_total, fnt_proc;
-
-   assert(project != NULL);
-
-   resource_folder = eina_stringshare_printf("%s/fonts", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export fonts", resource_folder);
-   eina_stringshare_del(resource_folder);
-        return false;
-     }
-
-   fonts = edje_edit_fonts_list_get(project->global_object);
-
-   ef = eet_open(project->dev, EET_FILE_MODE_READ);
-   fnt_total = eina_list_count(fonts);
-   fnt_proc = 0;
-   PROGRESS_SEND(_("Start font processing, total %d:"), fnt_total);
-   EINA_LIST_FOREACH(fonts, l, font_name)
-     {
-        font_file = edje_edit_font_path_get(project->global_object, font_name);
-        fnt_proc++;
-        PROGRESS_SEND(_("font processing (%d/%d): %s"),
-                      fnt_proc, fnt_total, font_file);
-
-        res = (External_Resource *)resource_add(font_file, RESOURCE_TYPE_FONT);
-        res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
-        resource_insert(&project->fonts, (Resource *)res);
-
-        if (!ecore_file_exists(res->source))
-          {
-             edje_edit_string_free(font_file);
-             font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
-             font = eet_read(ef, font_file, &size);
-             if (!font) continue;
-             if (!(f = fopen(res->source, "wb")))
-               {
-                  ERR("Could not open file: %s", res->source);
-                  continue;
-               }
-             if (fwrite(font, size, 1, f) != 1)
-               ERR("Could not write font: %s", strerror(errno));
-             if (f) fclose(f);
-             free(font);
-             eina_stringshare_del(font_file);
-          }
-     }
-   eet_close(ef);
-   edje_edit_string_list_free(fonts);
-   eina_stringshare_del(resource_folder);
-   return true;
-}
-
-static void
-_tones_resources_load(Project *project)
-{
-   Eina_List *tones, *l;
-   Tone_Resource *res;
-   Eina_Stringshare *name;
-   int tones_total, tones_proc = 0;
-
-   assert(project != NULL);
-
-   tones = edje_edit_sound_tones_list_get(project->global_object);
-   tones_total = eina_list_count(tones);
-
-   PROGRESS_SEND(_("Start tone processing, total %d:"), tones_total);
-   EINA_LIST_FOREACH(tones, l, name)
-     {
-        PROGRESS_SEND(_("tone processing (%d/%d): %s"),
-                      ++tones_proc, tones_total, name);
-
-        res = (Tone_Resource *)resource_add(name, RESOURCE_TYPE_TONE);
-        res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
-        resource_insert(&project->tones, (Resource *)res);
-     }
-
-   edje_edit_string_list_free(tones);
-}
-
-static void
-_colorclasses_resources_load(Project *project)
-{
-   Eina_List *colorclasses, *l;
-   Colorclass_Resource *res;
-   Eina_Stringshare *name;
-   int cc_total, cc_proc = 0;
-
-   assert(project != NULL);
-
-   colorclasses = edje_edit_color_classes_list_get(project->global_object);
-   cc_total = eina_list_count(colorclasses);
-
-   PROGRESS_SEND(_("Start colorclass processing, total %d:"), cc_total);
-   EINA_LIST_FOREACH(colorclasses, l, name)
-     {
-        PROGRESS_SEND(_("colorclass processing (%d/%d): %s"),
-                      ++cc_proc, cc_total, name);
-
-        res = (Colorclass_Resource *)resource_add(name, RESOURCE_TYPE_COLORCLASS);
-
-        if (!edje_edit_color_class_colors_get(project->global_object, name,
-                                              &res->color1.r, &res->color1.g, &res->color1.b, &res->color1.a,
-                                              &res->color2.r, &res->color2.g, &res->color2.b, &res->color2.a,
-                                              &res->color3.r, &res->color3.g, &res->color3.b, &res->color3.a))
-          {
-             eina_stringshare_del(res->name);
-             resource_free((Resource *)res);
-          }
-        else
-          resource_insert(&project->colorclasses, (Resource *)res);
-     }
-
-   edje_edit_string_list_free(colorclasses);
-}
-
-static void
-_styles_resources_load(Project *project)
-{
-   Eina_List *styles, *l;
-   Resource *res;
-   Eina_Stringshare *name;
-   int styles_total, styles_proc = 0;
-
-   assert(project != NULL);
-
-   styles = edje_edit_styles_list_get(project->global_object);
-   styles_total = eina_list_count(styles);
-
-   PROGRESS_SEND(_("Start style processing, total %d:"), styles_total);
-   EINA_LIST_FOREACH(styles, l, name)
-     {
-        PROGRESS_SEND(_("style processing (%d/%d): %s"),
-                      ++styles_proc, styles_total, name);
-
-        res = resource_add(name, RESOURCE_TYPE_STYLE);
-        resource_insert(&project->styles, res);
-     }
-
-   edje_edit_string_list_free(styles);
 }
 
 Eina_Bool

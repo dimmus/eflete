@@ -36,8 +36,7 @@ void
 _project_open_end_cb(void *data, Ecore_Thread *th __UNUSED__)
 {
    Project_Thread *ptd = (Project_Thread *)data;
-   /* Will replace with direct ptd pointer */
-   _project_open_internal(ptd->project);
+   _project_open_internal(ptd);
 }
 
 void
