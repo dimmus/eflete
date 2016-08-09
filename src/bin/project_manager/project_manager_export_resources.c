@@ -82,6 +82,8 @@ _image_save_routine(void *data)
 
    ids->im = evas_object_image_add(ids->e);
    evas_object_image_file_set(ids->im, ids->dev, ids->id);
+   evas_object_image_save(ids->im, ids->source, NULL, NULL);
+   evas_object_del(ids->im);
    eina_lock_release(&ids->mutex);
    return NULL;
 }
@@ -178,8 +180,6 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
              eina_lock_release(&ids->mutex);
              ecore_main_loop_thread_safe_call_sync(_image_save_routine, ids);
              eina_lock_take(&ids->mutex);
-             evas_object_image_save(ids->im, res->source, NULL, NULL);
-             evas_object_del(ids->im);
              eina_stringshare_del(source_file);
           }
      }
