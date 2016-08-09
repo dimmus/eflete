@@ -77,7 +77,7 @@ Eina_Bool
 entry_path_set(void *data, Evas_Object *obj, void *event_info);
 
 void
-_tabs_progress_end(void *data, PM_Project_Result result);
+_tabs_progress_end(void *data, PM_Project_Result result, Project *project);
 
 void
 _tab_default_focus(void *data, Evas *e, Evas_Object *obj, void *event_info);

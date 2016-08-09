@@ -430,7 +430,7 @@ _edc_code_generate(Eina_Stringshare *path)
 /* SPLASH */
 
 static void
-_progress_end(void *data, PM_Project_Result result)
+_progress_end(void *data, PM_Project_Result result, Project *project)
 {
    if (PM_PROJECT_SUCCESS == result)
      {
@@ -442,7 +442,7 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_new.meta.comment, N_("Created with Eflete!"));
         _checks_set(false);
      }
-   _tabs_progress_end(data, result);
+   _tabs_progress_end(data, result, project);
 }
 
 static Eina_Bool

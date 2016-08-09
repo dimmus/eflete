@@ -133,12 +133,14 @@ _end_send(void *data)
    PM_Project_End_Cb func;
    Project_Thread *ptd = (Project_Thread *)data;
    PM_Project_Result result;
+   Project *project;
    void *udata;
 
    /** Copy the links to callback and meesage, to fast release worker resource. */
    func = ptd->func_end;
    result = ptd->result;
    udata = ptd->data;
+   project = ptd->project;
    ecore_event_handler_del(ptd->del_handler);
    ecore_event_handler_del(ptd->error_handler);
    ecore_event_handler_del(ptd->data_handler);
@@ -150,7 +152,7 @@ _end_send(void *data)
      }
 
    free(ptd);
-   func(udata, result);
+   func(udata, result, project);
 }
 
 Eina_Bool
@@ -193,7 +195,6 @@ _gm_group_load_cancel_cb(void *data,
 
    eina_lock_release(&ftd->mutex);
    TODO("Remove static worker from this module");
-   worker.project = ptd->project;
    free(ftd);
    _end_send(ptd);
 }
@@ -210,7 +211,6 @@ _gm_group_load_end_cb(void *data,
 
    eina_lock_release(&ftd->mutex);
    TODO("Remove static worker from this module");
-   worker.project = ptd->project;
    free(ftd);
    _end_send(ptd);
 }
@@ -457,18 +457,6 @@ pm_project_thread_free()
 {
    WORKER_FREE();
    return true;
-}
-
-PM_Project_Result
-pm_project_thread_result_get(void)
-{
-   return worker.result;
-}
-
-Project *
-pm_project_thread_project_get()
-{
-   return worker.project;
 }
 
 void

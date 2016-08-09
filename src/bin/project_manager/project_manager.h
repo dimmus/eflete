@@ -179,7 +179,7 @@ typedef Eina_Bool
  * @ingroup ProjectManager
  */
 typedef void
-(* PM_Project_End_Cb)(void *data, PM_Project_Result result);
+(* PM_Project_End_Cb)(void *data, PM_Project_Result result, Project *project);
 
 /**
  * Free the Project Thread object.
@@ -190,16 +190,6 @@ typedef void
  */
 Eina_Bool
 pm_project_thread_free(void);
-
-/**
- * Get project result.
- *
- * @return project thread result.
- *
- * @ingroup ProjectManager
- */
-PM_Project_Result
-pm_project_thread_result_get(void);
 
 /**
  * Create a new project which based on the imported edj file.
@@ -253,17 +243,6 @@ pm_project_import_edc(const char *name,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
                       const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
-
-/**
- * Get the Project object from thread. If thread not finished, function will
- * return NULL.
- *
- * @return Project object, or NULL if thread not finished or finished with error.
- *
- * @ingroup ProjectManager
- */
-Project *
-pm_project_thread_project_get();
 
 /**
  * Open Eflete project.
