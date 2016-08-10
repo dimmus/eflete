@@ -164,6 +164,20 @@ struct _Sound2
    const char *source;
 };
 
+struct _Colorclass2
+{
+   Resource2_Internal common;
+   struct {
+      int r,g,b,a;
+   } color1;
+   struct {
+      int r,g,b,a;
+   } color2;
+   struct {
+      int r,g,b,a;
+   } color3;
+};
+
 /**************************************************/
 
 typedef struct _Resource2 Resource2;
@@ -178,6 +192,7 @@ typedef struct _Image2 Image2;
 typedef struct _Tone2 Tone2;
 typedef struct _Sound2 Sound2;
 typedef struct _Sound2 Font2;
+typedef struct _Colorclass2 Colorclass2;
 
 /**************************************************/
 

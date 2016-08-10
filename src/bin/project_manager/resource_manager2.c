@@ -270,13 +270,65 @@ _tones_resources_load(Project *project __UNUSED__)
 static Eina_Bool
 _colorclasses_resources_load(Project *project __UNUSED__)
 {
-   return false;
+   Eina_List *colorclasses, *l;
+   Colorclass2 *res;
+   Eina_Stringshare *name;
+
+   assert(project != NULL);
+
+   colorclasses = edje_edit_color_classes_list_get(project->global_object);
+   if (eina_list_count(colorclasses) == 0)
+     {
+        edje_edit_string_list_free(colorclasses);
+        return false;
+     }
+
+   EINA_LIST_FOREACH(colorclasses, l, name)
+     {
+        res = mem_calloc(1, sizeof(Colorclass2));
+        res->common.type = RESOURCE2_TYPE_COLORCLASS;
+        res->common.name = eina_stringshare_add(name);
+
+        if (!edje_edit_color_class_colors_get(project->global_object, name,
+                                              &res->color1.r, &res->color1.g, &res->color1.b, &res->color1.a,
+                                              &res->color2.r, &res->color2.g, &res->color2.b, &res->color2.a,
+                                              &res->color3.r, &res->color3.g, &res->color3.b, &res->color3.a))
+          {
+             eina_stringshare_del(res->common.name);
+             free(res);
+          }
+        else
+          project->colorclasses = eina_list_append(project->colorclasses, res);
+     }
+
+   edje_edit_string_list_free(colorclasses);
+   return true;
 }
 
 static Eina_Bool
 _styles_resources_load(Project *project __UNUSED__)
 {
-   return false;
+   Eina_List *styles, *l;
+   Style2 *res;
+   Eina_Stringshare *name;
+
+   assert(project != NULL);
+
+   styles = edje_edit_styles_list_get(project->global_object);
+   if (eina_list_count(styles) == 0)
+     {
+        edje_edit_string_list_free(styles);
+        return false;
+     }
+   EINA_LIST_FOREACH(styles, l, name)
+     {
+        res = mem_calloc(1, sizeof(Style2));
+        res->common.type = RESOURCE2_TYPE_STYLE;
+        res->common.name = eina_stringshare_add(name);
+        project->styles = eina_list_append(project->styles, res);
+     }
+   edje_edit_string_list_free(styles);
+   return true;
 }
 
 /******************* public API ********************/
