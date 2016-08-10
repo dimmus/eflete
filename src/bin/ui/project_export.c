@@ -51,7 +51,7 @@ _export_dev(void *data __UNUSED__,
 
    assert(selected != NULL);
 
-   if (ecore_file_is_dir(path) || (strcmp(strrchr(path, '.'), ".edj")))
+   if (ecore_file_is_dir(path) || (!eina_str_has_extension(path, ".edj")))
      {
         buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
@@ -124,7 +124,7 @@ _export_release(void *data __UNUSED__,
 
    assert(selected != NULL);
 
-   if (ecore_file_is_dir(path) || (strcmp(strrchr(path, '.'), ".edj")))
+   if (ecore_file_is_dir(path) || (!eina_str_has_extension(path, ".edj")))
      {
         buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
