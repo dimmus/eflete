@@ -177,6 +177,7 @@ typedef struct _Style2 Style2;
 typedef struct _Image2 Image2;
 typedef struct _Tone2 Tone2;
 typedef struct _Sound2 Sound2;
+typedef struct _Sound2 Font2;
 
 /**************************************************/
 

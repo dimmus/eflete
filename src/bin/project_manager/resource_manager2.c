@@ -167,7 +167,74 @@ _sound_resources_load(Project *project __UNUSED__)
 static Eina_Bool
 _font_resources_load(Project *project __UNUSED__)
 {
-   return false;
+   Font2 *res;
+   Eina_List *fonts;
+   Eina_Stringshare *resource_folder;
+   Eet_File *ef;
+   Eina_List *l;
+   Eina_Stringshare *font_name, *font_file;
+   void *font;
+   FILE *f;
+   int size;
+
+   Eina_Bool result = true;
+
+   assert(project != NULL);
+
+   resource_folder = eina_stringshare_printf("%s/fonts", project->develop_path);
+   ecore_file_recursive_rm(resource_folder);
+
+   fonts = edje_edit_fonts_list_get(project->global_object);
+
+   ef = eet_open(project->dev, EET_FILE_MODE_READ);
+   if (eina_list_count(fonts) == 0)
+     {
+        res = false;
+        goto cleanup;
+     }
+
+   if (!ecore_file_mkpath(resource_folder))
+     {
+        ERR("Failed create path %s for export fonts", resource_folder);
+        res = false;
+        goto cleanup;
+     }
+
+   EINA_LIST_FOREACH(fonts, l, font_name)
+     {
+        font_file = edje_edit_font_path_get(project->global_object, font_name);
+
+        res = mem_calloc(1, sizeof(Font2));
+        res->common.type = RESOURCE2_TYPE_FONT;
+        res->common.name = eina_stringshare_add(font_name);
+        res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
+
+        project->fonts = eina_list_append(project->fonts, res);
+
+        if (!ecore_file_exists(res->source))
+          {
+             edje_edit_string_free(font_file);
+             font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
+             font = eet_read(ef, font_file, &size);
+             if (!font) continue;
+             if (!(f = fopen(res->source, "wb")))
+               {
+                  ERR("Could not open file: %s", res->source);
+                  continue;
+               }
+             if (fwrite(font, size, 1, f) != 1)
+               ERR("Could not write font: %s", strerror(errno));
+             fclose(f);
+             free(font);
+             eina_stringshare_del(font_file);
+          }
+     }
+
+cleanup:
+   eet_close(ef);
+   edje_edit_string_list_free(fonts);
+   eina_stringshare_del(resource_folder);
+   return result;
 }
 
 static Eina_Bool
