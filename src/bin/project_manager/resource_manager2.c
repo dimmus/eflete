@@ -34,6 +34,37 @@ _resource_usage_resource_del(Resource2 *origin __UNUSED__, Resource2 *used __UNU
 }
 
 /*********************************************/
+static Eina_Bool
+_image_set_resources_load(Project *project)
+{
+   Image_Set2 *res;
+   Eina_List *images;
+   Eina_Stringshare *image_name;
+   Eina_List *l;
+
+   assert(project != NULL);
+
+   images = edje_edit_image_set_list_get(project->global_object);
+
+   EINA_LIST_FOREACH(images, l, image_name)
+     {
+        /* for supporting old themes, which were compilled
+         * with edje_cc version less than 1.10 */
+        if (!image_name) continue;
+
+        res = mem_calloc(1, sizeof(Image_Set2));
+        res->common.type = RESOURCE2_TYPE_IMAGE_SET;
+        res->common.name = eina_stringshare_add(image_name);
+
+        project->image_sets = eina_list_append(project->image_sets, res);
+
+        res->common.id = edje_edit_image_set_id_get(project->global_object, image_name);
+        res->is_used = false;
+     }
+
+   edje_edit_string_list_free(images);
+   return true;
+}
 
 static Eina_Bool
 _image_resources_load(Project *project)
@@ -87,7 +118,6 @@ _image_resources_load(Project *project)
              free(file_dir);
              im = evas_object_image_add(e);
              res->common.id = edje_edit_image_id_get(project->global_object, image_name);
-             res->is_set = false;
              res->is_used = false;
              source_file = eina_stringshare_printf("edje/images/%i", res->common.id);
              evas_object_image_file_set(im, project->dev, source_file);
@@ -338,6 +368,7 @@ resource_manager_init(Project *project)
 {
    /* loading resources are in here */
    _image_resources_load(project);
+   _image_set_resources_load(project);
    _sound_resources_load(project);
    _font_resources_load(project);
    _tones_resources_load(project);

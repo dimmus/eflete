@@ -97,6 +97,7 @@ struct _Project
 
    Eina_List *groups;
    Eina_List *images;
+   Eina_List *image_sets;
    Eina_List *sounds;
    Eina_List *tones;
    Eina_List *fonts;

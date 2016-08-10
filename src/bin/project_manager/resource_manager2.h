@@ -148,8 +148,13 @@ struct _Image2
    Edje_Edit_Image_Comp comp_type;
    int quality;
    Eina_Bool is_used;
-   Eina_Bool is_set;
    int height, width;
+};
+
+struct _Image_Set2
+{
+   Resource2_Internal common;
+   Eina_Bool is_used;
 };
 
 struct _Tone2
@@ -189,6 +194,7 @@ typedef struct _Part2 Part2;
 typedef struct _Program2 Program2;
 typedef struct _Style2 Style2;
 typedef struct _Image2 Image2;
+typedef struct _Image_Set2 Image_Set2;
 typedef struct _Tone2 Tone2;
 typedef struct _Sound2 Sound2;
 typedef struct _Sound2 Font2;
