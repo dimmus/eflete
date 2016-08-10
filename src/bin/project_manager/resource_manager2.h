@@ -152,6 +152,18 @@ struct _Image2
    int height, width;
 };
 
+struct _Tone2
+{
+   Resource2_Internal common;
+   int freq;
+};
+
+struct _Sound2
+{
+   Resource2_Internal common;
+   const char *source;
+};
+
 /**************************************************/
 
 typedef struct _Resource2 Resource2;
@@ -163,6 +175,8 @@ typedef struct _Part2 Part2;
 typedef struct _Program2 Program2;
 typedef struct _Style2 Style2;
 typedef struct _Image2 Image2;
+typedef struct _Tone2 Tone2;
+typedef struct _Sound2 Sound2;
 
 /**************************************************/
 
