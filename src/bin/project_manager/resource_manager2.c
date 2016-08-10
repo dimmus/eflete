@@ -131,7 +131,7 @@ _sound_resources_load(Project *project __UNUSED__)
      {
         sound_file = edje_edit_sound_samplesource_get(project->global_object, sound_name);
 
-        res = mem_calloc(1, sizeof(Image2));
+        res = mem_calloc(1, sizeof(Sound2));
         res->common.type = RESOURCE2_TYPE_SAMPLE;
         res->common.name = eina_stringshare_add(sound_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
@@ -173,7 +173,31 @@ _font_resources_load(Project *project __UNUSED__)
 static Eina_Bool
 _tones_resources_load(Project *project __UNUSED__)
 {
-   return false;
+   Eina_List *tones, *l;
+   Tone2 *res;
+   Eina_Stringshare *name;
+
+   assert(project != NULL);
+
+   tones = edje_edit_sound_tones_list_get(project->global_object);
+
+   if (eina_list_count(tones) == 0)
+     {
+        edje_edit_string_list_free(tones);
+        return false;
+     }
+
+   EINA_LIST_FOREACH(tones, l, name)
+     {
+        res = mem_calloc(1, sizeof(Tone2));
+        res->common.type = RESOURCE2_TYPE_TONE;
+        res->common.name = eina_stringshare_add(name);
+        res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
+        project->tones = eina_list_append(project->tones, res);
+     }
+    edje_edit_string_list_free(tones);
+
+   return true;
 }
 
 static Eina_Bool
