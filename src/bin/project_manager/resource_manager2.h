@@ -22,65 +22,65 @@
 
 #include "eflete.h"
 
-enum _Resource_Type
+enum _Resource2_Type
 {
-   RESOURCE_TYPE_GROUP = 0,
-   RESOURCE_TYPE_PART,
-   RESOURCE_TYPE_STATE,
-   RESOURCE_TYPE_ITEMS,
-   RESOURCE_TYPE_PROGRAM,
-   RESOURCE_TYPE_LIMIT, /* not yet */
-   RESOURCE_TYPE_DATA_GLOBAL,
-   RESOURCE_TYPE_DATA_GROUP,
+   RESOURCE2_TYPE_GROUP = 0,
+   RESOURCE2_TYPE_PART,
+   RESOURCE2_TYPE_STATE,
+   RESOURCE2_TYPE_ITEMS,
+   RESOURCE2_TYPE_PROGRAM,
+   RESOURCE2_TYPE_LIMIT, /* not yet */
+   RESOURCE2_TYPE_DATA_GLOBAL,
+   RESOURCE2_TYPE_DATA_GROUP,
 
    /* other managers */
-   RESOURCE_TYPE_DATA_IMAGE,
-   RESOURCE_TYPE_DATA_IMAGE_SET,
-   RESOURCE_TYPE_DATA_SAMPLE,
-   RESOURCE_TYPE_DATA_TONE,
-   RESOURCE_TYPE_DATA_FONT,
-   RESOURCE_TYPE_DATA_COLORCLASS,
-   RESOURCE_TYPE_DATA_STYLE,
-   RESOURCE_TYPE_DATA_SIZECLASS,
-   RESOURCE_TYPE_DATA_TEXTCLASS,
-   RESOURCE_TYPE_DATA_VIBRO, /* something for now? */
-   RESOURCE_TYPE_LAST
+   RESOURCE2_TYPE_IMAGE,
+   RESOURCE2_TYPE_IMAGE_SET,
+   RESOURCE2_TYPE_SAMPLE,
+   RESOURCE2_TYPE_TONE,
+   RESOURCE2_TYPE_FONT,
+   RESOURCE2_TYPE_COLORCLASS,
+   RESOURCE2_TYPE_STYLE,
+   RESOURCE2_TYPE_SIZECLASS,
+   RESOURCE2_TYPE_TEXTCLASS,
+   RESOURCE2_TYPE_VIBRO, /* something for now? */
+   RESOURCE2_TYPE_LAST
 };
-typedef enum _Resource_Type Resource_Type;
+typedef enum _Resource2_Type Resource2_Type;
 
-struct _Resource_Internal
+struct _Resource2_Internal
 {
    unsigned int id;
    Eina_Stringshare *name;
-   Resource_Type type;
+   Resource2_Type type;
    Eina_List *used_in; /* where is this resource actually used in? */
    Eina_List *uses___; /* what kind of reources this res is actually usiung now? */
 };
-typedef struct _Resource_Internal Resource_Internal;
+typedef struct _Resource2_Internal Resource2_Internal;
 
 /*********************************************/
 /*********************************************/
-/******* SOME COMMON RESOURCE STRUCTS ********/
+/******* SOME COMMON RESOURCE2 STRUCTS ********/
 /*********************************************/
 /*********************************************/
 
-struct _Resource
+struct _Resource2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
 };
 
-struct _Group
+struct _Group2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    Eina_List *parts;
    Eina_List *programs;
    Eina_List *data_items;
    Eina_List *limits;
 };
 
-struct _Part
+struct _Part2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    Edje_Part_Type type;       /**< part type */
    Eina_List *states;         /**< list of states */
    State *current_state;      /**< pointer to selected state */
@@ -90,30 +90,30 @@ struct _Part
    Eina_Bool visible;         /**< is part visible on workspace*/
 };
 
-struct _State
+struct _State2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    double val;                /**< parsed state value */
    Part *part;                /**< pointer to part */
 };
 
-struct _Part_Item
+struct _Part_Item2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    Part *part;
 };
 
-struct _Program
+struct _Program2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    Edje_Action_Type type;
    Eina_List *targets;
    Eina_List *afters;
 };
 
-struct _Style
+struct _Style2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    Eina_Stringshare *raw_style; //for set to textblock and to edje_edit
 
    /* all parsed values goes below */
@@ -141,9 +141,9 @@ struct _Style
    int dash_width, dash_gap;
 };
 
-struct _Image
+struct _Image2
 {
-   Resource_Internal common;
+   Resource2_Internal common;
    const char *source;
    Edje_Edit_Image_Comp comp_type;
    int quality;
@@ -154,15 +154,15 @@ struct _Image
 
 /**************************************************/
 
-typedef struct _Resource Resource;
-typedef struct _Group Group;
-typedef struct _Part Part;
-typedef struct _Part_Item Part_Item;
-typedef struct _State State;
-typedef struct _Part Part;
-typedef struct _Program Program;
-typedef struct _Style Style;
-typedef struct _Image Image;
+typedef struct _Resource2 Resource2;
+typedef struct _Group2 Group2;
+typedef struct _Part2 Part2;
+typedef struct _Part_Item2 Part_Item2;
+typedef struct _State2 State2;
+typedef struct _Part2 Part2;
+typedef struct _Program2 Program2;
+typedef struct _Style2 Style2;
+typedef struct _Image2 Image2;
 
 /**************************************************/
 
@@ -172,10 +172,10 @@ resource_manager_init(Project *project);
 Eina_Bool
 resource_manager_shutdown(Project *project);
 
-Resource *
+Resource2 *
 resource_manager_find(const Eina_List *list, Eina_Stringshare *name);
 
-Resource *
+Resource2 *
 resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double value);
 
 #endif /* RESOURCE_MANAGER2_H */
