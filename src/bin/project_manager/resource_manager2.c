@@ -19,6 +19,7 @@
 
 #include "resource_manager2.h"
 #include "project_manager.h"
+#include "string_common.h"
 
 static Eina_Bool __UNUSED__
 _resource_usage_resource_add(Resource2 *origin __UNUSED__, Resource2 *used __UNUSED__)
@@ -86,6 +87,11 @@ _image_set_resources_load(Project *project)
         res->common.id = edje_edit_image_set_id_get(project->global_object, image_name);
         res->is_used = false;
      }
+
+   TODO("By now all images should be existed and we need to add dependencies")
+   /*
+      IMAGE_SET uses IMAGE
+    */
 
    edje_edit_string_list_free(images);
    return true;
@@ -381,9 +387,252 @@ _styles_resources_load(Project *project __UNUSED__)
         res->common.type = RESOURCE2_TYPE_STYLE;
         res->common.name = eina_stringshare_add(name);
         project->styles = eina_list_append(project->styles, res);
+
+        TODO("parse all values and find dependencies in here like that:");
+        /*
+            STYLES uses FONT, COLOR_CLASS?, VIBRO?
+         */
      }
    edje_edit_string_list_free(styles);
    return true;
+}
+
+/****************************************************/
+static void
+_group_name_parse(Group2 *group)
+{
+   char **c;
+   unsigned int count;
+
+   assert(group != NULL);
+
+   if (!eina_str_has_prefix(group->common.name, "elm")) return;
+
+   c = eina_str_split_full(group->common.name, "/", 4, &count);
+
+   TODO("move here complicated class/style parsing from live_view");
+   if (count == 4)
+     {
+        group->widget = eina_stringshare_add(c[1]);
+        group->class = eina_stringshare_add(c[2]);
+        group->style = eina_stringshare_add(c[3]);
+     }
+
+   free(c[0]);
+   free(c);
+}
+
+static void
+_resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e)
+{
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(group->edit_object == NULL);
+
+   group->edit_object = edje_edit_object_add(e);
+   if (!edje_object_mmap_set(group->edit_object, pro->mmap_file, group->common.name))
+     {
+        ERR("Can't set mmap object");
+        abort();
+     }
+}
+
+void
+_resource_group_edit_object_unload(Group2 *group)
+{
+   assert(group != NULL);
+   assert(group->edit_object != NULL);
+
+   evas_object_del(group->edit_object);
+   group->edit_object = NULL;
+}
+
+State2 *
+_gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_value)
+{
+   State2 *state;
+
+   assert(pro != NULL);
+   assert(part != NULL);
+   assert(state_name != NULL);
+
+   state = mem_calloc(1, sizeof(State2));
+   state->common.type = RESOURCE2_TYPE_STATE;
+   state->common.name = eina_stringshare_add(state_name);
+   state->val = state_value;
+   state->part = part;
+   part->states = eina_list_append(part->states, state);
+
+   /* default 0.0 should be allways first state */
+   if (part->current_state == NULL)
+     part->current_state = state;
+
+   TODO("Next usage described below: ");
+   /*
+      Relationships uses - used:
+      STATE - PART, STATE
+      STATE - (resources) IMAGE,IMAGE_SET,FONT,COLOR_CLASS,STYLE,VIBRO?
+      STATE - (unimplemented yet) SIZE_CLASS, TEXT_CLASS
+    */
+
+   return state;
+}
+
+Part2 *
+_gm_part_add(Project *pro, Group2 *group, const char *part_name)
+{
+   Part_Item2 *item;
+   Part2 *part;
+   Eina_List *states, *items, *l;
+   Eina_Stringshare *state_name, *parsed_state_name, *item_name;
+   double val;
+
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(part_name != NULL);
+
+   part = mem_calloc(1, sizeof(Part2));
+   part->common.type = RESOURCE2_TYPE_PART;
+   part->common.name = eina_stringshare_add(part_name);
+   part->type = edje_edit_part_type_get(group->edit_object, part_name);
+   part->visible = true;
+   part->group = group;
+   group->parts = eina_list_append(group->parts, part);
+
+   states = edje_edit_part_states_list_get(group->edit_object, part_name);
+   EINA_LIST_FOREACH(states, l, state_name)
+     {
+        state_name_split(state_name, &parsed_state_name, &val);
+        _gm_state_add(pro, part, parsed_state_name, val);
+        eina_stringshare_del(parsed_state_name);
+     }
+   edje_edit_string_list_free(states);
+
+   if ((part->type == EDJE_PART_TYPE_TABLE) ||
+       (part->type == EDJE_PART_TYPE_BOX))
+     {
+        items = edje_edit_part_items_list_get(group->edit_object, part_name);
+        EINA_LIST_FOREACH(items, l, item_name)
+          {
+             TODO("Remove this after switching to index API for items");
+             if (!item_name) continue;
+             item = mem_calloc(1, sizeof(Part_Item2));
+             item->common.type = RESOURCE2_TYPE_ITEM;
+             item->common.name = eina_stringshare_add(item_name);
+             item->part = part;
+             part->items = eina_list_append(part->items, part);
+          }
+        edje_edit_string_list_free(items);
+     }
+
+   TODO("Next usage described below: ");
+   /*
+      PART - PART relationships
+      PART - GROUP
+    */
+
+   return part;
+}
+
+void
+_gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_name)
+{
+   Group_Data2 *group_data;
+
+   assert(pro != NULL);
+   assert(group_data_name != NULL);
+   assert(group != NULL);
+
+   group_data = mem_calloc(1, sizeof(Program2));
+   group_data->common.type = RESOURCE2_TYPE_DATA_GROUP;
+   group_data->common.name = eina_stringshare_add(group_data_name);
+   group_data->source = edje_edit_group_data_value_get(group->edit_object,
+                                                       group_data_name);
+   group->data_items = eina_list_append(group->data_items, group_data);
+}
+
+static void
+_group_load(Project *pro, Group2 *group)
+{
+   Eina_Stringshare *main_group_name;
+   Eina_List *parts, *l, *programs, *datas;
+   Eina_Stringshare *part_name, *program_name, *group_data_name;
+   Program2 *program;
+
+   assert(pro != NULL);
+   assert(group != NULL);
+
+   _group_name_parse(group);
+
+   _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
+   if (edje_edit_group_alias_is(group->edit_object, group->common.name))
+     {
+        main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
+        TODO("Add aliased groups as resource");
+        //resource_insert(&group->main_group->aliases, (Resource *)group);
+        edje_edit_string_free(main_group_name);
+     }
+   else
+     {
+        parts = edje_edit_parts_list_get(group->edit_object);
+        EINA_LIST_FOREACH(parts, l, part_name)
+           _gm_part_add(pro, group, part_name);
+        edje_edit_string_list_free(parts);
+
+        datas = edje_edit_group_data_list_get(group->edit_object);
+        EINA_LIST_FOREACH(datas, l, group_data_name)
+           _gm_group_data_add(pro, group, group_data_name);
+
+        programs = edje_edit_programs_list_get(group->edit_object);
+        EINA_LIST_FOREACH(programs, l, program_name)
+          {
+             program  = mem_calloc(1, sizeof(Program2));
+             program->common.type = RESOURCE2_TYPE_PROGRAM;
+             program->common.name = eina_stringshare_add(program_name);
+             program->type = edje_edit_program_action_get(group->edit_object,
+                                                          program_name);
+             group->programs = eina_list_append(group->programs, program);
+          }
+        edje_edit_string_list_free(programs);
+
+        TODO("Next usage and dependencies described below: ");
+        /*
+            GROUP - GROUP relationships (alias)
+            PROGRAM - PART, STATE, PROGRAM, LIMIT?, SAMPLE, TONE
+         */
+     }
+
+   _resource_group_edit_object_unload(group);
+}
+
+void
+_gm_groups_load(Project *pro)
+{
+   Eina_List *collections, *l;
+   Eina_Stringshare *group_name;
+   Group2 *res;
+
+   assert(pro != NULL);
+   assert(pro->dev != NULL);
+   assert(pro->groups == NULL);
+
+   collections = edje_file_collection_list(pro->dev);
+
+   assert(collections != NULL);
+
+   collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
+   EINA_LIST_FOREACH(collections, l, group_name)
+     {
+        if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
+        res = mem_calloc(1, sizeof(Group2));
+        res->common.type = RESOURCE2_TYPE_GROUP;
+        res->common.name = eina_stringshare_add(group_name);
+        pro->groups = eina_list_append(pro->groups, res);
+     }
+   edje_file_collection_list_free(collections);
+
+   EINA_LIST_FOREACH(pro->groups, l, res)
+     _group_load(pro, res);
 }
 
 /******************* public API ********************/
@@ -401,7 +650,7 @@ resource_manager_init(Project *project)
    _styles_resources_load(project);
    _global_data_resources_load(project);
 
-//   gm_groups_load(project);
+   _gm_groups_load(project);
 
    return false;
 }

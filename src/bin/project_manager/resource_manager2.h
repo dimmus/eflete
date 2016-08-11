@@ -27,7 +27,7 @@ enum _Resource2_Type
    RESOURCE2_TYPE_GROUP = 0,
    RESOURCE2_TYPE_PART,
    RESOURCE2_TYPE_STATE,
-   RESOURCE2_TYPE_ITEMS,
+   RESOURCE2_TYPE_ITEM,
    RESOURCE2_TYPE_PROGRAM,
    RESOURCE2_TYPE_LIMIT, /* not yet */
    RESOURCE2_TYPE_DATA_GLOBAL,
@@ -63,6 +63,22 @@ typedef struct _Resource2_Internal Resource2_Internal;
 /******* SOME COMMON RESOURCE2 STRUCTS ********/
 /*********************************************/
 /*********************************************/
+typedef struct _Resource2 Resource2;
+typedef struct _Group2 Group2;
+typedef struct _Part2 Part2;
+typedef struct _Part_Item2 Part_Item2;
+typedef struct _State2 State2;
+typedef struct _Program2 Program2;
+typedef struct _Style2 Style2;
+typedef struct _Image2 Image2;
+typedef struct _Image_Set2 Image_Set2;
+typedef struct _Tone2 Tone2;
+typedef struct _Colorclass2 Colorclass2;
+
+typedef struct _Sound2 Sound2;
+typedef struct _Sound2 Font2;
+typedef struct _Sound2 Global_Data2;
+typedef struct _Sound2 Group_Data2;
 
 struct _Resource2
 {
@@ -76,6 +92,15 @@ struct _Group2
    Eina_List *programs;
    Eina_List *data_items;
    Eina_List *limits;
+   Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
+
+   Eina_Stringshare *widget;  /**< parsed widget name */
+   Eina_Stringshare *class;   /**< parsed class name */
+   Eina_Stringshare *style;   /**< parsed style name */
+
+   Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
+//   Resource *current_selected;
+   History *history;          /**< history of changes in the group */
 };
 
 struct _Part2
@@ -83,10 +108,10 @@ struct _Part2
    Resource2_Internal common;
    Edje_Part_Type type;       /**< part type */
    Eina_List *states;         /**< list of states */
-   State *current_state;      /**< pointer to selected state */
+   State2 *current_state;      /**< pointer to selected state */
    Eina_List *items;          /**< list of item names. Used only for BOX and TABLE parts */
    Eina_Stringshare * current_item_name; /**< name of selected item */
-   Group *group;              /**< pointer to group */
+   Group2 *group;              /**< pointer to group */
    Eina_Bool visible;         /**< is part visible on workspace*/
 };
 
@@ -94,13 +119,13 @@ struct _State2
 {
    Resource2_Internal common;
    double val;                /**< parsed state value */
-   Part *part;                /**< pointer to part */
+   Part2 *part;                /**< pointer to part */
 };
 
 struct _Part_Item2
 {
    Resource2_Internal common;
-   Part *part;
+   Part2 *part;
 };
 
 struct _Program2
@@ -182,26 +207,6 @@ struct _Colorclass2
       int r,g,b,a;
    } color3;
 };
-
-/**************************************************/
-
-typedef struct _Resource2 Resource2;
-typedef struct _Group2 Group2;
-typedef struct _Part2 Part2;
-typedef struct _Part_Item2 Part_Item2;
-typedef struct _State2 State2;
-typedef struct _Program2 Program2;
-typedef struct _Style2 Style2;
-typedef struct _Image2 Image2;
-typedef struct _Image_Set2 Image_Set2;
-typedef struct _Tone2 Tone2;
-typedef struct _Colorclass2 Colorclass2;
-
-typedef struct _Sound2 Sound2;
-typedef struct _Sound2 Font2;
-typedef struct _Sound2 Global_Data2;
-
-/**************************************************/
 
 Eina_Bool
 resource_manager_init(Project *project);
