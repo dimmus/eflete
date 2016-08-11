@@ -669,13 +669,22 @@ _external_resources_export(Eina_List *resources, const char *dst)
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
      {
-        eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+        if (res->resource_type == RESOURCE_TYPE_SOUND)
+          {
+             eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(res->source));
+          }
+        else if (res->path == NULL)
+          eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+        else
+          {
+             eina_strbuf_append_printf(buf, "%s/%s", dst, res->source);
+          }
         path = ecore_file_dir_get(eina_strbuf_string_get(buf));
         if (!ecore_file_is_dir(path))
           {
              ecore_file_mkpath(path);
           }
-        ecore_file_cp(res->source, eina_strbuf_string_get(buf));
+        ecore_file_cp(res->path, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
         free(path);
         path = NULL;
@@ -689,20 +698,33 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
    Eina_Strbuf *buf;
    Eina_List *l;
    External_Resource *res;
-   char *path;
+   char *path = NULL;
 
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
      {
         if (name == res->name)
           {
-             eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+             if (res->resource_type == RESOURCE_TYPE_SOUND)
+               {
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(res->source));
+               }
+             else if (res->path == NULL)
+               {
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+               }
+             else
+               {
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, res->source);
+               }
+
              path = ecore_file_dir_get(eina_strbuf_string_get(buf));
+
              if (!ecore_file_is_dir(path))
                {
                   ecore_file_mkpath(path);
                }
-             ecore_file_cp(res->source, eina_strbuf_string_get(buf));
+             ecore_file_cp(res->path, eina_strbuf_string_get(buf));
              eina_strbuf_reset(buf);
              free(path);
              break;

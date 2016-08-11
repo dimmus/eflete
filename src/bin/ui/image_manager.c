@@ -252,7 +252,7 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
                                                         it->image_name);
    it->quality = edje_edit_image_compression_rate_get(edje_edit_obj,
                                                       it->image_name);
-   it->source = eina_stringshare_add(res->source);
+   it->source = eina_stringshare_add(res->path);
 
    img = _image_manager_image_create(ap.project->global_object, it);
    elm_image_object_size_get(img, &it->width, &it->height);
@@ -291,11 +291,12 @@ _on_image_done(void *data __UNUSED__,
         file_name = ecore_file_file_get(selected);
 
         res = (External_Resource *)resource_add(file_name, RESOURCE_TYPE_IMAGE);
-        res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
+        res->path = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
+        res->source = eina_stringshare_add(file_name);
 
-        if (!ecore_file_exists(res->source))
+        if (!ecore_file_exists(res->path))
           {
-             ecore_file_cp(selected, res->source);
+             ecore_file_cp(selected, res->path);
 
              resource_insert(&ap.project->images, (Resource *)res);
           }
@@ -320,7 +321,7 @@ _on_image_done(void *data __UNUSED__,
         it->quality = edje_edit_image_compression_rate_get(ap.project->global_object,
                                                            it->image_name);
 
-        it->source = eina_stringshare_add(res->source);
+        it->source = eina_stringshare_add(res->path);
         img = _image_manager_image_create(ap.project->global_object, it);
         elm_image_object_size_get(img, &it->width, &it->height);
         evas_object_del(img);
@@ -379,7 +380,7 @@ _image_del_cb(void *data __UNUSED__,
 
         if (!res->used_in)
           {
-             ecore_file_unlink(res->source);
+             ecore_file_unlink(res->path);
              elm_object_item_del(grid_item);
              edje_edit_image_del(ap.project->global_object, it->image_name);
              resource_remove(&ap.project->images, (Resource *)res);

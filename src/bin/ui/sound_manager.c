@@ -247,26 +247,28 @@ _add_sample_done(void *data __UNUSED__,
      }
 
    res = (External_Resource *)resource_add(file_name, RESOURCE_TYPE_SOUND);
-   res->source = eina_stringshare_printf("%s/sounds/%s", ap.project->develop_path, file_name);
+   res->path = eina_stringshare_printf("%s/sounds/%s", ap.project->develop_path, sound_name);
+   res->source = eina_stringshare_add(sound_name);
+   res->name = eina_stringshare_add(sound_name);
 
-   if (!ecore_file_exists(res->source))
+   if (!ecore_file_exists(res->path))
      {
-        ecore_file_cp(selected, res->source);
+        ecore_file_cp(selected, res->path);
 
         resource_insert(&ap.project->sounds, (Resource *)res);
      }
    else
      {
-        ERR(_("File '%s' exist"), res->name);
+        ERR(_("File '%s' exist"), res->path);
         resource_free((Resource *)res);
         return true;
      }
 
-   edje_edit_sound_sample_add(ap.project->global_object, res->name, res->source);
+   edje_edit_sound_sample_add(ap.project->global_object, res->name, res->path);
 
    snd = (Sound_Data *)mem_malloc(sizeof(Sound_Data));
    snd->name = eina_stringshare_ref(res->name);
-   snd->type_label = _sound_format_get(res->source);
+   snd->type_label = _sound_format_get(res->path);
    snd->type = SOUND_TYPE_SAMPLE;
    snd->resource = (Resource *)res;
    elm_gengrid_item_insert_before(mng.gengrid, gic, snd, mng.tone_header, _grid_sel_cb, NULL);
@@ -446,7 +448,7 @@ _sound_del_cb(void *data __UNUSED__,
               res = (External_Resource *)resource_get(ap.project->sounds, &request);
               if (res->used_in) ERR("Unable to delete sample '%s'", res->name);
               edje_edit_sound_sample_del(ap.project->global_object, snd->name);
-              ecore_file_unlink(res->source);
+              ecore_file_unlink(res->path);
               resource_remove(&ap.project->sounds, (Resource *)res);
               elm_object_item_del(grid_it);
               break;

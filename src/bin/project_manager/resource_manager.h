@@ -70,6 +70,7 @@ struct _External_Resource
    RESOURCE_COMMON;
 
    Eina_Stringshare *source;
+   Eina_Stringshare *path;
 };
 
 struct _Tone_Resource

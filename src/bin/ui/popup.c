@@ -676,7 +676,7 @@ _image_gengrid_init(Helper_Data *helper_data)
 
               it = (Item *)mem_malloc(sizeof(Item));
               it->image_name = eina_stringshare_add(res->name);
-              it->source = eina_stringshare_add(res->source);
+              it->source = eina_stringshare_add(res->path);
               elm_gengrid_item_append(helper_data->gengrid, gic, it, NULL, NULL);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(helper_data->gengrid),

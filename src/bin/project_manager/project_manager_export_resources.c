@@ -153,15 +153,17 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
         res = (External_Resource *) resource_add(image_name, RESOURCE_TYPE_IMAGE);
         comp_type = edje_edit_image_compression_type_get(project->global_object,
                                                          res->name);
+
+        res->source = eina_stringshare_add(image_name);
         if (comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-          res->source = eina_stringshare_add(image_name);
+          res->path = eina_stringshare_add(res->source);
         else
-          res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
+          res->path = eina_stringshare_printf("%s/%s", resource_folder, res->source);
         resource_insert(&project->images, (Resource *)res);
 
-        if (!ecore_file_exists(res->source))
+        if (!ecore_file_exists(res->path))
           {
-             file_dir = ecore_file_dir_get(res->source);
+             file_dir = ecore_file_dir_get(res->path);
              ecore_file_mkpath(file_dir);
              free(file_dir);
              id = edje_edit_image_id_get(project->global_object, image_name);
@@ -176,7 +178,7 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
              source_file = eina_stringshare_printf("edje/images/%i", id);
              ids->id = source_file;
              ids->im = NULL;
-             ids->source = res->source;
+             ids->source = res->path;
              eina_lock_release(&ids->mutex);
              ecore_main_loop_thread_safe_call_sync(_image_save_routine, ids);
              eina_lock_take(&ids->mutex);
@@ -247,20 +249,21 @@ _sound_resources_feedback_job(void *data, Ecore_Thread *th)
         ecore_thread_feedback(th, message);
 
         res = (External_Resource*)resource_add(sound_name, RESOURCE_TYPE_SOUND);
-        res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
+        res->source = eina_stringshare_add(ecore_file_file_get(sound_file));
+        res->path = eina_stringshare_printf("%s/%s", resource_folder, res->source);
         resource_insert(&project->sounds, (Resource *)res);
 
-        if (!ecore_file_exists(res->source))
+        if (!ecore_file_exists(res->path))
           {
-             file_dir = ecore_file_dir_get(res->source);
+             file_dir = ecore_file_dir_get(res->path);
              ecore_file_mkpath(file_dir);
              free(file_dir);
              sound_bin = edje_edit_sound_samplebuffer_get(project->global_object, sound_name);
-             if (!(f = fopen(res->source, "wb")))
+             if (!(f = fopen(res->path, "wb")))
                {
-                  message = eina_stringshare_printf(_("Could not open file: %s"), res->source);
+                  message = eina_stringshare_printf(_("Could not open file: %s"), res->path);
                   ecore_thread_feedback(th, message);
-                  ERR("Could not open file: %s", res->source);
+                  ERR("Could not open file: %s", res->path);
                   sleep(2);
                   continue;
                }
@@ -342,20 +345,21 @@ _font_resources_feedback_job(void *data, Ecore_Thread *th)
         ecore_thread_feedback(th, message);
 
         res = (External_Resource *)resource_add(font_file, RESOURCE_TYPE_FONT);
-        res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
+        res->source = eina_stringshare_add(font_file);
+        res->path = eina_stringshare_printf("%s/%s", resource_folder, res->source);
         resource_insert(&project->fonts, (Resource *)res);
 
-        if (!ecore_file_exists(res->source))
+        if (!ecore_file_exists(res->path))
           {
              edje_edit_string_free(font_file);
              font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
              font = eet_read(ef, font_file, &size);
              if (!font) continue;
-             if (!(f = fopen(res->source, "wb")))
+             if (!(f = fopen(res->path, "wb")))
                {
-                  message = eina_stringshare_printf(_("Could not open file: %s"), res->source);
+                  message = eina_stringshare_printf(_("Could not open file: %s"), res->path);
                   ecore_thread_feedback(th, message);
-                  ERR("Could not open file: %s", res->source);
+                  ERR("Could not open file: %s", res->path);
                   sleep(2);
                   continue;
                }
