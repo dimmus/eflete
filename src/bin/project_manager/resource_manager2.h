@@ -190,15 +190,16 @@ typedef struct _Group2 Group2;
 typedef struct _Part2 Part2;
 typedef struct _Part_Item2 Part_Item2;
 typedef struct _State2 State2;
-typedef struct _Part2 Part2;
 typedef struct _Program2 Program2;
 typedef struct _Style2 Style2;
 typedef struct _Image2 Image2;
 typedef struct _Image_Set2 Image_Set2;
 typedef struct _Tone2 Tone2;
+typedef struct _Colorclass2 Colorclass2;
+
 typedef struct _Sound2 Sound2;
 typedef struct _Sound2 Font2;
-typedef struct _Colorclass2 Colorclass2;
+typedef struct _Sound2 Global_Data2;
 
 /**************************************************/
 

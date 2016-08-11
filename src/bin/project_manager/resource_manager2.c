@@ -35,6 +35,31 @@ _resource_usage_resource_del(Resource2 *origin __UNUSED__, Resource2 *used __UNU
 
 /*********************************************/
 static Eina_Bool
+_global_data_resources_load(Project *project)
+{
+   Global_Data2 *res;
+   Eina_List *data;
+   Eina_Stringshare *key;
+   Eina_List *l;
+
+   assert(project != NULL);
+
+   data = edje_edit_data_list_get(project->global_object);
+
+   EINA_LIST_FOREACH(data, l, key)
+     {
+        res = mem_calloc(1, sizeof(Global_Data2));
+        res->common.type = RESOURCE2_TYPE_DATA_GLOBAL;
+        res->common.name = eina_stringshare_add(key);
+        res->source = edje_edit_data_value_get(project->global_object, key);
+        project->global_data = eina_list_append(project->global_data, res);
+     }
+
+   edje_edit_string_list_free(data);
+   return true;
+}
+
+static Eina_Bool
 _image_set_resources_load(Project *project)
 {
    Image_Set2 *res;
@@ -374,6 +399,7 @@ resource_manager_init(Project *project)
    _tones_resources_load(project);
    _colorclasses_resources_load(project);
    _styles_resources_load(project);
+   _global_data_resources_load(project);
 
 //   gm_groups_load(project);
 

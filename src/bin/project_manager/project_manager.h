@@ -103,6 +103,7 @@ struct _Project
    Eina_List *fonts;
    Eina_List *colorclasses;
    Eina_List *styles;
+   Eina_List *global_data;
 
    Eina_File *mmap_file; /**< mmaped dev file*/
 
