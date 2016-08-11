@@ -67,6 +67,7 @@ _project_save_feedback_job(void *data, Ecore_Thread *th)
    Eina_Stringshare *message = eina_stringshare_printf(_("Save project '%s'"), ptd->project->name);
    ecore_thread_feedback(th, message);
 
+   ecore_thread_main_loop_begin();
    if (!editor_save_all(ptd->project->global_object))
      {
         ERR("Failed to save project.");
@@ -74,7 +75,7 @@ _project_save_feedback_job(void *data, Ecore_Thread *th)
         ecore_thread_cancel(th);
         return;
      }
-
+   ecore_thread_main_loop_end();
    ecore_file_cp(ptd->project->dev, ptd->project->saved_edj);
 
    message = eina_stringshare_printf(_("Save done."));

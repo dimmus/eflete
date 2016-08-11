@@ -126,6 +126,7 @@ _end_send(void *data)
         eina_tmpstr_del(ptd->tmp_dirname);
      }
 
+   eina_lock_free(&ptd->mutex);
    free(ptd);
    func(udata, result, project);
 }
