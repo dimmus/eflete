@@ -33,7 +33,7 @@ void
 _project_save_end_cb(void *data, Ecore_Thread *th __UNUSED__)
 {
    Project_Thread *ptd = (Project_Thread *)data;
-   ptd->result = PM_PROJECT_ERROR;
+   ptd->result = PM_PROJECT_SUCCESS;
    _end_send(ptd);
 }
 
