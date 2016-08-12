@@ -472,12 +472,16 @@ pm_project_save(Project *project,
    ptd->func_end = func_end;
    ptd->data = (void *)data;
    ptd->project = project;
-   eina_lock_new(&ptd->mutex);
-
-   /* Launch save project routine inside thread with feedback */
-   ecore_thread_feedback_run(_project_save_feedback_job, _project_save_feedback_cb,
-                             _project_save_end_cb, _project_save_cancel_cb, ptd,
-                             true);
+   if (!editor_save_all(ptd->project->global_object))
+     {
+        ERR("Failed to save project.");
+        ptd->result = PM_PROJECT_ERROR;
+        _end_send((void *)ptd);
+        return;
+     }
+   ecore_file_cp(ptd->project->dev, ptd->project->saved_edj);
+   ptd->result = PM_PROJECT_SUCCESS;
+   _end_send((void *)ptd);
 }
 
 Eina_Bool
