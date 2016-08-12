@@ -704,8 +704,8 @@ _container_changed(void *data,
 
 
    /* shift the abs scale zero mark */
-   ewe_ruler_zero_offset_set(area->ruler_h.obj, NULL, geom->x - x);
-   ewe_ruler_zero_offset_set(area->ruler_v.obj, NULL, geom->y - y);
+   ewe_ruler_zero_offset_set(area->ruler_h.obj, NULL, scale_x);
+   ewe_ruler_zero_offset_set(area->ruler_v.obj, NULL, scale_y);
 
    /* shift the rel scale zero mark */
    if (area->ruler_h.scale_rel)

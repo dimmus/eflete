@@ -104,14 +104,13 @@ _add_dashes(Ewe_Ruler_Smart_Data *sd)
                {
                   object = edje_object_add(canvas);
                   edje_object_file_set(object, EWE_THEME, scale->full_style);
-                  evas_object_smart_member_add(object, sd->obj);
-                  evas_object_clip_set(object, sd->clip);
                   scale->dashes = eina_list_append(scale->dashes, object);
                   if (sd->horizontal)
                     evas_object_size_hint_min_set(object, scale->mark_step, sd->geometry.height);
                   else
                     evas_object_size_hint_min_set(object, sd->geometry.width, scale->mark_step);
                   elm_box_pack_end(scale->box, object);
+                  evas_object_show(object);
                }
           }
         else
@@ -410,7 +409,6 @@ _ewe_ruler_scale_add(Eo *obj,
    sd->scales = eina_list_append(sd->scales, ret);
 
    ret->box = elm_box_add(obj);
-   elm_box_align_set(ret->box, 0.0, 0.0);
    elm_box_horizontal_set(ret->box, sd->horizontal);
    evas_object_smart_member_add(ret->box, obj);
    evas_object_clip_set(ret->box, sd->clip);
@@ -855,9 +853,6 @@ _ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
                                     Evas_Coord w,
                                     Evas_Coord h)
 {
-   Ewe_Ruler_Scale *scale;
-   Eina_List *l;
-
    if ((w == sd->geometry.width) && (h == sd->geometry.height)) return;
 
    sd->size_changed = EINA_TRUE;
@@ -867,8 +862,6 @@ _ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
    efl_canvas_group_resize(eo_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
-   EINA_LIST_FOREACH(sd->scales, l, scale)
-      evas_object_resize(scale->box, w, h);
 
    evas_object_smart_changed(obj);
 }
@@ -888,6 +881,21 @@ _ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
           {
              _dashes_size_set(sd, scale);
           }
+        EINA_LIST_FOREACH(sd->scales, ls, scale)
+          {
+             int dashes_count = eina_list_count(scale->dashes);
+             if (sd->horizontal)
+               {
+               evas_object_size_hint_min_set(scale->box, dashes_count * scale->mark_step, sd->geometry.height);
+               evas_object_resize(scale->box, dashes_count * scale->mark_step, sd->geometry.height);
+               }
+             else
+               {
+               evas_object_size_hint_min_set(scale->box, sd->geometry.width, dashes_count * scale->mark_step);
+               evas_object_resize(scale->box, sd->geometry.width, dashes_count * scale->mark_step);
+               }
+
+          }
      }
    if (sd->position_changed)
      {
@@ -900,6 +908,7 @@ _ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
                     evas_object_move(scale->box, sd->geometry.x + offset, sd->geometry.y);
                   else
                     evas_object_move(scale->box, sd->geometry.x, sd->geometry.y + offset);
+
                }
           }
         sd->position_changed = EINA_FALSE;
