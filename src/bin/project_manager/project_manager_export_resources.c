@@ -207,7 +207,6 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
                   message = eina_stringshare_printf(_("Image %s coudn't be exported"), image_name);
                   ecore_thread_feedback(th, message);
                   WARN("Image %s coudn't be exported", image_name);
-                  sleep(2);
                   continue;
                }
              ids->id = id;
@@ -300,7 +299,6 @@ _sound_resources_feedback_job(void *data, Ecore_Thread *th)
                   message = eina_stringshare_printf(_("Could not open file: %s"), res->path);
                   ecore_thread_feedback(th, message);
                   ERR("Could not open file: %s", res->path);
-                  sleep(2);
                   continue;
                }
              if (fwrite(eina_binbuf_string_get(sound_bin),
@@ -396,7 +394,6 @@ _font_resources_feedback_job(void *data, Ecore_Thread *th)
                   message = eina_stringshare_printf(_("Could not open file: %s"), res->path);
                   ecore_thread_feedback(th, message);
                   ERR("Could not open file: %s", res->path);
-                  sleep(2);
                   continue;
                }
              if (fwrite(font, size, 1, f) != 1)
