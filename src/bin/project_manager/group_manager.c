@@ -28,10 +28,12 @@ _group_name_parse(Group *group)
 
    assert(group != NULL);
 
+   if (!eina_str_has_prefix(group->name, "elm")) return;
+
    c = eina_str_split_full(group->name, "/", 4, &count);
 
    TODO("move here complicated class/style parsing from live_view");
-   if ((count == 4) && (!strcmp(c[0], "elm")))
+   if (count == 4)
      {
         group->widget = eina_stringshare_add(c[1]);
         group->class = eina_stringshare_add(c[2]);
