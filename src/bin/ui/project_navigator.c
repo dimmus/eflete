@@ -375,12 +375,12 @@ _group_validate(void *data __UNUSED__,
    if (resource_name_validator_status_get(validator) != ELM_REG_NOERROR)
      {
        popup_buttons_disabled_set(BTN_OK, true);
-       edje_object_signal_emit(obj, "validation,default,fail", "elm");
+       elm_object_signal_emit(obj, "validation,default,fail", "elm");
      }
    else
      {
        popup_buttons_disabled_set(BTN_OK, false);
-       edje_object_signal_emit(obj, "validation,default,pass", "elm");
+       elm_object_signal_emit(obj, "validation,default,pass", "elm");
      }
 }
 

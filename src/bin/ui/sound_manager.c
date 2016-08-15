@@ -325,23 +325,23 @@ _validation(void *data __UNUSED__,
    if (resource_name_validator_status_get(mng.tone_validator) != ELM_REG_NOERROR)
      {
         validate = EINA_FALSE;
-        edje_object_signal_emit(mng.tone_entry, "validation,default,fail", "elm");
+        elm_object_signal_emit(mng.tone_entry, "validation,default,fail", "elm");
      }
    else
      {
         validate = EINA_TRUE;
-        edje_object_signal_emit(mng.tone_entry, "validation,default,pass", "elm");
+        elm_object_signal_emit(mng.tone_entry, "validation,default,pass", "elm");
      }
 
    if (elm_validator_regexp_status_get(mng.frq_validator) != ELM_REG_NOERROR)
      {
         validate &= EINA_FALSE;
-        edje_object_signal_emit(mng.frq_entry, "validation,default,fail", "elm");
+        elm_object_signal_emit(mng.frq_entry, "validation,default,fail", "elm");
      }
    else
      {
         validate &= EINA_TRUE;
-        edje_object_signal_emit(mng.frq_entry, "validation,default,pass", "elm");
+        elm_object_signal_emit(mng.frq_entry, "validation,default,pass", "elm");
      }
 
 
