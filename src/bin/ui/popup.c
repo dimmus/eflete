@@ -775,12 +775,21 @@ _search_next_gengrid_item_cb(void *data,
                         start_from);
 }
 
+static void
+_btn_image_manager_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   _helper_dismiss(NULL, NULL, NULL, NULL);
+   image_manager_add();
+}
+
 void
 popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi)
 {
-   Evas_Object *entry, *icon;
+   Evas_Object *entry, *icon, *button;
    Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
 
    dismiss_func = func;
@@ -846,6 +855,13 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                                   _search_next_gengrid_item_cb, helper_data);
    helper_data->image_search_data.search_entry = entry;
    helper_data->image_search_data.last_item_found = NULL;
+
+   BUTTON_ADD(fs, button, NULL);
+   ICON_STANDARD_ADD(button, icon, true, "image2");
+   elm_object_content_set(button, icon);
+   evas_object_smart_callback_add(button, "clicked", _btn_image_manager_cb, NULL);
+   elm_object_part_content_set(fs, "eflete.swallow.button", button);
+   elm_layout_signal_emit(fs, "button,show", "eflete");
 
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));

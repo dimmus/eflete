@@ -873,64 +873,66 @@ group { name: "elm/layout/sound_editor/preview";
 
 group { name: "elm/layout/image_manager/usage_info";
    parts {
-      part { name: "padding.top.left";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            PADDING_SIZE_SET;
-         }
-      }
-      part { name: "padding.bottom.right";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            PADDING_SIZE_SET;
-         }
-      }
-      part { name: "area.usage_info";
-         type: SPACER;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "padding.top.left";
-               relative: 1.0 1.0;
-            }
-            rel2 {
-               to: "padding.bottom.right";
-               relative: 0.0 0.0;
-            }
-         }
-      }
       part { name: "eflete.swallow.search_line";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 80 30;
-            rel1.to: "area.usage_info";
-            rel2.to: "area.usage_info";
-         }
-      }
-      part { name: "padding.genlist";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            PADDING_SIZE_SET;
-            rel1 {
-               to_y: "eflete.swallow.search_line";
-               relative: 0.0 1.0;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            fixed: 0 1;
+            min: 80 19;
+            max: -1 19;
+            rel2 {
+               relative: 0.00 1.00;
+               to_x: "eflete.swallow.button";
             }
+         }
+         description { state: "bt_visible" 0.00;
+            inherit: "default" 0.00;
+            rel2.offset: -7 -1;
          }
       }
       part { name: "eflete.swallow.genlist";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
             rel1 {
-               to_y: "padding.genlist";
-               to_x: "area.usage_info";
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
+               offset: 0 6;
+               to_y: "eflete.swallow.search_line";
             }
-            rel2.to: "area.usage_info";
          }
+      }
+      part { name: "eflete.swallow.button";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 0.00;
+            min: 0 19;
+            max: 0 19;
+            aspect: 1.00 1.00;
+            aspect_preference: VERTICAL;
+         }
+         description { state: "bt_visible" 0.00;
+            inherit: "default" 0.00;
+            min: 19 19;
+            max: 19 19;
+            aspect: 0.00 0.00;
+            aspect_preference: NONE;
+         }
+      }
+   }
+   programs {
+      program { name: "bt_show";
+         signal: "button,show";
+         source: "eflete";
+         action: STATE_SET "bt_visible" 0.00;
+         target: "eflete.swallow.search_line";
+         target: "eflete.swallow.button";
+      }
+      program { name: "bt_hide";
+         signal: "button,hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         target: "eflete.swallow.search_line";
+         target: "eflete.swallow.button";
       }
    }
 }
