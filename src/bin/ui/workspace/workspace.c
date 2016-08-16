@@ -278,6 +278,8 @@ static void
 _members_zoom_set(Workspace_Data *wd)
 {
    Scroll_Area *area;
+   double zoom_calc;
+   int step, step_val;
 
    DBG("Set the zoom factor %f in tab '%s'", wd->zoom_factor * 100, wd->group->name);
    area = _scroll_area_get(wd);
@@ -285,8 +287,24 @@ _members_zoom_set(Workspace_Data *wd)
    container_zoom_factor_set(area->container, wd->zoom_factor);
    groupview_zoom_factor_set(area->content, wd->zoom_factor);
 
-   ewe_ruler_step_set(area->ruler_h.obj, NULL, (int)(50 * wd->zoom_factor));
-   ewe_ruler_step_set(area->ruler_v.obj, NULL, (int)(50 * wd->zoom_factor));
+   zoom_calc = 50 * wd->zoom_factor;
+   if (fabs(wd->zoom_factor - 1.0) > DBL_EPSILON)
+     {
+        if (((int)zoom_calc) < (50 * 0.6))
+          {
+             step = (50 / (int)zoom_calc) * (int)zoom_calc;
+             step_val = (50 / (int)zoom_calc) * 50;
+             ewe_ruler_value_step_set(area->ruler_h.obj, NULL, step_val);
+             ewe_ruler_value_step_set(area->ruler_v.obj, NULL, step_val);
+             ewe_ruler_step_set(area->ruler_h.obj, NULL, step);
+             ewe_ruler_step_set(area->ruler_v.obj, NULL, step);
+             return;
+          }
+     }
+   ewe_ruler_value_step_set(area->ruler_h.obj, NULL, 50);
+   ewe_ruler_value_step_set(area->ruler_v.obj, NULL, 50);
+   ewe_ruler_step_set(area->ruler_h.obj, NULL, (int)zoom_calc);
+   ewe_ruler_step_set(area->ruler_v.obj, NULL, (int)zoom_calc);
 }
 
 static void
