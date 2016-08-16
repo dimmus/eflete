@@ -48,6 +48,7 @@ _project_dev_file_create(Project *pro)
 Eina_Bool
 _lock_try(const char *path, Eina_Bool check)
 {
+#ifndef _WIN32
    struct flock lock, savelock;
 
    int fd = open(path, O_RDWR);
@@ -69,7 +70,19 @@ _lock_try(const char *path, Eina_Bool check)
         savelock.l_pid = getpid();
         fcntl(fd, F_SETLK, &savelock);
      }
-
+#else
+   LPOFSTRUCT lpReOpenBuff;
+   HFILE fd = OpenFile(path, lpReOpenBuff, OF_READWRITE);
+   if (fd == HFILE_ERROR)
+     {
+       ERR("The file '%s' cannot be opened in mode read-write!", path);
+       return false;
+     }
+   if (!check)
+     {
+       CloseHandle(fd);
+     }
+#endif
    return true;
 }
 
