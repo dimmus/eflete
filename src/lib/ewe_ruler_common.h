@@ -44,6 +44,7 @@ struct _Ewe_Ruler_Marker
    Eina_Stringshare  *full_style;
    double            rel_position;
    int               abs_position;
+   int               size;
    Eina_Bool         visible : 1;
    Eina_Bool         relative : 1;
 };

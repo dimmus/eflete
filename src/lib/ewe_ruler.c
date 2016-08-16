@@ -167,7 +167,7 @@ _place_markers(Ewe_Ruler_Smart_Data *sd)
         if (sd->horizontal)
           {
              /*size of marker(pointer) is set to 1 to make posible centring from style*/
-             evas_object_resize(marker->obj, 1, sd->geometry.height);
+             evas_object_resize(marker->obj, marker->size, sd->geometry.height);
              evas_object_move(marker->obj,
                               sd->geometry.x + marker->abs_position,
                               sd->geometry.y);
@@ -175,7 +175,7 @@ _place_markers(Ewe_Ruler_Smart_Data *sd)
         else
           {
              /*size of marker(pointer) is set to 1 to make posible centring from style*/
-             evas_object_resize(marker->obj, sd->geometry.width, 1);
+             evas_object_resize(marker->obj, sd->geometry.width, marker->size);
              evas_object_move(marker->obj,
                               sd->geometry.x,
                               marker->abs_position + sd->geometry.y);
@@ -535,9 +535,15 @@ _ewe_ruler_marker_add(Eo *obj,
 
    ret->style = eina_stringshare_add(style);
    if (sd->horizontal)
-     ret->full_style = eina_stringshare_printf("%s/%s", MARKER, style);
+     {
+        ret->full_style = eina_stringshare_printf("%s/%s", MARKER, style);
+        edje_object_size_min_calc(ret->obj, &ret->size, NULL);
+     }
    else
-     ret->full_style = eina_stringshare_printf("%s/%s", MARKER_VER, style);
+     {
+        ret->full_style = eina_stringshare_printf("%s/%s", MARKER_VER, style);
+        edje_object_size_min_calc(ret->obj, NULL, &ret->size);
+     }
 
    ret->obj = edje_object_add(obj);
    evas_object_clip_set(ret->obj, sd->clip);
