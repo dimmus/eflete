@@ -315,7 +315,7 @@ _combobox_dismissed_cb(void *data __UNUSED__,
    /* after dissmissing combobox its entry remains focused.
       this makes problems for shortcuts */
    Evas_Object *focused = elm_object_focused_object_get(ap.win);
-   if (!strcmp("elm_entry", evas_object_type_get(focused)))
+   if (focused && !strcmp("elm_entry", evas_object_type_get(focused)))
      {
         elm_object_focus_allow_set(focused, false);
         elm_object_focus_set(focused, false);
