@@ -1,32 +1,115 @@
 group { name: "elm/scroller/base/default";
-   images {
-      image: "Scroll/scroll_down_icon_dim.png" COMP;
-      image: "Scroll/scroll_up_icon_sel.png" COMP;
-      image: "Scroll/scroll_up_icon_nor.png" COMP;
-      image: "Scroll/scroll_up_icon_mv.png" COMP;
-      image: "Scroll/scroll_up_icon_dim.png" COMP;
-      image: "Scroll/scroll_down_icon_sel.png" COMP;
-      image: "Scroll/scroll_down_icon_nor.png" COMP;
-      image: "Scroll/scroll_down_icon_mv.png" COMP;
-      image: "Scroll/scroll_left_icon_dim.png" COMP;
-      image: "Scroll/scroll_left_icon_sel.png" COMP;
-      image: "Scroll/scroll_left_icon_nor.png" COMP;
-      image: "Scroll/scroll_left_icon_mv.png" COMP;
-      image: "Scroll/scroll_right_icon_mv.png" COMP;
-      image: "Scroll/scroll_right_icon_dim.png" COMP;
-      image: "Scroll/scroll_right_icon_nor.png" COMP;
-      image: "Scroll/scroll_right_icon_sel.png" COMP;
-   }
+   alias: "elm/scroller/base/popup/transparent";
+   alias: "elm/list/base/default";
+   alias: "elm/scroller/base/map_bubble";
+   alias: "elm/scroller/base/popup/default";
+   alias: "elm/genscroller/base/default";
    data {
       item: "focus_highlight" "on";
+   }
+   images {
+      image: "Scroll/scroll_up_icon_nor.png" COMP;
+      image: "Scroll/scroll_up_icon_sel.png" COMP;
+      image: "Scroll/scroll_up_icon_dim.png" COMP;
+      image: "Scroll/scroll_up_icon_mv.png" COMP;
+      image: "Scroll/scroll_down_icon_nor.png" COMP;
+      image: "Scroll/scroll_down_icon_sel.png" COMP;
+      image: "Scroll/scroll_down_icon_dim.png" COMP;
+      image: "Scroll/scroll_left_icon_nor.png" COMP;
+      image: "Scroll/scroll_left_icon_sel.png" COMP;
+      image: "Scroll/scroll_left_icon_dim.png" COMP;
+      image: "Scroll/scroll_left_icon_mv.png" COMP;
+      image: "Scroll/scroll_right_icon_nor.png" COMP;
+      image: "Scroll/scroll_right_icon_sel.png" COMP;
+      image: "Scroll/scroll_right_icon_dim.png" COMP;
+      image: "Scroll/scroll_right_icon_mv.png" COMP;
+   }
+   script {
+      public loop_x, loop_y;
+      public action_on_pos_vbar(val) {
+         new x, y , w, h, x1, y1 , w1, h1;
+
+         get_geometry(PART:"y_vbar_up", x,y,w, h);
+         get_geometry(PART:"y_vbar_up_mapper", x1,y1,w1, h1);
+
+         if(((y1 <= y) && (y <= (y1 + h1))) && (0 == get_int(loop_y)))
+         {
+            set_state(PART:"arrow1_vbar", "disabled", 0.0);
+            set_state(PART:"sb_vbar_a1_border", "disabled", 0.0);
+            set_state(PART:"sb_vbar_a1", "hidden", 0.0);
+         }
+         else
+         {
+            set_state(PART:"arrow1_vbar", "default", 0.0);
+            set_state(PART:"sb_vbar_a1", "default", 0.0);
+            set_state(PART:"sb_vbar_a1_border", "default", 0.0);
+         }
+
+         get_geometry(PART:"y_vbar_down", x,y,w, h);
+         get_geometry(PART:"y_vbar_down_mapper", x1,y1,w1, h1);
+
+         if(((y1 <= (y + h)) && ((y+ h) <= (y1 + h1))) && (0 == get_int(loop_y)))
+         {
+            set_state(PART:"sb_vbar_a2", "hidden", 0.0);
+            set_state(PART:"arrow2_vbar", "disabled", 0.0);
+            set_state(PART:"sb_vbar_a2_border", "disabled", 0.0);
+         }
+         else
+         {
+            set_state(PART:"arrow2_vbar", "default", 0.0);
+            set_state(PART:"sb_vbar_a2", "default", 0.0);
+            set_state(PART:"sb_vbar_a2_border", "default", 0.0);
+         }
+
+         if(val < 10)
+         timer(0.1,"action_on_pos_vbar", val+1);
+      }
+
+      public action_on_pos_hbar(val) {
+         new x, y , w, h, x1, y1 , w1, h1;
+
+         get_geometry(PART:"x_hbar_left", x,y,w, h);
+         get_geometry(PART:"x_hbar_left_mapper", x1,y1,w1, h1);
+
+         if(((x1 <= x) && (x <= (x1 + w1))) && (0 == get_int(loop_x)))
+         {
+            set_state(PART:"arrow1_hbar", "disabled", 0.0);
+            set_state(PART:"sb_hbar_a1", "hidden", 0.0);
+            set_state(PART:"sb_hbar_a1_border", "disabled", 0.0);
+         }
+         else
+         {
+            set_state(PART:"arrow1_hbar", "default", 0.0);
+            set_state(PART:"sb_hbar_a1", "default", 0.0);
+            set_state(PART:"sb_hbar_a1_border", "default", 0.0);
+         }
+
+         get_geometry(PART:"x_hbar_right", x,y,w, h);
+         get_geometry(PART:"x_hbar_right_mapper", x1,y1,w1, h1);
+
+         if(((x1 <= (x + w)) && ((x + w) <= (x1 + w1))) && (0 == get_int(loop_x)))
+         {
+            set_state(PART:"arrow2_hbar", "disabled", 0.0);
+            set_state(PART:"sb_hbar_a2", "hidden", 0.0);
+            set_state(PART:"sb_hbar_a2_border", "disabled", 0.0);
+         }
+         else
+         {
+            set_state(PART:"arrow2_hbar", "default", 0.0);
+            set_state(PART:"sb_hbar_a2", "default", 0.0);
+            set_state(PART:"sb_hbar_a2_border", "default", 0.0);
+         }
+
+         if(val < 10)
+         timer(0.1,"action_on_pos_hbar", val+1);
+      }
    }
    parts {
       part { name: "sb_vbar_show";
          type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
          }
-         description { state: "hidden" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             visible: 0;
          }
@@ -34,43 +117,40 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_vbar";
          type: RECT;
          scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
+         description { state: "default" 0.00;
+            align: 1.00 0.00;
             fixed: 1 1;
-            min: 15 15;
-            max: 15 -1;
+            min: 15 1;
             rel1 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                offset: -1 0;
             }
             rel2 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                to_y: "sb_hbar";
             }
          }
-         description { state: "hidden" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             min: 0 0;
             max: 0 99999;
-            rel1.offset: 0 0;
-            rel2.offset: -1 -1;
          }
       }
       part { name: "sb_vbar_base";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            fixed: 1 1;
             min: 15 0;
             max: 15 -1;
             color_class: "scrollbar_bg";
             rel1 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                offset: 0 1;
                to: "sb_vbar_a1";
             }
             rel2 {
-               relative: 1.0 0.0;
-               offset: -1 -2;
+               relative: 1.00 0.00;
                to: "sb_vbar_a2";
             }
          }
@@ -78,15 +158,15 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_vbar_p1";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
             color: 0 0 0 0;
             rel1 {
-               relative: 0.0 1.0;
-               to: "sb_vbar_a1_border";
+               relative: 0.00 1.00;
+               to: "sb_vbar_a1";
             }
             rel2 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                to: "elm.dragable.vbar";
             }
          }
@@ -94,16 +174,16 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_vbar_p2";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
             color: 0 0 0 0;
             rel1 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                to: "elm.dragable.vbar";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to: "sb_vbar_a2_border";
+               relative: 1.00 0.00;
+               to: "sb_vbar_a2";
             }
          }
       }
@@ -116,82 +196,166 @@ group { name: "elm/scroller/base/default";
             y: 1 1 0;
             confine: "sb_vbar_base";
          }
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
-            min: 15 15;
+            min: 15 13;
             color: 0 0 0 0;
             rel1 {
-               relative: 0.5 0.5;
+               relative: 0.50 0.50;
                to: "sb_vbar_base";
             }
             rel2 {
-               relative: 0.5 0.5;
+               relative: 0.50 0.50;
                to: "sb_vbar_base";
             }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+         }
+         description { state: "clicked" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "sb_vbar_a1_border";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            fixed: 1 1;
-            min: 15 15;
-            max: 15 15;
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
+         description { state: "default" 0.00;
+            align: 0.50 0.00;
+            min: 0 15;
+            max: -1 15;
             color_class: "scrollbar_line_nor";
             rel1.to: "sb_vbar";
             rel2.to: "sb_vbar";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_sel";
          }
-         description { state: "hovered" 0.0;
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            color_class: "scrollbar_line_dim";
+         }
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_over";
          }
-         description { state: "disabled" 0.0;
+      }
+      part { name: "y_vbar_up_mapper";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            fixed: 1 1;
+            min: 4 2;
+            max: 4 2;
+            rel1.to: "sb_vbar_base";
+            rel2.to: "sb_vbar_base";
+         }
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
-            color_class: "scrollbar_line_dim";
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "y_vbar_up";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            fixed: 1 1;
+            min: 4 2;
+            max: 4 2;
+            rel1.to: "elm.dragable.vbar";
+            rel2.to: "elm.dragable.vbar";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "y_vbar_down_mapper";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 1.00;
+            fixed: 1 1;
+            min: 4 2;
+            max: 4 2;
+            rel1.to: "sb_vbar_base";
+            rel2.to: "sb_vbar_base";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "y_vbar_down";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 1.00;
+            fixed: 1 1;
+            min: 4 2;
+            max: 4 2;
+            rel1.to: "elm.dragable.vbar";
+            rel2.to: "elm.dragable.vbar";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
          }
       }
       part { name: "sb_vbar_a1";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            align: 0.50 0.00;
             fixed: 1 1;
             min: 13 13;
-            max: 13 13;
-            minmul: 0.0 0.0;
-            rel1.to: "sb_vbar_a1_border";
-            rel2.to: "sb_vbar_a1_border";
+            aspect: 1.00 1.00;
+            aspect_preference: HORIZONTAL;
+            rel1 {
+               offset: 1 1;
+               to: "sb_vbar";
+            }
+            rel2 {
+               relative: 1.00 0.00;
+               offset: -2 -2;
+               to: "sb_vbar";
+            }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "sb_vbar_a2_border";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
             min: 0 15;
-            max: 15 15;
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
+            max: -1 15;
             color_class: "scrollbar_line_nor";
             rel1.to: "sb_vbar";
             rel2.to: "sb_vbar";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_sel";
          }
-         description { state: "disabled" 0.0;
+         description { state: "disabled" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_dim";
          }
-         description { state: "hovered" 0.0;
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_over";
          }
@@ -199,21 +363,31 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_vbar_a2";
          type: RECT;
          clip_to: "sb_vbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
             fixed: 1 1;
-            min: 0 13;
-            max: 13 13;
-            minmul: 0.0 0.0;
-            rel1.to: "sb_vbar_a2_border";
-            rel2.to: "sb_vbar_a2_border";
+            min: 13 13;
+            aspect: 1.00 1.00;
+            aspect_preference: HORIZONTAL;
+            rel1 {
+               relative: 0.00 1.00;
+               offset: 1 -1;
+               to: "sb_vbar";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "sb_vbar";
+            }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "sb_hbar_show";
          type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
          }
-         description { state: "hidden" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             visible: 0;
          }
@@ -222,17 +396,20 @@ group { name: "elm/scroller/base/default";
          type: RECT;
          mouse_events: 0;
          scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
+         description { state: "default" 0.00;
+            align: 0.00 1.00;
             fixed: 1 1;
-            min: 15 15;
-            rel1.relative: 0.0 1.0;
+            min: 1 15;
+            rel1 {
+               relative: 0.00 1.00;
+               offset: 0 -1;
+            }
             rel2 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                to_x: "sb_vbar";
             }
          }
-         description { state: "hidden" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             min: 0 0;
             max: 99999 0;
@@ -241,17 +418,17 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_hbar_base";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
-            min: 0 15;
+         description { state: "default" 0.00;
+            fixed: 1 1;
             color_class: "scrollbar_bg";
             rel1 {
-               relative: 1.0 0.0;
-               offset: 1 0;
+               relative: 1.00 0.00;
+               offset: 1 -1;
                to: "sb_hbar_a1";
             }
             rel2 {
-               relative: 0.0 1.0;
-               offset: -2 -1;
+               relative: 0.00 1.00;
+               offset: -2 0;
                to: "sb_hbar_a2";
             }
          }
@@ -259,14 +436,15 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_hbar_p1";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            fixed: 1 1;
             color: 0 0 0 0;
             rel1 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                to: "sb_hbar_a1";
             }
             rel2 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                to: "elm.dragable.hbar";
             }
          }
@@ -274,14 +452,15 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_hbar_p2";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            fixed: 1 1;
             color: 0 0 0 0;
             rel1 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                to: "elm.dragable.hbar";
             }
             rel2 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                to: "sb_hbar_a2";
             }
          }
@@ -295,77 +474,166 @@ group { name: "elm/scroller/base/default";
             y: 0 0 0;
             confine: "sb_hbar_base";
          }
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
             min: 15 15;
-            minmul: 0.0 0.0;
             color: 0 0 0 0;
             rel1 {
-               relative: 0.5 0.0;
+               relative: 0.50 0.50;
                to: "sb_hbar_base";
             }
             rel2 {
-               relative: 0.5 1.0;
+               relative: 0.50 0.50;
                to: "sb_hbar_base";
             }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+         }
+         description { state: "clicked" 0.00;
+            inherit: "default" 0.00;
+         }
+      }
+      part { name: "x_hbar_left_mapper";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 1.00;
+            fixed: 1 1;
+            min: 2 4;
+            max: 2 4;
+            rel1.to: "sb_hbar_base";
+            rel2.to: "sb_hbar_base";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "x_hbar_left";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 0.00 1.00;
+            fixed: 1 1;
+            min: 2 4;
+            max: 2 4;
+            rel1.to: "elm.dragable.hbar";
+            rel2.to: "elm.dragable.hbar";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "x_hbar_right_mapper";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 1.00 1.00;
+            fixed: 1 1;
+            min: 2 4;
+            max: 2 4;
+            rel1.to: "sb_hbar_base";
+            rel2.to: "sb_hbar_base";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "x_hbar_right";
+         type: SPACER;
+         repeat_events: 1;
+         scale: 1;
+         description { state: "default" 0.00;
+            align: 1.00 1.00;
+            fixed: 1 1;
+            min: 2 4;
+            max: 2 4;
+            rel1.to: "elm.dragable.hbar";
+            rel2.to: "elm.dragable.hbar";
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            min: 0 0;
+            max: 0 0;
          }
       }
       part { name: "sb_hbar_a1_border";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
-            min: 15 15;
-            max: 15 15;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            min: 15 0;
+            max: 15 -1;
             color_class: "scrollbar_line_nor";
             rel1.to: "sb_hbar";
-            rel2 {
-               relative: 0.0 1.0;
-               to: "sb_hbar";
-            }
+            rel2.to: "sb_hbar";
          }
-         description { state: "hovered" 0.0;
+         description { state: "clicked" 0.00;
+            inherit: "default" 0.00;
+            color_class: "scrollbar_line_sel";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            color_class: "scrollbar_line_dim";
+         }
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_over";
-            rel1.relative: 0.0 1.0;
-         }
-         description { state: "clicked" 0.0;
-            inherit: "hovered" 0.00;
-            color_class: "scrollbar_line_sel";
          }
       }
       part { name: "sb_hbar_a1";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
             fixed: 1 1;
             min: 13 13;
-            max: 13 13;
-            minmul: 0.0 0.0;
-            rel1.to: "sb_hbar_a1_border";
-            rel2.to: "sb_hbar_a1_border";
+            aspect: 1.00 1.00;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 1 1;
+               to: "sb_hbar";
+            }
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -2 -2;
+               to: "sb_hbar";
+            }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "sb_hbar_a2_border";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            min: 15 15;
-            max: 15 15;
+         description { state: "default" 0.00;
+            align: 1.00 0.50;
+            min: 15 0;
+            max: 15 -1;
             color_class: "scrollbar_line_nor";
             rel1.to: "sb_hbar";
             rel2.to: "sb_hbar";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_sel";
          }
-         description { state: "hovered" 0.0;
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            color_class: "scrollbar_line_dim";
+         }
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_over";
          }
@@ -373,19 +641,30 @@ group { name: "elm/scroller/base/default";
       part { name: "sb_hbar_a2";
          type: RECT;
          clip_to: "sb_hbar";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
+            align: 1.00 0.50;
             fixed: 1 1;
             min: 13 13;
-            max: 13 13;
-            minmul: 0.0 0.0;
-            rel1.to: "sb_hbar_a2_border";
-            rel2.to: "sb_hbar_a2_border";
+            aspect: 1.00 1.00;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: -1 1;
+               to: "sb_hbar";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "sb_hbar";
+            }
+         }
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "bg";
          type: RECT;
-         description { state: "default" 0.0;
-            color_class: "scrollframe_base";
+         description { state: "default" 0.00;
+            color_class: "scroller_bg";
             color: 0 0 0 0;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
@@ -393,7 +672,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "clipper";
          type: RECT;
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
          }
@@ -401,9 +680,9 @@ group { name: "elm/scroller/base/default";
       part { name: "elm.swallow.background";
          type: SWALLOW;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             rel2 {
-               relative: 0.0 0.0;
+               relative: 0.00 0.00;
                to_x: "sb_vbar";
                to_y: "sb_hbar";
             }
@@ -412,9 +691,9 @@ group { name: "elm/scroller/base/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             rel2 {
-               relative: 0.0 0.0;
+               relative: 0.00 0.00;
                to_x: "sb_vbar";
                to_y: "sb_hbar";
             }
@@ -423,7 +702,7 @@ group { name: "elm/scroller/base/default";
       part { name: "elm.swallow.overlay";
          type: SWALLOW;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             rel1.to: "elm.swallow.content";
             rel2.to: "elm.swallow.content";
          }
@@ -432,129 +711,104 @@ group { name: "elm/scroller/base/default";
          type: IMAGE;
          mouse_events: 0;
          clip_to: "sb_vbar_show";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
-            min: 0 13;
-            max: 13 13;
+            min: 13 13;
+            max: 13 15;
             image.normal: "Scroll/scroll_up_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a1";
             rel2.to: "sb_vbar_a1";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
-            fixed: 0 0;
+            max: 13 13;
             image.normal: "Scroll/scroll_up_icon_sel.png";
          }
-         description { state: "hovered" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
-            fixed: 0 0;
-            image.normal: "Scroll/scroll_up_icon_mv.png";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.00;
-            fixed: 0 0;
             image.normal: "Scroll/scroll_up_icon_dim.png";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            max: 13 13;
+            image.normal: "Scroll/scroll_up_icon_dim.png";
+         }
+         description { state: "hovered" 0.00;
+            inherit: "default" 0.00;
+            max: 13 13;
+            image.normal: "Scroll/scroll_up_icon_mv.png";
          }
       }
       part { name: "arrow2_vbar";
          type: IMAGE;
          mouse_events: 0;
          clip_to: "sb_vbar_show";
-         description { state: "default" 0.0;
-            min: 0 13;
+         description { state: "default" 0.00;
+            fixed: 1 1;
+            min: 13 13;
             max: 13 13;
             image.normal: "Scroll/scroll_down_icon_nor.png";
             fill.smooth: 0;
             rel1.to: "sb_vbar_a2";
             rel2.to: "sb_vbar_a2";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             image.normal: "Scroll/scroll_down_icon_sel.png";
          }
-         description { state: "hovered" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "Scroll/scroll_down_icon_mv.png";
-         }
-         description { state: "disabled" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             image.normal: "Scroll/scroll_down_icon_dim.png";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Scroll/scroll_down_icon_dim.png";
+         }
+         description { state: "hovered" 0.00;
+            inherit: "default" 0.00;
          }
       }
       part { name: "base_vbar_border";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
          clip_to: "sb_vbar_show";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
-            min: 15 15;
-            max: 15 -1;
             color_class: "scrollbar_line_nor";
-            rel1.to: "elm.dragable.vbar";
-            rel2.to: "elm.dragable.vbar";
+            rel1 {
+               offset: 0 -1;
+               to_x: "elm.dragable.vbar";
+               to_y: "base_vbar";
+            }
+            rel2 {
+               offset: -1 0;
+               to_x: "elm.dragable.vbar";
+               to_y: "base_vbar";
+            }
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_sel";
          }
-         description { state: "hovered" 0.0;
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             color_class: "scrollbar_line_over";
          }
       }
       part { name: "base_vbar";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
          clip_to: "sb_vbar_show";
-         description { state: "default" 0.0;
-            min: 0 13;
-            max: 13 -1;
-            rel1 {
-               offset: 0 1;
-               to: "base_vbar_border";
-            }
-            rel2 {
-               offset: -1 -2;
-               to: "base_vbar_border";
-            }
-         }
-      }
-      part { name: "base_hbar_border";
-         type: RECT;
-         repeat_events: 1;
-         clip_to: "sb_hbar_show";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
-            min: 15 15;
-            max: -1 15;
-            color_class: "scrollbar_line_nor";
-            rel1.to: "elm.dragable.hbar";
-            rel2.to: "elm.dragable.hbar";
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
-            color_class: "scrollbar_line_sel";
-         }
-         description { state: "hovered" 0.0;
-            inherit: "default" 0.00;
-            color_class: "scrollbar_line_over";
-         }
-      }
-      part { name: "base_hbar";
-         type: RECT;
-         repeat_events: 1;
-         clip_to: "sb_hbar_show";
-         description { state: "default" 0.0;
-            min: 13 13;
-            max: -1 13;
             rel1 {
-               offset: 1 0;
-               to: "base_hbar_border";
+               offset: 1 1;
+               to: "elm.dragable.vbar";
             }
             rel2 {
-               offset: -2 -1;
-               to: "base_hbar_border";
+               offset: -2 -2;
+               to: "elm.dragable.vbar";
             }
          }
       }
@@ -562,7 +816,7 @@ group { name: "elm/scroller/base/default";
          type: IMAGE;
          mouse_events: 0;
          clip_to: "sb_hbar_show";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
             min: 13 13;
             max: 13 13;
@@ -571,24 +825,28 @@ group { name: "elm/scroller/base/default";
             rel1.to: "sb_hbar_a1";
             rel2.to: "sb_hbar_a1";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
             image.normal: "Scroll/scroll_left_icon_sel.png";
          }
-         description { state: "hovered" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "Scroll/scroll_left_icon_mv.png";
-         }
-         description { state: "disabled" 0.0;
+         description { state: "hidden" 0.00;
             inherit: "default" 0.00;
             image.normal: "Scroll/scroll_left_icon_dim.png";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Scroll/scroll_left_icon_dim.png";
+         }
+         description { state: "hovered" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Scroll/scroll_left_icon_mv.png";
          }
       }
       part { name: "arrow2_hbar";
          type: IMAGE;
          mouse_events: 0;
          clip_to: "sb_hbar_show";
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             fixed: 1 1;
             min: 13 13;
             max: 13 13;
@@ -597,263 +855,561 @@ group { name: "elm/scroller/base/default";
             rel1.to: "sb_hbar_a2";
             rel2.to: "sb_hbar_a2";
          }
-         description { state: "clicked" 0.0;
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
+            max: 13 15;
             image.normal: "Scroll/scroll_right_icon_sel.png";
          }
-         description { state: "hovered" 0.0;
+         description { state: "hidden" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Scroll/scroll_right_icon_dim.png";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Scroll/scroll_right_icon_dim.png";
+         }
+         description { state: "hovered" 0.00;
             inherit: "default" 0.00;
             image.normal: "Scroll/scroll_right_icon_mv.png";
          }
-         description { state: "disabled" 0.0;
+      }
+      part { name: "base_hbar_border";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "sb_hbar_show";
+         description { state: "default" 0.00;
+            fixed: 1 1;
+            color_class: "scrollbar_line_nor";
+            rel1 {
+               offset: 0 -1;
+               to_x: "elm.dragable.hbar";
+               to_y: "base_hbar";
+            }
+            rel2 {
+               offset: -1 0;
+               to_x: "elm.dragable.hbar";
+               to_y: "base_hbar";
+            }
+         }
+         description { state: "clicked" 0.00;
             inherit: "default" 0.00;
-            image.normal: "Scroll/scroll_right_icon_dim.png";
+            color_class: "scrollbar_line_sel";
+         }
+         description { state: "hovered" 0.00;
+            inherit: "default" 0.00;
+            color_class: "scrollbar_line_over";
+         }
+      }
+      part { name: "base_hbar";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "sb_hbar_show";
+         description { state: "default" 0.00;
+            fixed: 1 1;
+            rel1 {
+               offset: 1 1;
+               to: "elm.dragable.hbar";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "elm.dragable.hbar";
+            }
+         }
+      }
+      part { name: "dim_effect";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.00;
+            color: 0 0 0 0;
+         }
+         description { state: "effect" 0.00;
+            inherit: "default" 0.00;
+            color: 50 50 50 255;
          }
       }
    }
    programs {
-      program { name: "program_0x56022eb45bc0";
+      program { name: "program_0x5602666fc910";
          signal: "mouse,down,1*";
          source: "sb_vbar_a1";
+         filter: "sb_vbar_a1" "default";
          action: STATE_SET "clicked" 0.00;
          target: "arrow1_vbar";
          target: "sb_vbar_a1_border";
       }
-      program { name: "program_0x56022eb45f20";
-         signal: "mouse,down,1*";
-         source: "sb_vbar_a1";
-         action: DRAG_VAL_STEP 0.0000 -1.0000;
-         target: "elm.dragable.vbar";
-      }
-      program { name: "program_0x56022eb47cb0";
+      program { name: "program_0x5602666fd340";
          signal: "mouse,down,1*";
          source: "sb_vbar_a2";
+         filter: "sb_vbar_a2" "default";
          action: STATE_SET "clicked" 0.00;
          target: "arrow2_vbar";
          target: "sb_vbar_a2_border";
       }
-      program { name: "program_0x56022eb48010";
-         signal: "mouse,down,1*";
-         source: "sb_vbar_a2";
-         action: DRAG_VAL_STEP 0.0000 1.0000;
-         target: "elm.dragable.vbar";
-      }
-      program { name: "program_0x56022eb48d90";
+      program { name: "program_0x5602666ffd40";
          signal: "mouse,down,1*";
          source: "sb_vbar_p1";
          action: DRAG_VAL_PAGE 0.0000 -1.0000;
          target: "elm.dragable.vbar";
       }
-      program { name: "program_0x56022eb490d0";
+      program { name: "program_0x560266700070";
          signal: "mouse,down,1*";
          source: "sb_vbar_p2";
          action: DRAG_VAL_PAGE 0.0000 1.0000;
          target: "elm.dragable.vbar";
       }
-      program { name: "program_0x56022eb512a0";
+      program { name: "program_0x560266710290";
          signal: "mouse,down,1*";
          source: "sb_hbar_a1";
+         filter: "sb_hbar_a1" "default";
          action: STATE_SET "clicked" 0.00;
          target: "arrow1_hbar";
          target: "sb_hbar_a1_border";
       }
-      program { name: "program_0x56022eb51600";
-         signal: "mouse,down,1*";
-         source: "sb_hbar_a1";
-         action: DRAG_VAL_STEP -1.0000 0.0000;
-         target: "elm.dragable.hbar";
-      }
-      program { name: "program_0x56022eb523b0";
+      program { name: "program_0x560266710cc0";
          signal: "mouse,down,1*";
          source: "sb_hbar_a2";
+         filter: "sb_hbar_a2" "default";
          action: STATE_SET "clicked" 0.00;
          target: "arrow2_hbar";
          target: "sb_hbar_a2_border";
       }
-      program { name: "program_0x56022eb52710";
-         signal: "mouse,down,1*";
-         source: "sb_hbar_a2";
-         action: DRAG_VAL_STEP 1.0000 0.0000;
-         target: "elm.dragable.hbar";
-      }
-      program { name: "program_0x56022eb53560";
+      program { name: "program_0x560266711710";
          signal: "mouse,down,1*";
          source: "sb_hbar_p1";
          action: DRAG_VAL_PAGE -1.0000 0.0000;
          target: "elm.dragable.hbar";
+         after: "check_pos_hbar";
       }
-      program { name: "program_0x56022eb538a0";
+      program { name: "program_0x560266713b20";
          signal: "mouse,down,1*";
          source: "sb_hbar_p2";
          action: DRAG_VAL_PAGE 1.0000 0.0000;
          target: "elm.dragable.hbar";
+         after: "check_pos_hbar";
       }
-      program { name: "program_0x56022eb647f0";
+      program { name: "program_0x560266739d70";
          signal: "mouse,down,1*";
-         source: "base_vbar";
+         source: "elm.dragable.vbar";
          action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.vbar";
          target: "base_vbar_border";
       }
-      program { name: "program_0x56022eb67560";
+      program { name: "program_0x56026673a500";
+         signal: "mouse,down,*";
+         source: "elm.dragable.vbar";
+         action: SIGNAL_EMIT "elm,vbar,press" "elm";
+      }
+      program { name: "program_0x56026673af70";
+         signal: "mouse,up,*";
+         source: "elm.dragable.vbar";
+         action: SIGNAL_EMIT "elm,vbar,unpress" "elm";
+      }
+      program { name: "program_0x56026673b160";
          signal: "mouse,down,1*";
-         source: "base_hbar";
+         source: "elm.dragable.hbar";
          action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.hbar";
          target: "base_hbar_border";
       }
-      program { name: "program_0x56022eb3fab0";
+      program { name: "program_0x56026673b980";
+         signal: "mouse,down,*";
+         source: "elm.dragable.hbar";
+         action: SIGNAL_EMIT "elm,hbar,press" "elm";
+      }
+      program { name: "program_0x56026673c400";
+         signal: "mouse,up,*";
+         source: "elm.dragable.hbar";
+         action: SIGNAL_EMIT "elm,hbar,unpress" "elm";
+      }
+      program { name: "program_0x5602666ee0d0";
          signal: "load";
          script {
+
+
             emit("reload", "elm");
+            action_on_pos_vbar(0);
+            action_on_pos_hbar(0);
          }
       }
-      program { name: "program_0x56022eb45220";
+      program { name: "hbar_a1_mouse_up";
+         signal: "mouse,up,1*";
+         source: "sb_hbar_a1";
+         filter: "sb_hbar_a1" "default";
+         action: STATE_SET "default" 0.00;
+         target: "arrow1_hbar";
+         target: "sb_hbar_a1_border";
+         after: "drag_left";
+      }
+      program { name: "hbar_a2_mouse_up";
+         signal: "mouse,up,1*";
+         source: "sb_hbar_a2";
+         filter: "sb_hbar_a2" "default";
+         action: STATE_SET "default" 0.00;
+         target: "arrow2_hbar";
+         target: "sb_hbar_a2_border";
+         after: "drag_right";
+      }
+      program { name: "program_0x5602666fa1e0";
          signal: "elm,action,show,vbar";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "sb_vbar";
          target: "sb_vbar_show";
+         target: "elm.dragable.vbar";
+         target: "sb_vbar_a1";
+         target: "sb_vbar_a2";
+         target: "y_vbar_up_mapper";
+         target: "y_vbar_up";
+         target: "y_vbar_down_mapper";
+         target: "y_vbar_down";
+         after: "check_pos_vbar";
       }
-      program { name: "program_0x56022eb456c0";
+      program { name: "program_0x5602666fb580";
          signal: "elm,action,hide,vbar";
          source: "elm";
          action: STATE_SET "hidden" 0.00;
          target: "sb_vbar";
          target: "sb_vbar_show";
+         target: "elm.dragable.vbar";
+         target: "sb_vbar_a1";
+         target: "sb_vbar_a2";
+         target: "y_vbar_up_mapper";
+         target: "y_vbar_up";
+         target: "y_vbar_down_mapper";
+         target: "y_vbar_down";
       }
-      program { name: "program_0x56022eb47270";
-         signal: "mouse,up,1";
-         source: "sb_vbar_a1";
-         action: STATE_SET "default" 0.00;
-         target: "arrow1_vbar";
-         target: "sb_vbar_a1_border";
+      program { name: "program_0x5602667003b0";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+
+
+            action_on_pos_vbar(10);
+         }
       }
-      program { name: "program_0x56022eb475e0";
-         signal: "mouse,in";
-         source: "sb_vbar_a1";
-         action: STATE_SET "hovered" 0.00;
-         target: "arrow1_vbar";
-         target: "sb_vbar_a1_border";
+      program { name: "loop_set_vbar";
+         signal: "elm,loop_y,set";
+         source: "elm";
+         script {
+
+
+            set_int(loop_y, 1);
+            action_on_pos_vbar(10);
+         }
       }
-      program { name: "program_0x56022eb47940";
-         signal: "mouse,out";
-         source: "sb_vbar_a1";
-         action: STATE_SET "default" 0.00;
-         target: "arrow1_vbar";
-         target: "sb_vbar_a1_border";
+      program { name: "loop_unset_vbar";
+         signal: "elm,loop_y,unset";
+         source: "elm";
+         script {
+
+
+            set_int(loop_y, 0);
+            action_on_pos_vbar(10);
+         }
       }
-      program { name: "program_0x56022eb48360";
-         signal: "mouse,up,1";
-         source: "sb_vbar_a2";
-         action: STATE_SET "default" 0.00;
-         target: "arrow2_vbar";
-         target: "sb_vbar_a2_border";
-      }
-      program { name: "program_0x56022eb486c0";
-         signal: "mouse,in";
-         source: "sb_vbar_a2";
-         action: STATE_SET "hovered" 0.00;
-         target: "arrow2_vbar";
-         target: "sb_vbar_a2_border";
-      }
-      program { name: "program_0x56022eb48a30";
-         signal: "mouse,out";
-         source: "sb_vbar_a2";
-         action: STATE_SET "default" 0.00;
-         target: "arrow2_vbar";
-         target: "sb_vbar_a2_border";
-      }
-      program { name: "program_0x56022eb508a0";
+      program { name: "program_0x56026670db50";
          signal: "elm,action,show,hbar";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "sb_hbar";
          target: "sb_hbar_show";
+         target: "elm.dragable.hbar";
+         target: "sb_hbar_a1";
+         target: "sb_hbar_a2";
+         target: "x_hbar_left_mapper";
+         target: "x_hbar_left";
+         target: "x_hbar_right_mapper";
+         target: "x_hbar_right";
+         after: "check_pos_hbar";
       }
-      program { name: "program_0x56022eb50da0";
+      program { name: "program_0x56026670eef0";
          signal: "elm,action,hide,hbar";
          source: "elm";
          action: STATE_SET "hidden" 0.00;
          target: "sb_hbar";
          target: "sb_hbar_show";
+         target: "elm.dragable.hbar";
+         target: "sb_hbar_a1";
+         target: "sb_hbar_a2";
+         target: "x_hbar_left_mapper";
+         target: "x_hbar_left";
+         target: "x_hbar_right_mapper";
+         target: "x_hbar_right";
       }
-      program { name: "program_0x56022eb51900";
+      program { name: "program_0x560266713e90";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+
+
+            action_on_pos_hbar(10);
+         }
+      }
+      program { name: "loop_set_hbar";
+         signal: "elm,loop_x,set";
+         source: "elm";
+         script {
+
+
+            set_int(loop_x, 1);
+            action_on_pos_hbar(10);
+         }
+      }
+      program { name: "loop_unset_hbar";
+         signal: "elm,loop_x,unset";
+         source: "elm";
+         script {
+
+
+            set_int(loop_x, 0);
+            action_on_pos_hbar(10);
+         }
+      }
+      program { name: "program_0x56026673a750";
          signal: "mouse,up,1";
-         source: "sb_hbar_a1";
+         source: "elm.dragable.vbar";
          action: STATE_SET "default" 0.00;
-         target: "arrow1_hbar";
-         target: "sb_hbar_a1_border";
-      }
-      program { name: "program_0x56022eb51c70";
-         signal: "mouse,in";
-         source: "sb_hbar_a1";
-         action: STATE_SET "hovered" 0.00;
-         target: "arrow1_hbar";
-         target: "sb_hbar_a1_border";
-      }
-      program { name: "program_0x56022eb51fd0";
-         signal: "mouse,out";
-         source: "sb_hbar_a1";
-         action: STATE_SET "default" 0.00;
-         target: "arrow1_hbar";
-         target: "sb_hbar_a1_border";
-      }
-      program { name: "program_0x56022eb52ab0";
-         signal: "mouse,up,1";
-         source: "sb_hbar_a2";
-         action: STATE_SET "default" 0.00;
-         target: "arrow2_hbar";
-         target: "sb_hbar_a2_border";
-      }
-      program { name: "program_0x56022eb52e10";
-         signal: "mouse,in";
-         source: "sb_hbar_a2";
-         action: STATE_SET "hovered" 0.00;
-         target: "arrow2_hbar";
-         target: "sb_hbar_a2_border";
-      }
-      program { name: "program_0x56022eb53200";
-         signal: "mouse,out";
-         source: "sb_hbar_a2";
-         action: STATE_SET "default" 0.00;
-         target: "arrow2_hbar";
-         target: "sb_hbar_a2_border";
-      }
-      program { name: "program_0x56022eb64af0";
-         signal: "mouse,up,1";
-         source: "base_vbar";
-         action: STATE_SET "default" 0.00;
+         target: "elm.dragable.vbar";
          target: "base_vbar_border";
       }
-      program { name: "program_0x56022eb66e90";
-         signal: "mouse,in";
-         source: "base_vbar";
-         action: STATE_SET "hovered" 0.00;
-         target: "base_vbar_border";
-      }
-      program { name: "program_0x56022eb671f0";
-         signal: "mouse,out";
-         source: "base_vbar";
-         action: STATE_SET "default" 0.00;
-         target: "base_vbar_border";
-      }
-      program { name: "program_0x56022eb678c0";
+      program { name: "program_0x56026673bb70";
          signal: "mouse,up,1";
-         source: "base_hbar";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "default" 0.00;
+         target: "elm.dragable.hbar";
+         target: "base_hbar_border";
+      }
+      program { name: "program_0x56026673c5f0";
+         signal: "elm,action,looping,left";
+         source: "elm";
+         action: STATE_SET "effect" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+         after: "looping,left,done";
+      }
+      program { name: "program_0x56026673cbc0";
+         signal: "elm,action,looping,left,end";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+      }
+      program { name: "program_0x56026673cea0";
+         signal: "elm,action,looping,right";
+         source: "elm";
+         action: STATE_SET "effect" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+         after: "looping,right,done";
+      }
+      program { name: "program_0x56026673d4c0";
+         signal: "elm,action,looping,right,end";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+      }
+      program { name: "program_0x56026673d7f0";
+         signal: "elm,action,looping,up";
+         source: "elm";
+         action: STATE_SET "effect" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+         after: "looping,up,done";
+      }
+      program { name: "program_0x56026673dd80";
+         signal: "elm,action,looping,up,end";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+      }
+      program { name: "program_0x56026673e0c0";
+         signal: "elm,action,looping,down";
+         source: "elm";
+         action: STATE_SET "effect" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+         after: "looping,down,done";
+      }
+      program { name: "program_0x56026673e640";
+         signal: "elm,action,looping,down,end";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.30000;
+         target: "dim_effect";
+      }
+      program { name: "mouse_in_hbar";
+         signal: "mouse,in";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "hovered" 0.00;
+         target: "base_hbar_border";
+      }
+      program { name: "mouse_out_hbar";
+         signal: "mouse,out";
+         source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.00;
          target: "base_hbar_border";
       }
-      program { name: "program_0x56022eb67c20";
+      program { name: "hbar_a1_mouse_in";
          signal: "mouse,in";
-         source: "base_hbar";
+         source: "sb_hbar_a1";
+         filter: "sb_hbar_a1" "default";
          action: STATE_SET "hovered" 0.00;
-         target: "base_hbar_border";
+         target: "arrow1_hbar";
+         target: "sb_hbar_a1_border";
       }
-      program { name: "program_0x56022eb67fa0";
+      program { name: "hbar_a1_mouse_out";
          signal: "mouse,out";
-         source: "base_hbar";
+         source: "sb_hbar_a1";
+         filter: "sb_hbar_a1" "default";
          action: STATE_SET "default" 0.00;
-         target: "base_hbar_border";
+         target: "sb_hbar_a1_border";
+         target: "arrow1_hbar";
+      }
+      program { name: "hbar_a2_mouse_in";
+         signal: "mouse,in";
+         source: "sb_hbar_a2";
+         filter: "sb_hbar_a2" "default";
+         action: STATE_SET "hovered" 0.00;
+         target: "sb_hbar_a2_border";
+         target: "arrow2_hbar";
+      }
+      program { name: "hbar_a2_mouse_out";
+         signal: "mouse,out";
+         source: "sb_hbar_a2";
+         filter: "sb_hbar_a2" "default";
+         action: STATE_SET "default" 0.00;
+         target: "sb_hbar_a2_border";
+         target: "arrow2_hbar";
+      }
+      program { name: "anim1_up";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.10000;
+         target: "arrow1_vbar";
+         after: "drag_up";
+      }
+      program { name: "drag_up";
+         action: DRAG_VAL_STEP 0.0000 -1.0000;
+         target: "elm.dragable.vbar";
+      }
+      program { name: "anim1_down";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.10000;
+         target: "arrow2_vbar";
+         after: "drag_down";
+      }
+      program { name: "drag_down";
+         action: DRAG_VAL_STEP 0.0000 1.0000;
+         target: "elm.dragable.vbar";
+      }
+      program { name: "check_pos_vbar";
+         script {
+
+
+            action_on_pos_vbar(10);
+         }
+      }
+      program { name: "anim1_left";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.10000;
+         target: "arrow1_hbar";
+         after: "drag_left";
+      }
+      program { name: "drag_left";
+         action: DRAG_VAL_STEP -1.0000 0.0000;
+         target: "elm.dragable.hbar";
+      }
+      program { name: "anim2_left";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.10000;
+         target: "arrow2_hbar";
+         after: "drag_right";
+      }
+      program { name: "drag_right";
+         action: DRAG_VAL_STEP 1.0000 0.0000;
+         target: "elm.dragable.hbar";
+      }
+      program { name: "check_pos_hbar";
+         script {
+
+
+            action_on_pos_hbar(10);
+         }
+      }
+      program { name: "looping,left,done";
+         action: SIGNAL_EMIT "elm,looping,left,done" "elm";
+      }
+      program { name: "looping,right,done";
+         action: SIGNAL_EMIT "elm,looping,right,done" "elm";
+      }
+      program { name: "looping,up,done";
+         action: SIGNAL_EMIT "elm,looping,up,done" "elm";
+      }
+      program { name: "looping,down,done";
+         action: SIGNAL_EMIT "elm,looping,down,done" "elm";
+      }
+      program { name: "vbar_a1_mouse_up";
+         signal: "mouse,up,1*";
+         source: "sb_vbar_a1";
+         filter: "sb_vbar_a1" "default";
+         action: STATE_SET "default" 0.00;
+         target: "sb_vbar_a1_border";
+         target: "arrow1_vbar";
+         after: "drag_up";
+      }
+      program { name: "vbar_a1_mouse_in";
+         signal: "mouse,in";
+         source: "sb_vbar_a1";
+         filter: "sb_vbar_a1" "default";
+         action: STATE_SET "hovered" 0.00;
+         target: "sb_vbar_a1_border";
+         target: "arrow1_vbar";
+      }
+      program { name: "vbar_a1_mouse_out";
+         signal: "mouse,out";
+         source: "sb_vbar_a1";
+         filter: "sb_vbar_a1" "default";
+         action: STATE_SET "default" 0.00;
+         target: "sb_vbar_a1_border";
+         target: "arrow1_vbar";
+      }
+      program { name: "vbar_a2_mouse_up";
+         signal: "mouse,up,1*";
+         source: "sb_vbar_a2";
+         filter: "sb_vbar_a2" "default";
+         action: STATE_SET "default" 0.00;
+         target: "sb_vbar_a2_border";
+         target: "arrow2_vbar";
+         after: "drag_down";
+      }
+      program { name: "vbar_a2_mouse_in";
+         signal: "mouse,in";
+         source: "sb_vbar_a2";
+         filter: "sb_vbar_a2" "default";
+         action: STATE_SET "hovered" 0.00;
+         target: "sb_vbar_a2_border";
+         target: "arrow2_vbar";
+      }
+      program { name: "vbar_a2_mouse_out";
+         signal: "mouse,out";
+         source: "sb_vbar_a2";
+         filter: "sb_vbar_a2" "default";
+         action: STATE_SET "default" 0.00;
+         target: "sb_vbar_a2_border";
+         target: "arrow2_vbar";
+      }
+      program { name: "mouse_in_vbar";
+         signal: "mouse,in";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "hovered" 0.00;
+         target: "base_vbar_border";
+      }
+      program { name: "mouse_out_vbar";
+         signal: "mouse,out";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "default" 0.00;
+         target: "base_vbar_border";
       }
    }
 }
-
