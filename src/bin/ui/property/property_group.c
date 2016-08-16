@@ -28,6 +28,7 @@
 #include "change.h"
 #include "project_manager.h"
 #include "validator.h"
+#include "shortcuts.h"
 
 #define PART_MASK(TYPE) (1u << TYPE)
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
@@ -1093,6 +1094,13 @@ _styles_combobox_fill(Evas_Object *combo, const char *selected)
    elm_genlist_item_append(combo, itc,
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add(_("< Style manager >"));
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
 
    EINA_LIST_FOREACH(ap.project->styles, l, style)
      {
@@ -3650,10 +3658,19 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_STYLE:
          assert(cb_item_combo != NULL);
-         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
-         CRIT_ON_FAIL(editor_state_text_style_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
-         eina_stringshare_del(group_pd.history.new.str_val1);
-         group_pd.history.new.str_val1 = str_val1;
+         if (cb_item_combo->index == 1)
+           {
+              shortcuts_object_check_pop(action->control);
+              style_manager_add();
+              shortcuts_object_push(action->control);
+           }
+         else
+           {
+              str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
+              CRIT_ON_FAIL(editor_state_text_style_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+              eina_stringshare_del(group_pd.history.new.str_val1);
+              group_pd.history.new.str_val1 = str_val1;
+           }
          break;
       case ATTRIBUTE_PART_MULTILINE:
          CRIT_ON_FAIL(editor_part_multiline_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
