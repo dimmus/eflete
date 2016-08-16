@@ -27,9 +27,6 @@
 #include "widget_list.h"
 #include "config.h"
 
-Eina_List *widget_list = NULL;
-const char *prev_edj_path = NULL;
-
 struct _Tab_Home_Edj
 {
    Evas_Object *layout;
@@ -45,6 +42,9 @@ struct _Tab_Home_Edj
    Evas_Object *themes;
    Elm_Genlist_Item_Class *itc;
    Evas_Object *genlist;
+
+   const char *prev_edj_path;
+   Eina_List *widget_list;
 };
 
 struct _Node
@@ -76,7 +76,7 @@ _checked_get(void)
    End_Item_Data *item_style;
    Eina_List *l, *ll, *lll;
 
-   EINA_LIST_FOREACH(widget_list, l, widget)
+   EINA_LIST_FOREACH(tab_edj.widget_list, l, widget)
      {
         if (widget->check)
           return EINA_TRUE;
@@ -96,22 +96,29 @@ _checked_get(void)
    return EINA_FALSE;
 }
 
-static void
+static Eina_Bool
 _validate()
 {
-   if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
-       !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
+   if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
        !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)) ||
-       (widget_list && !_checked_get()))
+       !edje_file_collection_list(elm_entry_entry_get(tab_edj.edj)))
      {
-        elm_object_disabled_set(tab_edj.btn_create, true);
-        elm_object_disabled_set(tab_edj.ch_all, true);
+        elm_genlist_clear(tab_edj.genlist);
+        goto validation_edj_failed;
      }
-   else
-     {
-        elm_object_disabled_set(tab_edj.btn_create, false);
-        elm_object_disabled_set(tab_edj.ch_all, false);
-     }
+
+   if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
+       (tab_edj.widget_list && !_checked_get()))
+     goto validation_edj_failed;
+
+   elm_object_disabled_set(tab_edj.btn_create, false);
+   elm_object_disabled_set(tab_edj.ch_all, false);
+   return EINA_TRUE;
+
+validation_edj_failed:
+   elm_object_disabled_set(tab_edj.btn_create, true);
+   elm_object_disabled_set(tab_edj.ch_all, true);
+   return EINA_FALSE;
 }
 
 static void
@@ -157,20 +164,20 @@ _edj_changed_cb(void *data __UNUSED__,
    Group *group;
    Node *node;
 
-   if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") &&
-       !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)))
-     return;
+   if (tab_edj.prev_edj_path && !strcmp(tab_edj.prev_edj_path, elm_entry_entry_get(tab_edj.edj)))
+     {
+       return;
+     }
+   tab_edj.prev_edj_path = elm_entry_entry_get(tab_edj.edj);
 
-   if (prev_edj_path && !strcmp(prev_edj_path, elm_entry_entry_get(tab_edj.edj)))
-     return;
-   prev_edj_path = elm_entry_entry_get(tab_edj.edj);
+   if (!_validate())
+      return;
 
-   elm_genlist_clear(tab_edj.genlist);
-   EINA_LIST_FREE(widget_list, group_name)
+   EINA_LIST_FREE(tab_edj.widget_list, group_name)
      {
         eina_stringshare_del(group_name);
      }
-   widget_list = NULL;
+   tab_edj.widget_list = NULL;
 
    collections = edje_file_collection_list(elm_entry_entry_get(tab_edj.edj));
    if (!collections) return;
@@ -217,7 +224,6 @@ _edj_changed_cb(void *data __UNUSED__,
         free(group);
      }
 
-   _validate();
 }
 
 /*  GENLIST  */
@@ -227,12 +233,12 @@ _widget_list_group_set(Node *node)
    if (node->check)
      {
         if (!node->list)
-          widget_list = eina_list_append(widget_list, node->name);
+          tab_edj.widget_list = eina_list_append(tab_edj.widget_list, node->name);
      }
    else
      {
         if (!node->list)
-          widget_list = eina_list_remove(widget_list, node->name);
+          tab_edj.widget_list = eina_list_remove(tab_edj.widget_list, node->name);
      }
 }
 
@@ -433,7 +439,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    pm_project_import_edj(elm_entry_entry_get(tab_edj.name),
                          elm_entry_entry_get(tab_edj.path),
                          elm_entry_entry_get(tab_edj.edj),
-                         widget_list,
+                         tab_edj.widget_list,
                          progress_print,
                          _progress_end,
                          &tab_edj.meta);
@@ -637,7 +643,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                   if (!strcmp(style_name, "default"))
                     {
                        pos = string_rstr(item->name, "base/default");
-                       if (pos) widget_list = eina_list_append(widget_list, item->name);
+                       if (pos) tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
                     }
                   else
                     {
@@ -645,13 +651,13 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                        if (pos)
                          {
                             item->check = selected;
-                            widget_list = eina_list_append(widget_list, item->name);
+                            tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
                             EINA_LIST_FOREACH(cp_style_list, l1, name1)
                               {
                                  strncpy(cp_style, item->name, pos - item->name - 1);
                                  cp_style[pos - item->name] = '\0';
                                  tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
-                                 widget_list = eina_list_append(widget_list, tmp);
+                                 tab_edj.widget_list = eina_list_append(tab_edj.widget_list, tmp);
                               }
                          }
                     }
@@ -663,7 +669,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
           {
              /* if list of style empty need to select all available widget styles */
              item->check = selected;
-             widget_list = eina_list_append(widget_list, item->name);
+             tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
           }
      }
 }
