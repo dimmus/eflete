@@ -579,6 +579,24 @@ _ewe_ruler_marker_del(Eo *obj EINA_UNUSED,
    return EINA_TRUE;
 }
 
+EOLIAN static void
+_ewe_ruler_marker_size_set(Eo *obj,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
+                           Ewe_Ruler_Marker *marker,
+                           int size)
+{
+   marker->size = size;
+   evas_object_smart_changed(obj);
+}
+
+EOLIAN static int
+_ewe_ruler_marker_size_get(Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
+                           Ewe_Ruler_Marker *marker)
+{
+   return marker->size;
+}
+
 EOLIAN static Eina_Bool
 _ewe_ruler_marker_relative_set(Eo *obj,
                                Ewe_Ruler_Smart_Data *sd,

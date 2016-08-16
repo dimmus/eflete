@@ -225,6 +225,25 @@ class Ewe.Ruler (Elm.Widget)
            style: const(char)*;
          }
       }
+      @property marker_size {
+         get {
+         [[
+          Get size of given marker.
+         ]]
+         }
+         set {
+         [[
+          Set new size for given marker
+         ]]
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           size: int;
+         }
+      }
+
       scale_add {
          [[
           Add new scale to ruler.

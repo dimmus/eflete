@@ -674,6 +674,7 @@ _radio_switcher_add(Workspace_Data *wd,
 static void
 _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 {
+
    ruler->obj = ewe_ruler_add(parent);
    ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
    ewe_ruler_value_step_set(ruler->obj, NULL, RULER_STEP_DEFAULT);
