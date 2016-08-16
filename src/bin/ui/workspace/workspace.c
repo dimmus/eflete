@@ -682,7 +682,7 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
      {
       ruler->scale_rel = ewe_ruler_scale_add(ruler->obj, "relative");
       ewe_ruler_format_set(ruler->obj, ruler->scale_rel, "%.1f");
-      //ewe_ruler_scale_visible_set(ruler->obj, ruler->scale_rel, false);
+      ewe_ruler_scale_visible_set(ruler->obj, ruler->scale_rel, false);
       ewe_ruler_value_step_set(ruler->obj, ruler->scale_rel, 0.5);
      }
 }
