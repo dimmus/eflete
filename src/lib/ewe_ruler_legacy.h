@@ -245,6 +245,18 @@ EAPI Eina_Bool
 ewe_ruler_marker_del(Eo *obj, Ewe_Ruler_Marker *marker);
 
 /**
+ * Set the marker size.
+ *
+ * @param obj Ruler object.
+ * @param marker Marker
+ * @param size The new marker size
+ *
+ * @ingroup Ruler
+ */
+EAPI void
+ewe_ruler_marker_size_set(Eo *obj, Ewe_Ruler_Marker *marker, int size);
+
+/**
  * Get visiblility state of given scale
  *
  * @param obj Ruler object.
