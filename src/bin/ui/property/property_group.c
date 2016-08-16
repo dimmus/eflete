@@ -1183,6 +1183,14 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add(_("< Sound manager >"));
+   elm_genlist_item_append(combo, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+
    EINA_LIST_FOREACH(ap.project->sounds, l, sample)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
@@ -4047,10 +4055,20 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          assert(cb_item_combo != NULL);
-         str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : "";
-         CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
-         eina_stringshare_del(group_pd.history.new.str_val1);
-         group_pd.history.new.str_val1 = str_val1;
+         if (cb_item_combo->index == 1)
+           {
+              /* see comment for ATTRIBUTE_STATE_TEXT_STYLE */
+              shortcuts_object_check_pop(action->control);
+              sound_manager_add();
+              shortcuts_object_push(action->control);
+           }
+         else
+           {
+              str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : "";
+              CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+              eina_stringshare_del(group_pd.history.new.str_val1);
+              group_pd.history.new.str_val1 = str_val1;
+           }
          break;
       case ATTRIBUTE_PROGRAM_TONE_NAME:
          assert(cb_item_combo != NULL);
