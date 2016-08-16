@@ -44,6 +44,8 @@
 static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
 #endif
 
+#define RULER_STEP_DEFAULT 50
+
 typedef struct
 {
    int index;
@@ -287,13 +289,13 @@ _members_zoom_set(Workspace_Data *wd)
    container_zoom_factor_set(area->container, wd->zoom_factor);
    groupview_zoom_factor_set(area->content, wd->zoom_factor);
 
-   zoom_calc = 50 * wd->zoom_factor;
+   zoom_calc = RULER_STEP_DEFAULT * wd->zoom_factor;
    if (fabs(wd->zoom_factor - 1.0) > DBL_EPSILON)
      {
-        if (((int)zoom_calc) < (50 * 0.6))
+        if (((int)zoom_calc) < (RULER_STEP_DEFAULT * 0.6))
           {
-             step = (50 / (int)zoom_calc) * (int)zoom_calc;
-             step_val = (50 / (int)zoom_calc) * 50;
+             step = (RULER_STEP_DEFAULT / (int)zoom_calc) * (int)zoom_calc;
+             step_val = (RULER_STEP_DEFAULT / (int)zoom_calc) * RULER_STEP_DEFAULT;
              ewe_ruler_value_step_set(area->ruler_h.obj, NULL, step_val);
              ewe_ruler_value_step_set(area->ruler_v.obj, NULL, step_val);
              ewe_ruler_step_set(area->ruler_h.obj, NULL, step);
@@ -301,8 +303,8 @@ _members_zoom_set(Workspace_Data *wd)
              return;
           }
      }
-   ewe_ruler_value_step_set(area->ruler_h.obj, NULL, 50);
-   ewe_ruler_value_step_set(area->ruler_v.obj, NULL, 50);
+   ewe_ruler_value_step_set(area->ruler_h.obj, NULL, RULER_STEP_DEFAULT);
+   ewe_ruler_value_step_set(area->ruler_v.obj, NULL, RULER_STEP_DEFAULT);
    ewe_ruler_step_set(area->ruler_h.obj, NULL, (int)zoom_calc);
    ewe_ruler_step_set(area->ruler_v.obj, NULL, (int)zoom_calc);
 }
@@ -674,6 +676,7 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 {
    ruler->obj = ewe_ruler_add(parent);
    ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
+   ewe_ruler_value_step_set(ruler->obj, NULL, RULER_STEP_DEFAULT);
 
    if (scale_rel)
      {
