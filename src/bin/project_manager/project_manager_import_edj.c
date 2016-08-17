@@ -187,22 +187,22 @@ _project_import_edj(void *data)
         strbuf = eina_strbuf_new();
         eina_strbuf_append_printf(strbuf, "edje_pick -o %s -i %s", edj_out, edj_in);
 
-        /* load any group for coping */
-        if (ptd->widgets)
-          {
-             obj = edje_edit_object_add(evas_object_evas_get(ap.win));
-             if (!edje_object_file_set(obj, edj_in, eina_list_data_get(ptd->widgets)))
-               {
-                  CRIT("Can't load object");
-                  abort();
-               }
-          }
         EINA_LIST_FOREACH(ptd->widgets, l, group)
           {
              if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
                {
                   char **arr = eina_str_split(group, "***", 0);
                   you_shall_not_pass_editor_signals(NULL);
+                  /* load any group for coping */
+                  if (!obj)
+                    {
+                       obj = edje_edit_object_add(evas_object_evas_get(ap.win));
+                       if (!edje_object_file_set(obj, edj_in, arr[1]))
+                         {
+                            CRIT("Can't load object");
+                            abort();
+                         }
+                    }
                   if (!editor_group_copy(obj, arr[1], arr[2]))
                     {
                        CRIT("Can not copy group %s, to %s", arr[1], arr[2]);

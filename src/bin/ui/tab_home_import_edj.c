@@ -620,9 +620,9 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 {
    Eina_List *l, *l1, *cp_style_list;
    Node *node;
-   Eina_Stringshare *name, *name1, *style_name, *tmp;
-   const char *pos;
+   Eina_Stringshare *name, *name1, *sname, *style_name, *tmp;
    char cp_style[256];
+   int len;
 
    assert (item != NULL);
 
@@ -640,22 +640,21 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
              EINA_LIST_FOREACH(styles, l, name)
                {
                   style_name = option_style_name_get(name, &cp_style_list);
-                  if (!strcmp(style_name, "default"))
+                  sname = style_name_get(item->name);
+                  if (!strcmp(sname, style_name))
                     {
-                       pos = string_rstr(item->name, "base/default");
-                       if (pos) tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
-                    }
-                  else
-                    {
-                       pos = string_rstr(item->name, style_name);
-                       if (pos)
+                       if (!cp_style_list)
                          {
                             item->check = selected;
                             tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
+                         }
+                       else
+                         {
                             EINA_LIST_FOREACH(cp_style_list, l1, name1)
                               {
-                                 strncpy(cp_style, item->name, pos - item->name - 1);
-                                 cp_style[pos - item->name] = '\0';
+                                 len = strlen(item->name) - strlen(sname);
+                                 strncpy(cp_style, item->name, len - 1);
+                                 cp_style[len - 1] = '\0';
                                  tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
                                  tab_edj.widget_list = eina_list_append(tab_edj.widget_list, tmp);
                               }
