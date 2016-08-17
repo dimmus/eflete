@@ -68,12 +68,16 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
    char *tmp;
    int tmp_len;
    Eina_Stringshare *message = NULL;
-
+#ifdef _WIN32
+    HFILE pro_fd = -1;
+#else
+    int pro_fd;
+#endif
    assert(ptd->path != NULL);
 
    edje_file_cache_flush();
 
-   if (!_lock_try(ptd->path, true))
+   if (!_lock_try(ptd->path, true,  &pro_fd))
      {
         /* really this case is unlickly, but we need handle it */
         eina_lock_release(&ptd->mutex);
@@ -111,6 +115,7 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
 
    ptd->project->ef = ef;
    ptd->project->pro_path = eina_stringshare_add(ptd->path);
+   ptd->project->pro_fd = pro_fd;
 
    /* updating .dev file path */
    tmp = strdup(ptd->path);

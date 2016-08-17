@@ -45,10 +45,10 @@ _project_dev_file_create(Project *pro)
 }
 
 
-Eina_Bool
-_lock_try(const char *path, Eina_Bool check)
-{
 #ifndef _WIN32
+Eina_Bool
+_lock_try(const char *path, Eina_Bool check, int *pro_fd)
+{
    struct flock lock, savelock;
 
    int fd = open(path, O_RDWR);
@@ -64,13 +64,28 @@ _lock_try(const char *path, Eina_Bool check)
         ERR("Process %d has a write lock already!", lock.l_pid);
         return false;
      }
-   /* if flag check is false not need to lock the file */
-   if (check)
+
+   /* if flag check is false not need to lock the file, just close handler */
+   if (!check)
+     {
+        close(fd);
+        return true;
+     }
+
+   if (pro_fd)
      {
         savelock.l_pid = getpid();
         fcntl(fd, F_SETLK, &savelock);
+        *pro_fd = fd;
+        return true;
      }
+   close(fd);
+   return false;
+}
 #else
+Eina_Bool
+_lock_try(const char *path, Eina_Bool check, HFILE *pro_fd)
+{
    LPOFSTRUCT lpReOpenBuff;
    HFILE fd = OpenFile(path, lpReOpenBuff, OF_READWRITE);
    if (fd == HFILE_ERROR)
@@ -78,13 +93,23 @@ _lock_try(const char *path, Eina_Bool check)
        ERR("The file '%s' cannot be opened in mode read-write!", path);
        return false;
      }
+
    if (!check)
      {
        CloseHandle(fd);
+       return false;
      }
-#endif
-   return true;
+
+   if (pro_fd)
+     {
+        *pro_fd = fd;
+        return true;
+     }
+
+   CloseHandle(fd);
+   return false;
 }
+#endif
 
 void
 _project_descriptor_init(Project_Thread *ptd)
@@ -628,6 +653,8 @@ pm_project_close(Project *project)
 #endif /* HAVE_ENVENTOR */
 
    eet_close(project->ef);
+   if (project->pro_fd != -1)
+     close(project->pro_fd);
    free(project);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CLOSED, NULL);
 
@@ -1005,7 +1032,7 @@ pm_project_enventor_save(Project *project,
 Eina_Bool
 pm_lock_check(const char *path)
 {
-   return _lock_try(path, false);
+   return _lock_try(path, false, NULL);
 }
 
 Eina_Bool

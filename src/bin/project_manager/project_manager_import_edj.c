@@ -59,6 +59,7 @@ _project_files_create(Project_Thread *ptd)
 
    pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, ptd->name);
    pro->ef = eet_open(pro_path, EET_FILE_MODE_READ_WRITE);
+   pro->pro_fd = -1;
    ecore_file_mkdir(pro->develop_path);
    MKDIR(images);
    MKDIR(sounds);
@@ -164,7 +165,7 @@ _project_import_edj(void *data)
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    ptd->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", ptd->path, ptd->name, ptd->name);
 
-   if (!_lock_try(ptd->project->pro_path, true))
+   if (!_lock_try(ptd->project->pro_path, true, &ptd->project->pro_fd))
      {
         /* really this case is unlickly, but we need handle it */
         ptd->result = PM_PROJECT_LOCKED;

@@ -130,10 +130,11 @@ void _project_open_internal(Project_Thread *ptd);
  *
  * @param path - *.pro file.
  * @param check - If false - do not lock file, if true - file will be locked.
+ * @param pro_fd - Pointer to variable, which will managed opened file descriptor.
  *
  * @return true - file locked succesfull, else failed to lock.
  */
-Eina_Bool _lock_try(const char *path, Eina_Bool check);
+Eina_Bool _lock_try(const char *path, Eina_Bool check, int *pro_fd);
 
 /* Add dummy group with name ___eflete_internal_group___.
  * This group will be used as pointer to edje_edit object,
