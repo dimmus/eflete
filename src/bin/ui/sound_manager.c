@@ -172,6 +172,7 @@ _sound_manager_init(void)
    elm_gengrid_item_append(mng.gengrid, ggic, snd, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->sounds, l, sample)
      {
+        if (!strcmp(sample->name, EFLETE_DUMMY_SAMPLE_NAME)) continue;
         snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
         snd->name = eina_stringshare_ref(sample->name);
         snd->type_label = _sound_format_get(sample->source);

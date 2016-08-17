@@ -99,6 +99,7 @@ app_init()
    ap.path.layout_edj = eina_stringshare_printf("%s/layouts/eflete.edj", elm_app_data_dir_get());
    ap.path.edj_path = eina_stringshare_printf("%s/themes/default/", elm_app_data_dir_get());
    ap.path.image_path = eina_stringshare_printf("%s/images/", elm_app_data_dir_get());
+   ap.path.sound_path = eina_stringshare_printf("%s/sounds/", elm_app_data_dir_get());
 
    ap.theme = elm_theme_new();
 

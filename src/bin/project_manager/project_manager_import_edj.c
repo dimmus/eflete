@@ -135,6 +135,7 @@ _edje_pick_end_cb(void *data,
    _copy_meta_data_to_pro(ptd);
    _project_special_group_add(ptd->project);
    _project_dummy_image_add(ptd->project);
+   _project_dummy_sample_add(ptd->project);
    _project_open_internal(ptd);
    ecore_file_unlink(ptd->source_edj);
 
@@ -252,6 +253,7 @@ _project_import_edj(void *data)
         _copy_meta_data_to_pro(ptd);
         _project_special_group_add(ptd->project);
         _project_dummy_image_add(ptd->project);
+        _project_dummy_sample_add(ptd->project);
         _project_open_internal(ptd);
 
         msg = eina_stringshare_printf(_("Import finished. Project '%s' created"), ptd->project->name);

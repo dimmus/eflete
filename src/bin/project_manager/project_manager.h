@@ -38,7 +38,7 @@
 #include "resource_manager.h"
 
 /* don't forget to update on major changes */
-#define PROJECT_FILE_VERSION 4
+#define PROJECT_FILE_VERSION 5
 
 typedef struct _Enventor_Data Enventor_Data;
 

@@ -156,7 +156,15 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
         _project_dummy_image_add(ptd->project);
         ptd->project->version = 4;
      }
-   TODO("Add crash recovery prompt here")
+   if (ptd->project->version < 5) /* upgrade to version 4 */
+     {
+        message = eina_stringshare_add(_("Updating project files to version 5"));
+        ecore_thread_feedback(th, message);
+        INFO("Updating project files to version 5");
+        _project_dummy_sample_add(ptd->project);
+        ptd->project->version = 5;
+     }
+    TODO("Add crash recovery prompt here")
 
    pm_project_meta_data_get(ptd->project, &ptd->project->name, NULL, NULL, NULL, NULL);
    if (!ptd->project->name)

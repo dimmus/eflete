@@ -850,6 +850,11 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
         CRIT_ON_FAIL(edje_edit_program_add(edit_object, program_name));
         CRIT_ON_FAIL(edje_edit_program_action_set(edit_object, program_name, type));
 
+        if (type == EDJE_ACTION_TYPE_SOUND_SAMPLE)
+          {
+             edje_edit_program_sample_name_set(edit_object, program_name, EFLETE_DUMMY_SAMPLE_NAME);
+          }
+
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
 

@@ -149,6 +149,12 @@ void _project_special_group_add(Project *project);
  */
 void _project_dummy_image_add(Project *project);
 
+/* Add dummy sound with name ___eflete_dummy_sound___.
+ *
+ * @param project - valid struture with global_object.
+ */
+void _project_dummy_sample_add(Project *project);
+
 /* Copy current edj file into path, that stored for save */
 Eina_Bool _project_edj_file_copy(Project_Thread *ptd);
 

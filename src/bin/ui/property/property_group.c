@@ -1168,7 +1168,7 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
 
    itc = evas_object_data_get(combo, "COMMON_ITC");
 
-   if (!selected || strcmp(selected, ""))
+   if (!selected || strcmp(selected, EFLETE_DUMMY_SAMPLE_NAME))
      elm_object_text_set(combo, selected);
    else
      elm_object_text_set(combo, STR_NONE);
@@ -1193,6 +1193,7 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
 
    EINA_LIST_FOREACH(ap.project->sounds, l, sample)
      {
+        if (!strcmp(sample->name, EFLETE_DUMMY_SAMPLE_NAME)) continue;
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
         combobox_item->data = eina_stringshare_add(sample->name);
@@ -2412,6 +2413,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          elm_genlist_clear(action->control);
          str_val1 = edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS);
+         if (!strcmp(str_val1, EFLETE_DUMMY_SAMPLE_NAME))
+           {
+              edje_edit_string_free(str_val1);
+              str_val1 = eina_stringshare_add(_("None"));
+           }
          _sample_combobox_fill(action->control, str_val1, 1);
          edje_edit_string_free(str_val1);
          return editor_program_sample_name_default_is(EDIT_OBJ, PROGRAM_ARGS);
@@ -3084,8 +3090,16 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          group_pd.history.format = _("program's sample changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS));
-         break;
+
+         tmp_str_val1 = edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS);
+         assert(tmp_str_val1 != NULL);
+         if (!strcmp(tmp_str_val1, EFLETE_DUMMY_SAMPLE_NAME))
+           {
+              edje_edit_string_free(tmp_str_val1);
+              tmp_str_val1 = eina_stringshare_add(_("None"));
+           }
+         STR_VAL(str_val1, tmp_str_val1);
+      break;
       case ATTRIBUTE_PROGRAM_TONE_NAME:
          group_pd.history.format = _("program's tone changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_program_tone_name_get(EDIT_OBJ, PROGRAM_ARGS));
@@ -4064,8 +4078,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
            }
          else
            {
-              str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : "";
-              CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+              str_val1 = eina_stringshare_add(cb_item_combo->data);
+              if (!strcmp(str_val1, STR_NONE))
+                CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, EFLETE_DUMMY_SAMPLE_NAME));
+              else
+                CRIT_ON_FAIL(editor_program_sample_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
               eina_stringshare_del(group_pd.history.new.str_val1);
               group_pd.history.new.str_val1 = str_val1;
            }

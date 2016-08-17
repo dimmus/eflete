@@ -96,6 +96,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 #define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
 #define EFLETE_DUMMY_IMAGE_NAME "___eflete_dummy_image___.png"
+#define EFLETE_DUMMY_SAMPLE_NAME "___eflete_dummy_sample___.wav"
 
 struct _App_Data
 {
@@ -132,6 +133,7 @@ struct _App_Data
       Eina_Stringshare *layout_edj;
       Eina_Stringshare *edj_path;
       Eina_Stringshare *image_path;
+      Eina_Stringshare *sound_path;
       Eina_Stringshare *export_edj;
    } path;
    Project *project;

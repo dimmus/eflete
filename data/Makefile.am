@@ -50,6 +50,10 @@ aimages_DATA = \
 	${srcdir}/images/eflete.svg \
 	${srcdir}/images/toolbar_icons/*.png
 endif
+
+asounds_DATA = ${srcdir}/sounds/*.wav
+asoundsdir = ${datadir}/eflete/sounds
+
 aresourcesdir = $(datadir)/eflete/
 
 shortcutdir = $(datadir)/applications
@@ -137,5 +141,5 @@ color.eet: Makefile $(color_eet_deps)
 clean-local:
 	rm -f *.edj *.eet
 
-EXTRA_DIST = $(aimages_DATA) $(ewe_deps) $(eflete_deps) $(eflete_elm_deps) \
+EXTRA_DIST = $(aimages_DATA) $(asounds_DATA) $(ewe_deps) $(eflete_deps) $(eflete_elm_deps) \
 	$(color_eet_deps) $(template_edj_DATA) $(template_edc_DATA) $(template_img_DATA) $(template_snd_DATA)
