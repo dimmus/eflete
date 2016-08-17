@@ -261,7 +261,19 @@ class Ewe.Ruler (Elm.Widget)
            text: const(char)*;
          }
       }
-
+      @property marker_tooltip {
+         set {
+         [[
+          Set text to given marker
+         ]]
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           text: const(char)*;
+         }
+      }
       scale_add {
          [[
           Add new scale to ruler.

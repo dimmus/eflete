@@ -620,6 +620,15 @@ _ewe_ruler_marker_text_get(Eo *obj EINA_UNUSED,
    return elm_layout_text_get(marker->obj, "ewe.text");
 }
 
+EOLIAN static void
+_ewe_ruler_marker_tooltip_set(Eo *obj EINA_UNUSED,
+                              Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
+                              Ewe_Ruler_Marker *marker,
+                              const char *text)
+{
+   elm_object_tooltip_text_set(marker->obj, text);
+}
+
 EOLIAN static Eina_Bool
 _ewe_ruler_marker_relative_set(Eo *obj,
                                Ewe_Ruler_Smart_Data *sd,
