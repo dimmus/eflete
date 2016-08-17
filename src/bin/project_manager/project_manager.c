@@ -653,8 +653,13 @@ pm_project_close(Project *project)
 #endif /* HAVE_ENVENTOR */
 
    eet_close(project->ef);
+#ifdef _WIN32
+   if (project->pro_fd != HFILE_ERROR)
+     CloseHandle(project->pro_fd);
+#else
    if (project->pro_fd != -1)
      close(project->pro_fd);
+#endif
    free(project);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CLOSED, NULL);
 
