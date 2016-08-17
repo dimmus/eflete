@@ -105,7 +105,7 @@ group { name: "ewe/ruler/marker/vertical/pointer";
 
 color_classes {
    color_class { name: "rel1";
-      color: 24 209 255 255;
+      color: 85 107 167 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
@@ -277,6 +277,43 @@ group { name: "ewe/ruler/marker/vertical/part";
       part { name: "border";
          description { state: "default" 0.0;
             color_class: "part";
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/horizontal/object_area";
+   alias: "ewe/ruler/marker/vertical/object_area";
+   images {
+      image: "bg_object_area.png" COMP;
+      image: "border_1.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            color_class: "part";
+            image.normal: "bg_object_area.png";
+            fill.type: TILE;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         clip_to: "clipper";
+         description { state: "default" 0.00;
+            color_class: "part";
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.00;
          }
       }
    }
