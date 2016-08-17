@@ -208,6 +208,8 @@ _ewe_ruler_horizontal_set(Eo *obj,
                           Ewe_Ruler_Smart_Data *sd,
                           Eina_Bool horizontal)
 {
+   Eina_Strbuf *buf;
+
    if (sd->horizontal == horizontal)
      return EINA_FALSE;
    sd->horizontal = horizontal;
@@ -240,13 +242,15 @@ _ewe_ruler_horizontal_set(Eo *obj,
         count = eina_list_count(scale->dashes);
         _delete_extra_dashes(scale, count);
      }
+   buf = eina_strbuf_new();
    EINA_LIST_FOREACH(sd->markers, lm, marker)
      {
-        eina_stringshare_del(marker->full_style);
-        marker->full_style = eina_stringshare_printf("%s/%s", markers, marker->style);
-        edje_object_file_set(marker->obj, EWE_THEME, marker->full_style);
+        eina_strbuf_reset(buf);
+        eina_strbuf_append_printf(buf, "%s/%s", markers, marker->style);
+        edje_object_file_set(marker->obj, EWE_THEME, eina_strbuf_string_get(buf));
      }
 
+   eina_strbuf_free(buf);
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -527,6 +531,7 @@ _ewe_ruler_marker_add(Eo *obj,
                       Ewe_Ruler_Smart_Data *sd,
                       const char *style)
 {
+   Eina_Strbuf *buf;
    Ewe_Ruler_Marker *ret = malloc(sizeof(Ewe_Ruler_Marker));
    if (!ret) return NULL;
    if (!style) style = DEFAULT_STYLE;
@@ -534,20 +539,21 @@ _ewe_ruler_marker_add(Eo *obj,
    sd->markers = eina_list_append(sd->markers, ret);
 
    ret->style = eina_stringshare_add(style);
+   buf = eina_strbuf_new();
    if (sd->horizontal)
      {
-        ret->full_style = eina_stringshare_printf("%s/%s", MARKER, style);
+        eina_strbuf_append_printf(buf, MARKER"/%s", style);
         edje_object_size_min_calc(ret->obj, &ret->size, NULL);
      }
    else
      {
-        ret->full_style = eina_stringshare_printf("%s/%s", MARKER_VER, style);
+        eina_strbuf_append_printf(buf, MARKER_VER"/%s", style);
         edje_object_size_min_calc(ret->obj, NULL, &ret->size);
      }
 
    ret->obj = edje_object_add(obj);
    evas_object_clip_set(ret->obj, sd->clip);
-   edje_object_file_set(ret->obj, EWE_THEME, ret->full_style);
+   edje_object_file_set(ret->obj, EWE_THEME, eina_strbuf_string_get(buf));
    evas_object_smart_member_add(ret->obj, obj);
 
    ret->scale = NULL;
@@ -556,6 +562,7 @@ _ewe_ruler_marker_add(Eo *obj,
    ret->visible = EINA_TRUE;
    ret->relative = EINA_FALSE;
 
+   eina_strbuf_free(buf);
    return ret;
 }
 
@@ -566,7 +573,6 @@ _ewe_ruler_marker_del(Eo *obj EINA_UNUSED,
 {
    if (!marker) return EINA_FALSE;
    eina_stringshare_del(marker->style);
-   eina_stringshare_del(marker->full_style);
 
    if (marker->relative)
      marker->scale->markers = eina_list_remove(marker->scale->markers, marker);
@@ -720,17 +726,20 @@ _ewe_ruler_marker_style_set(Eo *obj,
                             Ewe_Ruler_Marker *marker,
                             const char *style)
 {
+   Eina_Strbuf *buf;
+
    if (!marker) return EINA_FALSE;
    eina_stringshare_del(marker->style);
-   eina_stringshare_del(marker->full_style);
    marker->style = eina_stringshare_add(style);
-   if (sd->horizontal)
-     marker->full_style = eina_stringshare_printf("%s/%s", MARKER, style);
-   else
-     marker->full_style = eina_stringshare_printf("%s/%s", MARKER_VER, style);
-   edje_object_file_set(marker->obj, EWE_THEME, marker->full_style);
 
-   sd->text_changed = EINA_TRUE;
+   buf = eina_strbuf_new();
+   if (sd->horizontal)
+     eina_strbuf_append_printf(buf, MARKER"/%s", style);
+   else
+     eina_strbuf_append_printf(buf, MARKER_VER"/%s", style);
+   edje_object_file_set(marker->obj, EWE_THEME, eina_strbuf_string_get(buf));
+
+   eina_strbuf_free(buf);
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
