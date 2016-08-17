@@ -61,6 +61,8 @@ static double part_align_x, part_align_y;
 struct _Ruler {
    Evas_Object *obj;
    Ewe_Ruler_Marker *pointer;
+   Ewe_Ruler_Marker *mr_part;
+   Ewe_Ruler_Marker *mr_obj_area;
    Ewe_Ruler_Scale *scale_rel;
 };
 typedef struct _Ruler Ruler;
@@ -676,6 +678,8 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 {
 
    ruler->obj = ewe_ruler_add(parent);
+   ruler->mr_obj_area = ewe_ruler_marker_add(ruler->obj, "object_area");
+   ruler->mr_part = ewe_ruler_marker_add(ruler->obj, "part");
    ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
    ewe_ruler_value_step_set(ruler->obj, NULL, RULER_STEP_DEFAULT);
 
@@ -685,6 +689,60 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
       ewe_ruler_format_set(ruler->obj, ruler->scale_rel, "%.1f");
       ewe_ruler_scale_visible_set(ruler->obj, ruler->scale_rel, false);
       ewe_ruler_value_step_set(ruler->obj, ruler->scale_rel, 0.5);
+     }
+}
+
+static void
+_markers_calculate(Workspace_Data *wd)
+{
+   const Groupview_Geom *part_geom = NULL;
+   Evas_Coord x, y;
+   Scroll_Area *area;
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
+
+   area = _scroll_area_get(wd);
+   assert(area != NULL);
+
+   evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
+   evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
+
+   part_geom = groupview_part_selected_geom_get(area->content);
+   if (part_geom)
+     {
+        ewe_ruler_marker_absolute_set(area->ruler_h.obj, area->ruler_h.mr_part, part_geom->x - x);
+        ewe_ruler_marker_size_set(area->ruler_h.obj, area->ruler_h.mr_part, part_geom->w);
+        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, true);
+
+        ewe_ruler_marker_absolute_set(area->ruler_v.obj, area->ruler_v.mr_part, part_geom->y - y);
+        ewe_ruler_marker_size_set(area->ruler_v.obj, area->ruler_v.mr_part, part_geom->h);
+        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, true);
+     }
+   else
+     {
+        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, false);
+        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, false);
+        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
+        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
+        return;
+     }
+
+   if (groupview_part_object_area_visible_get(area->content))
+     {
+        part_geom = groupview_part_selected_object_area_geom_get(area->content);
+        if (!part_geom) return;
+        ewe_ruler_marker_absolute_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, part_geom->x - x);
+        ewe_ruler_marker_size_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, part_geom->w);
+        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, true);
+
+        ewe_ruler_marker_absolute_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, part_geom->y - y);
+        ewe_ruler_marker_size_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, part_geom->h);
+        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, true);
+     }
+   else
+     {
+        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
+        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
      }
 }
 
@@ -724,7 +782,6 @@ _container_changed(void *data,
         step_h = geom->h;
      }
 
-
    /* shift the abs scale zero mark */
    ewe_ruler_zero_offset_set(area->ruler_h.obj, NULL, scale_x);
    ewe_ruler_zero_offset_set(area->ruler_v.obj, NULL, scale_y);
@@ -740,6 +797,8 @@ _container_changed(void *data,
         ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, scale_y);
         ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, ((step_h * wd->zoom_factor) / 2));
      }
+
+   _markers_calculate(wd);
 
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, geom->w);
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
@@ -1112,6 +1171,7 @@ _part_select(void *data,
 
    groupview_hard_update(wd->normal.content);
    groupview_part_select(wd->normal.content, (part) ? part->name : NULL);
+   _markers_calculate(wd);
 }
 
 static void
