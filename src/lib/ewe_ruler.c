@@ -603,6 +603,23 @@ _ewe_ruler_marker_size_get(Eo *obj EINA_UNUSED,
    return marker->size;
 }
 
+EOLIAN static void
+_ewe_ruler_marker_text_set(Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
+                           Ewe_Ruler_Marker *marker,
+                           const char *text)
+{
+   edje_object_part_text_set(marker->obj, "ewe.text", text);
+}
+
+EOLIAN static const char *
+_ewe_ruler_marker_text_get(Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
+                           Ewe_Ruler_Marker *marker)
+{
+   return edje_object_part_text_get(marker->obj, "ewe.text");
+}
+
 EOLIAN static Eina_Bool
 _ewe_ruler_marker_relative_set(Eo *obj,
                                Ewe_Ruler_Smart_Data *sd,

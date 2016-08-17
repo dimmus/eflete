@@ -243,6 +243,24 @@ class Ewe.Ruler (Elm.Widget)
            size: int;
          }
       }
+      @property marker_text {
+         get {
+         [[
+          Get text of given marker.
+         ]]
+         }
+         set {
+         [[
+          Set text to given marker
+         ]]
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           text: const(char)*;
+         }
+      }
 
       scale_add {
          [[
