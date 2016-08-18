@@ -400,7 +400,7 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    LAYOUT_PROP_ADD(layout_p.box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
-   eo_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
+   efl_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
