@@ -129,6 +129,7 @@ struct _Workspace_Data
       Evas_Object *scale_abs;
       Evas_Object *scale_rel;
       Evas_Object *scale_both;
+      Evas_Object *markers;
    } menu;
    Scroll_Area normal;
    Scroll_Area demo;
@@ -140,6 +141,7 @@ struct _Workspace_Data
    Workspace_Mode mode;
    Group *group;
    double zoom_factor;
+   Eina_Bool markers : 1;
 };
 
 typedef struct _Workspace_Data Workspace_Data;
@@ -725,10 +727,10 @@ _markers_calculate(Workspace_Data *wd)
    const Part *part;
    Eina_Strbuf *buf;
 
-   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
-
    area = _scroll_area_get(wd);
    assert(area != NULL);
+
+   if (((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) || !wd->markers) goto hide_all;
 
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
@@ -739,11 +741,11 @@ _markers_calculate(Workspace_Data *wd)
    ewe_ruler_marker_tooltip_set (RULER, MARKER, TOOLTIP); \
    ewe_ruler_marker_visible_set (RULER, MARKER, true);
 
-   buf = eina_strbuf_new();
    part = _group_part_selected_get(wd->group);
    part_geom = groupview_part_selected_geom_get(area->content);
    if (part_geom)
      {
+        buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Part '%s' width: %d"), part->name, part_geom->w);
         MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_part,
                         part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
@@ -752,12 +754,11 @@ _markers_calculate(Workspace_Data *wd)
         eina_strbuf_append_printf(buf, _("Part '%s' heigth: %d"), part->name, part_geom->h);
         MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_part,
                         part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+        eina_strbuf_free(buf);
      }
    else
      {
-        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, false);
-        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, false);
-        goto hide;
+        goto hide_all;
      }
 
    if (groupview_part_object_area_visible_get(area->content))
@@ -765,7 +766,7 @@ _markers_calculate(Workspace_Data *wd)
         part_geom = groupview_part_selected_object_area_geom_get(area->content);
         if (!part_geom) return;
 
-        eina_strbuf_reset(buf);
+        buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Part '%s' object area width: %d"), part->name, part_geom->w);
         MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_obj_area,
                         part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
@@ -815,8 +816,15 @@ _markers_calculate(Workspace_Data *wd)
              MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_rel2,
                              part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
           }
+        eina_strbuf_free(buf);
         return;
      }
+   else
+     goto hide;
+
+hide_all:
+   ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, false);
+   ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, false);
 hide:
    ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
    ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
@@ -825,7 +833,6 @@ hide:
    ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_rel2, false);
    ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_rel2, false);
 #undef MARKER_GEOM_SET
-   eina_strbuf_free(buf);
 }
 
 static void
@@ -923,6 +930,20 @@ _menu_rulers_visible(void *data,
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
+}
+
+static void
+_menu_markers(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   _menu_dismissed(data, NULL, NULL);
+
+   Workspace_Data *wd = data;
+   wd->markers = !wd->markers;
+
+   elm_check_state_set(wd->menu.markers, wd->markers);
+   _markers_calculate(wd);
 }
 
 static void
@@ -1039,6 +1060,12 @@ _menu_add(Workspace_Data *wd)
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_ruler_rel, NULL, wd->menu.scale_rel, wd);
    wd->menu.scale_both = _radio_switcher_add(wd, NULL, NULL, 2, wd->menu.scale_abs);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_both, NULL, wd->menu.scale_both, wd);
+#if !HAVE_TIZEN
+   elm_menu_item_separator_add(wd->menu.obj, NULL);
+#endif
+   wd->menu.markers = elm_check_add(wd->layout);
+   elm_check_state_set(wd->menu.markers, true);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Markers"), _menu_markers, NULL, wd->menu.markers, wd);
 }
 
 static void
@@ -1595,6 +1622,7 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_size_hint_align_set(wd->demo_navi, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_hide(wd->demo_navi);
 
+   wd->markers = true;
    _menu_add(wd);
 
    evas_object_data_set(wd->layout, WORKSPACE_DATA, wd);
@@ -1703,6 +1731,25 @@ workspace_object_area_visible_get(Evas_Object *obj)
    area = _scroll_area_get(wd);
 
    return groupview_part_object_area_visible_get(area->content);
+}
+
+void
+workspace_parts_markers_visible_set(Evas_Object *obj, Eina_Bool visible)
+{
+   WS_DATA_GET(obj);
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
+   wd->markers = visible;
+   _markers_calculate(wd);
+}
+
+Eina_Bool
+workspace_parts_markers_visible_get(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return false;
+   return wd->markers;
 }
 
 void

@@ -385,6 +385,29 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
+/**
+ * Turn on/off the part markers visibility.
+ *
+ * @param obj The workspace object,
+ * @param visible ON/OFF (true/false) the markers visibility,
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_parts_markers_visible_set(Evas_Object *obj, Eina_Bool visible);
+
+/**
+ * Returns if the markers is visible
+ *
+ * @param obj The workspace object,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_parts_markers_visible_get(Evas_Object *obj);
+
 void
 workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible);
 
