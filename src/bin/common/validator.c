@@ -112,5 +112,5 @@ resource_name_validator_helper(void *data, const Eo_Event *event)
      }
    vc->signal = validator->signal;
    if (validator->status)
-     efl_event_callback_stop(event->object);
+     eo_event_callback_stop(event->object);
 }

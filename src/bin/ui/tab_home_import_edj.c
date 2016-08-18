@@ -559,7 +559,7 @@ _tab_import_edj_add(void)
    /* label.name */
    elm_object_part_text_set(tab_edj.layout, "label.name", _("Project name:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.name, true)
-   efl_event_callback_add(tab_edj.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edj.name_validator);
+   eo_event_callback_add(tab_edj.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edj.name_validator);
    evas_object_smart_callback_add(tab_edj.name, "changed", _name_changed_cb, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.name", tab_edj.name);
    /* label.path */
