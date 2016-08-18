@@ -130,6 +130,19 @@ void
 groupview_hard_update(Evas_Object *obj);
 
 /**
+ * Get the geomentry.
+ *
+ * @paramaram obj The groupview object,
+ * @paramaram part The part name.
+ *
+ * @returneturn The Groupview_Geom, or NULL if any part is notselected
+ *
+ * @ingroup Groupview
+ */
+const Groupview_Geom *
+groupview_part_geom_get(Evas_Object *obj, const char *part);
+
+/**
  * Get the selected part geomentry.
  *
  * @param obj The groupview object,

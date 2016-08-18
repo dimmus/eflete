@@ -338,6 +338,20 @@ groupview_hard_update(Evas_Object *obj)
 }
 
 const Groupview_Geom *
+groupview_part_geom_get(Evas_Object *obj, const char *part)
+{
+   Groupview_Geom *geom = NULL;
+   Groupview_Part *gp;
+
+   GROUPVIEW_DATA_GET(obj, sd)
+
+   gp = _parts_list_find(sd->parts, part);
+   if (gp) geom = &gp->geom;
+
+   return geom;
+}
+
+const Groupview_Geom *
 groupview_part_selected_geom_get(Evas_Object *obj)
 {
    Groupview_Geom *geom = NULL;
