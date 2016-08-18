@@ -395,7 +395,7 @@ _project_dummy_sample_add(Project *project)
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_SAMPLE_NAME, ap.path.sound_path);
-   assert(edje_edit_sound_sample_add(edje_edit_obj, EFLETE_DUMMY_SAMPLE_NAME, buf) != false);
+   edje_edit_sound_sample_add(edje_edit_obj, EFLETE_DUMMY_SAMPLE_NAME, buf);
 
    you_shall_not_pass_editor_signals(NULL);
    CRIT_ON_FAIL(editor_save(edje_edit_obj));
