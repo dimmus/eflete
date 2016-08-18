@@ -63,6 +63,8 @@ struct _Ruler {
    Ewe_Ruler_Marker *pointer;
    Ewe_Ruler_Marker *mr_part;
    Ewe_Ruler_Marker *mr_obj_area;
+   Ewe_Ruler_Marker *mr_rel1;
+   Ewe_Ruler_Marker *mr_rel2;
    Ewe_Ruler_Scale *scale_rel;
 };
 typedef struct _Ruler Ruler;
@@ -678,6 +680,8 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 {
 
    ruler->obj = ewe_ruler_add(parent);
+   ruler->mr_rel1 = ewe_ruler_marker_add(ruler->obj, "rel1");
+   ruler->mr_rel2 = ewe_ruler_marker_add(ruler->obj, "rel2");
    ruler->mr_obj_area = ewe_ruler_marker_add(ruler->obj, "object_area");
    ruler->mr_part = ewe_ruler_marker_add(ruler->obj, "part");
    ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
@@ -692,12 +696,34 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
      }
 }
 
+static inline const Part *
+_group_part_selected_get(const Group *group)
+{
+   assert(group != NULL);
+   if (!group->current_selected)
+     return NULL;
+
+   if (group->current_selected->resource_type == RESOURCE_TYPE_PART)
+     return (const Part *)group->current_selected;
+
+   if (group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+     return (const Part *)((State *)group->current_selected)->part;
+
+   if (group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
+     return (const Part *)((Part_Item *)group->current_selected)->part;
+
+   return NULL;
+}
+
 static void
 _markers_calculate(Workspace_Data *wd)
 {
    const Groupview_Geom *part_geom = NULL;
    Evas_Coord x, y;
    Scroll_Area *area;
+   Eina_Stringshare *to;
+   const Part *part;
+   Eina_Strbuf *buf;
 
    if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
 
@@ -707,43 +733,99 @@ _markers_calculate(Workspace_Data *wd)
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
 
+#define MARKER_GEOM_SET(RULER, MARKER, POS, SIZE, TOOLTIP) \
+   ewe_ruler_marker_absolute_set(RULER, MARKER, POS); \
+   ewe_ruler_marker_size_set    (RULER, MARKER, SIZE); \
+   ewe_ruler_marker_tooltip_set (RULER, MARKER, TOOLTIP); \
+   ewe_ruler_marker_visible_set (RULER, MARKER, true);
+
+   buf = eina_strbuf_new();
+   part = _group_part_selected_get(wd->group);
    part_geom = groupview_part_selected_geom_get(area->content);
    if (part_geom)
      {
-        ewe_ruler_marker_absolute_set(area->ruler_h.obj, area->ruler_h.mr_part, part_geom->x - x);
-        ewe_ruler_marker_size_set(area->ruler_h.obj, area->ruler_h.mr_part, part_geom->w);
-        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, true);
+        eina_strbuf_append_printf(buf, _("Part '%s' width: %d"), part->name, part_geom->w);
+        MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_part,
+                        part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
 
-        ewe_ruler_marker_absolute_set(area->ruler_v.obj, area->ruler_v.mr_part, part_geom->y - y);
-        ewe_ruler_marker_size_set(area->ruler_v.obj, area->ruler_v.mr_part, part_geom->h);
-        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, true);
+        eina_strbuf_reset(buf);
+        eina_strbuf_append_printf(buf, _("Part '%s' heigth: %d"), part->name, part_geom->h);
+        MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_part,
+                        part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
      }
    else
      {
         ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_part, false);
         ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_part, false);
-        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
-        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
-        return;
+        goto hide;
      }
 
    if (groupview_part_object_area_visible_get(area->content))
      {
         part_geom = groupview_part_selected_object_area_geom_get(area->content);
         if (!part_geom) return;
-        ewe_ruler_marker_absolute_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, part_geom->x - x);
-        ewe_ruler_marker_size_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, part_geom->w);
-        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, true);
 
-        ewe_ruler_marker_absolute_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, part_geom->y - y);
-        ewe_ruler_marker_size_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, part_geom->h);
-        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, true);
+        eina_strbuf_reset(buf);
+        eina_strbuf_append_printf(buf, _("Part '%s' object area width: %d"), part->name, part_geom->w);
+        MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_obj_area,
+                        part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+
+        eina_strbuf_reset(buf);
+        eina_strbuf_append_printf(buf, _("Part '%s' object area heigth: %d"), part->name, part_geom->h);
+        MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_obj_area,
+                        part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+
+        to = edje_edit_state_rel1_to_x_get(wd->group->edit_object, part->name,
+                                           part->current_state->name, part->current_state->val);
+        if (to)
+          {
+             part_geom = groupview_part_geom_get(area->content, to);
+             eina_strbuf_reset(buf);
+             eina_strbuf_append_printf(buf, _("Part '%s'"), to);
+             MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_rel1,
+                             part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+          }
+        to = edje_edit_state_rel2_to_x_get(wd->group->edit_object, part->name,
+                                           part->current_state->name, part->current_state->val);
+        if (to)
+          {
+             part_geom = groupview_part_geom_get(area->content, to);
+             eina_strbuf_reset(buf);
+             eina_strbuf_append_printf(buf, _("Part '%s'"), to);
+             MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_rel2,
+                             part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+          }
+        to = edje_edit_state_rel1_to_y_get(wd->group->edit_object, part->name,
+                                           part->current_state->name, part->current_state->val);
+        if (to)
+          {
+             part_geom = groupview_part_geom_get(area->content, to);
+             eina_strbuf_reset(buf);
+             eina_strbuf_append_printf(buf, _("Part '%s'"), to);
+             MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_rel1,
+                             part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+          }
+        to = edje_edit_state_rel2_to_y_get(wd->group->edit_object, part->name,
+                                           part->current_state->name, part->current_state->val);
+        if (to)
+          {
+             part_geom = groupview_part_geom_get(area->content, to);
+             eina_strbuf_reset(buf);
+             eina_strbuf_append_printf(buf, _("Part '%s'"), to);
+             MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_rel2,
+                             part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+          }
+        return;
      }
-   else
-     {
-        ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
-        ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
-     }
+hide:
+   ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_obj_area, false);
+   ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_obj_area, false);
+   ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_rel1, false);
+   ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_rel1, false);
+   ewe_ruler_marker_visible_set(area->ruler_h.obj, area->ruler_h.mr_rel2, false);
+   ewe_ruler_marker_visible_set(area->ruler_v.obj, area->ruler_v.mr_rel2, false);
+#undef MARKER_GEOM_SET
+   eina_strbuf_free(buf);
 }
 
 static void
