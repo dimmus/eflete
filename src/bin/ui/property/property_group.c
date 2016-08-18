@@ -792,10 +792,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_PART_NAME:
-         efl_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
+         eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
          break;
       case ATTRIBUTE_GROUP_DATA_NAME:
-         efl_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.group_data_name_validator);
+         eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.group_data_name_validator);
          break;
       case ATTRIBUTE_STATE_IMAGE:
       case ATTRIBUTE_GROUP_DATA_VALUE:

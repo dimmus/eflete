@@ -364,7 +364,7 @@ _on_bt_prog_add(void *data,
    animator->popup.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
    LAYOUT_PROP_ADD(animator->popup.popup, _("Frequency:"), "property", "1swallow")
    ENTRY_ADD(item, animator->popup.entry, true)
-   efl_event_callback_add(animator->popup.entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, animator->popup.name_validator);
+   eo_event_callback_add(animator->popup.entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, animator->popup.name_validator);
    evas_object_smart_callback_add(animator->popup.entry, "changed", _validation, animator);
    elm_object_part_content_set(item, "elm.swallow.content", animator->popup.entry);
 

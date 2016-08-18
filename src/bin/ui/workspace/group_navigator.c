@@ -1102,7 +1102,7 @@ _add_part_content_get(void *data, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(box, _("Part name"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
-   efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->part_name_validator);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->part_name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new part"));
    resource_name_validator_list_set(pl->part_name_validator, &pl->group->parts, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_part_name_changed, pl);
@@ -1244,7 +1244,7 @@ _add_group_data_content_get(void *data, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(box, _("Data item name"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
-   efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->group_data_name_validator);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->group_data_name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new group_data"));
    resource_name_validator_list_set(pl->group_data_name_validator, &pl->group->data_items, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_group_data_name_changed, pl);
@@ -1394,7 +1394,7 @@ _add_state_content_get(void *data, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(box, _("State name"), "popup", "1swallow");
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _state_validate, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new state"));
@@ -1554,7 +1554,7 @@ _add_item_content_get(void *data, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new item"));
@@ -1694,7 +1694,7 @@ _add_program_content_get(void *data, Evas_Object **to_focus)
 
    LAYOUT_PROP_ADD(box, _("Program name"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          resource_name_validator_helper, pl->program_name_validator);
    resource_name_validator_list_set(pl->program_name_validator, &pl->group->programs, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);

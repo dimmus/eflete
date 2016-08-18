@@ -112,16 +112,16 @@ _player_units_free(char *str)
 static void
 _play_finished_cb(void *data __UNUSED__, const Eo_Event *event __UNUSED__)
 {
-   efl_unref(in);
+   eo_unref(in);
    in = NULL;
-   efl_unref(out);
+   eo_unref(out);
    out = NULL;
 }
 
 static void
 _out_fail(void *data __UNUSED__, const Eo_Event *event)
 {
-   efl_unref(event->object);
+   eo_unref(event->object);
 }
 
 static Eina_Bool
@@ -157,13 +157,13 @@ _on_rewin_cb(void *data __UNUSED__,
 static void
 _create_io_stream()
 {
-   in = efl_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL);
+   in = eo_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL);
    assert(in != NULL);
-   out = efl_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
+   out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
    assert(out != NULL);
-   efl_event_callback_add(out, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+   eo_event_callback_add(out, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                          _out_fail, NULL);
-   efl_event_callback_add(in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+   eo_event_callback_add(in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
                          _play_finished_cb, NULL);
 }
 static void
@@ -177,17 +177,17 @@ _tone_play()
 
    if (!in)
      {
-        in = efl_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
+        in = eo_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
         ecore_audio_obj_name_set(in, tone->name);
-        efl_key_data_set(in, ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq);
+        eo_key_data_set(in, ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq);
         ecore_audio_obj_in_length_set(in, TONE_PLAYING_DURATION);
-        efl_event_callback_add(in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+        eo_event_callback_add(in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
                               _play_finished_cb, NULL);
      }
 
    if (!out)
-     out = efl_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
-                           efl_event_callback_add(efl_self, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+     out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
+                           eo_event_callback_add(eo_self, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                                  _out_fail, NULL));
 
    ret = ecore_audio_obj_out_input_attach(out, in);
@@ -307,9 +307,9 @@ _interrupt_playing()
         elm_icon_standard_set(icon, "media_player/play");
         playing = false;
 
-        efl_unref(in);
+        eo_unref(in);
         in = NULL;
-        efl_unref(out);
+        eo_unref(out);
         out = NULL;
      }
 }
