@@ -296,7 +296,7 @@ _helper_property_color_follow(void *data __UNUSED__,
 
 static void
 _helper_colorclass_dismiss(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj,
                            const char *signal __UNUSED__,
                            const char *source __UNUSED__)
 {
@@ -324,6 +324,7 @@ _helper_colorclass_dismiss(void *data,
 
    if (helper_data) free(helper_data);
 
+   shortcuts_object_check_pop(obj);
    ecore_job_add(_delete_object_job, helper);
 }
 
@@ -356,6 +357,7 @@ _helper_dismiss(void *data __UNUSED__,
    Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
 
+   shortcuts_object_check_pop(obj);
    ecore_job_add(_delete_object_job, helper);
 }
 
@@ -465,6 +467,7 @@ _fileselector_helper(const char *title,
         _helper_win_follow(NULL, NULL, NULL, NULL);
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
+   shortcuts_object_push(helper);
    evas_object_show(helper);
 }
 
@@ -884,6 +887,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
 
+   shortcuts_object_push(helper);
    evas_object_show(helper);
 }
 
@@ -974,6 +978,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
 
+   shortcuts_object_push(helper);
    evas_object_show(helper);
 }
 
@@ -1003,6 +1008,8 @@ popup_log_message_helper(const char *msg)
 
    _helper_win_follow(NULL, NULL, NULL, NULL);
    evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+
+   shortcuts_object_push(helper);
    evas_object_show(helper);
 }
 
