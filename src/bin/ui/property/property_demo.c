@@ -20,6 +20,7 @@
 #include "property.h"
 #include "property_private.h"
 #include "demo_group.h"
+#include "project_manager.h"
 
 #define DEMO_MASK(TYPE) (1u << TYPE)
 #define DEMO_SIGNAL     DEMO_MASK(EDJE_PART_TYPE_NONE) /* in case of SIGNAL things are different */
@@ -66,7 +67,8 @@ static const char *swallow_content_type[] = {
      "Widget",
      NULL};
 
-static const char *widget_type[] = { "button",
+static const char *widget_type[] = { "layout",
+                                     "button",
                                      "check",
                                      "slider",
                                      "entry",
@@ -120,6 +122,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_PICTURE);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_WIDGET);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_STYLE);
+         APPEND(PROPERTY_DEMO_ITEM_SWALLOW_LAYOUT_GROUP);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_COLOR);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_MIN);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_MAX);
@@ -161,6 +164,31 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
         ++i;
+     }
+}
+
+static void
+_fill_combobox_group(Evas_Object *control)
+{
+   unsigned int i = 0;
+   Combobox_Item *combobox_item;
+   Elm_Genlist_Item_Class *itc;
+   Eina_List *l;
+   Group *group;
+
+   assert(control != NULL);
+
+   itc = evas_object_data_get(control, "COMMON_ITC");
+
+   elm_genlist_clear(control);
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        combobox_item = mem_malloc(sizeof(Combobox_Item));
+        combobox_item->index = i++;
+        combobox_item->data = eina_stringshare_add(group->name);
+        elm_genlist_item_append(control, itc,
+                                combobox_item, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 }
 
@@ -220,6 +248,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          assert(cb_item_combo != NULL);
          demo_pd.part->widget = cb_item_combo->index;
          demo_pd.part->change = true;
+         GENLIST_FILTER_APPLY(pd->genlist);
          elm_object_text_set(action->control, widget_type[demo_pd.part->widget]);
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
@@ -228,6 +257,16 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
            eina_stringshare_del(demo_pd.part->content_style);
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
          demo_pd.part->change = true;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
+         assert(cb_item_combo != NULL);
+         if (demo_pd.part->content_style)
+           eina_stringshare_del(demo_pd.part->content_style);
+         demo_pd.part->content_style = eina_stringshare_add(cb_item_combo->data);
+         demo_pd.part->widget = 0;
+         demo_pd.part->change = true;
+         elm_object_text_set(action->control, cb_item_combo->data);
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
@@ -299,6 +338,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
          property_entry_set(action->control, demo_pd.part->content_style);
          break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
+         _fill_combobox_group(action->control);
+         break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
          property_color_control_color_set(action->control,
                                           demo_pd.part->r,
@@ -357,6 +399,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:
@@ -447,7 +490,16 @@ _filter_swallow_cb(Property_Attribute *pa)
    assert(demo_pd.part != NULL);
    assert(demo_pd.part->type == EDJE_PART_TYPE_SWALLOW);
 
-   return !!(pa->filter_data.demo_types & DEMO_MASK(demo_pd.part->swallow_content));
+   if (!!(pa->filter_data.demo_types & DEMO_MASK(demo_pd.part->swallow_content)))
+     {
+        if (PROPERTY_DEMO_ITEM_SWALLOW_STYLE == pa->type.demo_item)
+          return demo_pd.part->widget != 0;
+        else if (PROPERTY_DEMO_ITEM_SWALLOW_LAYOUT_GROUP == pa->type.demo_item)
+          return demo_pd.part->widget == 0;
+        else
+          return true;
+     }
+   return false;
 }
 
 static void
@@ -512,6 +564,12 @@ _init_items()
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE);
+              break;
+           case PROPERTY_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
+              IT.name = "Layout group";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_COLOR:
               IT.name = "Color";

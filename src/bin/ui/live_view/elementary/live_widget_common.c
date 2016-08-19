@@ -132,6 +132,10 @@ object_generate(Demo_Part *part, Evas_Object *object)
      {
         switch (widget_type)
           {
+           case WIDGET_LAYOUT:
+              content = elm_layout_add(object);
+              elm_layout_file_set(content, ap.project->dev, part->content_style);
+              break;
            case WIDGET_BUTTON:
               content = elm_button_add(object);
               elm_object_text_set(content, _("User Text"));

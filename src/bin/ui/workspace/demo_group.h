@@ -46,7 +46,8 @@ typedef enum _Swallow_Content_Type
 
 typedef enum _Swallow_Content_Widget_Type
 {
-   WIDGET_BUTTON = 0 ,  /**< button widget */
+   WIDGET_LAYOUT = 0,   /**< layout widget */
+   WIDGET_BUTTON,  /**< button widget */
    WIDGET_CHECK,  /**< check widget */
    WIDGET_SLIDER,  /**< slider widget */
    WIDGET_ENTRY,  /**< entry widget */
