@@ -95,7 +95,8 @@ static char *part_types[] = {
      N_("Box"),
      N_("Table"),
      N_("Proxy"),
-     N_("Spacer")
+     N_("Spacer"),
+     NULL
 };
 static const char *program_actions[] = {
      N_("None"),
