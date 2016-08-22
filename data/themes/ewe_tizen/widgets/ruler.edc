@@ -103,6 +103,223 @@ group { name: "ewe/ruler/marker/vertical/pointer";
    }
 }
 
+color_classes {
+   color_class { name: "rel1";
+      color: 85 107 167 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "rel2";
+      color: 44 102 78 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "part";
+      color: 58 110 155 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+}
+
+group { name: "ewe/ruler/marker/horizontal/rel1";
+   images {
+      image: "border_1.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         clip_to: "clipper";
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            max: -1 6;
+            color_class: "rel1";
+            color: 255 255 255 200;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            color_class: "rel1";
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel2.offset: -1 0;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+         }
+      }
+      part { name: "ewe.text";
+         type: TEXT;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            color_class: "rel1";
+            text {
+               size: 12;
+               max: 0 1;
+            }
+            rel2 {
+               relative: 1.00 0.00;
+               to_y: "bg";
+            }
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.00;
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/horizontal/rel2";
+   inherit: "ewe/ruler/marker/horizontal/rel1";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+      part { name: "ewe.text";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+      part { name: "border";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/horizontal/part";
+   inherit: "ewe/ruler/marker/horizontal/rel1";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+      part { name: "ewe.text";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+      part { name: "border";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+   }
+}
+
+
+group { name: "ewe/ruler/marker/vertical/rel1";
+   inherit: "ewe/ruler/marker/horizontal/rel1";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.00;
+            align: 1.0 0.5;
+            max: 6 -1;
+         }
+      }
+      part { name: "ewe.text";
+         description { state: "default" 0.0;
+            map {
+               on: 1;
+               rotation {
+                  center: "ewe.text";
+                  z: -90.00;
+               }
+            }
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/vertical/rel2";
+   inherit: "ewe/ruler/marker/vertical/rel1";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+      part { name: "ewe.text";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+      part { name: "border";
+         description { state: "default" 0.0;
+            color_class: "rel2";
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/vertical/part";
+   inherit: "ewe/ruler/marker/vertical/rel1";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+      part { name: "ewe.text";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+      part { name: "border";
+         description { state: "default" 0.0;
+            color_class: "part";
+         }
+      }
+   }
+}
+
+group { name: "ewe/ruler/marker/horizontal/object_area";
+   alias: "ewe/ruler/marker/vertical/object_area";
+   images {
+      image: "bg_object_area.png" COMP;
+      image: "border_1.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            color_class: "part";
+            image.normal: "bg_object_area.png";
+            fill.type: TILE;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         clip_to: "clipper";
+         description { state: "default" 0.00;
+            color_class: "part";
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.00;
+         }
+      }
+   }
+}
+
+
 
 //=====================   default scale  =========================//
 
