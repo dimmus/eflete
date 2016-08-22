@@ -340,7 +340,7 @@ _colorclass_done(void *data,
 
 static void
 _helper_dismiss(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj,
                 const char *signal __UNUSED__,
                 const char *source __UNUSED__)
 {
@@ -400,7 +400,7 @@ _done(void *data __UNUSED__,
      {
         dismiss_func = NULL;
         func_data = NULL;
-        _helper_dismiss(data, NULL, NULL, NULL);
+        _helper_dismiss(data, helper, NULL, NULL);
      }
 }
 
