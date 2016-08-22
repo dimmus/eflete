@@ -69,7 +69,7 @@ _project_open_feedback_job(void *data, Ecore_Thread *th)
    int tmp_len;
    Eina_Stringshare *message = NULL;
 #ifdef _WIN32
-    HFILE pro_fd = -1;
+    HANDLE pro_fd = NULL;
 #else
     int pro_fd;
 #endif

@@ -58,7 +58,7 @@ struct _Project
    int version;
    /** File descriptor of open "*.pro" file. Needed for keep that file locked*/
 #ifdef _WIN32
-   HFILE pro_fd;
+   HANDLE pro_fd;
 #else
    int pro_fd;
 #endif

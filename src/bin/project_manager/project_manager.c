@@ -84,30 +84,42 @@ _lock_try(const char *path, Eina_Bool check, int *pro_fd)
 }
 #else
 Eina_Bool
-_lock_try(const char *path, Eina_Bool check, HFILE *pro_fd)
+_lock_try(const char *path, Eina_Bool check, HANDLE *pro_fd)
 {
-   LPOFSTRUCT lpReOpenBuff;
-   HFILE fd = OpenFile(path, lpReOpenBuff, OF_READWRITE);
-   if (fd == HFILE_ERROR)
+   LPCTSTR  lpFileName = path;
+   DWORD dwDesiredAccess = GENERIC_READ|GENERIC_WRITE;
+   DWORD  dwShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
+   LPSECURITY_ATTRIBUTES  lpSecurityAttributes = NULL;
+   DWORD  dwCreationDisposition = OPEN_EXISTING;
+   DWORD  dwFlagsAndAttributes = 0;
+   HANDLE  hTemplateFile = NULL;
+   HANDLE fd = CreateFile(lpFileName, 
+                          dwDesiredAccess, 
+                          dwShareMode, 
+                          lpSecurityAttributes, 
+                          dwCreationDisposition,
+                          dwFlagsAndAttributes,
+                          hTemplateFile);
+	
+   if (fd == INVALID_HANDLE_VALUE) 
      {
-       ERR("The file '%s' cannot be opened in mode read-write!", path);
-       return false;
+        ERR("The file '%s' cannot be opened in mode read-write!", path);
+        return !check;
      }
 
    if (!check)
      {
-       CloseHandle(fd);
-       return false;
+        CloseHandle(fd);
+        return true;
      }
-
-   if (pro_fd)
+    if (pro_fd)
      {
         *pro_fd = fd;
         return true;
      }
 
-   CloseHandle(fd);
-   return false;
+    CloseHandle(fd);
+    return false;
 }
 #endif
 
@@ -654,7 +666,7 @@ pm_project_close(Project *project)
 
    eet_close(project->ef);
 #ifdef _WIN32
-   if (project->pro_fd != HFILE_ERROR)
+   if (project->pro_fd != INVALID_HANDLE_VALUE)
      CloseHandle(project->pro_fd);
 #else
    if (project->pro_fd != -1)
