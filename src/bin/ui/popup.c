@@ -630,7 +630,7 @@ _done_image(void *data,
            perfectly good */
         if (helper_data->button)
           evas_object_del(helper_data->button);
-        _helper_dismiss(helper_data->follow_up, NULL, NULL, NULL);
+        _helper_dismiss(helper_data->follow_up, helper, NULL, NULL);
      }
 }
 
@@ -783,7 +783,7 @@ _btn_image_manager_cb(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-   _helper_dismiss(NULL, NULL, NULL, NULL);
+   _helper_dismiss(NULL, helper, NULL, NULL);
    image_manager_add();
 }
 
