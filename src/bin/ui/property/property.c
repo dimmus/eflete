@@ -21,13 +21,34 @@
 #include "property_private.h"
 #include "property_common.h"
 
+typedef struct {
+   Evas_Object *property;
+   Property_Attribute *pa;
+   Elm_Object_Item *parent;
+} Item_Job;
+
+static void
+_item_add_job(void *data)
+{
+   Item_Job *ij = data;
+
+   property_item_add(ij->property, ij->pa, ij->parent);
+   free(ij);
+}
+
 static void
 _items_add(Evas_Object *property, Eina_List **items, Elm_Object_Item *parent)
 {
    Property_Attribute *pa;
 
    EINA_LIST_FREE(*items, pa)
-      property_item_add(property, pa, parent);
+     {
+        Item_Job *ij = mem_calloc(1, sizeof(Item_Job));
+        ij->property = property;
+        ij->pa = pa;
+        ij->parent = parent;
+        ecore_job_add(_item_add_job, ij);
+     }
 }
 
 void
