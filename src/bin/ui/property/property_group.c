@@ -6001,7 +6001,6 @@ property_group_items_get()
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
-   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_MAP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
