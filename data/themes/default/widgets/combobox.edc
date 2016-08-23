@@ -1595,8 +1595,8 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
                font: FN;
                size: 12;
                align: 0.0 0.5;
-               min: 1 1;
-               elipsis: -1;
+               //min: 1 1;
+               //elipsis: -1;
             }
          }
          description { state: "hide" 0.0;
