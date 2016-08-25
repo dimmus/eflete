@@ -136,7 +136,6 @@ _groupview_smart_del(Evas_Object *o)
 
    _parts_list_free(sd);
    evas_object_smart_member_del(sd->group->edit_object);
-   evas_object_smart_member_del(sd->clipper);
    evas_object_hide(sd->group->edit_object);
 
    _groupview_parent_sc->del(o);
@@ -300,10 +299,6 @@ groupview_add(Evas_Object *parent, Group *group)
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
     * with such clipper object invisible and calculate geometry. */
    evas_object_show(sd->group->edit_object);
-   sd->clipper = evas_object_rectangle_add(evas_object_evas_get(sd->obj));
-   evas_object_clip_set(sd->group->edit_object, sd->clipper);
-   evas_object_smart_member_add(sd->clipper, obj);
-   evas_object_show(sd->clipper);
 
    return obj;
 }

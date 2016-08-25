@@ -995,6 +995,7 @@ _proxy_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
         source = _parts_list_find(sd->parts, proxy_source);
         evas_object_image_source_set(gp->proxy_part, source->proxy_part);
         evas_object_image_source_clip_set(gp->proxy_part, false);
+        evas_object_image_source_visible_set (gp->proxy_part, false);
         _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
      }
    else
@@ -1013,7 +1014,7 @@ _common_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
    evas_object_image_source_set(gp->proxy_part, NULL);
    evas_object_image_source_set(gp->proxy_part,
                                 (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
-   evas_object_image_source_clip_set(gp->proxy_part, false);
+   evas_object_image_source_visible_set (gp->proxy_part, false);
 }
 
 static void
