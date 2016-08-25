@@ -1162,9 +1162,10 @@ _mode_cb(void *data,
    if (mode == wd->mode) return;
 
    wd->mode = mode;
+   elm_panes_fixed_set(wd->panes_h, true);
+   elm_panes_content_right_size_set(wd->panes_h, 0);
+   edje_object_calc_force(elm_layout_edje_get(wd->panes_h));
    content = elm_object_part_content_unset(wd->panes_h, "left");
-   evas_object_hide(content);
-   //content = elm_object_part_content_unset(wd->panes, "right");
    evas_object_hide(content);
    if (wd->demo.content)
      {
@@ -1172,8 +1173,6 @@ _mode_cb(void *data,
         wd->demo.content = NULL;
      }
 
-   elm_panes_fixed_set(wd->panes_h, true);
-   elm_panes_content_right_size_set(wd->panes_h, 0);
    switch (wd->mode)
      {
       case MODE_CODE:
