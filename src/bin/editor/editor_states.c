@@ -34,9 +34,6 @@ EDITOR_STATE_INT(rel1_offset_y, ATTRIBUTE_STATE_REL1_OFFSET_Y)
 EDITOR_STATE_INT(rel2_offset_x, ATTRIBUTE_STATE_REL2_OFFSET_X)
 EDITOR_STATE_INT(rel2_offset_y, ATTRIBUTE_STATE_REL2_OFFSET_Y)
 
-EDITOR_STATE_DOUBLE(align_x, ATTRIBUTE_STATE_ALIGN_X)
-EDITOR_STATE_DOUBLE(align_y, ATTRIBUTE_STATE_ALIGN_Y)
-
 EDITOR_STATE_DOUBLE(aspect_min, ATTRIBUTE_STATE_ASPECT_MIN)
 EDITOR_STATE_DOUBLE(aspect_max, ATTRIBUTE_STATE_ASPECT_MAX)
 
@@ -157,6 +154,49 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
 
 MIN_SET(w, W)
 MIN_SET(h, H)
+
+#define ALIGN_SET(FUNC, ATTRIBUTE) \
+Eina_Bool \
+editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply, \
+                            const char *part_name, const char *state_name, double state_val, double new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(state_name != NULL); \
+   if (change) \
+     { \
+        double old_value = edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE; \
+        diff->redo.function = editor_state_## FUNC ##_set; \
+        diff->redo.args.type_ssdd.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_ssdd.s2 = eina_stringshare_add(state_name); \
+        diff->redo.args.type_ssdd.d3 = state_val; \
+        diff->redo.args.type_ssdd.d4 = new_val; \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE; \
+        diff->undo.function = editor_state_## FUNC ##_set; \
+        diff->undo.args.type_ssdd.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_ssdd.s2 = eina_stringshare_add(state_name); \
+        diff->undo.args.type_ssdd.d3 = state_val; \
+        diff->undo.args.type_ssdd.d4 = old_value; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (apply) \
+     { \
+       CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
+       _editor_project_changed(); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+     } \
+   return true; \
+}
+
+ALIGN_SET(align_x, ATTRIBUTE_STATE_ALIGN_X)
+ALIGN_SET(align_y, ATTRIBUTE_STATE_ALIGN_Y)
 
 EDITOR_STATE_BOOL(fixed_h, ATTRIBUTE_STATE_FIXED_H)
 EDITOR_STATE_BOOL(fixed_w, ATTRIBUTE_STATE_FIXED_W)
