@@ -647,6 +647,7 @@ _part_draw_add(Groupview_Smart_Data *sd, Part *part)
          break;
       case EDJE_PART_TYPE_IMAGE:
          PART_VIEW_PROXY_SET()
+         gp->proxy_dead_part = evas_object_image_filled_add(evas_object_evas_get(sd->obj));
          elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
       case EDJE_PART_TYPE_PROXY: // it part like image
@@ -835,6 +836,11 @@ _image_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
 
    PART_STATE_GET(edit_obj, gp->part->name)
 
+   evas_object_image_source_set(gp->proxy_dead_part, NULL);
+   evas_object_image_source_set(gp->proxy_dead_part,
+                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
+   evas_object_image_source_visible_set(gp->proxy_dead_part, false);
+
    image_normal = edje_edit_state_image_get(edit_obj, gp->part->name, state, value);
    if (!image_normal) return;
    if (edje_edit_image_compression_type_get(edit_obj, image_normal) == EDJE_EDIT_IMAGE_COMP_USER)
@@ -1010,7 +1016,7 @@ _common_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
    evas_object_image_source_set(gp->proxy_part, NULL);
    evas_object_image_source_set(gp->proxy_part,
                                 (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
-   evas_object_image_source_visible_set (gp->proxy_part, false);
+   evas_object_image_source_visible_set(gp->proxy_part, false);
 }
 
 static void

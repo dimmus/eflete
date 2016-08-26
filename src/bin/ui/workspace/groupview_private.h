@@ -89,7 +89,7 @@ struct _Groupview_Part
    Evas_Object *draw;         /**< The evas primitive to be draw in groupview.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
-   Evas_Object *proxy_part;
+   Evas_Object *proxy_part, *proxy_dead_part;
    Evas_Object *layout;
    Evas_Object *container;    /**< Used for box/table parts */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
