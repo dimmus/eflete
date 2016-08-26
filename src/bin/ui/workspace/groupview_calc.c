@@ -877,22 +877,18 @@ _image_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
    map_on = edje_edit_state_map_on_get(edit_obj, gp->part->name, state, value);
    if (map_on)
      {
-
-        rot_part = edje_edit_state_map_rotation_center_get(edit_obj, gp->part->name, state, value);
-        edje_object_part_geometry_get(edit_obj, rot_part, &rx, &ry, &rw, &rh);
         edje_object_part_geometry_get(edit_obj, gp->part->name, NULL, NULL, &w, &h);
-        evas_object_geometry_get(edit_obj, &xe, &ye, NULL, NULL);
+        rot_part = edje_edit_state_map_rotation_center_get(edit_obj, gp->part->name, state, value);
 
         if (rot_part)
-          {
-             center_x = xe + rx + (rw / 2);
-             center_y = ye + ry + (rh / 2);
-          }
+          edje_object_part_geometry_get(edit_obj, rot_part, &rx, &ry, &rw, &rh);
         else
-          {
-             center_x = xe + w / 2;
-             center_y = ye + h / 2;
-          }
+          edje_object_part_geometry_get(edit_obj, gp->part->name, &rx, &ry, &rw, &rh);
+
+        evas_object_geometry_get(edit_obj, &xe, &ye, NULL, NULL);
+
+        center_x = xe + rx + (rw / 2);
+        center_y = ye + ry + (rh / 2);
         center_z = 0;
 
         m = evas_map_new(4);
