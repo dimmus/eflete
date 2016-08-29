@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [7], [0], [rc])
+EFLETE_VERSION([0], [7], [0], [dev])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
