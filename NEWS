@@ -1,6 +1,116 @@
 ============
-Eflete 0.6.0
+Eflete 0.7.0
 ============
+
+Changes since 0.6.1
+-------------------
+Features:
+   * demo: make posible set to swallow custom layout from opened project
+   * workspace: markers for show part on ruler
+   * property: make posible call sound manager from property
+   * property: make posible call colorclass manager from property
+   * property: add to style combobox item for call style manager
+   * property: add button for call image manager from image picker
+   * export: export edj with only used groups and add append feature.
+   * export: export edj with only used groups and add append feature.
+   * group_navigator: add UI and apply editor's functions for part copy
+   * editor: add API for part copy behaviour and history
+   * editor: implement default_is and reset functions for rotation and point color
+
+Fixes:
+   * groupview_calc: wrong center calculation for MAP
+   * workspace: don't forget to recalc normal.layout before hidding
+   * groupview: remove clipper and use "hide source" from proxy object
+   * Group navigator: fix list of available part types.
+   * popup: disable shortcuts if popup shown
+   * Add ___eflete_dummy_sample___  use in programs.
+   * import_edj: fix the style loading method.
+   * property: disable shortcuts if color class combobox is expanded
+   * workspace: make ruler label readble for zoom less 60%
+   * Replace edje_object_signal_emit by elm_object_signal_emit.
+   * ewe_ruler: fix the dashes position
+   * editor_program: emit_source should be not NULL if emit_signal is setted
+   * genlist.edc: fix the label suize for property
+   * project_save: do not main_loop on splash
+   * property_group: item weight could be from 0 up to 9999
+   * editor_part: save edje object to update all changes of items made in property
+   * resource_manager: do not SIGSEV on project load anymore
+   * property_textblock: add missing value Extraexpanded for font width
+   * popup: hide popup when invoked object of property is deleted in genlist
+   * groupview: set a part name as text to TEXT part is setted text is ""
+   * eflete: return EFL_BETA_API_SUPPORT
+   * tab_home: show helpers in the middle of window
+   * property_textblock: add % to ellipsis or else it will keep confusing users
+   * import_edj: compare the widget name exactly.
+   * widget_list: fix the memory leak.
+   * live_naviframe: do not SIGSEV on part_text_set (check NULL before text set)
+   * workspace: recalc container on mode switch
+   * groupview: update a object_area calc for avoid artifacts with zoom
+   * groupedit: fix text zoom
+   * project_navigator: clean up selected group to copy alias
+   * property_demo: apply style when it is changed for content widget
+   * workspace: fix container fit behavior
+   * project_manager: wrap all ecore_exe code into thread_safe_call_sync
+   * workspace: set container to center if it smaller a workspace
+   * project_manager: fix ecore_exe run in threads for new_theme
+   * Tizen theme: fix style for combobox "library" button.
+   * Theme: fix highlight menu item with submenu.
+   * Project navigator: delete aliasses before delete main group.
+   * style_manager: create validator when new popup appeared
+   * property_group: sigsev quick fix with tone and sample programs
+   * property_textblock: use single lined text for cases when ellipsis is on
+   * project_manager: do not use sigset under WIN32
+   * sound_manager: do not check not updated vars, so create validator every time
+   * property_textblock: fix Background isn't displayed in Preview and program aborted
+   * Workspace: add hard update geoup view on part select action.
+   * property_textblock: huge refactor to avoid font spaces and weird calculation
+   * Validator: add ability to free validators.
+   * widget_list: fix the function name
+   * property_textblock: remove value duplication in font_glow_list
+   * tabs: show project info tab on second and further new theme creating
+   * sound_manager: fix little typo
+   * property_textblock: update GLOW_SHADOW_DIRECTION combobox on value change
+   * project_manager: temporary fix thread blocking when imported edc contain scripts
+   * groupview_calc: update text when text_source'd part was deleted
+   * tabs: cleanup pointers to avoid SIGSEV on project save when all tabs are closed
+   * Group navigator: use internal structures for a part restack order.
+   * template: wrong image copy&paste
+   * entry: style for noedit (for property controls which use noedit entry)
+   * property_image_selector: do not disable so elipsis button will work
+   * Group navigator: state copy default item is a "None";
+   * group_navigator: unselect part on groupedit when ESC is clicked
+   * shortcuts: block shortcuts on zoom dragging
+   * combobox TIZEN style: forgotten update on 'library' style
+   * combobox style: fix style for 'zoom' combobox
+   * group_navigator: when part is added, there is no need in holding part type
+   * Splash: remove "Cancel" button.
+   * combobox style: fix style errors
+   * combobox style: use right style naming (upstream & TIZEN styles)
+   * TIZEN hoversel style: additional changes and fixes, use right scroller
+   * history_ui: avoid SIGSEV for now
+   * combobox style: fix "item,pressed" double invokage
+   * tizen combobox: some light click fixes
+   * group_navigator: remove NONE type its useless
+   * Property group: clear attached data, before delete combobox.
+   * splash_anim: fix "raise condition" while export edc group or project
+   * editor: fix edje object update for some of param changes (like map and text fit)
+   * Project navigator: change the method to get the text
+   * sound manager: don't create an eo_stream on select sample
+   * group_manager: add all groups if there's no checked widget
+   * tabs: don't delete home tab when tabs is cleaning
+   * config: get the config dir in runtime
+   * Colorclass manager: fir sig Abrt on add new colorclass.
+   * project_manager: do not try load not selected widget
+   * project_manager: do not try load not selected widget
+   * property_image: store height, weight of selected image
+   * Ewe theme: ellipsis text in combobox style for colorclass.
+   * Ewe theme: ellipsis text in combobox style for colorclass.
+   * Project manager: fix export resources.
+   * demo: call SWALLOW_SET/TEXT_SET callbacks only for current workspace
+   * demo: fix callback-leaks
+
+
+
 Changes since 0.5.0
 -------------------
 Features:
