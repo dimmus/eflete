@@ -22,16 +22,20 @@
 #include "string_common.h"
 
 static Eina_Bool __UNUSED__
-_resource_usage_resource_add(Resource2 *origin __UNUSED__, Resource2 *used __UNUSED__)
+_resource_usage_resource_add(Resource2 *origin, Resource2 *used)
 {
-   return false;
+   used->common.used_in = eina_list_append(used->common.used_in, origin);
+   origin->common.uses___ = eina_list_append(origin->common.uses___, used);
+   return true;
 }
 
 
 static Eina_Bool __UNUSED__
-_resource_usage_resource_del(Resource2 *origin __UNUSED__, Resource2 *used __UNUSED__)
+_resource_usage_resource_del(Resource2 *origin, Resource2 *used)
 {
-   return false;
+   used->common.used_in = eina_list_remove(used->common.used_in, origin);
+   origin->common.uses___ = eina_list_remove(origin->common.uses___, used);
+   return true;
 }
 
 /*********************************************/
