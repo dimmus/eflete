@@ -21,7 +21,7 @@
 #include "project_manager.h"
 #include "string_common.h"
 
-static Eina_Bool __UNUSED__
+static Eina_Bool
 _resource_usage_resource_add(Resource2 *origin, Resource2 *used)
 {
    used->common.used_in = eina_list_append(used->common.used_in, origin);
@@ -36,6 +36,23 @@ _resource_usage_resource_del(Resource2 *origin, Resource2 *used)
    used->common.used_in = eina_list_remove(used->common.used_in, origin);
    origin->common.uses___ = eina_list_remove(origin->common.uses___, used);
    return true;
+}
+
+Resource2 *
+resource_manager_find(const Eina_List *list, Eina_Stringshare *name)
+{
+   Resource2 *res = NULL, *data;
+   const Eina_List *l;
+   EINA_LIST_FOREACH(list, l, data)
+     {
+        if (data->common.name == name)
+          {
+             res = data;
+             break;
+          }
+     }
+
+   return res;
 }
 
 /*********************************************/
@@ -68,9 +85,10 @@ static Eina_Bool
 _image_set_resources_load(Project *project)
 {
    Image_Set2 *res;
-   Eina_List *images;
-   Eina_Stringshare *image_name;
-   Eina_List *l;
+   Eina_List *images, *set_images;
+   Eina_Stringshare *image_name, *set_image_name;
+   Eina_List *l, *l2;
+   Resource2 *used = NULL;
 
    assert(project != NULL);
 
@@ -90,12 +108,17 @@ _image_set_resources_load(Project *project)
 
         res->common.id = edje_edit_image_set_id_get(project->global_object, image_name);
         res->is_used = false;
+        /*
+           IMAGE_SET uses IMAGE
+         */
+        set_images = edje_edit_image_set_images_list_get(project->global_object, image_name);
+        EINA_LIST_FOREACH(set_images, l2, set_image_name)
+          {
+             used = resource_manager_find(project->images, set_image_name);
+             _resource_usage_resource_add((Resource2 *)res, used);
+          }
+        edje_edit_string_list_free(set_images);
      }
-
-   TODO("By now all images should be existed and we need to add dependencies")
-   /*
-      IMAGE_SET uses IMAGE
-    */
 
    edje_edit_string_list_free(images);
    return true;
@@ -663,12 +686,6 @@ Eina_Bool
 resource_manager_shutdown(Project *project __UNUSED__)
 {
    return false;
-}
-
-Resource2 *
-resource_manager_find(const Eina_List *list __UNUSED__, Eina_Stringshare *name __UNUSED__)
-{
-   return NULL;
 }
 
 Resource2 *
