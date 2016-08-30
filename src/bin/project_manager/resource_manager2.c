@@ -607,8 +607,9 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    Part_Item2 *item;
    Part2 *part;
    Eina_List *states, *items, *l;
-   Eina_Stringshare *state_name, *parsed_state_name, *item_name;
+   Eina_Stringshare *state_name, *parsed_state_name, *item_name, *source;
    double val;
+   Resource2 *rel_part;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -648,11 +649,11 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
         edje_edit_string_list_free(items);
      }
 
-   TODO("Next usage described below: ");
-   /*
-      PART - PART relationships
-      PART - GROUP
-    */
+   source = edje_edit_part_source_get(group->edit_object, part_name);
+   rel_part = resource_manager_find(pro->groups, source);
+   if (rel_part)
+     _resource_usage_resource_add((Resource2 *)part, rel_part);
+   edje_edit_string_free(source);
 
    return part;
 }
