@@ -35,6 +35,6 @@ resource_name_validator_free(Resource_Name_Validator *validator);
 Elm_Regexp_Status
 resource_name_validator_status_get(Resource_Name_Validator *validator);
 void
-resource_name_validator_helper(void *data, const Eo_Event *event);
+resource_name_validator_helper(void *data, const Efl_Event *event);
 
 #endif /* VALIDATOR_H */

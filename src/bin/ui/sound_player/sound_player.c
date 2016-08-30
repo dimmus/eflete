@@ -110,7 +110,7 @@ _player_units_free(char *str)
    evas_object_show(ITEM);
 
 static void
-_play_finished_cb(void *data __UNUSED__, const Eo_Event *event __UNUSED__)
+_play_finished_cb(void *data __UNUSED__, const Efl_Event *event __UNUSED__)
 {
    efl_unref(in);
    in = NULL;
@@ -119,7 +119,7 @@ _play_finished_cb(void *data __UNUSED__, const Eo_Event *event __UNUSED__)
 }
 
 static void
-_out_fail(void *data __UNUSED__, const Eo_Event *event)
+_out_fail(void *data __UNUSED__, const Efl_Event *event)
 {
    efl_unref(event->object);
 }
