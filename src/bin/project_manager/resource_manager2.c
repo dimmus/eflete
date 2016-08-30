@@ -475,9 +475,13 @@ _resource_group_edit_object_unload(Group2 *group)
 }
 
 State2 *
-_gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_value)
+_gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
 {
    State2 *state;
+   Eina_Stringshare *source, *image_name, *tween_name, *color_class, *font_name;
+   Eina_Stringshare *style_name;
+   Resource2 *res;
+   Eina_List *tween_list, *l;
 
    assert(pro != NULL);
    assert(part != NULL);
@@ -494,11 +498,103 @@ _gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_va
    if (part->current_state == NULL)
      part->current_state = state;
 
-   TODO("Next usage described below: ");
+   if (part->type == EDJE_PART_TYPE_PROXY)
+     {
+        source = edje_edit_state_proxy_source_get(group->edit_object,
+                                                  part->common.name,
+                                                  state_name,
+                                                  state_value);
+        res = resource_manager_find(group->parts, source);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(source);
+     }
+
+   if (part->type == EDJE_PART_TYPE_IMAGE)
+     {
+        image_name = edje_edit_state_image_get(group->edit_object,
+                                               part->common.name,
+                                               state_name,
+                                               state_value);
+
+        if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+          {
+             if (edje_edit_image_set_exists(group->edit_object, image_name))
+               res = resource_manager_find(pro->image_sets, image_name);
+             else
+               res = resource_manager_find(pro->images, image_name);
+             _resource_usage_resource_add((Resource2 *)state, res);
+          }
+        edje_edit_string_free(image_name);
+
+        tween_list = edje_edit_state_tweens_list_get(group->edit_object,
+                                                     part->common.name,
+                                                     state_name,
+                                                     state_value);
+        EINA_LIST_FOREACH(tween_list, l, tween_name)
+          {
+             if (edje_edit_image_set_exists(group->edit_object, tween_name))
+               res = resource_manager_find(pro->image_sets, tween_name);
+             else
+               res = resource_manager_find(pro->images, tween_name);
+             _resource_usage_resource_add((Resource2 *)state, res);
+          }
+        edje_edit_string_list_free(tween_list);
+     }
+
+
+   color_class = edje_edit_state_color_class_get(group->edit_object,
+                                                 part->common.name,
+                                                 state_name,
+                                                 state_value);
+   res = resource_manager_find(pro->colorclasses, color_class);
+   if (res)
+     _resource_usage_resource_add((Resource2 *)state, res);
+   edje_edit_string_free(color_class);
+
+   if (part->type == EDJE_PART_TYPE_TEXT)
+     {
+        font_name = edje_edit_state_font_get(group->edit_object,
+                                             part->common.name,
+                                             state_name,
+                                             state_value);
+        res = resource_manager_find(pro->fonts, font_name);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(font_name);
+
+        source = edje_edit_state_text_source_get(group->edit_object,
+                                                 part->common.name,
+                                                 state_name,
+                                                 state_value);
+        res = resource_manager_find(group->parts, source);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(source);
+
+        source = edje_edit_state_text_text_source_get(group->edit_object,
+                                                      part->common.name,
+                                                      state_name,
+                                                      state_value);
+        res = resource_manager_find(group->parts, source);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(source);
+     }
+
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
+     {
+        style_name = edje_edit_state_text_style_get(group->edit_object,
+                                                   part->common.name,
+                                                   state_name,
+                                                   state_value);
+        res = resource_manager_find(pro->styles, style_name);
+        _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(style_name);
+     }
+   TODO("Implement size_class and text_class stuff")
    /*
       Relationships uses - used:
-      STATE - PART, STATE
-      STATE - (resources) IMAGE,IMAGE_SET,FONT,COLOR_CLASS,STYLE,VIBRO?
       STATE - (unimplemented yet) SIZE_CLASS, TEXT_CLASS
     */
 
@@ -530,7 +626,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state_name_split(state_name, &parsed_state_name, &val);
-        _gm_state_add(pro, part, parsed_state_name, val);
+        _gm_state_add(pro, group, part, parsed_state_name, val);
         eina_stringshare_del(parsed_state_name);
      }
    edje_edit_string_list_free(states);
