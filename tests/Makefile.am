@@ -25,6 +25,7 @@ FLAGS = \
 -I${top_srcdir}/src/bin/editor \
 -I${top_srcdir}/src/bin/logger \
 -I${top_srcdir}/src/bin/loop_manager \
+-I${top_srcdir}/src/bin/project_manager \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
