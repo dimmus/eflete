@@ -85,10 +85,9 @@ static Eina_Bool
 _image_set_resources_load(Project *project)
 {
    Image_Set2 *res;
-   Eina_List *images, *set_images;
-   Eina_Stringshare *image_name, *set_image_name;
-   Eina_List *l, *l2;
-   Resource2 *used = NULL;
+   Eina_List *images;
+   Eina_Stringshare *image_name;
+   Eina_List *l;
 
    assert(project != NULL);
 
@@ -108,16 +107,6 @@ _image_set_resources_load(Project *project)
 
         res->common.id = edje_edit_image_set_id_get(project->global_object, image_name);
         res->is_used = false;
-        /*
-           IMAGE_SET uses IMAGE
-         */
-        set_images = edje_edit_image_set_images_list_get(project->global_object, image_name);
-        EINA_LIST_FOREACH(set_images, l2, set_image_name)
-          {
-             used = resource_manager_find(project->images, set_image_name);
-             _resource_usage_resource_add((Resource2 *)res, used);
-          }
-        edje_edit_string_list_free(set_images);
      }
 
    edje_edit_string_list_free(images);
@@ -475,13 +464,9 @@ _resource_group_edit_object_unload(Group2 *group)
 }
 
 State2 *
-_gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
+_gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_value)
 {
    State2 *state;
-   Eina_Stringshare *source, *image_name, *tween_name, *color_class, *font_name;
-   Eina_Stringshare *style_name;
-   Resource2 *res;
-   Eina_List *tween_list, *l;
 
    assert(pro != NULL);
    assert(part != NULL);
@@ -498,106 +483,6 @@ _gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, 
    if (part->current_state == NULL)
      part->current_state = state;
 
-   if (part->type == EDJE_PART_TYPE_PROXY)
-     {
-        source = edje_edit_state_proxy_source_get(group->edit_object,
-                                                  part->common.name,
-                                                  state_name,
-                                                  state_value);
-        res = resource_manager_find(group->parts, source);
-        if (res)
-          _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(source);
-     }
-
-   if (part->type == EDJE_PART_TYPE_IMAGE)
-     {
-        image_name = edje_edit_state_image_get(group->edit_object,
-                                               part->common.name,
-                                               state_name,
-                                               state_value);
-
-        if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
-          {
-             if (edje_edit_image_set_exists(group->edit_object, image_name))
-               res = resource_manager_find(pro->image_sets, image_name);
-             else
-               res = resource_manager_find(pro->images, image_name);
-             _resource_usage_resource_add((Resource2 *)state, res);
-          }
-        edje_edit_string_free(image_name);
-
-        tween_list = edje_edit_state_tweens_list_get(group->edit_object,
-                                                     part->common.name,
-                                                     state_name,
-                                                     state_value);
-        EINA_LIST_FOREACH(tween_list, l, tween_name)
-          {
-             if (edje_edit_image_set_exists(group->edit_object, tween_name))
-               res = resource_manager_find(pro->image_sets, tween_name);
-             else
-               res = resource_manager_find(pro->images, tween_name);
-             _resource_usage_resource_add((Resource2 *)state, res);
-          }
-        edje_edit_string_list_free(tween_list);
-     }
-
-
-   color_class = edje_edit_state_color_class_get(group->edit_object,
-                                                 part->common.name,
-                                                 state_name,
-                                                 state_value);
-   res = resource_manager_find(pro->colorclasses, color_class);
-   if (res)
-     _resource_usage_resource_add((Resource2 *)state, res);
-   edje_edit_string_free(color_class);
-
-   if (part->type == EDJE_PART_TYPE_TEXT)
-     {
-        font_name = edje_edit_state_font_get(group->edit_object,
-                                             part->common.name,
-                                             state_name,
-                                             state_value);
-        res = resource_manager_find(pro->fonts, font_name);
-        if (res)
-          _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(font_name);
-
-        source = edje_edit_state_text_source_get(group->edit_object,
-                                                 part->common.name,
-                                                 state_name,
-                                                 state_value);
-        res = resource_manager_find(group->parts, source);
-        if (res)
-          _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(source);
-
-        source = edje_edit_state_text_text_source_get(group->edit_object,
-                                                      part->common.name,
-                                                      state_name,
-                                                      state_value);
-        res = resource_manager_find(group->parts, source);
-        if (res)
-          _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(source);
-     }
-
-   if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        style_name = edje_edit_state_text_style_get(group->edit_object,
-                                                   part->common.name,
-                                                   state_name,
-                                                   state_value);
-        res = resource_manager_find(pro->styles, style_name);
-        _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(style_name);
-     }
-   TODO("Implement size_class and text_class stuff")
-   /*
-      Relationships uses - used:
-      STATE - (unimplemented yet) SIZE_CLASS, TEXT_CLASS
-    */
-
    return state;
 }
 
@@ -607,9 +492,8 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    Part_Item2 *item;
    Part2 *part;
    Eina_List *states, *items, *l;
-   Eina_Stringshare *state_name, *parsed_state_name, *item_name, *source;
+   Eina_Stringshare *state_name, *parsed_state_name, *item_name;
    double val;
-   Resource2 *rel_part;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -627,7 +511,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state_name_split(state_name, &parsed_state_name, &val);
-        _gm_state_add(pro, group, part, parsed_state_name, val);
+        _gm_state_add(pro, part, parsed_state_name, val);
         eina_stringshare_del(parsed_state_name);
      }
    edje_edit_string_list_free(states);
@@ -648,12 +532,6 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
           }
         edje_edit_string_list_free(items);
      }
-
-   source = edje_edit_part_source_get(group->edit_object, part_name);
-   rel_part = resource_manager_find(pro->groups, source);
-   if (rel_part)
-     _resource_usage_resource_add((Resource2 *)part, rel_part);
-   edje_edit_string_free(source);
 
    return part;
 }
@@ -678,7 +556,6 @@ _gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_nam
 static void
 _group_load(Project *pro, Group2 *group)
 {
-   Eina_Stringshare *main_group_name;
    Eina_List *parts, *l, *programs, *datas;
    Eina_Stringshare *part_name, *program_name, *group_data_name;
    Program2 *program;
@@ -689,14 +566,7 @@ _group_load(Project *pro, Group2 *group)
    _group_name_parse(group);
 
    _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
-   if (edje_edit_group_alias_is(group->edit_object, group->common.name))
-     {
-        main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
-        TODO("Add aliased groups as resource");
-        //resource_insert(&group->main_group->aliases, (Resource *)group);
-        edje_edit_string_free(main_group_name);
-     }
-   else
+   if (!edje_edit_group_alias_is(group->edit_object, group->common.name))
      {
         parts = edje_edit_parts_list_get(group->edit_object);
         EINA_LIST_FOREACH(parts, l, part_name)
@@ -718,12 +588,6 @@ _group_load(Project *pro, Group2 *group)
              group->programs = eina_list_append(group->programs, program);
           }
         edje_edit_string_list_free(programs);
-
-        TODO("Next usage and dependencies described below: ");
-        /*
-            GROUP - GROUP relationships (alias)
-            PROGRAM - PART, STATE, PROGRAM, LIMIT?, SAMPLE, TONE
-         */
      }
 
    _resource_group_edit_object_unload(group);
@@ -759,6 +623,202 @@ _gm_groups_load(Project *pro)
      _group_load(pro, res);
 }
 
+/************************ dependency load ***********************************/
+void
+_item_dependency_load(Project *pro __UNUSED__, Group2 *group __UNUSED__, Part2 *part __UNUSED__)
+{
+}
+
+void
+_state_dependency_load(Project *pro, Group2 *group, Part2 *part)
+{
+   Eina_List *l2, *l, *tween_list;
+   State2 *state;
+   Resource2 *res;
+   Eina_Stringshare *source, *image_name, *tween_name;
+   Eina_Stringshare *font_name, *color_class, *style_name;
+
+   EINA_LIST_FOREACH(part->states, l, state)
+     {
+        if (part->type == EDJE_PART_TYPE_PROXY)
+          {
+             source = edje_edit_state_proxy_source_get(group->edit_object,
+                                                       part->common.name,
+                                                       state->common.name,
+                                                       state->val);
+             res = resource_manager_find(group->parts, source);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
+             edje_edit_string_free(source);
+          }
+
+        if (part->type == EDJE_PART_TYPE_IMAGE)
+          {
+             image_name = edje_edit_state_image_get(group->edit_object,
+                                                    part->common.name,
+                                                    state->common.name,
+                                                    state->val);
+
+             if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+               {
+                  if (edje_edit_image_set_exists(group->edit_object, image_name))
+                    res = resource_manager_find(pro->image_sets, image_name);
+                  else
+                    res = resource_manager_find(pro->images, image_name);
+                  _resource_usage_resource_add((Resource2 *)state, res);
+               }
+             edje_edit_string_free(image_name);
+
+             tween_list = edje_edit_state_tweens_list_get(group->edit_object,
+                                                          part->common.name,
+                                                          state->common.name,
+                                                          state->val);
+             EINA_LIST_FOREACH(tween_list, l2, tween_name)
+               {
+                  if (edje_edit_image_set_exists(group->edit_object, tween_name))
+                    res = resource_manager_find(pro->image_sets, tween_name);
+                  else
+                    res = resource_manager_find(pro->images, tween_name);
+                  _resource_usage_resource_add((Resource2 *)state, res);
+               }
+             edje_edit_string_list_free(tween_list);
+          }
+
+        color_class = edje_edit_state_color_class_get(group->edit_object,
+                                                      part->common.name,
+                                                      state->common.name,
+                                                      state->val);
+        res = resource_manager_find(pro->colorclasses, color_class);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(color_class);
+
+        if (part->type == EDJE_PART_TYPE_TEXT)
+          {
+             font_name = edje_edit_state_font_get(group->edit_object,
+                                                  part->common.name,
+                                                  state->common.name,
+                                                  state->val);
+             res = resource_manager_find(pro->fonts, font_name);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
+             edje_edit_string_free(font_name);
+
+             source = edje_edit_state_text_source_get(group->edit_object,
+                                                      part->common.name,
+                                                      state->common.name,
+                                                      state->val);
+             res = resource_manager_find(group->parts, source);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
+             edje_edit_string_free(source);
+
+             source = edje_edit_state_text_text_source_get(group->edit_object,
+                                                           part->common.name,
+                                                           state->common.name,
+                                                           state->val);
+             res = resource_manager_find(group->parts, source);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
+             edje_edit_string_free(source);
+          }
+
+        if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
+          {
+             style_name = edje_edit_state_text_style_get(group->edit_object,
+                                                         part->common.name,
+                                                         state->common.name,
+                                                         state->val);
+             res = resource_manager_find(pro->styles, style_name);
+             _resource_usage_resource_add((Resource2 *)state, res);
+             edje_edit_string_free(style_name);
+          }
+        TODO("Implement size_class and text_class stuff")
+           /*
+              Relationships uses - used:
+              STATE - (unimplemented yet) SIZE_CLASS, TEXT_CLASS
+            */
+     }
+}
+
+void
+_part_dependency_load(Project *pro, Group2 *group)
+{
+   Part2 *part;
+   Eina_Stringshare *source;
+   Resource2 *res;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(group->parts, l, part)
+     {
+        source = edje_edit_part_source_get(group->edit_object, part->common.name);
+        res = resource_manager_find(pro->groups, source);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)part, res);
+        edje_edit_string_free(source);
+
+        _state_dependency_load(pro, group, part);
+        _item_dependency_load(pro, group, part);
+     }
+}
+
+void
+_program_dependency_load(Project *pro __UNUSED__, Group2 *group)
+{
+   Eina_List *l;
+   Program2 *program __UNUSED__;
+
+   EINA_LIST_FOREACH(group->programs, l, program)
+     {
+        TODO("Next usage and dependencies described below: ");
+        /*
+           GROUP - GROUP relationships (alias)
+           PROGRAM - PART, STATE, PROGRAM, LIMIT?, SAMPLE, TONE
+         */
+     }
+}
+
+void
+_resource_dependency_load(Project *pro)
+{
+   Group2 *group;
+   Resource2 *res, *used;
+   Eina_Stringshare *main_group_name, *set_image_name;
+   Eina_List *set_images;
+   Eina_List *l1, *l2;
+
+   /* image_set */
+   EINA_LIST_FOREACH(pro->image_sets, l1, res)
+     {
+        set_images = edje_edit_image_set_images_list_get(pro->global_object, res->common.name);
+        EINA_LIST_FOREACH(set_images, l2, set_image_name)
+          {
+             used = resource_manager_find(pro->images, set_image_name);
+             _resource_usage_resource_add(res, used);
+          }
+        edje_edit_string_list_free(set_images);
+     }
+
+   /* groups */
+   EINA_LIST_FOREACH(pro->groups, l1, group)
+     {
+        _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
+        if (edje_edit_group_alias_is(group->edit_object, group->common.name))
+          {
+             main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
+             TODO("Add aliased groups as resource");
+             //resource_insert(&group->main_group->aliases, (Resource *)group);
+             edje_edit_string_free(main_group_name);
+          }
+        else
+          {
+             _part_dependency_load(pro, group);
+             _program_dependency_load(pro, group);
+          }
+        _resource_group_edit_object_unload(group);
+     }
+}
+
 /******************* public API ********************/
 
 Eina_Bool
@@ -775,6 +835,8 @@ resource_manager_init(Project *project)
    _global_data_resources_load(project);
 
    _gm_groups_load(project);
+
+   _resource_dependency_load(project);
 
    return false;
 }
