@@ -920,6 +920,7 @@ _popup_add_part_ok_clicked(void *data,
         msg = eina_stringshare_printf(_("copied new part \"%s\" from \"%s\""), name, copy_name);
         change = change_add(msg);
         CRIT_ON_FAIL(editor_part_copy(pl->group->edit_object, change, false, true, name, copy_name));
+        pl->popup.copy_part = 0;
      }
    else
      {
