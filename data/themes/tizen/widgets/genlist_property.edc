@@ -61,7 +61,7 @@ group { name: "elm/genlist/item/caption/property";
                max: 1 0;
                elipsis: -1;
                font: FN;
-               size: 15;
+               size: 13;
                align: 0.0 0.5;
             }
          }
@@ -105,7 +105,7 @@ group { name: "elm/genlist/tree/caption/property";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                max: 1 0;
                align: 0.0 0.5;
@@ -229,7 +229,7 @@ group { name: "elm/genlist/item/1swallow/property";
             color3: 0 0 0 0;
             text {
                font: FN;
-               size: 15;
+               size: 13;
                align: 0.0 0.0;
             }
             rel1 {
@@ -257,7 +257,7 @@ group { name: "elm/genlist/item/1swallow/property";
             color3: 0 0 0 0;
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                max: 1 0;
                align: 0.5 0.0;
@@ -367,7 +367,7 @@ group { name: "elm/genlist/item/2swallow/property";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                align: 0.0 0.0;
                ellipsis: -1.0;
@@ -399,7 +399,7 @@ group { name: "elm/genlist/item/2swallow/property";
             color3: 0 0 0 0;
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                align: 1.0 0.0;
                ellipsis: -1.0;
@@ -437,7 +437,7 @@ group { name: "elm/genlist/item/2swallow/property";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                align: 0.0 0.0;
                ellipsis: -1.0;
@@ -457,7 +457,7 @@ group { name: "elm/genlist/item/2swallow/property";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 15;
+               size: 13;
                min: 1 0;
                max: 1 0;
                align: 1.0 0.0;
@@ -494,7 +494,7 @@ group { name: "elm/genlist/item/2swallow/property";
             color_class: "genlist_text_tree";
             text {
                font: FN;
-               size: 15;
+               size: 13;
                align: 0.0 0.0;
             }
             rel1 {

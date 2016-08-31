@@ -2846,7 +2846,7 @@ group { name: "elm/genlist/tree/caption/default";
             color_class: "genlist_text_tree";
             text {
                font: FN_B;
-               size: 12;
+               size: 13;
                max: 1 0;
                align: 0.0 0.5;
             }
@@ -2874,7 +2874,7 @@ group { name: "elm/genlist/tree/caption/default";
             text {
                text_source: "elm.text";
                font: FN_B;
-               size: 12;
+               size: 13;
                max: 1 0;
                align: 0.0 0.5;
             }
@@ -3067,7 +3067,7 @@ group { name: "elm/genlist/tree/caption/default";
 }
 
 
-/*
+
 group { name: "elm/genlist/tree/navigator/default";
    inherit: "elm/genlist/tree/default/default";
    parts {
@@ -3106,7 +3106,8 @@ group { name: "elm/genlist/tree/navigator/default";
       }
    }
 }
-*/
+
+
 
 group { name: "elm/genlist/item/navigator/default";
    inherit: "elm/genlist/item/default/default";
@@ -3145,253 +3146,6 @@ group { name: "elm/genlist/item/navigator/default";
                offset: 6 0;
             }
          }
-      }
-   }
-}
-
-
-group { name: "elm/genlist/item/message/default";
-   data {
-      item: "texts" "elm.text elm.title.1 elm.title.2";
-      item: "treesize" "20";
-      item: "stacking" "above";
-      item: "selectraise" "on";
-   }
-   parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel2 {
-               offset: -1 -2;
-            }
-         }
-         description { state: "selected" 0.0;
-            color: 58 110 155 255;
-            rel2 {
-               offset: -1 -2;
-            }
-         }
-         description { state: "reorder" 0.0;
-            color: 58 110 155 255;
-            rel2 {
-               offset: -1 -2;
-            }
-         }
-      }
-      part { name: "separator";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 1;
-            max: -1 1;
-            color: 68 68 68 255;
-         }
-      }
-      part { name: "elm.swallow.pad";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 {
-               offset: 6 0;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: 0 38;
-            color: 214 214 214 255;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "elm.swallow.pad";
-            }
-            rel2 {
-               relative: 0.7 1.0;
-               offset: -25 -1;
-            }
-            text {
-               font: FN;
-               size: 12;
-               align: 0.0 0.5;
-            }
-         }
-      }
-      part { name: "elm.title.1";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 176 176 176 255;
-            rel1 {
-               relative: 0.7 0.0;
-            }
-            rel2 {
-               relative: 1.0 0.5;
-               offset: -7 -1;
-            }
-            text {
-               font: FN;
-               size: 10;
-               align: 1.0 0.5;
-            }
-         }
-      }
-      part { name: "elm.title.2";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 176 176 176 255;
-            rel1 {
-               relative: 0.7 0.5;
-            }
-            rel2 {
-               offset: -7 -1;
-            }
-            text {
-               font: FN;
-               size: 10;
-               align: 1.0 0.5;
-            }
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-      }
-   }
-   programs {
-      program { name: "selected";
-         signal: "elm,state,selected";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-      }
-      program { name: "unselected";
-         signal: "elm,state,unselected";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "bg";
-      }
-      program { name: "reorder";
-         signal: "elm,state,reorder,enable";
-         source: "elm";
-         action: STATE_SET "reorder" 0.00;
-         target: "bg";
-      }
-      program { name: "unreorder";
-         signal: "elm,state,reorder,disable";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-         after: "selected";
-      }
-   }
-}
-
-group { name: "elm/genlist/item_compress/history/default";
-   data {
-      item: "texts" "elm.text.message";
-      item: "states" "selected unselected reverted";
-   }
-   parts {
-      part { name: "bg";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color_class: "bg_main";
-            rel2.offset: 0 -2;
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            color_class: "select";
-         }
-         description { state: "reverted" 0.0;
-            inherit: "default" 0.0;
-            color_class: "main_disabled";
-         }
-      }
-      part { name: "base_border_top";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 1 1;
-            fixed: 1 1;
-            color: LIGHT_BORDER_COLOR;
-            rel1 {
-               relative: 0.5 0.0;
-               offset: 6 -1;
-            }
-            rel2 {
-               relative: 0.5 0.0;
-               offset: -7 -1;
-            }
-         }
-      }
-      part { name: "base_border_bot";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 1 1;
-            fixed: 1 1;
-            color: LIGHT_BORDER_COLOR;
-            rel1 {
-               relative: 0.5 1.0;
-               offset: 6 0;
-            }
-            rel2 {
-               relative: 0.5 1.0;
-               offset: -7 -1;
-            }
-         }
-      }
-      part { name: "elm.text.message";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel1 {
-               offset: 6 6;
-               to_y: "base_border_top";
-            }
-            rel2 {
-               offset: -7 -7;
-               to_y: "base_border_bot";
-            }
-            text {
-               style: "main_text";
-               min: 0 1;
-            }
-         }
-      }
-   }
-   programs {
-      program { name: "state,selected";
-         signal: "elm,state,selected,active";
-         source: "elm";
-         action: STATE_SET "selected" 0.0;
-         target: "bg";
-      }
-      program { name: "state,unselected";
-         signal: "elm,state,unselected,active";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "bg";
-      }
-      program { name: "state,reverted";
-         signal: "elm,state,reverted,active";
-         source: "elm";
-         action: STATE_SET "reverted" 0.0;
-         target: "bg";
       }
    }
 }
