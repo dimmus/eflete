@@ -397,7 +397,15 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "color,item,selected", _start_change_stop_cb, pa);
 
 #if HAVE_TIZEN
-         evas_object_size_hint_min_set(content, 402, 261);
+         /* Dirty hack for set size to color picker */
+         Evas_Object *picker_base = elm_layout_content_get(content, "elm.picker");
+         Evas_Object *picker_box = elm_layout_content_get(picker_base, "elm.swallow.picker");
+         Evas_Object *picker_layout = eina_list_data_get(elm_box_children_get(picker_box));
+         Evas_Object *picker_image = edje_object_part_swallow_get(picker_layout, "elm.picker");
+         evas_object_size_hint_aspect_set(picker_image, EVAS_ASPECT_CONTROL_NONE, 0, 0);
+         evas_object_size_hint_min_set(picker_image, 96, 48);
+
+         evas_object_size_hint_min_set(content, 349, 256);
          elm_colorselector_palette_clear(content);
          elm_colorselector_palette_name_set(content, "eflete_tizen");
          elm_colorselector_palette_color_add(content, 229, 3, 3, 255);

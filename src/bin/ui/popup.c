@@ -936,6 +936,15 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_show(fs);
 
 #if HAVE_TIZEN
+   /* Dirty hack for set size to color picker */
+   Evas_Object *picker_base = elm_layout_content_get(fs, "elm.picker");
+   Evas_Object *picker_box = elm_layout_content_get(picker_base, "elm.swallow.picker");
+   Evas_Object *picker_layout = eina_list_data_get(elm_box_children_get(picker_box));
+   Evas_Object *picker_image = edje_object_part_swallow_get(picker_layout, "elm.picker");
+
+   evas_object_size_hint_aspect_set(picker_image, EVAS_ASPECT_CONTROL_NONE, 0, 0);
+   evas_object_size_hint_min_set(picker_image, 96, 48);
+
    elm_colorselector_palette_clear(fs);
    elm_colorselector_palette_name_set(fs, "eflete_tizen");
    elm_colorselector_palette_color_add(fs, 229, 3, 3, 255);

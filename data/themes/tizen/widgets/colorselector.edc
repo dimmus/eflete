@@ -12,8 +12,8 @@ group { name: "elm/layout/popup/colorselector";
       part { name: "border";
          type: RECT;
          description { state: "default" 0.0;
-            min: 404 263;
-            max: 404 263;
+            min: 351 258;
+            max: 351 258;
             color_class: "popup_helper_border";
             rel1.offset: -1 -1;
             rel2.offset: 0 0;
@@ -552,23 +552,24 @@ group { name: "elm/colorselector/picker/default";
       }
    }
 }
+
 group { name: "elm/colorselector/palette/default";
    data {
-      item: "vertical_pad" "8";
-      item: "horizontal_pad" "8";
+      item: "vertical_pad" "0";
+      item: "horizontal_pad" "7";
    }
    parts {
       part { name: "bg_border";
          type: RECT;
-         description { state: "default" 0.0;
-            min: 402 261;
-            max: 402 261;
+         description { state: "default" 0.00;
+            min: 349 256;
+            max: 349 256;
             color_class: "colorselector_border_bg";
          }
       }
       part { name: "bg";
          type: RECT;
-         description { state: "default" 0.0;
+         description { state: "default" 0.00;
             color_class: "colorselector_bg";
             rel1 {
                offset: 5 5;
@@ -582,13 +583,13 @@ group { name: "elm/colorselector/palette/default";
       }
       part { name: "elm.picker";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
             fixed: 1 1;
             min: 96 169;
             max: 96 169;
             rel1 {
-               relative: 1.0 0.0;
+               relative: 1.00 0.00;
                offset: 16 25;
                to_x: "elm.selector";
                to_y: "bg_border";
@@ -601,13 +602,13 @@ group { name: "elm/colorselector/palette/default";
       }
       part { name: "elm.palette";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
+         description { state: "default" 0.00;
+            align: 0.50 0.00;
             fixed: 1 1;
-            min: 0 32;
-            max: -1 32;
+            min: 0 27;
+            max: -1 27;
             rel1 {
-               relative: 0.0 1.0;
+               relative: 0.00 1.00;
                offset: 0 10;
                to: "elm.selector";
             }
@@ -617,19 +618,19 @@ group { name: "elm/colorselector/palette/default";
                to_y: "elm.selector";
             }
          }
-         description { state: "off" 0.0;
-            align: 0.5 0.0;
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 0.0;
+         description { state: "off" 0.00;
+            align: 0.50 0.00;
+            rel1.relative: 0.00 1.00;
+            rel2.relative: 1.00 0.00;
          }
       }
       part { name: "elm.selector";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
             fixed: 1 1;
-            min: 240 159;
-            max: 240 159;
+            min: 188 159;
+            max: 188 159;
             rel1 {
                offset: 25 34;
                to: "bg_border";
@@ -922,29 +923,19 @@ group { name: "elm/colorselector/picker/base/default";
 }
 group { name: "elm/colorselector/item/default";
    parts {
-      part { name: "base";
+     part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            visible: 0;
-            min: 27 28;
-            max: 27 28;
-         }
-      }
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 32 32;
-            max: 32 32;
-            align: 0.0 0.5;
-            color: 0 0 0 0;
+            min: 27 27;
+            max: 27 27;
          }
       }
       part { name: "color_obj";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            min: 32 32;
-            max: 32 32;
+            min: 27 27;
+            max: 27 27;
             rel1.to: "bg";
             rel2.to: "bg";
          }
