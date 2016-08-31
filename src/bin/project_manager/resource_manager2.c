@@ -932,6 +932,41 @@ _resource_free(Resource2 *res)
    free(res);
 }
 
+void
+_resource_part_free(Part2 *res)
+{
+   Resource2 *part_res;
+   EINA_LIST_FREE(res->states, part_res)
+      _resource_free(part_res);
+   EINA_LIST_FREE(res->items, part_res)
+      _resource_free(part_res);
+   _resource_free((Resource2 *)res);
+}
+
+void
+_resource_group_free(Group2 *res)
+{
+   Part2 *part;
+   Program2 *program;
+   Group_Data2 *group_data;
+
+   EINA_LIST_FREE(res->parts, part)
+      _resource_part_free(part);
+
+   EINA_LIST_FREE(res->programs, program)
+     {
+        eina_list_free(program->targets);
+        eina_list_free(program->afters);
+        _resource_free((Resource2 *)program);
+     }
+   EINA_LIST_FREE(res->data_items, group_data)
+     {
+        eina_stringshare_del(group_data->source);
+        _resource_free((Resource2 *)group_data);
+     }
+   _resource_free((Resource2 *)res);
+}
+
 Eina_Bool
 resource_manager_shutdown(Project *pro)
 {
@@ -940,6 +975,8 @@ resource_manager_shutdown(Project *pro)
    Sound2 *res_sound;
    Font2 *res_font;
    Global_Data2 *res_data;
+
+   Group2 *group;
 
    /* image_set */
    EINA_LIST_FREE(pro->image_sets, res)
@@ -971,5 +1008,9 @@ resource_manager_shutdown(Project *pro)
         eina_stringshare_del(res_data->source);
         _resource_free((Resource2 *)res_data);
      }
+
+   EINA_LIST_FREE(pro->groups, group)
+      _resource_group_free(group);
+
    return true;
 }
