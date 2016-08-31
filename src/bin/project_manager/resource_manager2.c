@@ -528,7 +528,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
              item->common.type = RESOURCE2_TYPE_ITEM;
              item->common.name = eina_stringshare_add(item_name);
              item->part = part;
-             part->items = eina_list_append(part->items, part);
+             part->items = eina_list_append(part->items, item);
           }
         edje_edit_string_list_free(items);
      }
@@ -627,6 +627,21 @@ _gm_groups_load(Project *pro)
 void
 _item_dependency_load(Project *pro __UNUSED__, Group2 *group __UNUSED__, Part2 *part __UNUSED__)
 {
+   Part_Item2 *item;
+   Resource2 *used;
+   Eina_List *l;
+   Eina_Stringshare *source;
+
+   EINA_LIST_FOREACH(part->items, l, item)
+     {
+        source = edje_edit_part_item_source_get(group->edit_object,
+                                                part->common.name,
+                                                item->common.name);
+        used = resource_manager_find(pro->groups, source);
+        if (used)
+          _resource_usage_resource_add((Resource2 *)item, used);
+        edje_edit_string_free(source);
+     }
 }
 
 void
@@ -806,9 +821,13 @@ _resource_dependency_load(Project *pro)
         if (edje_edit_group_alias_is(group->edit_object, group->common.name))
           {
              main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
-             TODO("Add aliased groups as resource");
-             //resource_insert(&group->main_group->aliases, (Resource *)group);
+             used = resource_manager_find(pro->groups, main_group_name);
+             _resource_usage_resource_add((Resource2 *)group, used);
+
              edje_edit_string_free(main_group_name);
+
+             group->main_group = (Group2 *)used;
+             group->main_group->aliases = eina_list_append(group->main_group->aliases, group);
           }
         else
           {

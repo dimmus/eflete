@@ -92,6 +92,7 @@ struct _Group2
    Eina_List *programs;
    Eina_List *data_items;
    Eina_List *limits;
+   Group2 *main_group;         /**< pointer to main group. NULL if group is not an alias */
    Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
 
    Eina_Stringshare *widget;  /**< parsed widget name */
