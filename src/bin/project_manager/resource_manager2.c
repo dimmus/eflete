@@ -923,8 +923,53 @@ resource_manager_init(Project *project)
    return false;
 }
 
-Eina_Bool
-resource_manager_shutdown(Project *project __UNUSED__)
+void
+_resource_free(Resource2 *res)
 {
-   return false;
+   eina_stringshare_del(res->common.name);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
+}
+
+Eina_Bool
+resource_manager_shutdown(Project *pro)
+{
+   Resource2 *res;
+   Image2 *res_image;
+   Sound2 *res_sound;
+   Font2 *res_font;
+   Global_Data2 *res_data;
+
+   /* image_set */
+   EINA_LIST_FREE(pro->image_sets, res)
+     _resource_free(res);
+   EINA_LIST_FREE(pro->tones, res)
+     _resource_free(res);
+   EINA_LIST_FREE(pro->colorclasses, res)
+     _resource_free(res);
+   EINA_LIST_FREE(pro->styles, res)
+     _resource_free(res);
+
+   EINA_LIST_FREE(pro->images, res_image)
+     {
+        eina_stringshare_del(res_image->source);
+        _resource_free((Resource2 *)res_image);
+     }
+   EINA_LIST_FREE(pro->sounds, res_sound)
+     {
+        eina_stringshare_del(res_sound->source);
+        _resource_free((Resource2 *)res_sound);
+     }
+   EINA_LIST_FREE(pro->fonts, res_font)
+     {
+        eina_stringshare_del(res_font->source);
+        _resource_free((Resource2 *)res_font);
+     }
+   EINA_LIST_FREE(pro->global_data, res_data)
+     {
+        eina_stringshare_del(res_data->source);
+        _resource_free((Resource2 *)res_data);
+     }
+   return true;
 }
