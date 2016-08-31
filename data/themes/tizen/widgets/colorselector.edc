@@ -56,9 +56,9 @@ group { name: "elm/button/base/colorselector/default";
 
 group { name: "elm/button/base/colorselector/right/default";
    images {
-      image: "Tizen general/colorbar_btn_r_nor.png" COMP;
-      image: "Tizen general/colorbar_btn_r_mv.png" COMP;
-      image: "Tizen general/colorbar_btn_r_sel.png" COMP;
+      image: "POP UP/colorbar_btn_r_nor.png" COMP;
+      image: "POP UP/colorbar_btn_r_mv.png" COMP;
+      image: "POP UP/colorbar_btn_r_sel.png" COMP;
    }
    parts {
       part { name: "border_bg";
@@ -95,16 +95,16 @@ group { name: "elm/button/base/colorselector/right/default";
          description { state: "default" 0.0;
             min: 22 22;
             max: 22 22;
-            image.normal: "Tizen general/colorbar_btn_r_nor.png";
+            image.normal: "POP UP/colorbar_btn_r_nor.png";
             fill.smooth: 0;
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/colorbar_btn_r_sel.png";
+            image.normal: "POP UP/colorbar_btn_r_sel.png";
          }
          description { state: "hilighted" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/colorbar_btn_r_mv.png";
+            image.normal: "POP UP/colorbar_btn_r_mv.png";
          }
       }
       part { name: "event";
@@ -193,9 +193,9 @@ group { name: "elm/button/base/colorselector/right/default";
 
 group { name: "elm/button/base/colorselector/left/default";
    images {
-      image: "Tizen general/colorbar_btn_l_nor.png" COMP;
-      image: "Tizen general/colorbar_btn_l_mv.png" COMP;
-      image: "Tizen general/colorbar_btn_l_sel.png" COMP;
+      image: "POP UP/colorbar_btn_l_nor.png" COMP;
+      image: "POP UP/colorbar_btn_l_mv.png" COMP;
+      image: "POP UP/colorbar_btn_l_sel.png" COMP;
    }
    parts {
       part { name: "border_bg";
@@ -232,16 +232,16 @@ group { name: "elm/button/base/colorselector/left/default";
          description { state: "default" 0.0;
             min: 22 22;
             max: 22 22;
-            image.normal: "Tizen general/colorbar_btn_l_nor.png";
+            image.normal: "POP UP/colorbar_btn_l_nor.png";
             fill.smooth: 0;
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/colorbar_btn_l_sel.png";
+            image.normal: "POP UP/colorbar_btn_l_sel.png";
          }
          description { state: "hilighted" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/colorbar_btn_l_mv.png";
+            image.normal: "POP UP/colorbar_btn_l_mv.png";
          }
       }
       part { name: "event";
@@ -331,9 +331,9 @@ group { name: "elm/button/base/colorselector/left/default";
 
 group { name: "elm/colorselector/base/default";
    images {
-      image: "Tizen general/color_pin_mv.png" COMP;
-      image: "Tizen general/color_pin_sel.png" COMP;
-      image: "Tizen general/color_pin_nor.png" COMP;
+      image: "POP UP/color_pin_mv.png" COMP;
+      image: "POP UP/color_pin_sel.png" COMP;
+      image: "POP UP/color_pin_nor.png" COMP;
    }
    parts {
       part { name: "elm.bar_bg";
@@ -440,17 +440,17 @@ group { name: "elm/colorselector/base/default";
          description { state: "default" 0.0;
             min: 13 13;
             max: 13 13;
-            image.normal: "Tizen general/color_pin_nor.png";
+            image.normal: "POP UP/color_pin_nor.png";
             rel1.to: "elm.arrow_icon";
             rel2.to: "elm.arrow_icon";
          }
          description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/color_pin_mv.png";
+            image.normal: "POP UP/color_pin_mv.png";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            image.normal: "Tizen general/color_pin_sel.png";
+            image.normal: "POP UP/color_pin_sel.png";
          }
       }
       part { name: "elm.r_button";

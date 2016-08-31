@@ -75,10 +75,10 @@ IM("icon",     "logo",    "General/cd_icon.png",    16 16,   0 0 0 0,    SCALE, 
 
 IM("icon",     "attention",      "Custom/attention.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
-IM("icon",     "alias_link",     "WYSIWG/tool_loop_nor.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "alias_link1",    "WYSIWG/tool_loop_sel.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "alias_link2",    "WYSIWG/tool_loop_mv.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "alias_link3",    "WYSIWG/tool_loop_dim.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "alias_link",     "Group navigator/tool_loop_nor.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "alias_link1",    "Group navigator/tool_loop_sel.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "alias_link2",    "Group navigator/tool_loop_mv.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "alias_link3",    "Group navigator/tool_loop_dim.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "start-point",    "Custom/icon_start-point.png",    12 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "end-point",      "Custom/icon_end-point.png",      12 12,   0 0 0 0,    SCALE,   SOLID)
