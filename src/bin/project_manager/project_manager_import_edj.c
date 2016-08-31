@@ -99,13 +99,15 @@ _data_from_edje_pick_cb(void *data,
    Edje_Exe_Data *edje_pick_data = (Edje_Exe_Data *)data;
    assert(edje_pick_data != NULL);
    Project_Thread *ptd = (Project_Thread *)edje_pick_data->data;
-   assert(ptd->func_progress != NULL);
 
    Ecore_Exe_Event_Data *edje_pick_msg = (Ecore_Exe_Event_Data *)event_info;
    if (!edje_pick_msg) return ECORE_CALLBACK_DONE;
 
-   for (i = 0; edje_pick_msg->lines[i].line != NULL; i++)
-      ptd->func_progress(NULL, edje_pick_msg->lines[i].line);
+   if (ptd->func_progress)
+     {
+        for (i = 0; edje_pick_msg->lines[i].line != NULL; i++)
+          ptd->func_progress(NULL, edje_pick_msg->lines[i].line);
+     }
 
    return ECORE_CALLBACK_DONE;
 }
@@ -118,7 +120,6 @@ _edje_pick_end_cb(void *data,
    Edje_Exe_Data *edje_pick_data = (Edje_Exe_Data *)data;
    assert(edje_pick_data != NULL);
    Project_Thread *ptd = (Project_Thread *)edje_pick_data->data;
-   assert(ptd->func_progress != NULL);
    Ecore_Exe_Event_Del *edje_pick_exit = (Ecore_Exe_Event_Del *)event_info;
 
    eina_stringshare_del(edje_pick_data->cmd);
@@ -156,7 +157,7 @@ _project_import_edj(void *data)
    Edje_Exe_Data *edje_pick_data;
 
    Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edj);
-   ptd->func_progress(NULL, msg);
+   if (ptd->func_progress) ptd->func_progress(NULL, msg);
    eina_stringshare_del(msg);
 
    /* Replace void with ptd */
@@ -177,7 +178,7 @@ _project_import_edj(void *data)
    if (ptd->widgets && (eina_list_count(groups) != eina_list_count(ptd->widgets)))
      {
         msg = eina_stringshare_printf(_("Merging groups from choosen file"));
-        ptd->func_progress(NULL, msg);
+        if (ptd->func_progress) ptd->func_progress(NULL, msg);
         eina_stringshare_del(msg);
 
         eina_file_mkdtemp("eflete_build_XXXXXX", &ptd->tmp_dirname);
@@ -247,7 +248,7 @@ _project_import_edj(void *data)
    else
      {
         msg = eina_stringshare_printf(_("Import processing"));
-        ptd->func_progress(NULL, msg);
+        if (ptd->func_progress) ptd->func_progress(NULL, msg);
         eina_stringshare_del(msg);
 
         _project_edj_file_copy(ptd);
@@ -258,7 +259,7 @@ _project_import_edj(void *data)
         _project_open_internal(ptd);
 
         msg = eina_stringshare_printf(_("Import finished. Project '%s' created"), ptd->project->name);
-        ptd->func_progress(NULL, msg);
+        if (ptd->func_progress) ptd->func_progress(NULL, msg);
         eina_stringshare_del(msg);
 
      }
