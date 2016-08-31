@@ -55,6 +55,23 @@ resource_manager_find(const Eina_List *list, Eina_Stringshare *name)
    return res;
 }
 
+Resource2 *
+resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double value)
+{
+   State2 *res = NULL, *data;
+   const Eina_List *l;
+   EINA_LIST_FOREACH(list, l, data)
+     {
+        if ((data->common.name == name) && (data->val == value))
+          {
+             res = data;
+             break;
+          }
+     }
+
+   return (Resource2 *)res;
+}
+
 /*********************************************/
 static Eina_Bool
 _global_data_resources_load(Project *project)
@@ -910,10 +927,4 @@ Eina_Bool
 resource_manager_shutdown(Project *project __UNUSED__)
 {
    return false;
-}
-
-Resource2 *
-resource_manager_v_find(const Eina_List *list __UNUSED__, Eina_Stringshare *name __UNUSED__, double value __UNUSED__)
-{
-   return NULL;
 }
