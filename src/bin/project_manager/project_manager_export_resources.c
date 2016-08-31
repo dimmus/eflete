@@ -68,9 +68,13 @@ typedef struct
 {
    Evas *e;
    Evas_Object *im;
-   const char *id;
+   Evas_Object *edit_object;
+   int id;
+   const char *id_path;
    const char *dev;
    const char *source;
+   const char *image_name;
+   const char *message;
    Eina_Lock mutex;
 } Image_Data_Save;
 
@@ -79,14 +83,35 @@ _image_save_routine(void *data)
 {
    Image_Data_Save *ids = (Image_Data_Save *)data;
    eina_lock_take(&ids->mutex);
-
+   ids->id_path = eina_stringshare_printf("edje/images/%i", ids->id);
    ids->im = evas_object_image_add(ids->e);
-   evas_object_image_file_set(ids->im, ids->dev, ids->id);
+   evas_object_image_file_set(ids->im, ids->dev, ids->id_path);
    evas_object_image_save(ids->im, ids->source, NULL, NULL);
    evas_object_del(ids->im);
    eina_lock_release(&ids->mutex);
    return NULL;
 }
+
+typedef struct
+{
+   Evas_Object *edit_object;
+   const char *name;
+   Edje_Edit_Image_Comp comp;
+   int id;
+   Eina_Lock mutex;
+} Image_Data_Get;
+
+static void*
+_image_data_get_routine(void *data)
+{
+   Image_Data_Get *idg = (Image_Data_Get *)data;
+   eina_lock_take(&idg->mutex);
+   idg->comp = edje_edit_image_compression_type_get(idg->edit_object, idg->name);
+   idg->id = edje_edit_image_id_get(idg->edit_object, idg->name);
+   eina_lock_release(&idg->mutex);
+   return NULL;
+}
+
 
 void
 _image_resources_feedback_job(void *data, Ecore_Thread *th)
@@ -103,7 +128,7 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
    External_Resource *res;
    Eina_List *images;
    Eina_Stringshare *resource_folder;
-   Eina_Stringshare *image_name, *source_file;
+   Eina_Stringshare *image_name;
    Eina_List *l;
    Evas *e;
    int id;
@@ -137,8 +162,14 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
    Image_Data_Save *ids = mem_calloc(1, sizeof(Image_Data_Save));
    ids->e = e;
    ids->dev = project->dev;
+   ids->edit_object = project->global_object;
    eina_lock_new(&ids->mutex);
    eina_lock_take(&ids->mutex);
+
+   Image_Data_Get *idg = mem_calloc(1, sizeof(Image_Data_Get));
+   idg->edit_object = project->global_object;
+   eina_lock_new(&idg->mutex);
+   eina_lock_take(&idg->mutex);
    EINA_LIST_FOREACH(images, l, image_name)
      {
         /* for supporting old themes, which were compilled
@@ -151,10 +182,14 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
         ecore_thread_feedback(th, message);
 
         res = (External_Resource *) resource_add(image_name, RESOURCE_TYPE_IMAGE);
-        comp_type = edje_edit_image_compression_type_get(project->global_object,
-                                                         res->name);
-
         res->source = eina_stringshare_add(image_name);
+        idg->name = image_name;
+        eina_lock_release(&idg->mutex);
+        ecore_main_loop_thread_safe_call_sync(_image_data_get_routine, idg);
+        eina_lock_take(&idg->mutex);
+
+        comp_type = idg->comp;
+
         if (comp_type == EDJE_EDIT_IMAGE_COMP_USER)
           res->path = eina_stringshare_add(res->source);
         else
@@ -166,7 +201,7 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
              file_dir = ecore_file_dir_get(res->path);
              ecore_file_mkpath(file_dir);
              free(file_dir);
-             id = edje_edit_image_id_get(project->global_object, image_name);
+             id  = idg->id;
              if (id < 0)
                {
                   message = eina_stringshare_printf(_("Image %s coudn't be exported"), image_name);
@@ -175,19 +210,20 @@ _image_resources_feedback_job(void *data, Ecore_Thread *th)
                   sleep(2);
                   continue;
                }
-             source_file = eina_stringshare_printf("edje/images/%i", id);
-             ids->id = source_file;
+             ids->id = id;
              ids->im = NULL;
              ids->source = res->path;
              eina_lock_release(&ids->mutex);
              ecore_main_loop_thread_safe_call_sync(_image_save_routine, ids);
-             eina_lock_take(&ids->mutex);
-             eina_stringshare_del(source_file);
           }
      }
    eina_lock_release(&ids->mutex);
    eina_lock_free(&ids->mutex);
    free(ids);
+
+   eina_lock_release(&idg->mutex);
+   eina_lock_free(&idg->mutex);
+   free(idg);
 
    edje_edit_string_list_free(images);
    eina_stringshare_del(resource_folder);
