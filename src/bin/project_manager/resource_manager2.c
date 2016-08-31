@@ -778,18 +778,64 @@ _part_dependency_load(Project *pro, Group2 *group)
 }
 
 void
-_program_dependency_load(Project *pro __UNUSED__, Group2 *group)
+_program_dependency_load(Project *pro, Group2 *group)
 {
-   Eina_List *l;
-   Program2 *program __UNUSED__;
+   Eina_List *l, *l2, *targets, *afters;
+   Program2 *program;
+   Resource2 *res, *res_state;
+   Eina_Stringshare *name, *state;
 
    EINA_LIST_FOREACH(group->programs, l, program)
      {
-        TODO("Next usage and dependencies described below: ");
-        /*
-           GROUP - GROUP relationships (alias)
-           PROGRAM - PART, STATE, PROGRAM, LIMIT?, SAMPLE, TONE
-         */
+        if (program->type == EDJE_ACTION_TYPE_SOUND_SAMPLE)
+          {
+             name = edje_edit_program_sample_name_get(group->edit_object, program->common.name);
+             res = resource_manager_find(pro->sounds, name);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)program, res);
+             edje_edit_string_free(name);
+          }
+        if (program->type == EDJE_ACTION_TYPE_SOUND_TONE)
+          {
+             name = edje_edit_program_tone_name_get(group->edit_object, program->common.name);
+             res = resource_manager_find(pro->tones, name);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)program, res);
+             edje_edit_string_free(name);
+          }
+        name = edje_edit_program_filter_part_get(group->edit_object, program->common.name);
+        res = resource_manager_find(group->parts, name);
+        if (res)
+          {
+             _resource_usage_resource_add((Resource2 *)program, res);
+             state = edje_edit_program_filter_state_get(group->edit_object, program->common.name);
+             res_state = resource_manager_find(((Part2 *)res)->states, state);
+             if (res_state)
+               _resource_usage_resource_add((Resource2 *)program, res_state);
+             edje_edit_string_free(state);
+          }
+        edje_edit_string_free(name);
+
+        targets = edje_edit_program_targets_get(group->edit_object, program->common.name);
+        EINA_LIST_FOREACH(targets, l2, name)
+          {
+             if (program->type == EDJE_ACTION_TYPE_ACTION_STOP)
+               res = resource_manager_find(group->programs, name);
+             else
+               res = resource_manager_find(group->parts, name);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)program, res);
+          }
+        edje_edit_string_list_free(targets);
+
+        afters = edje_edit_program_afters_get(group->edit_object, program->common.name);
+        EINA_LIST_FOREACH(afters, l2, name)
+          {
+             res = resource_manager_find(group->programs, name);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)program, res);
+          }
+        edje_edit_string_list_free(afters);
      }
 }
 
