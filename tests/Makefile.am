@@ -11,6 +11,7 @@ diff_test \
 change_test \
 history_test \
 logger_test \
+project_manager_test \
 config_test \
 cursor_test
 
@@ -57,6 +58,7 @@ include_HEADERS = \
 	../tests/test_change/test_change.h \
 	../tests/test_history/test_history.h \
 	../tests/test_logger/test_logger.h \
+	../tests/test_project_manager/test_project_manager.h \
 	../tests/test_config/test_config.h \
 	../tests/test_cursor/test_cursor.h \
 	../tests/test_live_widget/test_live_widget.h
@@ -149,19 +151,19 @@ logger_test_SOURCES = \
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
 
-#project_manager_test_SOURCES = \
-#../tests/test_project_manager/test_project_manager.c \
-#../tests/test_project_manager/pm_project_import_edj.c \
-#../tests/test_project_manager/pm_project_import_edc.c \
-#../tests/test_project_manager/pm_project_thread_cancel.c \
-#../tests/test_project_manager/pm_project_thread_free.c \
-#../tests/test_project_manager/pm_project_open.c \
-#../tests/test_project_manager/pm_project_save.c \
-#../tests/test_project_manager/pm_project_close.c \
-#../tests/test_project_manager/pm_project_meta_data_set.c \
-#../tests/test_project_manager/pm_project_meta_data_get.c
-#project_manager_test_CFLAGS = ${FLAGS}
-#project_manager_test_LDADD = ${LD}
+project_manager_test_SOURCES = \
+../tests/test_project_manager/test_project_manager.c \
+../tests/test_project_manager/pm_project_import_edj.c \
+../tests/test_project_manager/pm_project_import_edc.c \
+../tests/test_project_manager/pm_project_thread_cancel.c \
+../tests/test_project_manager/pm_project_thread_free.c \
+../tests/test_project_manager/pm_project_open.c \
+../tests/test_project_manager/pm_project_save.c \
+../tests/test_project_manager/pm_project_close.c \
+../tests/test_project_manager/pm_project_meta_data_set.c \
+../tests/test_project_manager/pm_project_meta_data_get.c
+project_manager_test_CFLAGS = ${FLAGS}
+project_manager_test_LDADD = ${LD}
 
 config_test_SOURCES = \
 ../tests/test_config/test_config.c \
