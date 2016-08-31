@@ -849,8 +849,13 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    ENTRY_ADD(fs, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
+#if !HAVE_TIZEN
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
+#else
+   elm_object_style_set(entry, "search");
+#endif
+
    elm_object_part_content_set(fs, "eflete.swallow.search_line", entry);
    evas_object_smart_callback_add(entry, "changed",
                                   _on_images_search_entry_changed_cb, helper_data);
