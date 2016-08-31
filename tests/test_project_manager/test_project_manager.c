@@ -40,8 +40,6 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, pm_project_thread_cancel_test_p);
 
-   tcase_add_test(tcase, pm_project_thread_free_test_p);
-
    tcase_add_test(tcase, pm_project_open_test_p);
 
    tcase_add_test(tcase, pm_project_save_test_p);

@@ -156,7 +156,6 @@ project_manager_test_SOURCES = \
 ../tests/test_project_manager/pm_project_import_edj.c \
 ../tests/test_project_manager/pm_project_import_edc.c \
 ../tests/test_project_manager/pm_project_thread_cancel.c \
-../tests/test_project_manager/pm_project_thread_free.c \
 ../tests/test_project_manager/pm_project_open.c \
 ../tests/test_project_manager/pm_project_save.c \
 ../tests/test_project_manager/pm_project_close.c \

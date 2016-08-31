@@ -30,6 +30,7 @@
  */
 
 static Eina_Bool res;
+static Project *pro;
 
 /**
  * @addtogroup pm_project_import_edj
@@ -57,24 +58,25 @@ static Eina_Bool res;
 static void
 _end_cb(void *data __UNUSED__,
         PM_Project_Result result __UNUSED__,
-        Eina_List *widgets __UNUSED__)
+        Project *project)
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_import_edj_test_p)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                          NULL, NULL, _end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -116,11 +118,11 @@ _test_progress_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_import_edj_test_p1)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    res = EINA_FALSE;
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
@@ -128,7 +130,7 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
    ecore_main_loop_begin();
    ck_assert_msg(res, "Progress callback did't called!");
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -162,21 +164,22 @@ END_TEST
 static void
 _test_end_cb(void *data __UNUSED__,
              PM_Project_Result result,
-             Eina_List *widgets __UNUSED__)
+             Project *project)
 {
    if (result == PM_PROJECT_SUCCESS)
      res = EINA_TRUE;
 
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_import_edj_test_p2)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    res = EINA_FALSE;
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
@@ -184,7 +187,7 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
    ecore_main_loop_begin();
    ck_assert_msg(res, "End callback did't called!");
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 

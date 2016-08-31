@@ -30,6 +30,7 @@
  */
 
 Eina_Bool res;
+static Project *pro;
 
 /**
  * @addtogroup pm_project_import_edc
@@ -57,25 +58,26 @@ Eina_Bool res;
 static void
 _test_end_p1_cb(void *data __UNUSED__,
                 PM_Project_Result result __UNUSED__,
-                Eina_List *widgets __UNUSED__)
+                Project *project)
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_import_edc_test_p1)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
                          "-id ./edj_build -fd ./edj_build -sd ./edj_build",
                          NULL, _test_end_p1_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -110,20 +112,19 @@ END_TEST
 static void
 _test_end_p2_cb(void *data __UNUSED__,
                 PM_Project_Result result __UNUSED__,
-                Eina_List *widgets __UNUSED__)
+                Project *project)
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_import_edc_test_p2)
 {
-   Project *pro;
-   //Eina_Bool files_is = EINA_FALSE;
-   //Eet_File *ef;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
                          "-id ./edj_build -fd ./edj_build -sd ./edj_build",
@@ -140,7 +141,7 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
    ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
    */
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -183,11 +184,11 @@ _test_progress_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_import_edc_test_p3)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    res = EINA_FALSE;
    pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
@@ -197,7 +198,7 @@ EFLETE_TEST (pm_project_import_edc_test_p3)
 
    ck_assert_msg(res, "Progress callback did't called!");
 
-   pro = pm_project_thread_project_get();
+   ck_assert_msg(!pro, "Project not imported");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 

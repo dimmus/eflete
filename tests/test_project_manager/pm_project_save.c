@@ -29,6 +29,7 @@
  * <TABLE>
  * @}
  */
+static Project *pro;
 
 /**
  * @addtogroup pm_project_save
@@ -57,30 +58,27 @@
 static void
 _test_end_cb(void *data __UNUSED__,
              PM_Project_Result result __UNUSED__,
-             Eina_List *widgets __UNUSED__)
+             Project *project)
 
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_save_test_p)
 {
-   Project *pro;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
+
+   pro = NULL;
 
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                          NULL, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get();
-   pm_project_thread_free();
-
+   ck_assert_msg(pro != NULL, "Project does't opened.");
    pm_project_save(pro, NULL, _test_end_cb, NULL);
-   ecore_main_loop_begin();
-   pm_project_thread_free();
 
    pm_project_close(pro);
 

@@ -42,9 +42,11 @@ setup(const char *name)
          NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
+   /*
    pro = pm_project_thread_project_get();
    if (!pro)
       ck_abort_msg("Setup is failed! Project not imported");
+      */
 
    pm_project_thread_free();
    return pro;

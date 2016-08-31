@@ -52,17 +52,19 @@
  * </tr>
  * @}
  */
+static Project *pro = NULL;
+
 static void
 _test_end_cb(void *data __UNUSED__,
              PM_Project_Result result __UNUSED__,
-             Eina_List *widgets __UNUSED__)
+             Project *project)
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_close_test_p)
 {
-   Project *pro;
    Eina_Bool res;
 
    elm_init(0,0);
@@ -73,9 +75,7 @@ EFLETE_TEST (pm_project_close_test_p)
                          NULL, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get();
-   if (!pro)
-     ck_abort_msg("Project not created!");
+   ck_assert_msg(!pro, "Project not created!");
 
    res = pm_project_close(pro);
    ck_assert_msg(res, "Project is not closed!");

@@ -29,6 +29,8 @@
  * @}
  */
 
+static Project *pro;
+
 /**
  * @addtogroup pm_project_meta_data_set
  * @{
@@ -55,27 +57,27 @@
 static void
 _test_end_cb(void *data __UNUSED__,
              PM_Project_Result result __UNUSED__,
-             Eina_List *widgets __UNUSED__)
+             Project *project)
 {
+   pro = project;
    ecore_main_loop_quit();
 }
 
 EFLETE_TEST (pm_project_meta_data_set_test_p)
 {
-   Project *pro;
    Eina_Bool ret;
 
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
 
+   pro = NULL;
+
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                          NULL, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get();
-   if (!pro)
-     ck_abort_msg("Project thread not returned the Project. Maybe thread not finished yet.");
+   ck_assert_msg(!pro, "Project thread not returned the Project. Maybe thread not finished yet.");
 
    ret = pm_project_meta_data_set(pro, "UTC", "authors", "version", "license", "comment");
    ck_assert_msg(ret, "Meta data not setted to project.");
