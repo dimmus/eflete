@@ -539,20 +539,19 @@ _ewe_ruler_marker_add(Eo *obj,
    ret->style = eina_stringshare_add(style);
    buf = eina_strbuf_new();
    if (sd->horizontal)
-     {
-        eina_strbuf_append_printf(buf, MARKER"/%s", style);
-        edje_object_size_min_calc(elm_layout_edje_get(ret->obj), &ret->size, NULL);
-     }
+     eina_strbuf_append_printf(buf, MARKER"/%s", style);
    else
-     {
-        eina_strbuf_append_printf(buf, MARKER_VER"/%s", style);
-        edje_object_size_min_calc(elm_layout_edje_get(ret->obj), NULL, &ret->size);
-     }
+     eina_strbuf_append_printf(buf, MARKER_VER"/%s", style);
 
    ret->obj = elm_layout_add(obj);
    evas_object_clip_set(ret->obj, sd->clip);
    elm_layout_file_set(ret->obj, EWE_THEME, eina_strbuf_string_get(buf));
    evas_object_smart_member_add(ret->obj, obj);
+
+   if (sd->horizontal)
+     edje_object_size_min_calc(elm_layout_edje_get(ret->obj), &ret->size, NULL);
+   else
+     edje_object_size_min_calc(elm_layout_edje_get(ret->obj), NULL, &ret->size);
 
    ret->scale = NULL;
    ret->rel_position = 0;
