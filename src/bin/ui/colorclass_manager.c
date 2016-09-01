@@ -98,6 +98,7 @@ _colorclass_add_cb(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
@@ -131,6 +132,7 @@ _colorclass_add_cb(void *data __UNUSED__,
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 end:
    resource_name_validator_free(mng.name_validator);
@@ -144,6 +146,7 @@ _colorclass_del_cb(void *data __UNUSED__,
 {
    Resource *res;
    Resource request;
+   Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(mng.genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
@@ -156,6 +159,7 @@ _colorclass_del_cb(void *data __UNUSED__,
    resource_remove(&ap.project->colorclasses, res);
    resource_free(res);
    elm_object_item_del(it);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 #if 0
    State *state;

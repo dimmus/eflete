@@ -178,6 +178,7 @@ _style_add_cb(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
+   Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
    Resource *res;
    Popup_Button btn_res;
    const char *style_name;
@@ -215,6 +216,7 @@ _style_add_cb(void *data __UNUSED__,
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 close:
    resource_name_validator_free(mng.popup.validator);
@@ -319,6 +321,7 @@ _btn_del_cb(void *data __UNUSED__,
    const char *style_name, *tag;
    Resource *res;
    Resource request;
+   Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
    if (!glit) return;
@@ -333,6 +336,7 @@ _btn_del_cb(void *data __UNUSED__,
         res = resource_get(ap.project->styles, &request);
         edje_edit_style_del(edje_edit_obj, style_name);
         resource_remove(&ap.project->styles, res);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
    else
      {

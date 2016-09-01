@@ -210,6 +210,7 @@ _add_sample_done(void *data __UNUSED__,
                  void *event_info)
 {
    Sound_Data *snd;
+   Attribute attribute = ATTRIBUTE_PROGRAM_SAMPLE_NAME;
    Eina_Stringshare *sound_name;
    Eina_List *samples_list, *l;
    Eina_Bool exist = false;
@@ -277,6 +278,7 @@ _add_sample_done(void *data __UNUSED__,
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
    return true;
 }
@@ -285,6 +287,7 @@ static void
 _tone_add(void)
 {
    Sound_Data *snd;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TONE_NAME;
    Eina_Stringshare *tone_name;
    int frq;
    Tone_Resource *tone;
@@ -307,6 +310,7 @@ _tone_add(void)
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 }
 
 static void
@@ -435,6 +439,7 @@ _sound_del_cb(void *data __UNUSED__,
    Eina_List *list, *l, *l_next;
    External_Resource *res;
    Resource request;
+   Attribute attribute;
 
    list = (Eina_List *)elm_gengrid_selected_items_get(mng.gengrid);
    EINA_LIST_FOREACH_SAFE(list, l, l_next, grid_it)
@@ -444,6 +449,7 @@ _sound_del_cb(void *data __UNUSED__,
         switch (snd->type)
           {
            case SOUND_TYPE_SAMPLE:
+              attribute = ATTRIBUTE_PROGRAM_SAMPLE_NAME;
               request.name = snd->name;
               request.resource_type = RESOURCE_TYPE_SOUND;
               res = (External_Resource *)resource_get(ap.project->sounds, &request);
@@ -454,6 +460,7 @@ _sound_del_cb(void *data __UNUSED__,
               elm_object_item_del(grid_it);
               break;
            case SOUND_TYPE_TONE:
+              attribute = ATTRIBUTE_PROGRAM_TONE_NAME;
               request.name = snd->name;
               request.resource_type = RESOURCE_TYPE_TONE;
               res = (External_Resource *)resource_get(ap.project->tones, &request);
@@ -471,6 +478,7 @@ _sound_del_cb(void *data __UNUSED__,
 
    elm_object_disabled_set(mng.btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.text")
