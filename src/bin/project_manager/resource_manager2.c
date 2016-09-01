@@ -622,9 +622,10 @@ _gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_nam
 static void
 _group_load(Project *pro, Group2 *group)
 {
-   Eina_List *parts, *l, *programs, *datas;
-   Eina_Stringshare *part_name, *program_name, *group_data_name;
+   Eina_List *parts, *l, *programs, *datas, *targets, *afters, *l2;
+   Eina_Stringshare *part_name, *program_name, *group_data_name, *name;
    Program2 *program;
+   Resource2 *res;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -652,6 +653,27 @@ _group_load(Project *pro, Group2 *group)
              program->type = edje_edit_program_action_get(group->edit_object,
                                                           program_name);
              group->programs = eina_list_append(group->programs, program);
+
+             targets = edje_edit_program_targets_get(group->edit_object, program->common.name);
+             EINA_LIST_FOREACH(targets, l2, name)
+               {
+                  if (program->type == EDJE_ACTION_TYPE_ACTION_STOP)
+                    res = resource_manager_find(group->programs, name);
+                  else
+                    res = resource_manager_find(group->parts, name);
+                  if (res)
+                    program->targets = eina_list_append(program->targets, res);
+               }
+             edje_edit_string_list_free(targets);
+
+             afters = edje_edit_program_afters_get(group->edit_object, program->common.name);
+             EINA_LIST_FOREACH(afters, l2, name)
+               {
+                  res = resource_manager_find(group->programs, name);
+                  if (res)
+                    program->afters = eina_list_append(program->afters, res);
+               }
+             edje_edit_string_list_free(afters);
           }
         edje_edit_string_list_free(programs);
      }
@@ -831,7 +853,7 @@ _part_dependency_load(Project *pro, Group2 *group)
 void
 _program_dependency_load(Project *pro, Group2 *group)
 {
-   Eina_List *l, *l2, *targets, *afters;
+   Eina_List *l, *l2;
    Program2 *program;
    Resource2 *res, *res_state;
    Eina_Stringshare *name, *state;
@@ -866,27 +888,15 @@ _program_dependency_load(Project *pro, Group2 *group)
              edje_edit_string_free(state);
           }
         edje_edit_string_free(name);
-
-        targets = edje_edit_program_targets_get(group->edit_object, program->common.name);
-        EINA_LIST_FOREACH(targets, l2, name)
+        EINA_LIST_FOREACH(program->afters, l2, res)
           {
-             if (program->type == EDJE_ACTION_TYPE_ACTION_STOP)
-               res = resource_manager_find(group->programs, name);
-             else
-               res = resource_manager_find(group->parts, name);
-             if (res)
-               _resource_usage_resource_add((Resource2 *)program, res);
+             _resource_usage_resource_add((Resource2 *)program, res);
           }
-        edje_edit_string_list_free(targets);
 
-        afters = edje_edit_program_afters_get(group->edit_object, program->common.name);
-        EINA_LIST_FOREACH(afters, l2, name)
+        EINA_LIST_FOREACH(program->targets, l2, res)
           {
-             res = resource_manager_find(group->programs, name);
-             if (res)
-               _resource_usage_resource_add((Resource2 *)program, res);
+             _resource_usage_resource_add((Resource2 *)program, res);
           }
-        edje_edit_string_list_free(afters);
      }
 }
 
