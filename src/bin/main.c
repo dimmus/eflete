@@ -349,7 +349,8 @@ elm_main(int argc, char **argv)
 
 run:
         ap.path.export_edj = export_edj;
-        _export_edc_path_set(export_edc);
+        if (export_edc)
+          _export_edc_path_set(export_edc);
         if (!ui_main_window_add())
           {
              app_shutdown();
