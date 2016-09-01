@@ -104,6 +104,7 @@ group { name: "elm/scroller/entry_single/default";
             color_class: "border";
             min: 0 24;
             max: -1 24;
+            fixed: 0 1;
           }
         description { state: "focused" 0.0;
             inherit: "default" 0.0;
@@ -121,6 +122,9 @@ group { name: "elm/scroller/entry_single/default";
          scale: 1;
          description { state: "default" 0.0;
            color_class: "entry_bg";
+           min: 0 22;
+           max: -1 22;
+           fixed: 0 1;
            rel1 {
               to: "border";
               offset: 1 1;
@@ -494,7 +498,6 @@ group { name: "elm/scroller/entry_single/search";
    }
 }
 
-
 group { name: "elm/scroller/entry_single/fileselector/default";
    inherit: "elm/scroller/entry_single/default";
    parts {
@@ -535,7 +538,6 @@ group { name: "elm/entry/base-single/default";
          source5: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             min: 0 19;
-            fixed: 1 1;
             text {
                style: "entry_main_text";
                min: 1 1;
@@ -543,7 +545,6 @@ group { name: "elm/entry/base-single/default";
             }
          }
          description { state: "disabled" 0.0;
-            fixed: 1 1;
             min: 0 19;
             text {
                style: "entry_main_text_disabled";
