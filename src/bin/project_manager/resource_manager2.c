@@ -498,9 +498,12 @@ _resource_group_edit_object_unload(Group2 *group)
 }
 
 State2 *
-_gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_value)
+_gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
 {
    State2 *state;
+   Eina_Stringshare *image_name;
+   Eina_List *tween_list, *l;
+   Resource2 *res;
 
    assert(pro != NULL);
    assert(part != NULL);
@@ -516,6 +519,31 @@ _gm_state_add(Project *pro, Part2 *part, const char *state_name, double state_va
    /* default 0.0 should be allways first state */
    if (part->current_state == NULL)
      part->current_state = state;
+
+   if (part->type == EDJE_PART_TYPE_IMAGE)
+     {
+        image_name = edje_edit_state_image_get(group->edit_object,
+                                               part->common.name,
+                                               state->common.name,
+                                               state->val);
+        if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+          state->normal = eina_stringshare_add(image_name);
+        edje_edit_string_free(image_name);
+
+        tween_list = edje_edit_state_tweens_list_get(group->edit_object,
+                                                     part->common.name,
+                                                     state->common.name,
+                                                     state->val);
+        EINA_LIST_FOREACH(tween_list, l, image_name)
+          {
+             if (edje_edit_image_set_exists(group->edit_object, image_name))
+               res = resource_manager_find(pro->image_sets, image_name);
+             else
+               res = resource_manager_find(pro->images, image_name);
+             state->tweens = eina_list_append(state->tweens, res);
+          }
+        edje_edit_string_list_free(tween_list);
+     }
 
    return state;
 }
@@ -546,7 +574,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state_name_split(state_name, &parsed_state_name, &val);
-        _gm_state_add(pro, part, parsed_state_name, val);
+        _gm_state_add(pro, group, part, parsed_state_name, val);
         eina_stringshare_del(parsed_state_name);
      }
    edje_edit_string_list_free(states);
@@ -685,10 +713,10 @@ _item_dependency_load(Project *pro __UNUSED__, Group2 *group __UNUSED__, Part2 *
 void
 _state_dependency_load(Project *pro, Group2 *group, Part2 *part)
 {
-   Eina_List *l2, *l, *tween_list;
+   Eina_List *l2, *l;
    State2 *state;
    Resource2 *res;
-   Eina_Stringshare *source, *image_name, *tween_name;
+   Eina_Stringshare *source;
    Eina_Stringshare *font_name, *color_class, *style_name;
 
    EINA_LIST_FOREACH(part->states, l, state)
@@ -707,34 +735,19 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part)
 
         if (part->type == EDJE_PART_TYPE_IMAGE)
           {
-             image_name = edje_edit_state_image_get(group->edit_object,
-                                                    part->common.name,
-                                                    state->common.name,
-                                                    state->val);
-
-             if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+             if (strcmp(state->normal, EFLETE_DUMMY_IMAGE_NAME))
                {
-                  if (edje_edit_image_set_exists(group->edit_object, image_name))
-                    res = resource_manager_find(pro->image_sets, image_name);
+                  if (edje_edit_image_set_exists(group->edit_object, state->normal))
+                    res = resource_manager_find(pro->image_sets, state->normal);
                   else
-                    res = resource_manager_find(pro->images, image_name);
+                    res = resource_manager_find(pro->images, state->normal);
                   _resource_usage_resource_add((Resource2 *)state, res);
                }
-             edje_edit_string_free(image_name);
 
-             tween_list = edje_edit_state_tweens_list_get(group->edit_object,
-                                                          part->common.name,
-                                                          state->common.name,
-                                                          state->val);
-             EINA_LIST_FOREACH(tween_list, l2, tween_name)
+             EINA_LIST_FOREACH(state->tweens, l2, res)
                {
-                  if (edje_edit_image_set_exists(group->edit_object, tween_name))
-                    res = resource_manager_find(pro->image_sets, tween_name);
-                  else
-                    res = resource_manager_find(pro->images, tween_name);
                   _resource_usage_resource_add((Resource2 *)state, res);
                }
-             edje_edit_string_list_free(tween_list);
           }
 
         color_class = edje_edit_state_color_class_get(group->edit_object,
@@ -957,8 +970,13 @@ void
 _resource_part_free(Part2 *res)
 {
    Resource2 *part_res;
-   EINA_LIST_FREE(res->states, part_res)
-      _resource_free(part_res);
+   State2 *state;
+   EINA_LIST_FREE(res->states, state)
+     {
+        eina_stringshare_del(state->normal);
+        eina_list_free(state->tweens);
+        _resource_free((Resource2 *)state);
+     }
    EINA_LIST_FREE(res->items, part_res)
       _resource_free(part_res);
    _resource_free((Resource2 *)res);

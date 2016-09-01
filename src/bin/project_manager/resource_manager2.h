@@ -120,6 +120,9 @@ struct _State2
 {
    Resource2_Internal common;
    double val;                /**< parsed state value */
+
+   Eina_Stringshare *normal;   /* normal image being used (could be NONE) */
+   Eina_List *tweens;          /* list of tweens in correct order */
    Part2 *part;                /**< pointer to part */
 };
 
