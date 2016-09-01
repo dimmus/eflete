@@ -32,6 +32,7 @@ static char *file = NULL;
 static char *pro_name = NULL;
 static char *pro_path = NULL;
 static char *export_edj = NULL;
+static char *export_edc = NULL;
 static Eina_List *img_dirs = NULL;
 static Eina_List *snd_dirs = NULL;
 static Eina_List *fnt_dirs = NULL;
@@ -62,7 +63,8 @@ static const Ecore_Getopt options = {
    {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path to project directory")),
-      ECORE_GETOPT_STORE_STR(0, "export-edj", N_("Export file path")),
+      ECORE_GETOPT_STORE_STR(0, "export-edj", N_("Export edj file path")),
+      ECORE_GETOPT_STORE_STR(0, "export-edc", N_("Export edc file path. This should include the path, folder and edc file name.(PATH/FOLDER/FILE)")),
       ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
@@ -171,6 +173,28 @@ _new_project(void *data __UNUSED__)
    tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
 }
 
+static void
+_export_edc_path_set(char *export_edc)
+{
+   char tmp[256];
+   int len = 0, rlen = 0;
+
+   strcpy(tmp, export_edc);
+   len = strlen(tmp);
+   rlen = strlen(strrchr(tmp, '/'));
+   if (!rlen) return;
+   ap.path.export_edc.file = eina_stringshare_add(tmp + (len - rlen + 1));
+   tmp[len - rlen] = '\0';
+
+   len = strlen(tmp);
+   rlen = strlen(strrchr(tmp, '/'));
+   if (!rlen) return;
+   ap.path.export_edc.folder = eina_stringshare_add(tmp + (len - rlen + 1));
+   tmp[len - rlen] = '\0';
+
+   ap.path.export_edc.path = eina_stringshare_add(tmp);
+}
+
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
@@ -183,6 +207,7 @@ elm_main(int argc, char **argv)
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
      ECORE_GETOPT_VALUE_STR(export_edj),
+     ECORE_GETOPT_VALUE_STR(export_edc),
      ECORE_GETOPT_VALUE_LIST(img_dirs),
      ECORE_GETOPT_VALUE_LIST(snd_dirs),
      ECORE_GETOPT_VALUE_LIST(fnt_dirs),
@@ -324,6 +349,7 @@ elm_main(int argc, char **argv)
 
 run:
         ap.path.export_edj = export_edj;
+        _export_edc_path_set(export_edc);
         if (!ui_main_window_add())
           {
              app_shutdown();

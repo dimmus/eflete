@@ -54,6 +54,7 @@ _project_source_code_export_feedback_cb(void *data,
 void
 _project_source_code_export_feedback_job(void *data, Ecore_Thread *th)
 {
+   Eina_Stringshare *path;
    Project_Thread *ptd = (Project_Thread *)data;
    if (!eina_lock_take(&ptd->mutex))
      {
@@ -65,7 +66,10 @@ _project_source_code_export_feedback_job(void *data, Ecore_Thread *th)
    Eina_Stringshare *message = eina_stringshare_printf(_("Generate source code ..."));
    ecore_thread_feedback(th, message);
 
-   Eina_Stringshare *path  =  eina_stringshare_printf("%s/%s", ptd->path, ptd->project->name);
+   if (!ap.path.export_edc.folder)
+     path  =  eina_stringshare_printf("%s/%s", ptd->path, ptd->project->name);
+   else
+     path  =  eina_stringshare_printf("%s/%s", ptd->path, ap.path.export_edc.folder);
 
    char *code;
    Eina_Strbuf *buf;
@@ -77,7 +81,10 @@ _project_source_code_export_feedback_job(void *data, Ecore_Thread *th)
    eina_strbuf_reset(buf);
 
    /* create and open edc file for print the source code of collection (project) */
-   eina_strbuf_append_printf(buf, "%s/generated.edc", path);
+   if (!ap.path.export_edc.file)
+     eina_strbuf_append_printf(buf, "%s/generated.edc", path);
+   else
+     eina_strbuf_append_printf(buf, "%s/%s", path, ap.path.export_edc.file);
    f = fopen(eina_strbuf_string_get(buf), "w");
    if (!f)
      {

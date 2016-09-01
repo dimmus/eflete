@@ -132,6 +132,14 @@ app_shutdown()
      eina_stringshare_del(ap.path.edj_path);
    if (ap.path.image_path)
      eina_stringshare_del(ap.path.image_path);
+   if (ap.path.export_edj)
+     eina_stringshare_del(ap.path.export_edj);
+   if (ap.path.export_edc.path)
+     eina_stringshare_del(ap.path.export_edc.path);
+   if (ap.path.export_edc.folder)
+     eina_stringshare_del(ap.path.export_edc.folder);
+   if (ap.path.export_edc.file)
+     eina_stringshare_del(ap.path.export_edc.file);
 
    config_shutdown();
    elm_theme_free(ap.theme);

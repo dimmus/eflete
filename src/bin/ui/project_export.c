@@ -195,20 +195,25 @@ _export_source_code(void *data __UNUSED__,
                     void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
-   Eina_Stringshare *path;
+   Eina_Stringshare *path, *folder;
    Eina_Strbuf *buf;
 
    assert(selected != NULL);
 
    path = eina_stringshare_add((const char *)eina_list_data_get(selected));
    buf = eina_strbuf_new();
+   if (!ap.path.export_edc.folder)
+     folder = ap.project->name;
+   else
+     folder = ap.path.export_edc.folder;
+
    eina_strbuf_append_printf(buf,
                              _("<font_size=16>A project file '%s/%s' already exist."
                                "Do you want to replace it?</font_size>"),
                              path,
-                             ap.project->name);
+                             folder);
    if (!exist_permission_check(path,
-                               ap.project->name,
+                               folder,
                                _("Export to develop edj-file"),
                                eina_strbuf_string_get(buf), EINA_FALSE))
      return false;
@@ -224,7 +229,15 @@ _export_source_code(void *data __UNUSED__,
 void
 project_export_edc_project(void)
 {
-   popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
+   if (!ap.path.export_edc.path)
+     popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
+   else
+     {
+        Eina_List *l = NULL;
+        l = eina_list_append(l, ap.path.export_edc.path);
+        _export_source_code(NULL, NULL, l);
+        eina_list_free(l);
+     }
 }
 
 static Eina_Bool
