@@ -56,6 +56,23 @@ resource_manager_find(const Eina_List *list, Eina_Stringshare *name)
 }
 
 Resource2 *
+resource_manager_id_find(const Eina_List *list, const unsigned int id)
+{
+   Resource2 *res = NULL, *data;
+   const Eina_List *l;
+   EINA_LIST_FOREACH(list, l, data)
+     {
+        if (data->common.id == id)
+          {
+             res = data;
+             break;
+          }
+     }
+
+   return res;
+}
+
+Resource2 *
 resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double value)
 {
    State2 *res = NULL, *data;
@@ -508,9 +525,10 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
 {
    Part_Item2 *item;
    Part2 *part;
-   Eina_List *states, *items, *l;
+   Eina_List *states, *l;
    Eina_Stringshare *state_name, *parsed_state_name, *item_name;
    double val;
+   unsigned int items_count, i;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -536,18 +554,21 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
      {
-        items = edje_edit_part_items_list_get(group->edit_object, part_name);
-        EINA_LIST_FOREACH(items, l, item_name)
+        items_count = edje_edit_part_items_count_get(group->edit_object, part_name);
+        for (i = 0; i < items_count; i++)
           {
-             TODO("Remove this after switching to index API for items");
-             if (!item_name) continue;
+             item_name = edje_edit_part_item_index_name_get(group->edit_object, part_name, i);
              item = mem_calloc(1, sizeof(Part_Item2));
+             item->common.id = i;
              item->common.type = RESOURCE2_TYPE_ITEM;
-             item->common.name = eina_stringshare_add(item_name);
+             if (item_name)
+               {
+                  item->common.name = eina_stringshare_add(item_name);
+                  edje_edit_string_free(item_name);
+               }
              item->part = part;
              part->items = eina_list_append(part->items, item);
           }
-        edje_edit_string_list_free(items);
      }
 
    return part;

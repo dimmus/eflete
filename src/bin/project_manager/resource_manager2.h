@@ -221,4 +221,7 @@ resource_manager_find(const Eina_List *list, Eina_Stringshare *name);
 Resource2 *
 resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double value);
 
+Resource2 *
+resource_manager_id_find(const Eina_List *list, unsigned int id);
+
 #endif /* RESOURCE_MANAGER2_H */
