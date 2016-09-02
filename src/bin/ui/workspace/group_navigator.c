@@ -808,12 +808,12 @@ _state_validate(void *data,
    if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
        (edje_edit_state_exist(pl->group->edit_object, pl->part->name, name, val)))
      {
-       popup_buttons_disabled_set(BTN_OK, true);
+       popup_button_disabled_set(pl->popup_win, BTN_OK, true);
        elm_object_signal_emit(obj, "validation,default,fail", "elm");
      }
    else
      {
-       popup_buttons_disabled_set(BTN_OK, false);
+       popup_button_disabled_set(pl->popup_win, BTN_OK, false);
        elm_object_signal_emit(obj, "validation,default,pass", "elm");
      }
 }
@@ -1264,10 +1264,13 @@ _on_menu_add_group_data_clicked(void *data __UNUSED__,
 }
 
 static void
-_popup_add_state_ok_clicked(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
+_popup_add_state_close_cb(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
 {
+   Popup_Button pb = (Popup_Button)event_info;
+   if (pb != BTN_OK) return;
+
    Part_List *pl = data;
    const char *name;
    double val;
@@ -1310,18 +1313,6 @@ _popup_add_state_ok_clicked(void *data,
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   evas_object_del(pl->popup.box);
-}
-
-Eina_Bool
-_popup_add_state_validator(void *data)
-{
-   Part_List *pl = (Part_List *) data;
-   _popup_add_state_ok_clicked(data, NULL, NULL);
-
-   if (elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR)
-     return false;
-   return true;
 }
 
 void
@@ -1361,7 +1352,7 @@ group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state)
      }
 }
 
-Evas_Object *
+static Evas_Object *
 _add_state_content_get(void *data, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
@@ -1372,7 +1363,7 @@ _add_state_content_get(void *data, Evas_Object **to_focus)
    Combobox_Item *combobox_item;
    unsigned int i = 0;
 
-   BOX_ADD(ap.popup, box, false, false);
+   BOX_ADD(ap.win, box, false, false);
    elm_box_padding_set(box, 0, 10);
 
    LAYOUT_PROP_ADD(box, _("State name"), "popup", "1swallow");
@@ -1424,7 +1415,6 @@ _add_state_content_get(void *data, Evas_Object **to_focus)
    elm_box_pack_end(box, item);
 
    if (to_focus) *to_focus = pl->popup.entry_name;
-   popup_buttons_disabled_set(BTN_OK, true);
    pl->popup.box = box;
    return box;
 }
@@ -1440,12 +1430,12 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    assert(pl->part != NULL);
 
    title = eina_stringshare_printf(_("Add New State to Part \"%s\""), pl->part->name);
-   Popup_Button button = popup_want_action(title, NULL, _add_state_content_get,
-                                           BTN_OK | BTN_CANCEL,
-                                           _popup_add_state_validator, pl);
+   pl->popup_win = popup_add(title, NULL,
+                             BTN_OK | BTN_CANCEL,
+                             _add_state_content_get, pl);
+   evas_object_smart_callback_add(pl->popup_win, POPUP_CLOSE_CB, _popup_add_state_close_cb, pl);
+   popup_button_disabled_set(pl->popup_win, BTN_OK, true);
 
-   if (button == BTN_CANCEL)
-     evas_object_del(pl->popup.box);
    eina_stringshare_del(title);
 }
 
