@@ -123,6 +123,7 @@ typedef Eina_Bool(* Popup_Validator_Func)(void *data);
  */
 typedef Evas_Object *(* Popup_Content_Get_Func)(void *data, Evas_Object **to_focus);
 
+#define POPUP_CLOSE_CB "POPUP_CLOSE_CB"
 /**
  * The fileselector helper callback.
  *
@@ -348,6 +349,13 @@ popup_want_action(const char *title,
                   Popup_Button p_btns,
                   Popup_Validator_Func func,
                   void *data);
+
+Evas_Object *
+popup_add(const char *title,
+          const char *msg,
+          Popup_Button popup_btns,
+          Popup_Content_Get_Func content_get,
+          void *data);
 
 void
 popup_active_helper_close(void *data,

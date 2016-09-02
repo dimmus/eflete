@@ -191,6 +191,110 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
      elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
 }
 
+/* async popup */
+#define POPUP_DATA "POPUP_DATA"
+typedef struct {
+   Evas_Object *popup;
+   struct {
+      Evas_Object *ok,
+                  *cancel,
+                  *save,
+                  *dont_save,
+                  *replace,
+                  *append;
+   } button;
+} Popup_Data;
+
+static void
+_popup_del_job(void *data)
+{
+   Popup_Data *pd= data;
+   shortcuts_object_check_pop(pd->popup);
+   evas_object_del(pd->popup);
+   free(pd);
+}
+
+static void
+_popup_btn_cb(void *data,
+              Evas_Object *obj,
+              void *ei __UNUSED__)
+{
+   Popup_Data *pd = evas_object_data_get(obj, POPUP_DATA);
+
+   assert(pd != NULL);
+   assert(pd->popup != NULL);
+
+   ecore_job_add(_popup_del_job, pd);
+   evas_object_smart_callback_call(pd->popup, POPUP_CLOSE_CB, data);
+}
+
+static Evas_Object *
+_button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
+{
+   Evas_Object *btn;
+   static const char* position_name[] = { "button1", "button2", "button3" };
+
+   assert(pd != NULL);
+   assert(btn_pos != NULL);
+   assert(*btn_pos < 3); /* maximum buttons count */
+   assert(text != NULL);
+
+   if (!pb)
+     return NULL;
+
+   BUTTON_ADD(pd->popup, btn, text);
+   evas_object_data_set(btn, POPUP_DATA, pd);
+   evas_object_smart_callback_add(btn, "clicked", _popup_btn_cb, (void *)pb);
+   elm_object_part_content_set(pd->popup, position_name[*btn_pos], btn);
+   *btn_pos = *btn_pos + 1;
+
+   return btn;
+}
+
+Evas_Object *
+popup_add(const char *title,
+          const char *msg,
+          Popup_Button popup_btns,
+          Popup_Content_Get_Func content_get,
+          void *data)
+{
+   Popup_Data *pd;
+
+   /* only one content will be setted to popup: or message, or used content */
+   assert((msg != NULL) != (content_get != NULL));
+
+   pd = mem_calloc(1, sizeof(Popup_Data));
+   pd->popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(pd->popup, ELM_POPUP_ORIENT_CENTER);
+   elm_object_part_text_set(pd->popup, "title,text", title);
+   elm_popup_content_text_wrap_type_set(pd->popup, ELM_WRAP_WORD);
+
+   int bt_num = 0;
+   pd->button.ok        = _button_add(pd, &bt_num, _("Ok"),         popup_btns & BTN_OK);
+   pd->button.save      = _button_add(pd, &bt_num, _("Save"),       popup_btns & BTN_SAVE);
+   pd->button.append    = _button_add(pd, &bt_num, _("Append"),     popup_btns & BTN_APPEND);
+   pd->button.replace   = _button_add(pd, &bt_num, _("Replace"),    popup_btns & BTN_REPLACE);
+   pd->button.dont_save = _button_add(pd, &bt_num, _("Don't save"), popup_btns & BTN_DONT_SAVE);
+   pd->button.cancel    = _button_add(pd, &bt_num, _("Cancel"),     popup_btns & BTN_CANCEL);
+
+   if (msg)
+     elm_object_text_set(pd->popup, msg);
+   else /* content_get != NULL */
+     {
+        Evas_Object *to_focus = NULL;
+        Evas_Object *content = content_get(data, &to_focus);
+        elm_object_content_set(pd->popup, content);
+        if (to_focus)
+          elm_object_focus_set(to_focus, true);
+     }
+
+   shortcuts_object_push(pd->popup);
+   evas_object_show(pd->popup);
+
+   return pd->popup;
+}
+/* end of async popup */
+
 #if HAVE_TIZEN
 #define FS_W 510
 #define FS_H 500
