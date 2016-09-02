@@ -30,7 +30,7 @@ includesub_HEADERS = \
 	project_manager/project_manager.h \
 	project_manager/project_manager_private.h \
 	project_manager/resource_manager.h \
-	project_manager/resource_manager2.h \
+	resource_manager/resource_manager2.h \
 	ui/cursor.h \
 	ui/history_ui.h \
 	ui/main_window.h \
@@ -73,7 +73,7 @@ libete_a_SOURCES = \
 ../../src/bin/project_manager/project_manager_export_edc.c \
 ../../src/bin/project_manager/project_manager_export_edj.c \
 ../../src/bin/project_manager/resource_manager.c \
-../../src/bin/project_manager/resource_manager2.c \
+../../src/bin/resource_manager/resource_manager2.c \
 ../../src/bin/logger/logger.c \
 ../../src/bin/config/config.c \
 ../../src/bin/external/syntax_color.c \
@@ -180,6 +180,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/common \
 -I${top_srcdir}/src/bin/logger \
 -I${top_srcdir}/src/bin/project_manager \
+-I${top_srcdir}/src/bin/resource_manager \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/ui \
 -I${top_srcdir}/src/bin/ui/property \
