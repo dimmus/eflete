@@ -265,6 +265,78 @@ typedef struct {
 #define SIGNAL_EDITOR_PART_ITEM_RESTACKED "SIGNAL_EDITOR_PART_ITEM_RESTACKED"
 
 /**
+ * emited when colorclass is added.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_COLORCLASS_ADDED "SIGNAL_EDITOR_COLORCLASS_ADDED"
+
+/**
+ * emited when colorclass is deleted.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_COLORCLASS_DELETED "SIGNAL_EDITOR_COLORCLASS_DELETED"
+
+/**
+ * emited when colorclass is changed.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_COLORCLASS_CHANGED "SIGNAL_EDITOR_COLORCLASS_CHANGED"
+
+/**
+ * emited when sound is added.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_SOUND_ADDED "SIGNAL_EDITOR_SOUND_ADDED"
+
+/**
+ * emited when sound is deleted.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_SOUND_DELETED "SIGNAL_EDITOR_SOUND_DELETED"
+
+/**
+ * emited when tone is added.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_IMAGE_ADDED "SIGNAL_EDITOR_IMAGE_ADDED"
+
+/**
+ * emited when sound is deleted.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_IMAGE_DELETED "SIGNAL_EDITOR_IMAGE_DELETED"
+
+/**
+ * emited when tone is added.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STYLE_ADDED "SIGNAL_EDITOR_STYLE_ADDED"
+
+/**
+ * emited when sound is deleted.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STYLE_DELETED "SIGNAL_EDITOR_STYLE_DELETED"
+
+/**
  * emited when part state is selected.
  * eventinfo - EEditor_State struct
  *
