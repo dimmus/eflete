@@ -213,8 +213,7 @@ Evas_Object *
 about_window_add(void)
 {
    Evas_Object *content = elm_label_add(ap.win);
-   popup_want_action(_("About"), NULL, _about_window_content_get, BTN_CANCEL, NULL, content);
-   evas_object_del(content);
+   popup_add(_("About"), NULL, BTN_CANCEL, _about_window_content_get, content);
    return NULL;
 }
 
@@ -234,8 +233,7 @@ Evas_Object *
 about_window_add(void)
 {
    Evas_Object *content = elm_layout_add(ap.win);
-   popup_want_action(_("About Component Designer"), NULL, _about_window_content_get, BTN_OK, NULL, content);
-   evas_object_del(content);
+   popup_add(_("About Component Designer"), NULL, BTN_OK, _about_window_content_get, content);
    return NULL;
 }
 
@@ -306,7 +304,6 @@ shortcuts_window_add(void)
 
    evas_object_size_hint_min_set(content, 0, 300);
 
-   popup_want_action(_("Help: shortcuts"), NULL, _shortcuts_window_content_get, BTN_OK, NULL, content);
-   evas_object_del(content);
+   popup_add(_("Help: shortcuts"), NULL, BTN_OK, _shortcuts_window_content_get, content);
    return NULL;
 }
