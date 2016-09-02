@@ -143,6 +143,10 @@ struct _App_Data
    } path;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
+   Eina_Bool exit_in_progress : 1; /**< is set to true when ui_main_window_del() is called.
+                                       This is needed to continue closing application after
+                                       clicking in save/don't save buttons in project close
+                                       popup */
 #ifdef HAVE_ENVENTOR
    Evas_Object *enventor;
    Eina_Bool enventor_mode : 1;

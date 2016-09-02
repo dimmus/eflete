@@ -57,6 +57,7 @@ _help(void *data __UNUSED__,
 Eina_Bool
 ui_main_window_del(void)
 {
+   ap.exit_in_progress = true;
    if (ap.project)
      if (!project_close())
        return false;

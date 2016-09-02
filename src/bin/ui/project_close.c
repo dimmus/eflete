@@ -140,11 +140,38 @@ project_save(void)
      ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
 }
 
+static void
+_popup_close_cb(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *ei)
+{
+   Popup_Button btn_res = (Popup_Button) ei;
+
+   switch (btn_res)
+     {
+      case BTN_OK:
+         project_save();
+         break;
+      case BTN_DONT_SAVE:
+         ap.project->changed = false;
+         break;
+      case BTN_CANCEL:
+         ap.exit_in_progress = false;
+         return;
+      default:
+         ERR("Popup return wrong value. Go fix it!");
+         abort(); /* it's wrong value need to fix popup code or popup call */
+     }
+   if (ap.exit_in_progress)
+     ui_main_window_del();
+   else
+     project_close();
+}
 
 Eina_Bool
 project_close(void)
 {
-   Popup_Button btn_res;
+   Evas_Object *popup;
    Eina_Stringshare *title;
 
    assert(ap.project != NULL);
@@ -152,23 +179,14 @@ project_close(void)
    if (ap.project->changed)
      {
         title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
-        btn_res = popup_want_action(title, _("Do you want to save changes?"), NULL,
-                                    BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
-                                    NULL, NULL);
-        switch (btn_res)
-          {
-           case BTN_OK:
-              project_save();
-              break;
-           case BTN_DONT_SAVE:
-              break;
-           case BTN_CANCEL:
-              return false;
-           default:
-              ERR("Popup return wrong value. Go to fix it!");
-              abort(); /* it's wrong value need to fix popup code or popup call */
-          }
+        popup = popup_add(title,
+                          _("Do you want to save changes?"),
+                          BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
+                          NULL,
+                          NULL);
+        evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _popup_close_cb, NULL);
         eina_stringshare_del(title);
+        return false;
      }
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
