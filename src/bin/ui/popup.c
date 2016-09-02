@@ -269,6 +269,8 @@ popup_add(const char *title,
    elm_object_part_text_set(pd->popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(pd->popup, ELM_WRAP_WORD);
 
+   evas_object_data_set(pd->popup, POPUP_DATA, pd);
+
    int bt_num = 0;
    pd->button.ok        = _button_add(pd, &bt_num, _("Ok"),         popup_btns & BTN_OK);
    pd->button.save      = _button_add(pd, &bt_num, _("Save"),       popup_btns & BTN_SAVE);
@@ -292,6 +294,40 @@ popup_add(const char *title,
    evas_object_show(pd->popup);
 
    return pd->popup;
+}
+
+void
+popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabled)
+{
+   assert(popup != NULL);
+
+   if (!btn) return;
+
+   Popup_Data *pd = evas_object_data_get(popup, POPUP_DATA);
+   switch (btn)
+     {
+      case BTN_OK:
+         elm_object_disabled_set(pd->button.ok, disabled);
+         break;
+      case BTN_SAVE:
+         elm_object_disabled_set(pd->button.save, disabled);
+         break;
+      case BTN_APPEND:
+         elm_object_disabled_set(pd->button.append, disabled);
+         break;
+      case BTN_REPLACE:
+         elm_object_disabled_set(pd->button.replace, disabled);
+         break;
+      case BTN_DONT_SAVE:
+         elm_object_disabled_set(pd->button.dont_save, disabled);
+         break;
+      case BTN_CANCEL:
+         elm_object_disabled_set(pd->button.cancel, disabled);
+         break;
+      default:
+         ERR("Unknown button.");
+         abort(); /* only one single button allowed */
+     }
 }
 /* end of async popup */
 

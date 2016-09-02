@@ -373,6 +373,8 @@ popup_active_helper_close(void *data,
  */
 void
 popup_buttons_disabled_set(Popup_Button p_btns, Eina_Bool disabled);
+void
+popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabled);
 
 void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
