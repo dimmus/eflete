@@ -84,5 +84,10 @@ _resource_dependency_load(Project *pro);
 
 /* REACTION TO EDITOR AND EDJE EDIT */
 
+void
+_resource_callbacks_register();
+
+void
+_resource_callbacks_unregister();
 
 #endif /* RESOURCE_MANAGER_PRIVATE_H */
