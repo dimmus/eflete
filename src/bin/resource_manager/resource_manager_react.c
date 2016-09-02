@@ -318,6 +318,24 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
           editor_part_item_restack->relative_part_item);
 }
 
+static void
+_group_add(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+   Group *group = (Group *)event_info;
+   printf("New Group added [%s]", group->name);
+}
+
+static void
+_group_del(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+   Eina_Stringshare *group_name = (Eina_Stringshare *)event_info;
+   printf("Group deleted [%s]", group_name);
+}
+
 /* INITIAL FUNCTIONS */
 
 void
@@ -338,6 +356,10 @@ _resource_callbacks_register()
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
+
+   TODO("Need signals to add/etc top level blocks (groups, images, sounds, color_classes etc)")
 }
 
 void
@@ -358,4 +380,6 @@ _resource_callbacks_unregister()
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
 }

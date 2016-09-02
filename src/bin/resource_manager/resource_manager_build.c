@@ -55,7 +55,7 @@ _item_dependency_load(Project* pro, Group2 *group, Part2 *part)
         source = edje_edit_part_item_source_get(group->edit_object,
                                                 part->common.name,
                                                 item->common.name);
-        used = resource_manager_find(pro->groups, source);
+        used = resource_manager_find(pro->groups2, source);
         if (used)
           _resource_usage_resource_add((Resource2 *)item, used);
         edje_edit_string_free(source);
@@ -170,7 +170,7 @@ _part_dependency_load(Project *pro, Group2 *group)
    EINA_LIST_FOREACH(group->parts, l, part)
      {
         source = edje_edit_part_source_get(group->edit_object, part->common.name);
-        res = resource_manager_find(pro->groups, source);
+        res = resource_manager_find(pro->groups2, source);
         if (res)
           _resource_usage_resource_add((Resource2 *)part, res);
         edje_edit_string_free(source);
@@ -252,13 +252,13 @@ _resource_dependency_load(Project *pro)
      }
 
    /* groups */
-   EINA_LIST_FOREACH(pro->groups, l1, group)
+   EINA_LIST_FOREACH(pro->groups2, l1, group)
      {
         _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
         if (edje_edit_group_alias_is(group->edit_object, group->common.name))
           {
              main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
-             used = resource_manager_find(pro->groups, main_group_name);
+             used = resource_manager_find(pro->groups2, main_group_name);
              _resource_usage_resource_add((Resource2 *)group, used);
 
              edje_edit_string_free(main_group_name);

@@ -622,7 +622,7 @@ _gm_groups_load(Project *pro)
 
    assert(pro != NULL);
    assert(pro->dev != NULL);
-   assert(pro->groups == NULL);
+   assert(pro->groups2 == NULL);
 
    collections = edje_file_collection_list(pro->dev);
 
@@ -635,10 +635,10 @@ _gm_groups_load(Project *pro)
         res = mem_calloc(1, sizeof(Group2));
         res->common.type = RESOURCE2_TYPE_GROUP;
         res->common.name = eina_stringshare_add(group_name);
-        pro->groups = eina_list_append(pro->groups, res);
+        pro->groups2 = eina_list_append(pro->groups2, res);
      }
    edje_file_collection_list_free(collections);
 
-   EINA_LIST_FOREACH(pro->groups, l, res)
+   EINA_LIST_FOREACH(pro->groups2, l, res)
      _group_load(pro, res);
 }

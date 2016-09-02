@@ -185,7 +185,7 @@ resource_manager_shutdown(Project *pro)
         _resource_free((Resource2 *)res_data);
      }
 
-   EINA_LIST_FREE(pro->groups, group)
+   EINA_LIST_FREE(pro->groups2, group)
       _resource_group_free(group);
 
    _resource_callbacks_unregister();
