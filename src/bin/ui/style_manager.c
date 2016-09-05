@@ -249,74 +249,88 @@ _add_tag_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    return item;
 }
 
+typedef struct {
+   Eina_Stringshare *style_name, *tag_name;
+   Elm_Object_Item *glit, *glit_parent;
+   Eina_List *resources;
+} Tag_Popup_Data;
+
 static void
-_tag_add_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_tag_add_popup_close_cb(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
 {
    Resource *res;
-   Eina_List *resources = NULL;
-   Eina_Stringshare *style_name, *tag_name;
-   Popup_Button btn_res;
-   Elm_Object_Item *glit, *glit_parent;
-   Eina_Stringshare *buf;
-   Eina_List *tags, *l;
+   Popup_Button btn_res = (Popup_Button) event_info;
+   Tag_Popup_Data *tpd = data;
 
-   glit = elm_genlist_selected_item_get(mng.genlist);
-   glit_parent = elm_genlist_item_parent_get(glit);
-
-   if (!glit_parent)
-     {
-        if (!elm_genlist_item_expanded_get(glit))
-          elm_genlist_item_expanded_set(glit, true);
-
-        style_name = elm_object_item_data_get(glit);
-        glit_parent = glit;
-     }
-   else
-     style_name = elm_object_item_data_get(glit_parent);
-
-   tags = edje_edit_style_tags_list_get(ap.project->global_object, style_name);
-   EINA_LIST_FOREACH(tags, l, buf)
-     {
-        res = resource_add(buf, RESOURCE_TYPE_TAG);
-        resource_insert(&resources, res);
-     }
-   edje_edit_string_list_free(tags);
-   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &resources, true);
-
-   buf = eina_stringshare_printf(_("Add tag for style: %s"), style_name);
-   btn_res = popup_want_action(buf, NULL, _add_tag_content_get,
-                               BTN_OK|BTN_CANCEL,
-                               NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
 
-   tag_name = elm_entry_entry_get(mng.popup.name);
-   edje_edit_style_tag_add(ap.project->global_object, style_name, tag_name);
-   if (!edje_edit_style_tag_value_set(ap.project->global_object, style_name, tag_name, ""))
+   tpd->tag_name = elm_entry_entry_get(mng.popup.name);
+   edje_edit_style_tag_add(ap.project->global_object, tpd->style_name, tpd->tag_name);
+   if (!edje_edit_style_tag_value_set(ap.project->global_object, tpd->style_name, tpd->tag_name, ""))
      {
         WARN(_("Failed to add tag value. Tag will be deleted"));
-        edje_edit_style_tag_del(ap.project->global_object, style_name, tag_name);
-        return;
+        edje_edit_style_tag_del(ap.project->global_object, tpd->style_name, tpd->tag_name);
+        goto close;
      }
-   glit = elm_genlist_item_append(mng.genlist, _itc_tags,
-                                      tag_name, glit_parent,
+   tpd->glit = elm_genlist_item_append(mng.genlist, _itc_tags,
+                                      tpd->tag_name, tpd->glit_parent,
                                       ELM_GENLIST_ITEM_NONE,
                                       _on_glit_selected, NULL);
-   elm_object_item_data_set(glit, (void *)tag_name);
-   elm_genlist_item_selected_set(glit, true);
-   elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+   elm_object_item_data_set(tpd->glit, (void *)tpd->tag_name);
+   elm_genlist_item_selected_set(tpd->glit, true);
+   elm_genlist_item_bring_in(tpd->glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
 close:
-   EINA_LIST_FREE(resources, res)
+   EINA_LIST_FREE(tpd->resources, res)
       resource_free(res);
    evas_object_del(mng.popup.item);
    resource_name_validator_free(mng.popup.validator);
+   free(tpd);
+}
+static void
+_tag_add_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Resource *res;
+   Eina_Stringshare *buf;
+   Eina_List *tags, *l;
+   Evas_Object *popup;
+   Tag_Popup_Data * tpd = mem_calloc(1, sizeof(Tag_Popup_Data));
+
+   tpd->glit = elm_genlist_selected_item_get(mng.genlist);
+   tpd->glit_parent = elm_genlist_item_parent_get(tpd->glit);
+
+   if (!tpd->glit_parent)
+     {
+        if (!elm_genlist_item_expanded_get(tpd->glit))
+          elm_genlist_item_expanded_set(tpd->glit, true);
+
+        tpd->style_name = elm_object_item_data_get(tpd->glit);
+        tpd->glit_parent = tpd->glit;
+     }
+   else
+     tpd->style_name = elm_object_item_data_get(tpd->glit_parent);
+
+   tags = edje_edit_style_tags_list_get(ap.project->global_object, tpd->style_name);
+   EINA_LIST_FOREACH(tags, l, buf)
+     {
+        res = resource_add(buf, RESOURCE_TYPE_TAG);
+        resource_insert(&tpd->resources, res);
+     }
+   edje_edit_string_list_free(tags);
+   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &tpd->resources, true);
+
+   buf = eina_stringshare_printf(_("Add tag for style: %s"), tpd->style_name);
+   popup = popup_add(buf, NULL, BTN_OK|BTN_CANCEL, _add_tag_content_get, mng.popup.name);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _tag_add_popup_close_cb, tpd);
    eina_stringshare_del(buf);
 }
 
