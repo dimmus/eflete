@@ -23,7 +23,6 @@
 #include "config.h"
 #include "shortcuts.h"
 
-static Popup_Button btn_pressed;
 static Evas_Object *helper;
 static Evas_Object *fs;
 static Helper_Done_Cb dismiss_func;
@@ -35,8 +34,6 @@ static const Popup_Button _btn_append     = BTN_APPEND;
 static const Popup_Button _btn_replace    = BTN_REPLACE;
 static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
 static const Popup_Button _btn_cancel     = BTN_CANCEL;
-static Popup_Validator_Func validator     = NULL;
-static void *user_data                    = NULL;
 static Popup_Current current;
 
 struct _Search_Data
@@ -70,114 +67,6 @@ _delete_object_job(void *data)
    evas_object_del(data);
    current = POPUP_NONE;
 }
-
-static void
-_btn_cb(void *data,
-        Evas_Object *obj __UNUSED__,
-        void *ei __UNUSED__)
-{
-   btn_pressed = *((Popup_Button *)data);
-   if ((BTN_OK == btn_pressed) || (BTN_SAVE == btn_pressed) ||
-       (BTN_REPLACE == btn_pressed) || (BTN_APPEND == btn_pressed))
-     if (validator && (!validator(user_data))) return;
-   eflete_main_loop_quit();
-}
-
-#define BTN_ADD(TEXT, PLACE, DATA) \
-{ \
-   BUTTON_ADD(ap.popup, btn, TEXT); \
-   evas_object_smart_callback_add(btn, "clicked", _btn_cb, DATA); \
-   elm_object_part_content_set(ap.popup, PLACE, btn); \
-}
-
-Popup_Button
-popup_want_action(const char *title,
-                  const char *msg,
-                  Popup_Content_Get_Func content_get,
-                  Popup_Button popup_btns,
-                  Popup_Validator_Func func,
-                  void *data)
-
-{
-   Evas_Object *btn;
-   Evas_Object *to_focus = NULL;
-
-   /* only one content will be setted to ap.popup: or message, or used content */
-   assert((msg != NULL) != (content_get != NULL));
-   validator = func;
-   user_data = data;
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-
-   ap.popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
-   elm_object_part_text_set(ap.popup, "title,text", title);
-   elm_popup_content_text_wrap_type_set(ap.popup, ELM_WRAP_WORD);
-   if (popup_btns & BTN_OK)
-     {
-        BTN_ADD(_("Ok"), "button1", &_btn_ok);
-        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_DONE, _btn_cb, &_btn_ok);
-     }
-
-   if (popup_btns & BTN_SAVE)
-     BTN_ADD(_("Save"), "button1", &_btn_save)
-
-   if (popup_btns & BTN_APPEND)
-     BTN_ADD(_("Append"), "button1", &_btn_append)
-
-   if ((popup_btns & BTN_REPLACE) && (popup_btns & BTN_APPEND))
-     BTN_ADD(_("Replace"), "button2", &_btn_replace)
-   else if (popup_btns & BTN_REPLACE)
-     BTN_ADD(_("Replace"), "button1", &_btn_replace)
-
-   if (popup_btns & BTN_DONT_SAVE)
-     BTN_ADD(_("Don't save"), "button2", &_btn_dont_save)
-
-   if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
-     BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
-   else if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_APPEND))
-     {
-        BTN_ADD(_("Cancel"), "button3", &_btn_cancel);
-        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_CANCEL, _btn_cb, &_btn_cancel);
-     }
-   else if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_APPEND))
-     BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
-   else if (popup_btns & BTN_CANCEL)
-     {
-        BTN_ADD(_("Cancel"), "button2", &_btn_cancel);
-        evas_object_smart_callback_add(ap.popup, SIGNAL_SHORTCUT_CANCEL, _btn_cb, &_btn_cancel);
-     }
-
-   if (msg) elm_object_text_set(ap.popup, msg);
-   if (content_get)
-     {
-        Evas_Object *content = content_get(data, &to_focus);
-        elm_object_content_set(ap.popup, content);
-     }
-
-   if (to_focus) elm_object_focus_set(to_focus, true);
-   evas_object_show(ap.popup);
-
-   TODO("Fix and refactor this weird behaviour. This is terrible decision")
-   if (data) /* this is probably entry now */
-     evas_object_smart_callback_call(data, "changed", NULL);
-
-   shortcuts_object_push(ap.popup);
-   eflete_main_loop_begin();
-   shortcuts_object_check_pop(ap.popup);
-
-   /* clear up before return the presed button */
-   elm_object_content_unset(ap.popup);
-   evas_object_del(ap.popup);
-   ap.popup = NULL;
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-
-   validator = NULL;
-   user_data = NULL;
-
-   return btn_pressed;
-}
-#undef BTN_ADD
 
 void
 popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)

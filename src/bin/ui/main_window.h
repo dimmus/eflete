@@ -342,14 +342,6 @@ project_close(void);
  *
  * @ingroup Window
  */
-Popup_Button
-popup_want_action(const char *title,
-                  const char *msg,
-                  Popup_Content_Get_Func content_get,
-                  Popup_Button p_btns,
-                  Popup_Validator_Func func,
-                  void *data);
-
 Evas_Object *
 popup_add(const char *title,
           const char *msg,
