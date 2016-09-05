@@ -74,6 +74,11 @@ _gm_part_item_add(Part2 *part,
 Part2 *
 _gm_part_add(Project *project, Group2 *group, const char *part_name);
 
+Group_Data2 *
+_gm_group_data_add(Project *pro,
+                   Group2 *group,
+                   Eina_Stringshare *group_data_name);
+
 Program2 *
 _program_load(Group2 *group, Eina_Stringshare *program_name);
 

@@ -543,7 +543,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    return part;
 }
 
-void
+Group_Data2 *
 _gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_name)
 {
    Group_Data2 *group_data;
@@ -558,6 +558,8 @@ _gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_nam
    group_data->source = edje_edit_group_data_value_get(group->edit_object,
                                                        group_data_name);
    group->data_items = eina_list_append(group->data_items, group_data);
+
+   return group_data;
 }
 
 Program2 *

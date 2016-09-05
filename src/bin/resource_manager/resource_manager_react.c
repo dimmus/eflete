@@ -287,12 +287,19 @@ _part_renamed(void *data,
 }
 
 static void
-_group_data_renamed(void *data __UNUSED__,
+_group_data_renamed(void *data,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   printf("Rename group data from %s to %s \n", ren->old_name, ren->new_name);
+   Group_Data2 *group_data;
+   Project *pro = (Project *)data;
+
+   Group2 *group = _get_current_group2(pro);
+   group_data = (Group_Data2 *)resource_manager_find(group->data_items, ren->old_name);
+
+   eina_stringshare_del(group_data->common.name);
+   group_data->common.name = eina_stringshare_add(ren->new_name);
 }
 static void
 _editor_part_added_cb(void *data __UNUSED__,
@@ -389,21 +396,32 @@ _editor_program_deleted_cb(void *data,
 }
 
 static void
-_editor_group_data_added_cb(void *data __UNUSED__,
+_editor_group_data_added_cb(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
-   printf("Added new group data %s \n", group_data_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+
+   _gm_group_data_add(pro, group, group_data_name);
 }
 
 static void
-_editor_group_data_deleted_cb(void *data __UNUSED__,
+_editor_group_data_deleted_cb(void *data,
                               Evas_Object *obj __UNUSED__,
                               void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
-   printf("Deleted group data %s \n", group_data_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Group_Data2 *group_data = (Group_Data2 *)resource_manager_find(group->data_items, group_data_name);
+
+   eina_stringshare_del(group_data->common.name);
+   eina_stringshare_del(group_data->source);
+
+   group->data_items = eina_list_remove(group->data_items, group_data);
+   free(group_data);
 }
 
 static void
