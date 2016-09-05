@@ -311,88 +311,45 @@ _editor_part_deleted_cb(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *event_info)
 {
-   Resource2 *res, *current_part, *current_state, *current_item;
    State2 *state;
    Part2 *part;
    Part_Item2 *item;
-   Eina_List *l;
    Eina_Stringshare *part_name = event_info;
    Project *pro = (Project *)data;
 
    Group2 *group = _get_current_group2(pro);
    part = (Part2 *)resource_manager_find(group->parts, part_name);
-   current_part = (Resource2 *)part;
 
    TODO("Apply more complex work (with warning and error maybe?) with parts which are used by other resources later")
    /* step by step */
-   /* 1. remove part from all "used_in" */
-   EINA_LIST_FOREACH(part->common.used_in, l, res)
-     {
-        _resource_usage_resource_del(res, current_part);
-     }
-   /* 2. remove part from all "uses___" */
-   EINA_LIST_FOREACH(part->common.uses___, l, res)
-     {
-        _resource_usage_resource_del(current_part, res);
-     }
-   /* 3. cleanup all "used_in" */
-   eina_list_free(part->common.used_in);
-   /* 4. cleanup all "uses___" */
-   eina_list_free(part->common.uses___);
+   /* 1. remove part from all "used_in" and "uses___" and cleanup */
+   _resource_usage_dependency_cleanup((Resource2 *)part);
    eina_stringshare_del(part->common.name);
-
    EINA_LIST_FREE(part->states, state)
      {
-        current_state = (Resource2 *)state;
-        /* 5.1. remove each state from all "used_in" */
-        EINA_LIST_FOREACH(state->common.used_in, l, res)
-          {
-             _resource_usage_resource_del(res, current_state);
-          }
-        /* 5.2. remove each state from all "uses___" */
-        EINA_LIST_FOREACH(state->common.uses___, l, res)
-          {
-             _resource_usage_resource_del(current_state, res);
-          }
-        /* 5.3. cleanup state's used_in and uses___ */
-        eina_stringshare_del(state->common.name);
-        eina_list_free(state->common.used_in);
-        eina_list_free(state->common.uses___);
-        /* 5.4. cleanup list of tweens */
-        eina_stringshare_del(state->normal);
+        /* 2.1. remove each state from all "used_in" and "uses___" and cleanup */
+        _resource_usage_dependency_cleanup((Resource2 *)state);
+        /* 2.2. cleanup list of tweens */
         eina_list_free(state->tweens);
-        /* 5.5. free state */
+        /* 2.3. free state */
+        eina_stringshare_del(state->common.name);
+        eina_stringshare_del(state->normal);
         free(state);
      }
-
-   /* 6. cleanup state list */
-   eina_list_free(part->states);
-
    EINA_LIST_FREE(part->items, item)
      {
-        current_item = (Resource2 *)item;
-        /* 7.1. remove each item from all "used_in" */
-        EINA_LIST_FOREACH(item->common.used_in, l, res)
-          {
-             _resource_usage_resource_del(res, current_item);
-          }
-        /* 7.2. remove each item from all "uses___" */
-        EINA_LIST_FOREACH(item->common.uses___, l, res)
-          {
-             _resource_usage_resource_del(current_item, res);
-          }
-        /* 7.3. cleanup item's used_in and uses___ */
+        /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
+        _resource_usage_dependency_cleanup((Resource2 *)item);
+        /* 3.2. free item */
         eina_stringshare_del(item->common.name);
-        eina_list_free(item->common.used_in);
-        eina_list_free(item->common.uses___);
-        /* 7.5. free item */
         free(item);
      }
-   /* 8. cleanup items list */
+   /* 4. cleanup items and state list */
+   eina_list_free(part->states);
    eina_list_free(part->items);
-   /* 9. remove part from group->parts */
+   /* 5. remove part from group->parts */
    group->parts = eina_list_remove(group->parts, part);
-   /* 10. free part */
+   /* 6. free part */
    free(part);
 }
 

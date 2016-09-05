@@ -31,7 +31,7 @@ Eina_Bool
 _resource_usage_resource_add(Resource2 *origin, Resource2 *used);
 
 Eina_Bool
-_resource_usage_dependency_cleanup(Resource2 *origin, Resource2 *used);
+_resource_usage_dependency_cleanup(Resource2 *origin);
 
 /* RESOURCE LOADING */
 
