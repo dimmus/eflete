@@ -531,15 +531,29 @@ _editor_part_restacked_cb(void *data,
 }
 
 static void
-_editor_part_item_restacked_cb(void *data __UNUSED__,
+_editor_part_item_restacked_cb(void *data,
                                Evas_Object *obj __UNUSED__,
                                void *event_info)
 {
    const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
-   printf("Restacking from part %s part item %s related %s",
-          editor_part_item_restack->part_name,
-          editor_part_item_restack->part_item,
-          editor_part_item_restack->relative_part_item);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Part_Item2 *part_item, *relative_part_item;
+   Part2 *part = (Part2 *)resource_manager_find(group->parts,
+                                                editor_part_item_restack->part_name);
+   part_item = (Part_Item2 *)resource_manager_find(part->items,
+                                                   editor_part_item_restack->part_item);
+   relative_part_item = (Part_Item2 *)resource_manager_find(part->items,
+                                                            editor_part_item_restack->relative_part_item);
+
+   part->items = eina_list_remove(part->items, part_item);
+
+   if (relative_part_item)
+     part->items = eina_list_prepend_relative(part->items,
+                                              part_item,
+                                              relative_part_item);
+   else
+     part->items = eina_list_append(part->items, part_item);
 }
 
 static void
