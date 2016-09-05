@@ -20,18 +20,60 @@
 #include "main_window.h"
 #include "project_manager.h"
 
+typedef struct {
+   Eina_Strbuf *buf, *buf_msg;
+   const char *name;
+   const char *title;
+   const char *path;
+   Ecore_Cb func;
+   const void *data;
+} Permission_Check_Data;
+
+static void
+_exist_permission_popup_close_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Popup_Button btn_res = (Popup_Button) event_info;
+   Permission_Check_Data *pcd = data;
+   Eina_Strbuf *buf_msg;
+
+   if (btn_res == BTN_CANCEL) goto end;
+   if (!ecore_file_can_write(eina_strbuf_string_get(pcd->buf)))
+     {
+        buf_msg = eina_strbuf_new();
+        eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), pcd->name, pcd->path);
+        popup_add(pcd->title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
+        eina_strbuf_free(buf_msg);
+        goto end;
+     }
+   if (btn_res == BTN_REPLACE)
+     ecore_file_recursive_rm(eina_strbuf_string_get(pcd->buf));
+   if (pcd->func)
+      pcd->func((void *)pcd->data);
+
+end:
+   eina_strbuf_free(pcd->buf);
+   free(pcd);
+}
+
 Eina_Bool
 exist_permission_check(const char *path, const char *name,
                        const char *title, const char *msg, Eina_Bool append,
                        Ecore_Cb func,
                        const void *data)
 {
-   Eina_Strbuf *buf, *buf_msg;
-   Popup_Button btn_res;
+   Evas_Object *popup;
+   Eina_Strbuf *buf_msg;
+   Permission_Check_Data *pcd = mem_calloc(1, sizeof(Permission_Check_Data));
 
    assert(path != NULL);
    assert(name != NULL);
    assert(title != NULL);
+
+   pcd->name = name;
+   pcd->title = title;
+   pcd->path = path;
+   pcd->func = func;
+   pcd->data = data;
    /* we alwayes imported and exported project to folder by given path, means
     * that we alwayes create a new folder for project or exported source.
     * So need to check there is the folder "path/name" */
@@ -43,29 +85,22 @@ exist_permission_check(const char *path, const char *name,
         eina_strbuf_free(buf_msg);
         return false;
      }
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "%s/%s", path, name);
-   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return true;
-   if (!append)
-     btn_res = popup_want_action(title, msg, NULL,
-                                 BTN_REPLACE | BTN_CANCEL, NULL, NULL);
-   else
-     btn_res = popup_want_action(title, msg, NULL,
-                                 BTN_APPEND | BTN_REPLACE | BTN_CANCEL, NULL, NULL);
-   if (btn_res == BTN_CANCEL) return false;
-   if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
+   pcd->buf = eina_strbuf_new();
+   eina_strbuf_append_printf(pcd->buf, "%s/%s", path, name);
+   if (!ecore_file_exists(eina_strbuf_string_get(pcd->buf)))
      {
-        buf_msg = eina_strbuf_new();
-        eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
-        popup_add(title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
-        eina_strbuf_free(buf_msg);
-        return false;
+        if (pcd->func)
+          pcd->func((void *)pcd->data);
+        eina_strbuf_free(pcd->buf);
+        free(pcd);
+        return true;
      }
-   if (btn_res == BTN_REPLACE)
-     ecore_file_recursive_rm(eina_strbuf_string_get(buf));
-   if (func)
-      func((void *)data);
-   eina_strbuf_free(buf);
+   if (!append)
+     popup = popup_add(title, msg, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+   else
+     popup = popup_add(title, msg, BTN_APPEND | BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _exist_permission_popup_close_cb, pcd);
+
    return true;
 }
 
