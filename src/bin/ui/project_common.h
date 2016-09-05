@@ -21,7 +21,7 @@
 #define PROJECT_COMMON_H
 
 Eina_Bool
-exist_permission_check(const char *path, const char *name, const char *title, const char *msg, Eina_Bool append);
+exist_permission_check(const char *path, const char *name, const char *title, const char *msg, Eina_Bool append, Ecore_Cb func, const void *data);
 
 Eina_Bool
 progress_print(void *data, Eina_Stringshare *progress_string);

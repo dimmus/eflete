@@ -377,6 +377,9 @@ void
 popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabled);
 
 void
+popup_fileselector_helper_dismiss();
+
+void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
                                  Helper_Done_Cb func, void *data,
                                  Eina_Bool multi, Eina_Bool is_save);

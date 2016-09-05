@@ -463,6 +463,17 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
+_after_import_check(void *data __UNUSED__)
+{
+   ap.splash = splash_add(ap.win,
+                          _setup_open_splash,
+                          _teardown_open_splash,
+                          NULL,
+                          NULL);
+   elm_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+}
+static void
 _import(void *data __UNUSED__,
         Evas_Object *obj __UNUSED__,
         void *event_info __UNUSED__)
@@ -491,18 +502,11 @@ _import(void *data __UNUSED__,
                             elm_entry_entry_get(tab_edj.name),
                             elm_entry_entry_get(tab_edj.path));
 
-   if (!exist_permission_check(elm_entry_entry_get(tab_edj.path),
+   exist_permission_check(elm_entry_entry_get(tab_edj.path),
                                elm_entry_entry_get(tab_edj.name),
-                               _("Import edj-file"), eina_strbuf_string_get(buf), EINA_FALSE))
-     return;
+                               _("Import edj-file"), eina_strbuf_string_get(buf), EINA_FALSE,
+                               _after_import_check, NULL);
    eina_strbuf_free(buf);
-   ap.splash = splash_add(ap.win,
-                          _setup_open_splash,
-                          _teardown_open_splash,
-                          NULL,
-                          NULL);
-   elm_object_focus_set(ap.splash, true);
-   evas_object_show(ap.splash);
 }
 
 static void

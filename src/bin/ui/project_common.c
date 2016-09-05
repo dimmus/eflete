@@ -22,7 +22,9 @@
 
 Eina_Bool
 exist_permission_check(const char *path, const char *name,
-                       const char *title, const char *msg, Eina_Bool append)
+                       const char *title, const char *msg, Eina_Bool append,
+                       Ecore_Cb func,
+                       const void *data)
 {
    Eina_Strbuf *buf, *buf_msg;
    Popup_Button btn_res;
@@ -61,6 +63,8 @@ exist_permission_check(const char *path, const char *name,
      }
    if (btn_res == BTN_REPLACE)
      ecore_file_recursive_rm(eina_strbuf_string_get(buf));
+   if (func)
+      func((void *)data);
    eina_strbuf_free(buf);
    return true;
 }

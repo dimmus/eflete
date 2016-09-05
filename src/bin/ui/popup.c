@@ -481,6 +481,26 @@ _colorclass_done(void *data,
 }
 #endif
 
+void
+popup_fileselector_helper_dismiss()
+{
+   Evas_Object *follow_up = (Evas_Object *) helper;
+
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_property_follow, NULL);
+
+   if (!follow_up)
+     evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+
+   Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
+   if (helper_data) free(helper_data);
+
+   shortcuts_object_check_pop(helper);
+   ecore_job_add(_delete_object_job, helper);
+}
+
 static void
 _helper_dismiss(void *data __UNUSED__,
                 Evas_Object *obj,

@@ -510,6 +510,18 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 
 /* TAB_HOME_NEW LAYOUT */
 static void
+_after_on_create_check(void *data __UNUSED__)
+{
+   ap.splash = splash_add(ap.win,
+                          _setup_open_splash,
+                          _teardown_open_splash,
+                          _cancel_open_splash,
+                          NULL);
+   elm_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+   elm_check_state_set(tab_new.ch_all, false);
+}
+static void
 _on_create(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
@@ -530,19 +542,11 @@ _on_create(void *data __UNUSED__,
                             elm_entry_entry_get(tab_new.name),
                             elm_entry_entry_get(tab_new.path));
 
-   if (!exist_permission_check(elm_entry_entry_get(tab_new.path),
+   exist_permission_check(elm_entry_entry_get(tab_new.path),
                                elm_entry_entry_get(tab_new.name),
-                               _("New project"), eina_strbuf_string_get(buf), EINA_FALSE))
-     return;
+                               _("New project"), eina_strbuf_string_get(buf), EINA_FALSE,
+                               _after_on_create_check, NULL);
    eina_strbuf_free(buf);
-   ap.splash = splash_add(ap.win,
-                          _setup_open_splash,
-                          _teardown_open_splash,
-                          _cancel_open_splash,
-                          NULL);
-   elm_object_focus_set(ap.splash, true);
-   evas_object_show(ap.splash);
-   elm_check_state_set(tab_new.ch_all, false);
 }
 
 static void
