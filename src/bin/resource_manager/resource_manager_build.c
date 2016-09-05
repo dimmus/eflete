@@ -40,6 +40,24 @@ _resource_usage_resource_del(Resource2 *origin, Resource2 *used)
    return true;
 }
 
+Eina_Bool
+_resource_usage_dependency_cleanup(Resource2 *origin, Resource2 *used)
+{
+   Eina_List *l;
+   Resource2 *res;
+
+   EINA_LIST_FOREACH(origin->common.used_in, l, res)
+     {
+        _resource_usage_resource_del(res, used);
+     }
+   EINA_LIST_FOREACH(origin->common.uses___, l, res)
+     {
+        _resource_usage_resource_del(used, res);
+     }
+
+   return true;
+}
+
 /***********************************************/
 
 void
