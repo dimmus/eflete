@@ -4,21 +4,31 @@ group { name: "elm/genlist/base/property";
 
 group { name: "elm/genlist/item/caption/property";
    data {
-      item: "treesize" "12";
       item: "texts" "text.item.name";
+      item: "treesize" "20";
       item: "contents" "swallow.icon";
       item: "stacking" "above";
       item: "selectraise" "on";
    }
    parts {
+      part { name: "area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 24;
+            max: -1 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 5;
+               to_x: "elm.swallow.pad";
+            }
+         }
+      }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
-            rel2 {
-               relative: 0.0 1.0;
-            }
+            rel2.relative: 0.0 1.0;
          }
       }
       part { name: "swallow.icon";
@@ -32,12 +42,12 @@ group { name: "elm/genlist/item/caption/property";
             aspect_preference: VERTICAL;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 3;
                to_x: "elm.swallow.pad";
+               to_y: "area";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -1 -4;
+               to_y: "area";
             }
          }
       }
@@ -45,25 +55,25 @@ group { name: "elm/genlist/item/caption/property";
          type: TEXT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            min: 0 26;
-            color_class: "genlist_text_tree";
             align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "swallow.icon";
-            }
-            rel2 {
-               offset: -7 -1;
-            }
+            min: 0 24;
+            max: -1 24;
+            color_class: "genlist_text_tree";
             text {
-               min: 1 0;
-               max: 1 0;
-               elipsis: -1;
                font: FN;
                size: 13;
+               min: 1 0;
+               max: 1 0;
                align: 0.0 0.5;
+               ellipsis: -1.0;
             }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 8 0;
+               to_x: "swallow.icon";
+               to_y: "area";
+            }
+            rel2.to_y: "area";
          }
       }
       part { name: "disclip";
@@ -79,14 +89,16 @@ group { name: "elm/genlist/item/caption/property";
 group { name: "elm/genlist/tree/caption/property";
    data {
       item: "texts" "text.item.name";
-      item: "treesize" "10";
+      item: "treesize" "20";
       item: "stacking" "above";
+      item: "states" "default changed";
       item: "selectraise" "on";
    }
    images {
       image: "Group navigator/view_arrow_right_nor.png" COMP;
       image: "Group navigator/view_arrow_down_nor.png" COMP;
    }
+
    parts {
       part { name: "elm.swallow.pad";
          type: SWALLOW;
@@ -113,10 +125,14 @@ group { name: "elm/genlist/tree/caption/property";
             }
             rel1 {
                relative: 1.0 0.0;
-               offset: 10 0;
+               offset: 8 0;
                to_x: "arrow";
             }
             rel2.offset: -7 -1;
+         }
+         description { state: "changed" 0.0;
+            inherit: "default" 0.00;
+            color_class: "genlist_text_caption_selected";
          }
       }
       part { name: "arrow";
@@ -126,15 +142,14 @@ group { name: "elm/genlist/tree/caption/property";
             max: 9 9;
             image.normal: "Group navigator/view_arrow_right_nor.png";
             rel1 {
-               relative: 1.0 0.0;
-               offset: 16 0;
+               relative: 1.33 0.0;
+               offset: 20 0;
                to_x: "elm.swallow.pad";
             }
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
             image.normal: "Group navigator/view_arrow_down_nor.png";
-            rel1.offset: 16 0;
          }
       }
       part { name: "disclip";
@@ -182,13 +197,30 @@ group { name: "elm/genlist/tree/caption/property";
 group { name: "elm/genlist/item/1swallow/property";
    data {
       item: "texts" "text.item.name text.action1.name";
-      item: "treesize" "10";
+      item: "treesize" "37";
       item: "contents" "swallow.icon swallow.action1";
       item: "stacking" "above";
-      item: "selectraise" "on";
       item: "states" "default changed";
+      item: "selectraise" "on";
    }
    parts {
+      part { name: "name.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 0 24;
+            max: 131 24;
+            rel1 {
+               relative: 1 0;
+               offset: 0 5;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "text.action1.name";
+            }
+         }
+      }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -201,20 +233,14 @@ group { name: "elm/genlist/item/1swallow/property";
          type: SWALLOW;
          repeat_events: 1;
          description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 14 14;
-            max: 14 14;
+            align: 0.0 0.5;
+            max: 0 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 0 4;
-               to_x: "elm.swallow.pad";
-            }
+            rel1.to: "name.area";
             rel2 {
                relative: 0.0 1.0;
-               offset: -4 -1;
-               to_x: "text.item.name";
+               to: "name.area";
             }
          }
       }
@@ -222,62 +248,69 @@ group { name: "elm/genlist/item/1swallow/property";
          type: TEXT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
+            align: 0.0 0.0;
             min: 0 24;
             color_class: "genlist_text_tree";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             text {
+               text: "Relative";
                font: FN;
                size: 13;
-               align: 0.0 0.0;
+               align: 0.0 0.5;
             }
             rel1 {
-               relative: 1.0 0.0;
-               offset: 25 4;
-               to_x: "elm.swallow.pad";
+               relative: 1.33 0.0;
+               offset: -1 0;
+               to_x: "swallow.icon";
+               to_y: "name.area";
             }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "text.action1.name";
-            }
+            rel2.to: "name.area";
          }
          description { state: "changed" 0.0;
-            inherit: "default" 0.0;
-            text.font: FN_B;
+            inherit: "default" 0.00;
+            align: 0.5 0.0;
+            color_class: "genlist_text_caption_selected";
          }
       }
       part { name: "text.action1.name";
          type: TEXT;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            min: 23 0;
+            max: 35 -1;
             color_class: "genlist_text_tree";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             text {
+               text: "x:";
                font: FN;
                size: 13;
-               min: 1 0;
-               max: 1 0;
-               align: 0.5 0.0;
+               align: 1.0 0.5;
             }
-            rel1.offset: 0 4;
+            rel1 {
+               to_x: "swallow.action1";
+               to_y: "name.area";
+            }
             rel2 {
                relative: 0.0 1.0;
-               offset: -4 -1;
+               offset: -6 -1;
                to_x: "swallow.action1";
+               to_y: "name.area";
             }
          }
       }
       part { name: "swallow.action1";
          type: SWALLOW;
          description { state: "default" 0.0;
-            rel1 {
-               relative: 0.4 0.0;
-               offset: 0 3;
+            align: 1.0 0.5;
+            min: 196 24;
+            max: 196 24;
+            rel1.to_y: "name.area";
+            rel2 {
+               offset: -41 -1;
+               to_y: "name.area";
             }
-            rel2.offset: -7 -1;
          }
       }
       part { name: "disclip";
@@ -307,6 +340,7 @@ group { name: "elm/genlist/item/1swallow/property";
 group { name: "elm/genlist/item/1swallow_wide/property";
    inherit: "elm/genlist/item/1swallow/property";
    parts {
+
       part { name: "swallow.action1";
          description { state: "default" 0.0;
             rel1 {
@@ -322,18 +356,55 @@ group { name: "elm/genlist/item/1swallow_wide/property";
 group { name: "elm/genlist/item/2swallow/property";
    data {
       item: "texts" "text.item.name text.action1.name text.action1.units text.action2.name text.action2.units";
-      item: "treesize" "10";
+      item: "treesize" "37";
       item: "contents" "swallow.icon swallow.action1 swallow.action2";
       item: "stacking" "above";
       item: "states" "default changed";
       item: "selectraise" "on";
    }
    parts {
+      part { name: "name.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 0 24;
+            max: 131 24;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 5;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "text.action1.name";
+            }
+         }
+      }
+      part { name: "unit_name2.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 35 0;
+            max: 35 -1;
+            rel1 {
+               to_x: "swallow.action2";
+               to_y: "name.area";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "swallow.action2";
+               to_y: "name.area";
+            }
+         }
+      }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
+            minmul: 0.0 0.0;
             rel2.relative: 0.0 1.0;
          }
       }
@@ -341,21 +412,25 @@ group { name: "elm/genlist/item/2swallow/property";
          type: SWALLOW;
          repeat_events: 1;
          description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 14 14;
-            max: 14 14;
+            align: 0.0 0.5;
+            fixed: 0 1;
+            max: 0 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 0 4;
-               to_x: "elm.swallow.pad";
-            }
+            rel1.to: "name.area";
             rel2 {
                relative: 0.0 1.0;
-               offset: -4 -1;
-               to_x: "text.item.name";
+               to: "name.area";
             }
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.00;
+            fixed: 0 0;
+            min: 14 14;
+            max: 14 14;
+            aspect: 0.0 1.0;
+            aspect_preference: BOTH;
+            rel2.offset: 0 -1;
          }
       }
       part { name: "text.item.name";
@@ -368,65 +443,66 @@ group { name: "elm/genlist/item/2swallow/property";
             text {
                font: FN;
                size: 13;
-               min: 1 0;
-               align: 0.0 0.0;
-               ellipsis: -1.0;
+               align: 0.0 0.5;
             }
             rel1 {
-               relative: 1.0 0.0;
-               offset: 25 4;
-               to_x: "elm.swallow.pad";
+               offset: -1 0;
+               relative: 1.33 0.0;
+               to_x: "swallow.icon";
+               to_y: "name.area";
             }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "text.action1.name";
-            }
+            rel2.to: "name.area";
          }
          description { state: "changed" 0.0;
             inherit: "default" 0.00;
-            align: 0.5 0.5;
-            text.font: FN_B;
+            color_class: "genlist_text_caption_selected";
          }
       }
       part { name: "text.action1.name";
          type: TEXT;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            fixed: 1 0;
+            fixed: 1 1;
+            min: 23 0;
+            max: 35 -1;
             color_class: "genlist_text_tree";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             text {
                font: FN;
                size: 13;
-               min: 1 0;
-               align: 1.0 0.0;
+               align: 1.0 0.5;
                ellipsis: -1.0;
             }
             rel1 {
-               offset: 0 4;
                to_x: "swallow.action1";
+               to_y: "name.area";
             }
             rel2 {
                relative: 0.0 1.0;
                offset: -6 -1;
                to_x: "swallow.action1";
+               to_y: "name.area";
             }
          }
       }
       part { name: "swallow.action1";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 1.0 0.5;
             fixed: 1 1;
-            min: 60 0;
-            max: 60 -1;
+            min: 76 0;
+            max: 76 -1;
             rel1 {
-               relative: 0.4 0.0;
-               offset: 0 4;
+               to_x: "unit_name2.area";
+               to_y: "name.area";
             }
-            rel2.relative: 0.55 1.0;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "unit_name2.area";
+               to_y: "name.area";
+            }
          }
       }
       part { name: "text.action1.units";
@@ -439,15 +515,14 @@ group { name: "elm/genlist/item/2swallow/property";
                font: FN;
                size: 13;
                min: 1 0;
-               align: 0.0 0.0;
+               align: 0.0 0.5;
                ellipsis: -1.0;
             }
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 5 4;
-               to_x: "swallow.action1";
+            rel1.to: "unit_name2.area";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "unit_name2.area";
             }
-            rel2.to_x: "swallow.action1";
          }
       }
       part { name: "text.action2.name";
@@ -458,50 +533,56 @@ group { name: "elm/genlist/item/2swallow/property";
             text {
                font: FN;
                size: 13;
-               min: 1 0;
-               max: 1 0;
-               align: 1.0 0.0;
-               ellipsis: -1.0;
+               align: 1.0 0.5;
             }
             rel1 {
                relative: 1.0 0.0;
-               offset: 4 4;
+               offset: 4 0;
                to_x: "text.action1.units";
+               to_y: "unit_name2.area";
             }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -6 -1;
-               to_x: "swallow.action2";
-            }
+            rel2.to: "unit_name2.area";
          }
       }
       part { name: "swallow.action2";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 1.0 0.5;
             fixed: 1 1;
-            min: 60 0;
-            max: 60 -1;
+            min: 76 0;
+            max: 76 -1;
             rel1 {
-               relative: 0.7 0.0;
-               offset: 0 4;
+               to_x: "text.action2.units";
+               to_y: "name.area";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "text.action2.units";
+               to_y: "name.area";
             }
          }
       }
       part { name: "text.action2.units";
          type: TEXT;
          description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 35 0;
+            max: 35 -1;
             color_class: "genlist_text_tree";
             text {
                font: FN;
                size: 13;
-               align: 0.0 0.0;
+               min: 1 0;
+               align: 0.0 0.5;
+               ellipsis: -1.0;
             }
             rel1 {
-               relative: 1.0 0.0;
-               offset: 5 4;
-               to_x: "swallow.action2";
+               offset: 5 0;
+               to_y: "name.area";
             }
+            rel2.to_y: "name.area";
          }
       }
       part { name: "disclip";
@@ -525,5 +606,12 @@ group { name: "elm/genlist/item/2swallow/property";
          action: STATE_SET "changed" 0.00;
          target: "text.item.name";
       }
+      program { name: "icon_show";
+         signal: "icon,show";
+         source: "elm";
+         action: STATE_SET "show" 0.00;
+         target: "swallow.icon";
+      }
    }
 }
+

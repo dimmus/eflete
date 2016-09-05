@@ -1073,8 +1073,8 @@ group { name: "elm/layout/property/color";
          type: RECT;
          description { state: "default" 0.0;
             color_class: "border";
-            min: 51 24;
-            max: 51 24;
+            min: 76 24;
+            max: 76 24;
          }
       }
        part { name: "bg";

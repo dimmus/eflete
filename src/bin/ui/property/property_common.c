@@ -543,6 +543,9 @@ _2swallow_content_get(void *data,
      {
         content = elm_image_add(obj);
         res = elm_image_file_set(content, ap.path.theme_edj, pa->icon_name);
+#ifdef HAVE_TIZEN
+        evas_object_size_hint_min_set(content, 14, 14);
+#endif
         assert(res == true);
 
         evas_object_data_set(content, PROPERTY_DATA, pd);
