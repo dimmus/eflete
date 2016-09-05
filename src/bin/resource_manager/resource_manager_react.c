@@ -354,21 +354,36 @@ _editor_part_deleted_cb(void *data,
 }
 
 static void
-_editor_program_added_cb(void *data __UNUSED__,
+_editor_program_added_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info)
 {
    Eina_Stringshare *program_name = event_info;
-   printf("Added new proram %s \n", program_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+
+   _program_load(group, program_name);
 }
 
 static void
-_editor_program_deleted_cb(void *data __UNUSED__,
+_editor_program_deleted_cb(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info)
 {
    Eina_Stringshare *program_name = event_info;
-   printf("Deleted program %s \n", program_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Program2 *program = (Program2 *)resource_manager_find(group->programs, program_name);
+
+   /* 1.1. remove each program from all "used_in" and "uses___" and cleanup */
+   _resource_usage_dependency_cleanup((Resource2 *)program);
+   /* 1.2. cleanup list of tweens */
+   eina_list_free(program->afters);
+   eina_list_free(program->targets);
+   /* 1.3. free state */
+   free(program);
+
+   group->programs = eina_list_remove(group->programs, program);
 }
 
 static void
@@ -505,12 +520,14 @@ _resource_callbacks_register(Project *project)
    /* already implemented stack of editor changes */
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
+   TODO("PART COPY - check if it is working after integration")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, project);
+   TODO("STATE COPY - check if it is working after integration")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, project);

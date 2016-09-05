@@ -69,6 +69,9 @@ _gm_state_add(Project *pro,
 Part2 *
 _gm_part_add(Project *project, Group2 *group, const char *part_name);
 
+Program2 *
+_program_load(Group2 *group, Eina_Stringshare *program_name);
+
 void
 _gm_groups_load(Project *project);
 
