@@ -446,11 +446,39 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 }
 
 static void
+_add_group_popup_close_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   Popup_Button btn_res = (Popup_Button) event_info;
+
+   if (BTN_OK == btn_res)
+     {
+        if ((!layout_p.selected) || (layout_p.selected->index == 0))
+          CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry)));
+        else
+          {
+             if (!elm_check_state_get(layout_p.check))
+               CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
+             else
+               CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
+          }
+        gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry), true);
+     }
+
+   evas_object_del(layout_p.box);
+   resource_name_validator_free(validator);
+   validator = NULL;
+   layout_p.selected = NULL;
+}
+
+
+static void
 _btn_add_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   Popup_Button btn_res;
+   Evas_Object *popup;
 
    if (!ap.project) return; /* when pressing ctrl + n without open project */
 
@@ -458,27 +486,8 @@ _btn_add_group_cb(void *data __UNUSED__,
 
    validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
    resource_name_validator_list_set(validator, &ap.project->groups, false);
-   btn_res = popup_want_action(_("Create a new layout"), NULL, _add_group_content_get,
-                               BTN_OK|BTN_CANCEL,
-                               NULL, layout_p.entry);
-   if (BTN_CANCEL == btn_res) goto close;
-
-   if ((!layout_p.selected) || (layout_p.selected->index == 0))
-     CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry)));
-   else
-     {
-        if (!elm_check_state_get(layout_p.check))
-          CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
-        else
-          CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
-     }
-   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry), true);
-
-close:
-   evas_object_del(layout_p.box);
-   resource_name_validator_free(validator);
-   validator = NULL;
-   layout_p.selected = NULL;
+   popup = popup_add(_("Create a new layout"), NULL, BTN_OK|BTN_CANCEL, _add_group_content_get, layout_p.entry);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _add_group_popup_close_cb, NULL);
 }
 
 static void
@@ -505,7 +514,8 @@ _folder_del(const char *prefix)
              else
                {
                   msg = eina_stringshare_printf(_("Can't delete alias layout \"%s\""), alias->name);
-                  popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
+                  TODO("Check if it's correct to ignore error");
+                  popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
                   eina_stringshare_del(msg);
                }
              eina_stringshare_del(tmp);
@@ -518,7 +528,8 @@ _folder_del(const char *prefix)
           {
              msg = eina_stringshare_printf(_("Can't delete layout \"%s\". "
                                             "Please close a tab with given group."), group->name);
-             popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
+             TODO("Check if it's correct to ignore error");
+             popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
              eina_stringshare_del(msg);
           }
         eina_stringshare_del(tmp);
@@ -607,10 +618,10 @@ _btn_del_group_cb(void *data __UNUSED__,
          * and delete it */
         if (group->edit_object)
           {
-             popup_want_action(_("Warning: Delete layout"),
-                               _("Cann't delete the opened layout. Please, "
-                                 "close the layout tab before delete it."),
-                               NULL, BTN_CANCEL, NULL, NULL);
+             popup_add(_("Warning: Delete layout"),
+                       _("Cann't delete the opened layout. Please, "
+                         "close the layout tab before delete it."),
+                       BTN_CANCEL, NULL, NULL);
              return;
           }
         btn_res = popup_want_action(_("Confirm delete layout"),

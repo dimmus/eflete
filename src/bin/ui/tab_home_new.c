@@ -644,7 +644,8 @@ static void
 _delayed_popup(void *data)
 {
    char *msg = data;
-   popup_want_action(_("New project"), msg, NULL, BTN_OK, NULL, NULL);
+   TODO("check and comment why delayed popup is needed here");
+   popup_add(_("New project"), msg, BTN_OK, NULL, NULL);
    free(msg);
 }
 

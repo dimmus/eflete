@@ -83,8 +83,7 @@ _open_done(void *data __UNUSED__,
 
    if (!pm_lock_check(selected))
      {
-       popup_want_action(_("Open project"), _("The given file is locked by another application"),
-                         NULL, BTN_OK, NULL, NULL);
+       popup_add(_("Open project"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
      }
 
@@ -120,19 +119,27 @@ _unselected(void *data __UNUSED__,
 }
 
 static void
-_recent_clear(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_recent_clear_popup_close_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
 {
-   Popup_Button btn_res;
-   btn_res = popup_want_action(_("Confirm clear recent list"),
-                               _("Are you sure you want to clear list of "
-                                 "recently opened projects?<br>"),
-                               NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+   Popup_Button btn_res = (Popup_Button) event_info;
    if (BTN_CANCEL == btn_res) return;
 
    config_recent_list_clear();
    _tab_open_project_recents_update();
+}
+
+static void
+_recent_clear(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *popup = popup_add(_("Confirm clear recent list"),
+                                  _("Are you sure you want to clear list of "
+                                    "recently opened projects?<br>"),
+                                  BTN_OK|BTN_CANCEL, NULL, NULL);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _recent_clear_popup_close_cb, NULL);
 }
 
 Evas_Object *
@@ -183,8 +190,7 @@ _open_recent(void *data,
 
    if (!pm_lock_check(r->path))
      {
-       popup_want_action(_("Open project"), _("The given file is locked by another application"),
-                         NULL, BTN_OK, NULL, NULL);
+       popup_add(_("Open project"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
      }
 

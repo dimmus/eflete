@@ -174,21 +174,16 @@ _add_style_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 }
 
 static void
-_style_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_style_add_popup_close_cb_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
 {
    Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
    Resource *res;
-   Popup_Button btn_res;
    const char *style_name;
    Elm_Object_Item *glit;
-   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
+   Popup_Button btn_res = (Popup_Button) event_info;
 
-   btn_res = popup_want_action(_("Add textblock style"), NULL, _add_style_content_get,
-                               BTN_OK|BTN_CANCEL,
-                               NULL, mng.popup.name);
    if (BTN_CANCEL == btn_res) goto close;
 
    style_name = elm_entry_entry_get(mng.popup.name);
@@ -215,12 +210,25 @@ _style_add_cb(void *data __UNUSED__,
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
+      ap.project->changed = true;
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 close:
    resource_name_validator_free(mng.popup.validator);
    evas_object_del(mng.popup.item);
+}
+
+static void
+_style_add_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *popup;
+   mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
+
+   popup = popup_add(_("Add textblock style"), NULL, BTN_OK|BTN_CANCEL, _add_style_content_get, mng.popup.name);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _style_add_popup_close_cb_cb, NULL);
 }
 
 Evas_Object *

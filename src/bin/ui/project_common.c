@@ -37,7 +37,7 @@ exist_permission_check(const char *path, const char *name,
      {
         buf_msg = eina_strbuf_new();
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to write '%s'"), path);
-        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, BTN_OK, NULL, NULL);
+        popup_add(title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
         return false;
      }
@@ -55,7 +55,7 @@ exist_permission_check(const char *path, const char *name,
      {
         buf_msg = eina_strbuf_new();
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
-        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, BTN_OK, NULL, NULL);
+        popup_add(title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
         return false;
      }

@@ -428,8 +428,7 @@ _import(void *data __UNUSED__,
                              elm_entry_entry_get(tab_edc.name));
    if (!pm_lock_check(eina_strbuf_string_get(buf)))
      {
-       popup_want_action(_("Import EDC-file"), _("The given file is locked by another application"),
-                         NULL, BTN_OK, NULL, NULL);
+       popup_add(_("Import EDC-file"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
      }
 

@@ -55,8 +55,7 @@ _export_dev(void *data __UNUSED__,
      {
         buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
-        popup_want_action(_("Export to develop edj-file"), eina_strbuf_string_get(buf),
-                          NULL, BTN_OK, NULL, NULL);
+        popup_add(_("Export to develop edj-file"), eina_strbuf_string_get(buf), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf);
         return false;
      }
@@ -128,8 +127,7 @@ _export_release(void *data __UNUSED__,
      {
         buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
-        popup_want_action(_("Export to develop edj-file"), eina_strbuf_string_get(buf),
-                          NULL, BTN_OK, NULL, NULL);
+        popup_add(_("Export to develop edj-file"), eina_strbuf_string_get(buf), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf);
         return false;
      }

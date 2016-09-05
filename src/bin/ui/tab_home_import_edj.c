@@ -479,8 +479,7 @@ _import(void *data __UNUSED__,
                              elm_entry_entry_get(tab_edj.name));
    if (!pm_lock_check(eina_strbuf_string_get(buf)))
      {
-       popup_want_action(_("Import EDJ-file"), _("The given file is locked by another application"),
-                         NULL, BTN_OK, NULL, NULL);
+       popup_add(_("Import EDJ-file"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
      }
 
@@ -611,7 +610,8 @@ static void
 _delayed_popup(void *data)
 {
    char *msg = data;
-   popup_want_action(_("Import edj-file"), msg, NULL, BTN_OK, NULL, NULL);
+   TODO("check and comment why delayed popup is needed here");
+   popup_add(_("Import edj-file"), msg, BTN_OK, NULL, NULL);
    free(msg);
 }
 

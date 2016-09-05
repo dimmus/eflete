@@ -94,49 +94,54 @@ _add_colorclass_content_get(void *data __UNUSED__, Evas_Object **to_focus)
 }
 
 static void
-_colorclass_add_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_colorclass_add_popup_close_cb(void *data,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info)
 {
    Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Colorclass_Resource *res;
-   Popup_Button btn_res;
+   Popup_Button btn_res = (Popup_Button)event_info;
 
    assert(edit != NULL);
 
-   mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.name_validator, &ap.project->colorclasses, true);
-   btn_res = popup_want_action(_("Create a new layout"), NULL, _add_colorclass_content_get,
-                               BTN_OK|BTN_CANCEL,
-                               NULL, mng.entry);
+   if (BTN_OK == btn_res)
+     {
+        it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+        it->name = elm_entry_entry_get(mng.entry);
 
-   if (BTN_CANCEL == btn_res) goto end;
+        res = (Colorclass_Resource *)resource_add(it->name, RESOURCE_TYPE_COLORCLASS);
+        resource_insert(&ap.project->colorclasses, (Resource *)res);
+        edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
 
-   it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-   it->name = elm_entry_entry_get(mng.entry);
+        glit_ccl = elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
+                                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
 
-   res = (Colorclass_Resource *)resource_add(it->name, RESOURCE_TYPE_COLORCLASS);
-   resource_insert(&ap.project->colorclasses, (Resource *)res);
-   edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
+        evas_object_del(mng.popup);
+        mng.popup = NULL;
 
-   glit_ccl = elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
-                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
-   elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
-
-   evas_object_del(mng.popup);
-   mng.popup = NULL;
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
-
-end:
+        CRIT_ON_FAIL(editor_save(ap.project->global_object));
+        TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
+           ap.project->changed = true;
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
    resource_name_validator_free(mng.name_validator);
    evas_object_del(mng.item);
+}
+
+static void
+_colorclass_add_cb(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *popup;
+   mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.name_validator, &ap.project->colorclasses, true);
+   popup = popup_add(_("Create a new layout"), NULL, BTN_OK|BTN_CANCEL, _add_colorclass_content_get, mng.entry);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _colorclass_add_popup_close_cb, data);
 }
 
 static void
