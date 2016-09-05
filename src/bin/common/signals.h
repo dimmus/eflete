@@ -166,6 +166,7 @@ typedef struct {
 typedef struct {
    const char *part_name;
    const char *item_name;
+   const char *source;
 } Editor_Item;
 /**
  * emited when item is added in editor.

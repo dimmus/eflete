@@ -679,9 +679,11 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
 
         event_info.part_name = eina_stringshare_add(part_name);
         event_info.item_name = eina_stringshare_add(item_name);
+        event_info.source = eina_stringshare_add(source_group);
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
         eina_stringshare_del(event_info.part_name);
         eina_stringshare_del(event_info.item_name);
+        eina_stringshare_del(event_info.source);
      }
    return true;
 }

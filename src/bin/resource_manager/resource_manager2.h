@@ -129,6 +129,7 @@ struct _State2
 struct _Part_Item2
 {
    Resource2_Internal common;
+   Eina_Stringshare *source;
    Part2 *part;
 };
 

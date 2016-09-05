@@ -106,7 +106,7 @@ _resource_free(Resource2 *res)
 void
 _resource_part_free(Part2 *res)
 {
-   Resource2 *part_res;
+   Part_Item2 *part_res;
    State2 *state;
    EINA_LIST_FREE(res->states, state)
      {
@@ -115,7 +115,11 @@ _resource_part_free(Part2 *res)
         _resource_free((Resource2 *)state);
      }
    EINA_LIST_FREE(res->items, part_res)
-      _resource_free(part_res);
+     {
+        if (part_res->source)
+          eina_stringshare_del(part_res->source);
+        _resource_free((Resource2 *)part_res);
+     }
    _resource_free((Resource2 *)res);
 }
 
