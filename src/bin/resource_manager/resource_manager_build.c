@@ -213,7 +213,7 @@ _program_dependency_load(Project *pro, Group2 *group)
         if (program->type == EDJE_ACTION_TYPE_SOUND_SAMPLE)
           {
              name = edje_edit_program_sample_name_get(group->edit_object, program->common.name);
-             res = resource_manager_find(pro->sounds, name);
+             res = resource_manager_find(pro->sounds2, name);
              if (res)
                _resource_usage_resource_add((Resource2 *)program, res);
              edje_edit_string_free(name);
@@ -221,7 +221,7 @@ _program_dependency_load(Project *pro, Group2 *group)
         if (program->type == EDJE_ACTION_TYPE_SOUND_TONE)
           {
              name = edje_edit_program_tone_name_get(group->edit_object, program->common.name);
-             res = resource_manager_find(pro->tones, name);
+             res = resource_manager_find(pro->tones2, name);
              if (res)
                _resource_usage_resource_add((Resource2 *)program, res);
              edje_edit_string_free(name);

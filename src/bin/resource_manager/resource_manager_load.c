@@ -179,7 +179,7 @@ _sound_resources_load(Project *project)
         res->common.name = eina_stringshare_add(sound_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
 
-        project->sounds = eina_list_append(project->sounds, res);
+        project->sounds2 = eina_list_append(project->sounds2, res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -303,7 +303,7 @@ _tones_resources_load(Project *project)
         res->common.type = RESOURCE2_TYPE_TONE;
         res->common.name = eina_stringshare_add(name);
         res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
-        project->tones = eina_list_append(project->tones, res);
+        project->tones2 = eina_list_append(project->tones2, res);
      }
     edje_edit_string_list_free(tones);
 

@@ -97,6 +97,8 @@ struct _Project
 
    Eina_List *groups;
    Eina_List *groups2; /* in case of resource manager testing? */
+   Eina_List *tones2;  /* in case of resource manager testing? */
+   Eina_List *sounds2; /* in case of resource manager testing? */
    Eina_List *images;
    Eina_List *image_sets;
    Eina_List *sounds;
