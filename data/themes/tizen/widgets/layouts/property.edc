@@ -1148,6 +1148,7 @@ group { name: "elm/layout/property/tween";
             align: 1.0 0.0;
             min: 18 19;
             max: 18 19;
+            rel1.offset: 0 10;
             rel2 {
                relative: 0.0 1.0;
                offset: -8 -1;
@@ -1161,6 +1162,7 @@ group { name: "elm/layout/property/tween";
             align: 1.0 0.0;
             min: 18 19;
             max: 18 19;
+            rel1.offset: 0 10;
          }
       }
       part { name: "elm.swallow.content";
@@ -1168,12 +1170,13 @@ group { name: "elm/layout/property/tween";
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 0 120;
-            max: -1 150;
+            max: -1 120;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 8;
+               offset: 0 5;
                to_y: "elm.swallow.del";
             }
+            rel2.offset: 0 -11;
          }
       }
    }
