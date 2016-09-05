@@ -21,7 +21,28 @@
 #include "resource_manager2.h"
 #include "resource_manager_private.h"
 #include "project_manager.h"
+#include "tabs.h"
 #include "string_common.h"
+
+/* TEMPORARY FUNCTION WHICH SHOULD BE DELETED AFTER RESOURCE_MANAGER2 IMPLEMENTED */
+Group2 *
+_get_current_group2(Project *pro)
+{
+   /*******************************************************/
+   /******** THIS BEHAVIOUR SHOULD BE CHANGED *************/
+   /*******************************************************/
+   /******* BECAUSE GROUP2 DIFFERENT FROM GROUP ***********/
+   /******* AND EFLETE DOESN'T WORK WITH IT YET ***********/
+   /*******************************************************/
+   Group *group = tabs_current_group_get();
+   return (Group2 *)resource_manager_find(pro->groups2, group->name);
+   /*******************************************************/
+   /*******************************************************/
+   /*******************************************************/
+   /*******************************************************/
+   /*******************************************************/
+   /*******************************************************/
+}
 
 /* CALLBACK FUNCTIONS */
 
@@ -250,12 +271,19 @@ _style_deleted(void *data __UNUSED__,
 }
 
 static void
-_part_renamed(void *data __UNUSED__,
+_part_renamed(void *data,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   printf("Rename part from %s to %s \n", ren->old_name, ren->new_name);
+   Part2 *current_part;
+   Project *pro = (Project *)data;
+
+   Group2 *group = _get_current_group2(pro);
+
+   current_part = (Part2 *)resource_manager_find(group->parts, ren->old_name);
+   eina_stringshare_del(current_part->common.name);
+   current_part->common.name = eina_stringshare_add(ren->new_name);
 }
 
 static void
@@ -272,7 +300,10 @@ _editor_part_added_cb(void *data __UNUSED__,
                       void *event_info)
 {
    Eina_Stringshare *part_name = event_info;
-   printf("Added new part %s \n", part_name);
+   Project *pro = (Project *)data;
+
+   Group2 *group = _get_current_group2(pro);
+   _gm_part_add(pro, group, part_name);
 }
 
 static void

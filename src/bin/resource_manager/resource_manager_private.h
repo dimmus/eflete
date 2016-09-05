@@ -56,6 +56,9 @@ _styles_resources_load(Project *project);
 Eina_Bool
 _global_data_resources_load(Project *project);
 
+Part2 *
+_gm_part_add(Project *project, Group2 *group, const char *part_name);
+
 void
 _gm_groups_load(Project *project);
 
@@ -85,9 +88,9 @@ _resource_dependency_load(Project *pro);
 /* REACTION TO EDITOR AND EDJE EDIT */
 
 void
-_resource_callbacks_register();
+_resource_callbacks_register(Project *project);
 
 void
-_resource_callbacks_unregister();
+_resource_callbacks_unregister(Project *project);
 
 #endif /* RESOURCE_MANAGER_PRIVATE_H */
