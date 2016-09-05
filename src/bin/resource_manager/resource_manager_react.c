@@ -504,14 +504,30 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
-_editor_part_restacked_cb(void *data __UNUSED__,
+_editor_part_restacked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info)
 {
    const Editor_Part_Restack *editor_part_restack = event_info;
-   printf("Restack part %s related to %s \n",
-          editor_part_restack->part_name,
-          editor_part_restack->relative_part_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Part2 *part, *rel_part = NULL;
+   Eina_List *rel_l;
+
+   part = (Part2 *)resource_manager_find(group->parts,
+                                         editor_part_restack->part_name);
+   if (editor_part_restack->relative_part_name)
+     rel_part = (Part2 *)resource_manager_find(group->parts,
+                                               editor_part_restack->relative_part_name);
+   part->group->parts = eina_list_remove(part->group->parts, part);
+   if (rel_part)
+     {
+        rel_l = eina_list_data_find_list(part->group->parts, rel_part);
+        assert (rel_l != NULL);
+        part->group->parts = eina_list_prepend_relative_list(part->group->parts, part, rel_l);
+     }
+   else
+     part->group->parts = eina_list_append(part->group->parts, part);
 }
 
 static void
