@@ -247,6 +247,11 @@ elm_main(int argc, char **argv)
 #endif
 
         config_load();
+        if (!ui_main_window_add())
+          {
+             app_shutdown();
+             return -1;
+          }
 
         if (reopen)
           {
@@ -351,11 +356,6 @@ run:
         ap.path.export_edj = export_edj;
         if (export_edc)
           _export_edc_path_set(export_edc);
-        if (!ui_main_window_add())
-          {
-             app_shutdown();
-             return -1;
-          }
         evas_object_show(ap.win);
         elm_run();
 #ifdef HAVE_ENVENTOR
