@@ -592,24 +592,62 @@ _group_del(void *data __UNUSED__,
 }
 
 static void
+_folder_del_popup_close_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Elm_Object_Item *glit = data;
+   Popup_Button btn_res = (Popup_Button) event_info;
+
+   if (BTN_CANCEL == btn_res) return;
+
+   _folder_del(elm_object_item_data_get(glit));
+   elm_object_disabled_set(project_navigator.btn_del, true);
+}
+
+static void
+_group_del_popup_close_cb(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   Eina_Stringshare *tmp, *msg;
+   Group *group = data;
+   Popup_Button btn_res = (Popup_Button) event_info;
+
+   if (BTN_CANCEL == btn_res) return;
+
+   tmp = eina_stringshare_add(group->name);
+   if (editor_group_del(ap.project->global_object, tmp))
+     gm_group_del(ap.project, group);
+   else
+     {
+        msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
+        popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
+        eina_stringshare_del(msg);
+        return;
+     }
+   eina_stringshare_del(tmp);
+
+   elm_object_disabled_set(project_navigator.btn_del, true);
+}
+
+static void
 _btn_del_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   Popup_Button btn_res;
    Group *group;
+   Evas_Object *popup;
    Elm_Object_Item *glit;
-   Eina_Stringshare *tmp, *msg;
 
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
      {
-        btn_res = popup_want_action(_("Confirm delete layouts"),
-                                    _("Are you sure you want to delete the selected layouts?<br>"
-                                      "All aliases will be delete too."),
-                                    NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
-        if (BTN_CANCEL == btn_res) return;
-        _folder_del(elm_object_item_data_get(glit));
+        popup = popup_add(_("Confirm delete layouts"),
+                          _("Are you sure you want to delete the selected layouts?<br>"
+                            "All aliases will be delete too."),
+                          BTN_OK|BTN_CANCEL, NULL, NULL);
+        evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _folder_del_popup_close_cb, glit);
      }
    else
      {
@@ -624,23 +662,12 @@ _btn_del_group_cb(void *data __UNUSED__,
                        BTN_CANCEL, NULL, NULL);
              return;
           }
-        btn_res = popup_want_action(_("Confirm delete layout"),
+        popup = popup_add(_("Confirm delete layout"),
                                     _("Are you sure you want to delete the selected layout?<br>"
                                       "All aliases will be delete too."),
-                                    NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
-        if (BTN_CANCEL == btn_res) return;
-        tmp = eina_stringshare_add(group->name);
-        if (editor_group_del(ap.project->global_object, tmp))
-          gm_group_del(ap.project, group);
-        else
-          {
-             msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
-             popup_want_action(_("Error"), msg, NULL, BTN_OK, NULL, NULL);
-             eina_stringshare_del(msg);
-          }
-        eina_stringshare_del(tmp);
+                                    BTN_OK|BTN_CANCEL, NULL, NULL);
+        evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _group_del_popup_close_cb, group);
      }
-   elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
 static void
