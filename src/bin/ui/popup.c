@@ -477,7 +477,7 @@ _colorclass_done(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   _helper_colorclass_dismiss(data, NULL, NULL, NULL);
+   _helper_colorclass_dismiss(data, helper, NULL, NULL);
 }
 #endif
 
