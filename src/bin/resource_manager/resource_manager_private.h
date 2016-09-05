@@ -59,6 +59,13 @@ _styles_resources_load(Project *project);
 Eina_Bool
 _global_data_resources_load(Project *project);
 
+State2 *
+_gm_state_add(Project *pro,
+              Group2 *group,
+              Part2 *part,
+              const char *state_name,
+              double state_value);
+
 Part2 *
 _gm_part_add(Project *project, Group2 *group, const char *part_name);
 

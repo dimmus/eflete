@@ -413,18 +413,36 @@ _editor_state_added_cb(void *data __UNUSED__,
                        void *event_info)
 {
    const Editor_State *editor_state = event_info;
-   printf("Added to part %s new state %s %f \n", editor_state->part_name,
-          editor_state->state_name, editor_state->state_value);
+   Project *pro = (Project *)data;
+   Part2 *part;
+   Group2 *group = _get_current_group2(pro);
+
+   part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
+   _gm_state_add(pro, group, part, editor_state->state_name, editor_state->state_value);
 }
 
 static void
-_editor_state_deleted_cb(void *data __UNUSED__,
+_editor_state_deleted_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info)
 {
    const Editor_State *editor_state = event_info;
-   printf("Deleted from part %s new state %s %f \n", editor_state->part_name,
-          editor_state->state_name, editor_state->state_value);
+   Project *pro = (Project *)data;
+   Part2 *part;
+   State2 *state;
+   Group2 *group = _get_current_group2(pro);
+
+   part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
+   state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
+
+   /* 2.1. remove each state from all "used_in" and "uses___" and cleanup */
+   _resource_usage_dependency_cleanup((Resource2 *)state);
+   /* 2.2. cleanup list of tweens */
+   eina_list_free(state->tweens);
+   /* 2.3. free state */
+   free(state);
+
+   part->states = eina_list_remove(part->states, state);
 }
 
 static void
