@@ -27,21 +27,6 @@
 
 App_Data ap;
 
-static Eina_Bool do_block = true;
-
-void
-eflete_main_loop_begin(void)
-{
-   while (do_block) ecore_main_loop_iterate_may_block(0);
-   do_block = true;
-}
-
-void
-eflete_main_loop_quit(void)
-{
-   do_block = false;
-}
-
 Eina_Bool
 app_init()
 {

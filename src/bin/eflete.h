@@ -188,26 +188,6 @@ app_init(void);
 Eina_Bool
 app_shutdown(void);
 
-/**
- * Start nested not blocked ecore main loop.
- *
- * @note Master Raster add to ecore_main_loop_begin the hard check to nested
- * main loops. Now have no time to remake our popup behavior, and add this
- * crutch. In further need to delete it.
- *
- * @ingroup Eflete
- */
-void
-eflete_main_loop_begin(void);
-
-/**
- * End nested main loop.
- *
- * @ingroup Eflete
- */
-void
-eflete_main_loop_quit(void);
-
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \
    IMG = edje_object_add(PARENT); \
