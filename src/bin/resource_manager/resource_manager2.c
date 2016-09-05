@@ -89,7 +89,7 @@ resource_manager_init(Project *project)
 
    _resource_dependency_load(project);
 
-   _resource_callbacks_register();
+   _resource_callbacks_register(project);
 
    return false;
 }
@@ -188,7 +188,7 @@ resource_manager_shutdown(Project *pro)
    EINA_LIST_FREE(pro->groups2, group)
       _resource_group_free(group);
 
-   _resource_callbacks_unregister();
+   _resource_callbacks_unregister(pro);
 
    return true;
 }

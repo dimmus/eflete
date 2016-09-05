@@ -187,6 +187,69 @@ _property_attribute_changed(void *data __UNUSED__,
 }
 
 static void
+_colorclass_added(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei __UNUSED__)
+{
+}
+
+static void
+_colorclass_deleted(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *ei __UNUSED__)
+{
+}
+
+static void
+_colorclass_changed(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *ei __UNUSED__)
+{
+}
+
+static void
+_sound_added(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+}
+
+static void
+_sound_deleted(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *ei __UNUSED__)
+{
+}
+
+static void
+_image_added(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+}
+
+static void
+image_deleted(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *ei __UNUSED__)
+{
+}
+
+static void
+_style_added(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+}
+
+static void
+_style_deleted(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *ei __UNUSED__)
+{
+}
+
+static void
 _part_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -339,47 +402,69 @@ _group_del(void *data __UNUSED__,
 /* INITIAL FUNCTIONS */
 
 void
-_resource_callbacks_register()
+_resource_callbacks_register(Project *project)
 {
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
+   TODO("Those signals and their edje_edit API need to be implemented through editor")
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_ADDED, _colorclass_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_CHANGED, _colorclass_changed, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
 
-   TODO("Need signals to add/etc top level blocks (groups, images, sounds, color_classes etc)")
+   /* already implemented stack of editor changes */
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
 }
 
 void
-_resource_callbacks_unregister()
+_resource_callbacks_unregister(Project *project)
 {
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
+   TODO("Those signals and their edje_edit API need to be implemented through editor")
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_ADDED, _colorclass_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_CHANGED, _colorclass_changed, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
+
+   /* already implemented stack of editor changes */
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
 }
