@@ -66,6 +66,7 @@ static Elm_Gengrid_Item_Class *gic = NULL;
 static void
 _delete_object_job(void *data)
 {
+   shortcuts_object_check_pop(data);
    evas_object_del(data);
    current = POPUP_NONE;
 }
@@ -439,7 +440,7 @@ _helper_property_color_follow(void *data __UNUSED__,
 
 static void
 _helper_colorclass_dismiss(void *data,
-                           Evas_Object *obj,
+                           Evas_Object *obj __UNUSED__,
                            const char *signal __UNUSED__,
                            const char *source __UNUSED__)
 {
@@ -467,7 +468,6 @@ _helper_colorclass_dismiss(void *data,
 
    if (helper_data) free(helper_data);
 
-   shortcuts_object_check_pop(obj);
    ecore_job_add(_delete_object_job, helper);
 }
 
@@ -497,13 +497,12 @@ popup_fileselector_helper_dismiss()
    Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
 
-   shortcuts_object_check_pop(helper);
    ecore_job_add(_delete_object_job, helper);
 }
 
 static void
 _helper_dismiss(void *data __UNUSED__,
-                Evas_Object *obj,
+                Evas_Object *obj __UNUSED__,
                 const char *signal __UNUSED__,
                 const char *source __UNUSED__)
 {
@@ -520,7 +519,6 @@ _helper_dismiss(void *data __UNUSED__,
    Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
 
-   shortcuts_object_check_pop(obj);
    ecore_job_add(_delete_object_job, helper);
 }
 
