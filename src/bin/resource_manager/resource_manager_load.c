@@ -480,10 +480,28 @@ _gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, 
    return state;
 }
 
+Part_Item2 *
+_gm_part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
+{
+   Part_Item2 *item;
+
+   item = mem_calloc(1, sizeof(Part_Item2));
+   item->common.id = i;
+   item->common.type = RESOURCE2_TYPE_ITEM;
+   if (item_name)
+     {
+        item->common.name = eina_stringshare_add(item_name);
+        edje_edit_string_free(item_name);
+     }
+   item->part = part;
+   part->items = eina_list_append(part->items, item);
+
+   return item;
+}
+
 Part2 *
 _gm_part_add(Project *pro, Group2 *group, const char *part_name)
 {
-   Part_Item2 *item;
    Part2 *part;
    Eina_List *states, *l;
    Eina_Stringshare *state_name, *parsed_state_name, *item_name;
@@ -518,16 +536,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
         for (i = 0; i < items_count; i++)
           {
              item_name = edje_edit_part_item_index_name_get(group->edit_object, part_name, i);
-             item = mem_calloc(1, sizeof(Part_Item2));
-             item->common.id = i;
-             item->common.type = RESOURCE2_TYPE_ITEM;
-             if (item_name)
-               {
-                  item->common.name = eina_stringshare_add(item_name);
-                  edje_edit_string_free(item_name);
-               }
-             item->part = part;
-             part->items = eina_list_append(part->items, item);
+             _gm_part_item_add(part, item_name, i);
           }
      }
 

@@ -66,6 +66,11 @@ _gm_state_add(Project *pro,
               const char *state_name,
               double state_value);
 
+Part_Item2 *
+_gm_part_item_add(Part2 *part,
+                  Eina_Stringshare *item_name,
+                  unsigned int i);
+
 Part2 *
 _gm_part_add(Project *project, Group2 *group, const char *part_name);
 
@@ -84,16 +89,16 @@ _resource_group_edit_object_unload(Group2 *group);
 /* DEPENDENCY BUILD */
 
 void
-_item_dependency_load(Project *pro, Group2 *group, Part2 *part);
+_item_dependency_load(Project *pro, Group2 *group, Part2 *part, Part_Item2 *item);
 
 void
-_state_dependency_load(Project *pro, Group2 *group, Part2 *part);
+_state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state);
 
 void
-_part_dependency_load(Project *pro, Group2 *group);
+_part_dependency_load(Project *pro, Group2 *group, Part2 *part);
 
 void
-_program_dependency_load(Project *pro, Group2 *group);
+_program_dependency_load(Project *pro, Group2 *group, Program2 *program);
 
 void
 _resource_dependency_load(Project *pro);

@@ -303,7 +303,8 @@ _editor_part_added_cb(void *data __UNUSED__,
    Project *pro = (Project *)data;
 
    Group2 *group = _get_current_group2(pro);
-   _gm_part_add(pro, group, part_name);
+   Part2 *part = _gm_part_add(pro, group, part_name);
+   _part_dependency_load(pro, group, part);
 }
 
 static void
@@ -362,7 +363,8 @@ _editor_program_added_cb(void *data,
    Project *pro = (Project *)data;
    Group2 *group = _get_current_group2(pro);
 
-   _program_load(group, program_name);
+   Program2 *program = _program_load(group, program_name);
+   _program_dependency_load(pro, group, program);
 }
 
 static void
@@ -405,21 +407,38 @@ _editor_group_data_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_item_added_cb(void *data __UNUSED__,
+_editor_part_item_added_cb(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info)
 {
    const Editor_Item *editor_item = event_info;
-   printf("Added to part %s new item %s \n", editor_item->part_name, editor_item->item_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
+   Part_Item2 *item;
+   unsigned int count = eina_list_count(part->items);
+
+   item = _gm_part_item_add(part, editor_item->item_name, count);
+   _item_dependency_load(pro, group, part, item);
 }
 
 static void
-_editor_part_item_deleted_cb(void *data __UNUSED__,
+_editor_part_item_deleted_cb(void *data,
                              Evas_Object *obj __UNUSED__,
                              void *event_info)
 {
    const Editor_Item *editor_item = event_info;
-   printf("Deleted from part %s new item %s \n", editor_item->part_name, editor_item->item_name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
+   Resource2 *part_item = resource_manager_find(part->items, editor_item->item_name);
+
+   /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
+   _resource_usage_dependency_cleanup(part_item);
+   /* 3.2. free item */
+   free(part_item);
+
+   part->items = eina_list_remove(part->items, part_item);
 }
 
 static void
@@ -430,10 +449,12 @@ _editor_state_added_cb(void *data __UNUSED__,
    const Editor_State *editor_state = event_info;
    Project *pro = (Project *)data;
    Part2 *part;
+   State2 *state;
    Group2 *group = _get_current_group2(pro);
 
    part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
-   _gm_state_add(pro, group, part, editor_state->state_name, editor_state->state_value);
+   state = _gm_state_add(pro, group, part, editor_state->state_name, editor_state->state_value);
+   _state_dependency_load(pro, group, part, state);
 }
 
 static void
