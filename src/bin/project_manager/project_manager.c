@@ -93,15 +93,15 @@ _lock_try(const char *path, Eina_Bool check, HANDLE *pro_fd)
    DWORD  dwCreationDisposition = OPEN_EXISTING;
    DWORD  dwFlagsAndAttributes = 0;
    HANDLE  hTemplateFile = NULL;
-   HANDLE fd = CreateFile(lpFileName, 
-                          dwDesiredAccess, 
-                          dwShareMode, 
-                          lpSecurityAttributes, 
+   HANDLE fd = CreateFile(lpFileName,
+                          dwDesiredAccess,
+                          dwShareMode,
+                          lpSecurityAttributes,
                           dwCreationDisposition,
                           dwFlagsAndAttributes,
                           hTemplateFile);
-	
-   if (fd == INVALID_HANDLE_VALUE) 
+
+   if (fd == INVALID_HANDLE_VALUE)
      {
         ERR("The file '%s' cannot be opened in mode read-write!", path);
         return !check;
