@@ -1,0 +1,333 @@
+data {
+   item: "version" "110";
+   item: "edje" "310";
+   item: "data_item" "test_item";
+   file: "data_file" "sources_list.txt";
+}
+
+styles {
+   style { name:"style1";
+      base: "font=TimesNewRoman font_size=36 font_weight=3 font_width=7 color=#ffd7d7ff underline_color=#ffffffff underline2_color=#ffffffff underline_dash_color=#ff5a00ff shadow_color=#5c8e97ff glow_color=#ffffffff glow2_color=#ffffffff backing_color=#343536ff strikethrough_color=#ffff00ff align=left valign=middle wrap=char left_margin=5 right_margin=6 underline=dashed strikethrough=on backing=on style=far_shadow,top_right tabstops=40 linesize=10 linerelsize=10 underline_dash_width=24 underline_dash_gap=75 password=off";
+   }
+   style { name:"style2";
+      base: "font=Sans font_size=24 font_weight=3 font_width=0 color=#0000ffff underline_color=#ffffffff underline2_color=#ffffffff underline_dash_color=#ffffffff shadow_color=#ffffffff glow_color=#29443bff glow2_color=#ffffffff backing_color=#ffffffff strikethrough_color=#ffffffff align=middle valign=baseline wrap=none left_margin=0 right_margin=0 underline=off strikethrough=off backing=off style=none tabstops=0 linesize=0 linerelsize=0 underline_dash_width=0 underline_dash_gap=0 password=on ellipsis=0.000000";
+      tag: "tag_name" "font=Sans font_size=24 font_weight=0 font_width=0 color=#000000ff underline_color=#ffffffff underline2_color=#ffffffff underline_dash_color=#ffffffff shadow_color=#ffffffff glow_color=#ffffffff glow2_color=#ffffffff backing_color=#ffffffff strikethrough_color=#ffffffff align=auto valign=baseline wrap=none left_margin=0 right_margin=0 underline=off strikethrough=on backing=on style=none tabstops=0 linesize=0 linerelsize=143 underline_dash_width=0 underline_dash_gap=0 password=off ellipsis=0.000000";
+   }
+}
+
+images {
+   image: "dragons.svg" RAW;
+   image: "dragons_unused.svg" RAW;
+   image: "horse.jpg" RAW;
+   image: "map.png" RAW;
+   image: "treasure-chest.png" RAW;
+   image: "tux-aristocrat.svg" RAW;
+   image: "tux-ghost.svg" RAW;
+   image: "tux_in_set_only.png" RAW;
+   image: "tux-painter.svg" RAW;
+   image: "tux-pirate.svg" RAW;
+   image: "tux.png" RAW;
+   image: "tux-sailor.svg" RAW;
+   image: "tux-tarzan.svg" RAW;
+   image: "tux-wine.svg" RAW;
+   image: "not_an_image.txt" RAW;
+}
+
+collections {
+
+   sounds {
+      tone: "tone_test" 800;
+      tone: "tone_unused_test" 1000;
+      sample { name: "wav_test" RAW; source: "unclesigmund-eb-blues-riff.wav"; }
+      sample { name: "wav_unused_test" RAW; source: "unclesigmund-eb-blues-riff_unused.wav"; }
+      sample { name: "mp3_test" RAW; source: "unclesigmund-eb-blues-riff.mp3"; }
+      sample { name: "not_a_sound_test" RAW; source: "not_a_sound.txt"; }
+   }
+
+   /* sources */
+   group { "sources/red";
+      min: 10 10;
+      parts {
+         part { name: "rect"; type: RECT; description { state: "default" 0.0; color: 255 0 0 255; }}
+      }
+   }
+   group { "sources/green";
+      min: 10 10;
+      parts {
+         part { name: "rect"; type: RECT; description { state: "default" 0.0; color: 0 255 0 255; }}
+      }
+   }
+   group { "sources/blue";
+      min: 10 10;
+      parts {
+         part { name: "rect"; type: RECT; description { state: "default" 0.0; color: 0 0 255 255; }}
+      }
+   }
+
+   /* parts */
+   group { "test/parts/all_part_types";
+      parts {
+         part { name: "rect"; type: RECT;          description { rel1.relative: 0.0  0.0 ;    rel2.relative: 0.25 0.33;    state: "default" 0.0; }}
+         part { name: "img"; type: IMAGE;          description { rel1.relative: 0.25 0.0 ;    rel2.relative: 0.5  0.33;    state: "default" 0.0; image.normal:"horse.jpg";} }
+         part { name: "spacer"; type: SPACER;      description { rel1.relative: 0.5  0.0 ;    rel2.relative: 0.75 0.33;    state: "default" 0.0; } }
+         part { name: "swallow"; type: SWALLOW;    description { rel1.relative: 0.75 0.0 ;    rel2.relative: 1.0  0.33;    state: "default" 0.0; } }
+         part { name: "text"; type: TEXT;          description { rel1.relative: 0.0  0.33;    rel2.relative: 0.25 0.66;    state: "default" 0.0; } }
+         part { name: "tb"; type: TEXTBLOCK;       description { rel1.relative: 0.25 0.33;    rel2.relative: 0.5  0.66;    state: "default" 0.0; } }
+         part { name: "group"; type: GROUP;        description { rel1.relative: 0.5  0.33;    rel2.relative: 0.75 0.66;    state: "default" 0.0; } }
+         part { name: "proxy"; type: PROXY;        description { rel1.relative: 0.75 0.33;    rel2.relative: 1.0  0.66;    state: "default" 0.0; } }
+         part { name: "box"; type: BOX;            description { rel1.relative: 0.0  0.66;    rel2.relative: 0.25 1.0 ;    state: "default" 0.0; box.layout: "vertical";}
+            box.items {
+               item { name: "test"; type: GROUP; source: "sources/red";}
+               item { type: GROUP; source: "sources/green";}
+               item { type: GROUP; source: "sources/blue";}
+            }
+         }
+         part { name: "external"; type: EXTERNAL;  description { rel1.relative: 0.25 0.66;    rel2.relative: 0.5  1.0 ;    state: "default" 0.0; params.string: "label" "ExtButton";}
+            source: "elm/button";
+         }
+         part { name: "table"; type: TABLE;        description { rel1.relative: 0.5  0.66;    rel2.relative: 0.75 1.0 ;    state: "default" 0.0; table.homogeneous: TABLE; }
+            table.items {
+               item { name: "1 1"; type: GROUP; source: "sources/green"; position: 1 1;}
+               item { name: "0 0"; type: GROUP; source: "sources/red"; position: 0 0; span: 1 1; spread: 1 2;}
+            }
+         }
+      }
+   }
+
+#define TEST_PARTS_PART_STATE(TYPE, P1, S1, P2, S2) \
+   group { "test/parts/"##TYPE/one; \
+      parts { \
+         part { name: ""##TYPE; type: TYPE; P1; description { state: "default" 0.0; S1;} } \
+      } \
+   } \
+   group { "test/parts/"##TYPE##"/two"; \
+      parts { \
+         part { name: ""##TYPE##"1"; type: TYPE; P1; description { state: "default" 0.0; rel2.relative: 0.5 1.0; S1;} } \
+         part { name: ""##TYPE##"2"; type: TYPE; P2; description { state: "default" 0.0; rel1.relative: 0.5 0.0; S2;} } \
+      } \
+   }
+
+   TEST_PARTS_PART_STATE(RECT,
+         ,
+         color: 255 0 0 255;,
+         ,
+         color: 0 255 0 255;);
+   TEST_PARTS_PART_STATE(IMAGE,
+         ,
+         image.normal: "tux-pirate.svg";,
+         ,
+         image.normal: "tux-sailor.svg";);
+   TEST_PARTS_PART_STATE(SPACER,,,,);
+   TEST_PARTS_PART_STATE(SWALLOW,,,,);
+   TEST_PARTS_PART_STATE(TEXT,
+         ,
+         text {text:"Some text 1"; size:42; font: "Sans";};,
+         ,
+         text {text:"Some text 2"; size:42; font: "Sans";};);
+   TEST_PARTS_PART_STATE(TEXTBLOCK,
+         ,
+         text.style: "style1",
+         ,
+         text.style: "style2");
+   TEST_PARTS_PART_STATE(GROUP,
+         source: "sources/red";,
+         ,
+         source: "sources/green";,
+         );
+   TEST_PARTS_PART_STATE(BOX,
+         box.items { item { name: "test"; type: GROUP; source: "sources/red";} item { type: GROUP; source: "sources/green";} },
+         box.layout: "horizontal",
+         box.items { item { name: "test"; type: GROUP; source: "sources/blue";} item { type: GROUP; source: "sources/green";} },
+         box.layout: "vertical");
+   TEST_PARTS_PART_STATE(TABLE,
+         table.items { item { name: "1 1"; type: GROUP; source: "sources/green"; position: 1 1;} item { name: "0 0"; type: GROUP; source: "sources/red"; position: 0 0; span: 1 1; spread: 1 2;} },
+         table.homogeneous: TABLE,
+         table.items { item { name: "1 1"; type: GROUP; source: "sources/blue"; position: 1 1;} item { name: "0 0"; type: GROUP; source: "sources/red"; position: 0 0; span: 1 1; spread: 1 2;} },
+         table.homogeneous: TABLE)
+   TEST_PARTS_PART_STATE(EXTERNAL,
+         source: "elm/button",
+         params.string: "label" "Button 1 text";,
+         source: "elm/button",
+         params.string: "label" "Button 2 text";);
+   TEST_PARTS_PART_STATE(PROXY,,,,);
+
+   group { "test/parts/EXTERNAL/states";
+      parts {
+         part { name: "external"; type: EXTERNAL; source: "elm/button";
+            description { state: "default" 0.0; params.string: "label" "Button 1 text";}
+            description { state: "state2" 0.0; params.string: "label" "Other text";}
+         }
+      }
+   }
+   group { "test/parts/EXTERNAL/unknow_params";
+      parts {
+         part { name: "external"; type: EXTERNAL; source: "elm/button";
+            description { state: "default" 0.0; params.string: "there_is_no_such_param.realy" "oO";}
+         }
+      }
+   }
+
+   /* other */
+   group { "test/selection";
+      parts {
+         part { name: "rect1"; type: RECT; description { state: "default" 0.0; rel1.relative: 0.0 0.0; rel2.relative: 0.5 0.5; color: 255 0 0 255; } }
+         part { name: "rect2"; type: RECT; description { state: "default" 0.0; rel1.relative: 0.5 0.0; rel2.relative: 1.0 0.5; color: 0 255 0 255; } }
+         part { name: "rect3"; type: RECT; description { state: "default" 0.0; rel1.relative: 0.0 0.5; rel2.relative: 0.5 1.0; color: 0 0 255 255; } }
+         part { name: "rect4"; type: RECT; description { state: "default" 0.0; rel1.relative: 0.5 0.5; rel2.relative: 1.0 1.0; color: 255 0 255 255; } }
+      }
+   }
+   group { "test/state";
+      parts {
+         part { name: "rect1"; type: RECT;
+            description { state: "default" 0.0; rel2.relative: 0.5 1.0; color: 255 0 0 255; }
+            description { state: "a" 0.0; rel2.relative: 0.5 1.0; color: 0 255 0 255; }
+            description { state: "b" 0.0; rel2.relative: 0.5 1.0; color: 0 0 255 255; }
+            description { state: "b" 1.0; rel2.relative: 0.5 1.0; color: 0 0 255 255; }
+         }
+         part { name: "rect2"; type: RECT;
+            description { state: "default" 0.0; rel1.relative: 0.5 0.0; color: 255 0 0 255; }
+            description { state: "a" 0.0; rel1.relative: 0.5 0.0; color: 0 255 0 255; }
+            description { state: "b" 0.0; rel1.relative: 0.5 0.0; color: 0 0 255 255; }
+            description { state: "b" 1.0; rel1.relative: 0.5 0.0; color: 0 0 255 255; }
+         }
+      }
+   }
+   group { "test/parts/IMAGE/tweens";
+      parts {
+         part { name: "image_with_tweens"; type: IMAGE;
+            description { state: "default" 0.0;
+               image {
+                  tween: "tux-ghost.svg";
+                  tween: "tux-aristocrat.svg";
+                  tween: "tux-painter.svg";
+                  normal: "map.png";
+               }
+            }
+            description { state: "state2" 0.0;
+               image {
+                  tween: "treasure-chest.png";
+                  tween: "tux-sailor.svg";
+                  tween: "tux-tarzan.svg";
+                  tween: "tux-wine.svg";
+                  normal: "tux-pirate.svg";
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "to_state2";
+            signal: "mouse,down,1";
+            source: "*";
+            action: STATE_SET "state2" 0.0;
+            transition: LINEAR 2 CURRENT;
+            target: "image_with_tweens";
+         }
+         program { name: "to_default";
+            signal: "mouse,up,1";
+            source: "*";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 2 CURRENT;
+            target: "image_with_tweens";
+         }
+      }
+   }
+   group { "test/sounds";
+      parts {
+         part { name: "click_me_wav"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.2;
+               text { size: 42; text: "wav"; }
+            }
+         }
+         part { name: "click_me_wav_slow"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.2;
+               rel2.relative: 1.0 0.4;
+               text { size: 42; text: "wav(slow)"; }
+            }
+         }
+         part { name: "click_me_wav_fast"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.4;
+               rel2.relative: 1.0 0.6;
+               text { size: 42; text: "wav(fast)"; }
+            }
+         }
+         part { name: "click_me_mp3"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.6;
+               rel2.relative: 1.0 0.8;
+               text { size: 42; text: "mp3"; }
+            }
+         }
+         part { name: "click_me_tone"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.8;
+               rel2.relative: 1.0 1.0;
+               text { size: 42; text: "tone"; }
+            }
+         }
+      }
+      programs {
+         program { name: "wav";
+            signal: "mouse,clicked,1";
+            source: "click_me_wav";
+            action: PLAY_SAMPLE "wav_test" 1;
+         }
+         program { name: "wav_slow";
+            signal: "mouse,clicked,1";
+            source: "click_me_wav_slow";
+            action: PLAY_SAMPLE "wav_test" 0.5;
+         }
+         program { name: "wav_fast";
+            signal: "mouse,clicked,1";
+            source: "click_me_wav_fast";
+            action: PLAY_SAMPLE "wav_test" 2;
+         }
+         program { name: "mp3";
+            signal: "mouse,clicked,1";
+            source: "click_me_mp3";
+            action: PLAY_SAMPLE "mp3_test" 1;
+         }
+         program { name: "tone";
+            signal: "mouse,clicked,1";
+            source: "click_me_tone";
+            action: PLAY_TONE "tone_test" 0.5;
+         }
+      }
+   }
+
+   group { name: "test/wrong_files";
+      parts {
+         part { name: "click_me_not_a_sound"; type: TEXT;
+            description { state: "default"; color: 0 0 0 255;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.2;
+               text { size: 42; text: "not a sound"; }
+            }
+         }
+         /*
+         part { name: "not_an_image"; type: IMAGE;
+            description { state: "default";
+               image.normal: "not_an_image.txt";
+            }
+         }
+         */
+      }
+      programs {
+         program { name: "wav";
+            signal: "mouse,clicked,1";
+            source: "click_me_not_a_sound";
+            action: PLAY_SAMPLE "not_a_sound_test" 1;
+         }
+      }
+   }
+
+   /* group naming */
+   group { "test/group_names/group"; }
+   group { "test/group_names/group/"; }
+   group { "test/group_names/group/sub_group"; }
+   group { "/group_with_leading_slash"; }
+   group { ""; }
+}

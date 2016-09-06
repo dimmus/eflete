@@ -1,0 +1,16 @@
+file[s]                                      - license - link to source
+
+images/dragons.svg [dragons_unused.svg]      - CC0     - https://pixabay.com/en/dragon-ying-yang-circle-black-34167/
+images/tux.png [tux_in_set_only.svg]         - CC0     - https://pixabay.com/en/animal-cute-penguin-tux-160760/
+images/horse.jpg                             - CC0     - https://pixabay.com/en/horse-herd-fog-nature-wild-equine-430441/
+images/map.png                               - CC0     - https://pixabay.com/en/treasure-map-treasure-hunt-153425/
+images/tux-pirate.svg                        - CC0     - https://pixabay.com/en/penguin-pirate-tux-animal-bandana-161356/
+images/tux-sailor.svg                        - CC0     - https://pixabay.com/en/tux-anchor-animal-bird-boat-ferry-161379/
+images/tux-painter.sgv                       - CC0     - https://pixabay.com/en/painter-tux-art-artist-beret-161318/
+images/tux-tarzan.svg                        - CC0     - https://pixabay.com/en/penguin-tux-neanderthal-tarzan-161418/
+images/tux-aristocrat.svg                    - CC0     - https://pixabay.com/en/aristocrat-tux-animal-bowler-gent-161317/
+images/tux-wine.svg                          - CC0     - https://pixabay.com/en/tux-alcohol-alcoholic-animal-bird-161391/
+images/tux-ghost.svg                         - CC0     - https://pixabay.com/en/tux-animal-bird-chain-dead-fear-161365/
+images/treasure-chest.png                    - CC0     - https://pixabay.com/en/treasure-chest-box-treasure-chest-575386/
+
+sounds/unclesigmund-eb-blues-riff.wav [.mp3] - CC0     - https://www.freesound.org/people/UncleSigmund/sounds/30149/
