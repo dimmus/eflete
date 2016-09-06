@@ -627,7 +627,8 @@ property_entry_set(Evas_Object *entry, const char *text)
    if (text != NULL)
      {
         markup = elm_entry_utf8_to_markup(text);
-        if (strcmp(markup, elm_entry_entry_get(entry)) != 0)
+        if ((elm_entry_entry_get(entry)) &&
+            (strcmp(markup, elm_entry_entry_get(entry)) != 0))
           elm_entry_entry_set(entry, markup);
         free(markup);
      }
