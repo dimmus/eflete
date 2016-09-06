@@ -59,10 +59,11 @@
 #pragma GCC poison edje_edit_group_data_name_set
 
 /* Color Classes API */
-//#pragma GCC poison edje_edit_color_class_add
-//#pragma GCC poison edje_edit_color_class_del
-//#pragma GCC poison edje_edit_color_class_colors_set
+#pragma GCC poison edje_edit_color_class_add
+#pragma GCC poison edje_edit_color_class_del
+#pragma GCC poison edje_edit_color_class_colors_set
 //#pragma GCC poison edje_edit_color_class_name_set
+#pragma GCC poison edje_edit_color_class_description_set
 
 /* Text styles API */
 //#pragma GCC poison edje_edit_style_add

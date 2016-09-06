@@ -57,19 +57,20 @@ _colorclass_update(ColorClassData *selected)
                                selected->current_ccl->g3,
                                selected->current_ccl->b3,
                                selected->current_ccl->a3);
-   edje_edit_color_class_colors_set(ap.project->global_object, selected->current_ccl->name,
-                                    selected->current_ccl->r1,
-                                    selected->current_ccl->g1,
-                                    selected->current_ccl->b1,
-                                    selected->current_ccl->a1,
-                                    selected->current_ccl->r2,
-                                    selected->current_ccl->g2,
-                                    selected->current_ccl->b2,
-                                    selected->current_ccl->a2,
-                                    selected->current_ccl->r3,
-                                    selected->current_ccl->g3,
-                                    selected->current_ccl->b3,
-                                    selected->current_ccl->a3);
+   CRIT_ON_FAIL(editor_color_class_colors_set(ap.project->global_object,
+                                              selected->current_ccl->name,
+                                              selected->current_ccl->r1,
+                                              selected->current_ccl->g1,
+                                              selected->current_ccl->b1,
+                                              selected->current_ccl->a1,
+                                              selected->current_ccl->r2,
+                                              selected->current_ccl->g2,
+                                              selected->current_ccl->b2,
+                                              selected->current_ccl->a2,
+                                              selected->current_ccl->r3,
+                                              selected->current_ccl->g3,
+                                              selected->current_ccl->b3,
+                                              selected->current_ccl->a3));
 
    TODO("Remove and fix that after REAL RESOURCE MANAGER will exist")
    request.resource_type = RESOURCE_TYPE_COLORCLASS;
@@ -134,10 +135,9 @@ _change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
    text = property_entry_get(action->control);
 
    Colorclass_Item *cc_it = color_data.selected->current_ccl;
-   edje_edit_color_class_description_set(ap.project->global_object, cc_it->name, text);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   ap.project->changed = true;
+   CRIT_ON_FAIL(editor_color_class_description_set(ap.project->global_object,
+                                                   cc_it->name,
+                                                   text));
    eina_stringshare_del(text);
 }
 

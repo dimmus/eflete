@@ -142,6 +142,14 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
 
+/**
+ * emited when any attribute of top level resource (image, colorclass etc) is changed in editor.
+ * eventinfo - Pointer to Attribute
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED"
+
 typedef struct {
    const char *part_name;
    const char *state_name;
@@ -267,7 +275,7 @@ typedef struct {
 
 /**
  * emited when colorclass is added.
- * eventinfo - NULL
+ * eventinfo - colorclass'es name
  *
  * @ingroup Window
  */
@@ -275,19 +283,11 @@ typedef struct {
 
 /**
  * emited when colorclass is deleted.
- * eventinfo - NULL
+ * eventinfo - colorclass'es name
  *
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_COLORCLASS_DELETED "SIGNAL_EDITOR_COLORCLASS_DELETED"
-
-/**
- * emited when colorclass is changed.
- * eventinfo - NULL
- *
- * @ingroup Window
- */
-#define SIGNAL_EDITOR_COLORCLASS_CHANGED "SIGNAL_EDITOR_COLORCLASS_CHANGED"
 
 /**
  * emited when sound is added.

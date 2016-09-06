@@ -210,22 +210,19 @@ _property_attribute_changed(void *data __UNUSED__,
 static void
 _colorclass_added(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
-                  void *ei __UNUSED__)
+                  void *ei)
 {
+   const char *image_name = (const char *)ei;
+   printf("Colorclass added [%s] \n", image_name);
 }
 
 static void
 _colorclass_deleted(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__,
-                    void *ei __UNUSED__)
+                    void *ei)
 {
-}
-
-static void
-_colorclass_changed(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *ei __UNUSED__)
-{
+   const char *image_name = (const char *)ei;
+   printf("Colorclass deleted [%s] \n", image_name);
 }
 
 static void
@@ -586,7 +583,6 @@ _resource_callbacks_register(Project *project)
    TODO("Those signals and their edje_edit API need to be implemented through editor")
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_ADDED, _colorclass_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
-   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_CHANGED, _colorclass_changed, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
@@ -623,7 +619,6 @@ _resource_callbacks_unregister(Project *project)
    TODO("Those signals and their edje_edit API need to be implemented through editor")
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_ADDED, _colorclass_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
-   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_CHANGED, _colorclass_changed, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);

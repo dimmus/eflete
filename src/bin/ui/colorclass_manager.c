@@ -114,7 +114,7 @@ _colorclass_add_popup_close_cb(void *data,
 
         res = (Colorclass_Resource *)resource_add(it->name, RESOURCE_TYPE_COLORCLASS);
         resource_insert(&ap.project->colorclasses, (Resource *)res);
-        edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
+        CRIT_ON_FAIL(editor_color_class_add(ap.project->global_object, eina_stringshare_add(it->name), true));
 
         glit_ccl = elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
                                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -123,9 +123,6 @@ _colorclass_add_popup_close_cb(void *data,
         evas_object_del(mng.popup);
         mng.popup = NULL;
 
-        CRIT_ON_FAIL(editor_save(ap.project->global_object));
-        TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
-           ap.project->changed = true;
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
    resource_name_validator_free(mng.name_validator);
@@ -160,7 +157,7 @@ _colorclass_del_cb(void *data __UNUSED__,
    request.resource_type = RESOURCE_TYPE_COLORCLASS;
    request.name = ccl->name;
    res = resource_get(ap.project->colorclasses, &request);
-   edje_edit_color_class_del(ap.project->global_object, ccl->name);
+   CRIT_ON_FAIL(editor_color_class_del(ap.project->global_object, ccl->name, true));
    resource_remove(&ap.project->colorclasses, res);
    resource_free(res);
    elm_object_item_del(it);
@@ -202,10 +199,6 @@ _colorclass_del_cb(void *data __UNUSED__,
         elm_object_disabled_set(mng.del_button, EINA_TRUE);
         evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
      }
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
 }
 
 /* Callback on colorclass (un)selection in list */

@@ -1283,11 +1283,11 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
                                          &c1_r, &c1_g, &c1_b, &c1_a,
                                          &c2_r, &c2_g, &c2_b, &c2_a,
                                          &c3_r, &c3_g, &c3_b, &c3_a);
-        CRIT_ON_FAIL(edje_edit_color_class_add(project->global_object, data));
-        CRIT_ON_FAIL(edje_edit_color_class_colors_set(project->global_object, data,
-                                                      c1_r, c1_g, c1_b, c1_a,
-                                                      c2_r, c2_g, c2_b, c2_a,
-                                                      c3_r, c3_g, c3_b, c3_a));
+        CRIT_ON_FAIL(editor_color_class_add(project->global_object, data, false));
+        CRIT_ON_FAIL(editor_color_class_colors_set(project->global_object, data,
+                                                   c1_r, c1_g, c1_b, c1_a,
+                                                   c2_r, c2_g, c2_b, c2_a,
+                                                   c3_r, c3_g, c3_b, c3_a));
         THREAD_CONTEXT_SWITCH_END;
         res = (External_Resource *)resource_add(data, RESOURCE_TYPE_COLORCLASS);
         resource_insert(&project->colorclasses, (Resource *)res);

@@ -56,3 +56,77 @@ editor_image_del(Evas_Object *obj, const char *name, Eina_Bool notify)
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_IMAGE_DELETED, (void *)name);
    return true;
 }
+
+Eina_Bool
+editor_color_class_add(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_color_class_add(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_COLORCLASS_ADDED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_color_class_del(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_color_class_del(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_COLORCLASS_DELETED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_color_class_description_set(Evas_Object *obj, const char *name, const char *description)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   Attribute attribute = ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION;
+
+   CRIT_ON_FAIL(edje_edit_color_class_description_set(obj, name, description));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_color_class_colors_set(Evas_Object *obj, const char *name,
+                              int r, int g, int b, int a,
+                              int r2, int g2, int b2, int a2,
+                              int r3, int g3, int b3, int a3)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   Attribute attribute = ATTRIBUTE_RESOURCES_COLORCLASS_COLORS;
+
+   CRIT_ON_FAIL(edje_edit_color_class_colors_set(obj, name,
+                                                 r, g, b, a,
+                                                 r2, g2, b2, a2,
+                                                 r3, g3, b3, a3));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}

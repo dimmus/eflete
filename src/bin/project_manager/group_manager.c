@@ -413,7 +413,7 @@ gm_state_add(Project *pro, Part *part, const char *state_name, double state_valu
              /* Colorclass can be specified but not defined in edc.
                 If colorclass don't exist yet adding it */ \
              TODO("move this code to colorclass resource manager"); \
-             edje_edit_color_class_add(pro->global_object, name); \
+             CRIT_ON_FAIL(editor_color_class_add(pro->global_object, name, false)); \
              Colorclass_Resource *res = (Colorclass_Resource *)resource_add(name, RESOURCE_TYPE_COLORCLASS); \
              res->color1.r = res->color1.g = res->color1.b = res->color1.a = 255; \
              res->color2.r = res->color2.g = res->color2.b = res->color2.a = 255; \

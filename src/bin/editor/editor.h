@@ -218,6 +218,17 @@ typedef enum {
    ATTRIBUTE_LAST
 } Attribute;
 
+
+typedef enum {
+   ATTRIBUTE_RESOURCES_NONE,
+
+   ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION,
+   ATTRIBUTE_RESOURCES_COLORCLASS_COLORS,
+
+   ATTRIBUTE_RESOURCES_LAST
+} Attribute_Resource;
+
+
 void
 _editor_project_changed();
 
@@ -227,6 +238,21 @@ editor_image_add(Evas_Object *obj, const char *selected, Eina_Bool notify) EINA_
 
 Eina_Bool
 editor_image_del(Evas_Object *obj, const char *selected, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_color_class_add(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_color_class_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_color_class_description_set(Evas_Object *obj, const char *name, const char *description) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_color_class_colors_set(Evas_Object *obj, const char *name,
+                              int r, int g, int b, int a,
+                              int r2, int g2, int b2, int a2,
+                              int r3, int g3, int b3, int a3) EINA_WARN_UNUSED_RESULT;
 
 /* General */
 Eina_Bool
