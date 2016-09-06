@@ -370,6 +370,7 @@ _project_special_group_add(Project *project)
    Evas *e;
    Evas_Object *edje_edit_obj;
    Eina_List *list;
+   Eina_Bool ret;
 
    assert(project != NULL);
 
@@ -380,7 +381,8 @@ _project_special_group_add(Project *project)
    list = edje_file_collection_list(project->saved_edj);
    edje_edit_obj = edje_edit_object_add(e);
 
-   edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
+   ret = edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
+   assert(true == ret);
    CRIT_ON_FAIL(editor_internal_group_add(edje_edit_obj));
 
    edje_edit_string_list_free(list);
