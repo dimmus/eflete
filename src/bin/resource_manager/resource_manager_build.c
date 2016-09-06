@@ -70,7 +70,7 @@ _item_dependency_load(Project* pro, Group2 *group, Part2 *part, Part_Item2 *item
                                                              part->common.name,
                                                              item->common.name);
    item->source = eina_stringshare_add(source);
-   used = resource_manager_find(pro->groups2, source);
+   used = resource_manager_find(pro->RM.groups, source);
    if (used)
      _resource_usage_resource_add((Resource2 *)item, used);
    edje_edit_string_free(source);
@@ -117,7 +117,7 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
                                                  part->common.name,
                                                  state->common.name,
                                                  state->val);
-   res = resource_manager_find(pro->colorclasses, color_class);
+   res = resource_manager_find(pro->RM.colorclasses, color_class);
    if (res)
      _resource_usage_resource_add((Resource2 *)state, res);
    edje_edit_string_free(color_class);
@@ -128,19 +128,10 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
                                              part->common.name,
                                              state->common.name,
                                              state->val);
-        res = resource_manager_find(pro->fonts, font_name);
+        res = resource_manager_find(pro->RM.fonts, font_name);
         if (res)
           _resource_usage_resource_add((Resource2 *)state, res);
         edje_edit_string_free(font_name);
-
-        source = edje_edit_state_text_source_get(group->edit_object,
-                                                 part->common.name,
-                                                 state->common.name,
-                                                 state->val);
-        res = resource_manager_find(group->parts, source);
-        if (res)
-          _resource_usage_resource_add((Resource2 *)state, res);
-        edje_edit_string_free(source);
 
         source = edje_edit_state_text_text_source_get(group->edit_object,
                                                       part->common.name,
@@ -158,7 +149,7 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
                                                     part->common.name,
                                                     state->common.name,
                                                     state->val);
-        res = resource_manager_find(pro->styles, style_name);
+        res = resource_manager_find(pro->RM.styles, style_name);
         _resource_usage_resource_add((Resource2 *)state, res);
         edje_edit_string_free(style_name);
      }
@@ -179,7 +170,7 @@ _part_dependency_load(Project *pro, Group2 *group, Part2 *part)
    Eina_List *l;
 
    source = edje_edit_part_source_get(group->edit_object, part->common.name);
-   res = resource_manager_find(pro->groups2, source);
+   res = resource_manager_find(pro->RM.groups, source);
    if (res)
      _resource_usage_resource_add((Resource2 *)part, res);
    edje_edit_string_free(source);
@@ -205,7 +196,7 @@ _program_dependency_load(Project *pro, Group2 *group, Program2 *program)
    if (program->type == EDJE_ACTION_TYPE_SOUND_SAMPLE)
      {
         name = edje_edit_program_sample_name_get(group->edit_object, program->common.name);
-        res = resource_manager_find(pro->sounds2, name);
+        res = resource_manager_find(pro->RM.sounds, name);
         if (res)
           _resource_usage_resource_add((Resource2 *)program, res);
         edje_edit_string_free(name);
@@ -213,7 +204,7 @@ _program_dependency_load(Project *pro, Group2 *group, Program2 *program)
    if (program->type == EDJE_ACTION_TYPE_SOUND_TONE)
      {
         name = edje_edit_program_tone_name_get(group->edit_object, program->common.name);
-        res = resource_manager_find(pro->tones2, name);
+        res = resource_manager_find(pro->RM.tones, name);
         if (res)
           _resource_usage_resource_add((Resource2 *)program, res);
         edje_edit_string_free(name);
@@ -253,25 +244,25 @@ _resource_dependency_load(Project *pro)
    Eina_List *l1, *l2, *l;
 
    /* image_set */
-   EINA_LIST_FOREACH(pro->image_sets, l1, res)
+   EINA_LIST_FOREACH(pro->RM.image_sets, l1, res)
      {
         set_images = edje_edit_image_set_images_list_get(pro->global_object, res->common.name);
         EINA_LIST_FOREACH(set_images, l2, set_image_name)
           {
-             used = resource_manager_find(pro->images, set_image_name);
+             used = resource_manager_find(pro->RM.images, set_image_name);
              _resource_usage_resource_add(res, used);
           }
         edje_edit_string_list_free(set_images);
      }
 
    /* groups */
-   EINA_LIST_FOREACH(pro->groups2, l1, group)
+   EINA_LIST_FOREACH(pro->RM.groups, l1, group)
      {
         _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
         if (edje_edit_group_alias_is(group->edit_object, group->common.name))
           {
              main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
-             used = resource_manager_find(pro->groups2, main_group_name);
+             used = resource_manager_find(pro->RM.groups, main_group_name);
              _resource_usage_resource_add((Resource2 *)group, used);
 
              edje_edit_string_free(main_group_name);

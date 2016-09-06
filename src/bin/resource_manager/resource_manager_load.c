@@ -69,7 +69,7 @@ _image_set_resources_load(Project *project)
         res->common.type = RESOURCE2_TYPE_IMAGE_SET;
         res->common.name = eina_stringshare_add(image_name);
 
-        project->image_sets = eina_list_append(project->image_sets, res);
+        project->RM.image_sets = eina_list_append(project->RM.image_sets, res);
 
         res->common.id = edje_edit_image_set_id_get(project->global_object, image_name);
         res->is_used = false;
@@ -122,7 +122,7 @@ _image_resources_load(Project *project)
         else
           res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
 
-        project->images = eina_list_append(project->images, res);
+        project->RM.images = eina_list_append(project->RM.images, res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -179,7 +179,7 @@ _sound_resources_load(Project *project)
         res->common.name = eina_stringshare_add(sound_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
 
-        project->sounds2 = eina_list_append(project->sounds2, res);
+        project->RM.sounds = eina_list_append(project->RM.sounds, res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -252,7 +252,7 @@ _font_resources_load(Project *project __UNUSED__)
         res->common.name = eina_stringshare_add(font_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
 
-        project->fonts = eina_list_append(project->fonts, res);
+        project->RM.fonts = eina_list_append(project->RM.fonts, res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -303,7 +303,7 @@ _tones_resources_load(Project *project)
         res->common.type = RESOURCE2_TYPE_TONE;
         res->common.name = eina_stringshare_add(name);
         res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
-        project->tones2 = eina_list_append(project->tones2, res);
+        project->RM.tones = eina_list_append(project->RM.tones, res);
      }
     edje_edit_string_list_free(tones);
 
@@ -341,7 +341,7 @@ _colorclasses_resources_load(Project *project)
              free(res);
           }
         else
-          project->colorclasses = eina_list_append(project->colorclasses, res);
+          project->RM.colorclasses = eina_list_append(project->RM.colorclasses, res);
      }
 
    edje_edit_string_list_free(colorclasses);
@@ -368,7 +368,7 @@ _styles_resources_load(Project *project)
         res = mem_calloc(1, sizeof(Style2));
         res->common.type = RESOURCE2_TYPE_STYLE;
         res->common.name = eina_stringshare_add(name);
-        project->styles = eina_list_append(project->styles, res);
+        project->RM.styles = eina_list_append(project->RM.styles, res);
 
         TODO("parse all values and find dependencies in here like that:");
         /*
@@ -469,9 +469,9 @@ _gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, 
         EINA_LIST_FOREACH(tween_list, l, image_name)
           {
              if (edje_edit_image_set_exists(group->edit_object, image_name))
-               res = resource_manager_find(pro->image_sets, image_name);
+               res = resource_manager_find(pro->RM.image_sets, image_name);
              else
-               res = resource_manager_find(pro->images, image_name);
+               res = resource_manager_find(pro->RM.images, image_name);
              state->tweens = eina_list_append(state->tweens, res);
           }
         edje_edit_string_list_free(tween_list);
@@ -645,7 +645,7 @@ _gm_groups_load(Project *pro)
 
    assert(pro != NULL);
    assert(pro->dev != NULL);
-   assert(pro->groups2 == NULL);
+   assert(pro->RM.groups == NULL);
 
    collections = edje_file_collection_list(pro->dev);
 
@@ -658,10 +658,10 @@ _gm_groups_load(Project *pro)
         res = mem_calloc(1, sizeof(Group2));
         res->common.type = RESOURCE2_TYPE_GROUP;
         res->common.name = eina_stringshare_add(group_name);
-        pro->groups2 = eina_list_append(pro->groups2, res);
+        pro->RM.groups = eina_list_append(pro->RM.groups, res);
      }
    edje_file_collection_list_free(collections);
 
-   EINA_LIST_FOREACH(pro->groups2, l, res)
+   EINA_LIST_FOREACH(pro->RM.groups, l, res)
      _group_load(pro, res);
 }

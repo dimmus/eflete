@@ -159,37 +159,37 @@ resource_manager_shutdown(Project *pro)
    Group2 *group;
 
    /* image_set */
-   EINA_LIST_FREE(pro->image_sets, res)
+   EINA_LIST_FREE(pro->RM.image_sets, res)
      _resource_free(res);
-   EINA_LIST_FREE(pro->tones, res)
+   EINA_LIST_FREE(pro->RM.tones, res)
      _resource_free(res);
-   EINA_LIST_FREE(pro->colorclasses, res)
+   EINA_LIST_FREE(pro->RM.colorclasses, res)
      _resource_free(res);
-   EINA_LIST_FREE(pro->styles, res)
+   EINA_LIST_FREE(pro->RM.styles, res)
      _resource_free(res);
 
-   EINA_LIST_FREE(pro->images, res_image)
+   EINA_LIST_FREE(pro->RM.images, res_image)
      {
         eina_stringshare_del(res_image->source);
         _resource_free((Resource2 *)res_image);
      }
-   EINA_LIST_FREE(pro->sounds, res_sound)
+   EINA_LIST_FREE(pro->RM.sounds, res_sound)
      {
         eina_stringshare_del(res_sound->source);
         _resource_free((Resource2 *)res_sound);
      }
-   EINA_LIST_FREE(pro->fonts, res_font)
+   EINA_LIST_FREE(pro->RM.fonts, res_font)
      {
         eina_stringshare_del(res_font->source);
         _resource_free((Resource2 *)res_font);
      }
-   EINA_LIST_FREE(pro->global_data, res_data)
+   EINA_LIST_FREE(pro->RM.global_data, res_data)
      {
         eina_stringshare_del(res_data->source);
         _resource_free((Resource2 *)res_data);
      }
 
-   EINA_LIST_FREE(pro->groups2, group)
+   EINA_LIST_FREE(pro->RM.groups, group)
       _resource_group_free(group);
 
    _resource_callbacks_unregister(pro);

@@ -35,7 +35,7 @@ _get_current_group2(Project *pro)
    /******* AND EFLETE DOESN'T WORK WITH IT YET ***********/
    /*******************************************************/
    Group *group = tabs_current_group_get();
-   return (Group2 *)resource_manager_find(pro->groups2, group->name);
+   return (Group2 *)resource_manager_find(pro->RM.groups, group->name);
    /*******************************************************/
    /*******************************************************/
    /*******************************************************/
@@ -245,15 +245,19 @@ _sound_deleted(void *data __UNUSED__,
 static void
 _image_added(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
-             void *ei __UNUSED__)
+             void *ei)
 {
+   const char *image_name = (const char *)ei;
+   printf("We got new image [%s] \n", image_name);
 }
 
 static void
 image_deleted(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
-              void *ei __UNUSED__)
+              void *ei)
 {
+   const char *image_name = (const char *)ei;
+   printf("And old image was deleted [%s] \n", image_name);
 }
 
 static void
@@ -439,7 +443,7 @@ _editor_part_item_added_cb(void *data,
 
    /* we can use _item_dependency_load here, but let's avoid using edje edit */
    item = _gm_part_item_add(part, editor_item->item_name, count);
-   used = resource_manager_find(pro->groups2, editor_item->source);
+   used = resource_manager_find(pro->RM.groups, editor_item->source);
    if (used)
      _resource_usage_resource_add((Resource2 *)item, used);
 }

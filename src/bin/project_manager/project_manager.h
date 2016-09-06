@@ -82,23 +82,20 @@ struct _Project
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
-/*
-   Uncomment when structure filling will be done
-
    struct {
-      Eina_List *images;
-      Eina_List *sounds;
+      Eina_List *groups;
       Eina_List *tones;
+      Eina_List *sounds;
+      Eina_List *images;
+      Eina_List *image_sets;
       Eina_List *fonts;
       Eina_List *colorclasses;
       Eina_List *styles;
-   } resource_manager;
-*/
+      Eina_List *global_data;
+   } RM; /* rename to resource_manager,
+            this is just to make coding simplier. easier and faster */
 
    Eina_List *groups;
-   Eina_List *groups2; /* in case of resource manager testing? */
-   Eina_List *tones2;  /* in case of resource manager testing? */
-   Eina_List *sounds2; /* in case of resource manager testing? */
    Eina_List *images;
    Eina_List *image_sets;
    Eina_List *sounds;
