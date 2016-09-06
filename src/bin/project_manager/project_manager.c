@@ -437,7 +437,7 @@ _project_dummy_image_add(Project *project)
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
-   edje_edit_image_add(edje_edit_obj, buf);
+   CRIT_ON_FAIL(editor_image_add(edje_edit_obj, buf, false));
 
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);
@@ -1149,7 +1149,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         evas_object_del(img);
         THREAD_CONTEXT_SWITCH_END;
 
-        CRIT_ON_FAIL(edje_edit_image_add(project->global_object, res_file));
+        CRIT_ON_FAIL(editor_image_add(ap.project->global_object, res_file, false));
         res = (External_Resource *)resource_add(data, RESOURCE_TYPE_IMAGE);
         res->source = eina_stringshare_add(data);
         resource_insert(&project->images, (Resource *)res);

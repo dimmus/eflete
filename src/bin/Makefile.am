@@ -87,6 +87,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/history.c \
 ../../src/bin/editor/default.c \
 ../../src/bin/editor/editor_general.c \
+../../src/bin/editor/editor_top_level.c \
 ../../src/bin/editor/editor_group.c \
 ../../src/bin/editor/editor_part.c \
 ../../src/bin/editor/editor_states.c \

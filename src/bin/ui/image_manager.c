@@ -307,10 +307,7 @@ _on_image_done(void *data __UNUSED__,
              resource_free((Resource *)res);
              continue;
           }
-        edje_edit_image_add(ap.project->global_object, selected);
-        CRIT_ON_FAIL(editor_save(ap.project->global_object));
-        TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
-        ap.project->changed = true;
+        CRIT_ON_FAIL(editor_image_add(ap.project->global_object, selected, true));
 
         it = (Image_Item *)mem_malloc(sizeof(Image_Item));
         it->image_name = eina_stringshare_add(file_name);
@@ -382,7 +379,7 @@ _image_del_cb(void *data __UNUSED__,
           {
              ecore_file_unlink(res->path);
              elm_object_item_del(grid_item);
-             edje_edit_image_del(ap.project->global_object, it->image_name);
+             CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
              resource_remove(&ap.project->images, (Resource *)res);
              resource_free((Resource *)res);
           }
@@ -391,9 +388,6 @@ _image_del_cb(void *data __UNUSED__,
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
-   ap.project->changed = true;
    elm_object_disabled_set(mng.del_button, true);
 }
 

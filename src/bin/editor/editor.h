@@ -221,6 +221,13 @@ typedef enum {
 void
 _editor_project_changed();
 
+/* Top Level Blocks */
+Eina_Bool
+editor_image_add(Evas_Object *obj, const char *selected, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_image_del(Evas_Object *obj, const char *selected, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
 /* General */
 Eina_Bool
 editor_save(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;

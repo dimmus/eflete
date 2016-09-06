@@ -220,8 +220,8 @@
 //#pragma GCC poison edje_edit_font_del
 
 /* Images API */
-//#pragma GCC poison edje_edit_image_add
-//#pragma GCC poison edje_edit_image_del
+#pragma GCC poison edje_edit_image_add
+#pragma GCC poison edje_edit_image_del
 //#pragma GCC poison edje_edit_image_replace
 //#pragma GCC poison edje_edit_image_data_add
 #pragma GCC poison edje_edit_state_image_set
