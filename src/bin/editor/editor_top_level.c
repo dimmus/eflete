@@ -196,3 +196,86 @@ editor_sound_tone_del(Evas_Object *obj, const char *name, Eina_Bool notify)
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_TONE_DELETED, (void *)name);
    return true;
 }
+
+Eina_Bool
+editor_style_add(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_style_add(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STYLE_ADDED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_style_del(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_style_del(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STYLE_DELETED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_style_tag_add(Evas_Object *obj, const char *name, const char *tag)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_style_tag_add(obj, name, tag));
+   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED;
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_style_tag_del(Evas_Object *obj, const char *name, const char *tag)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_style_tag_del(obj, name, tag));
+   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, const char *value)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_style_tag_value_set(obj, name, tag, value));
+   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}

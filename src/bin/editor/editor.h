@@ -224,6 +224,8 @@ typedef enum {
 
    ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION,
    ATTRIBUTE_RESOURCES_COLORCLASS_COLORS,
+   ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED,
+   ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED,
 
    ATTRIBUTE_RESOURCES_LAST
 } Attribute_Resource;
@@ -265,6 +267,21 @@ editor_sound_tone_add(Evas_Object *obj, const char *name, int frq, Eina_Bool not
 
 Eina_Bool
 editor_sound_tone_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_style_add(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_style_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_style_tag_add(Evas_Object *obj, const char *name, const char *tag) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_style_tag_del(Evas_Object *obj, const char *name, const char *tag) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, const char *value) EINA_WARN_UNUSED_RESULT;
 
 /* General */
 Eina_Bool

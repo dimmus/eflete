@@ -187,13 +187,13 @@ _style_add_popup_close_cb_cb(void *data __UNUSED__,
    if (BTN_CANCEL == btn_res) goto close;
 
    style_name = elm_entry_entry_get(mng.popup.name);
-   edje_edit_style_add(ap.project->global_object, style_name);
-   if (edje_edit_style_tag_add(ap.project->global_object, style_name, STYLE_DEFAULT))
+   CRIT_ON_FAIL(editor_style_add(ap.project->global_object, style_name, true));
+   if (editor_style_tag_add(ap.project->global_object, style_name, STYLE_DEFAULT))
      {
-        if (!edje_edit_style_tag_value_set(ap.project->global_object, style_name, STYLE_DEFAULT, STYLE_DEFAULT_VALUE))
+        if (!editor_style_tag_value_set(ap.project->global_object, style_name, STYLE_DEFAULT, STYLE_DEFAULT_VALUE))
           {
              WARN(_("Failed to add tag value. Tag will be deleted"));
-             edje_edit_style_tag_del(ap.project->global_object, style_name, STYLE_DEFAULT);
+             CRIT_ON_FAIL(editor_style_tag_del(ap.project->global_object, style_name, STYLE_DEFAULT));
              goto close;
           }
      }
@@ -208,9 +208,6 @@ _style_add_popup_close_cb_cb(void *data __UNUSED__,
    res = resource_add(style_name, RESOURCE_TYPE_STYLE);
    resource_insert(&ap.project->styles, res);
 
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-      ap.project->changed = true;
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 close:
@@ -267,11 +264,12 @@ _tag_add_popup_close_cb(void *data,
    if (BTN_CANCEL == btn_res) goto close;
 
    tpd->tag_name = elm_entry_entry_get(mng.popup.name);
-   edje_edit_style_tag_add(ap.project->global_object, tpd->style_name, tpd->tag_name);
-   if (!edje_edit_style_tag_value_set(ap.project->global_object, tpd->style_name, tpd->tag_name, ""))
+
+   CRIT_ON_FAIL(editor_style_tag_add(ap.project->global_object, tpd->style_name, tpd->tag_name));
+   if (!editor_style_tag_value_set(ap.project->global_object, tpd->style_name, tpd->tag_name, ""))
      {
         WARN(_("Failed to add tag value. Tag will be deleted"));
-        edje_edit_style_tag_del(ap.project->global_object, tpd->style_name, tpd->tag_name);
+        CRIT_ON_FAIL(editor_style_tag_del(ap.project->global_object, tpd->style_name, tpd->tag_name));
         goto close;
      }
    tpd->glit = elm_genlist_item_append(mng.genlist, _itc_tags,
@@ -281,10 +279,6 @@ _tag_add_popup_close_cb(void *data,
    elm_object_item_data_set(tpd->glit, (void *)tpd->tag_name);
    elm_genlist_item_selected_set(tpd->glit, true);
    elm_genlist_item_bring_in(tpd->glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
 
 close:
    EINA_LIST_FREE(tpd->resources, res)
@@ -356,7 +350,7 @@ _btn_del_cb(void *data __UNUSED__,
         request.resource_type = RESOURCE_TYPE_STYLE;
         request.name = style_name;
         res = resource_get(ap.project->styles, &request);
-        edje_edit_style_del(edje_edit_obj, style_name);
+        CRIT_ON_FAIL(editor_style_del(edje_edit_obj, style_name, true));
         resource_remove(&ap.project->styles, res);
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -364,17 +358,13 @@ _btn_del_cb(void *data __UNUSED__,
      {
         style_name = elm_object_item_data_get(glit_parent);
         tag = elm_object_item_data_get(glit);
-        edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
+        CRIT_ON_FAIL(editor_style_tag_del(edje_edit_obj, style_name, tag));
      }
 
    elm_object_item_del(glit);
 
    elm_object_disabled_set(mng.button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
 }
 
 /* For GenList, getting the content for showing. Tag Names. */

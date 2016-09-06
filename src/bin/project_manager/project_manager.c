@@ -1309,7 +1309,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
              TODO("implement resource replacing")
                 continue;
           }
-        edje_edit_style_add(project->global_object, data);
+        CRIT_ON_FAIL(editor_style_add(project->global_object, data, false));
         THREAD_CONTEXT_SWITCH_BEGIN;
         resources1 = edje_edit_style_tags_list_get(obj, data);
         THREAD_CONTEXT_SWITCH_END;
@@ -1317,8 +1317,8 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
           {
              THREAD_CONTEXT_SWITCH_END;
              source = edje_edit_style_tag_value_get(obj, data, data1);
-             CRIT_ON_FAIL(edje_edit_style_tag_add(project->global_object, data, data1));
-             CRIT_ON_FAIL(edje_edit_style_tag_value_set(project->global_object, data, data1, source));
+             CRIT_ON_FAIL(editor_style_tag_add(project->global_object, data, data1));
+             CRIT_ON_FAIL(editor_style_tag_value_set(project->global_object, data, data1, source));
              eina_stringshare_del(source);
              THREAD_CONTEXT_SWITCH_END;
           }

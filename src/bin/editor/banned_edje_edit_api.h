@@ -72,12 +72,12 @@
 #pragma GCC poison edje_edit_sound_tone_del
 
 /* Text styles API */
-//#pragma GCC poison edje_edit_style_add
-//#pragma GCC poison edje_edit_style_del
-//#pragma GCC poison edje_edit_style_tag_value_set
+#pragma GCC poison edje_edit_style_add
+#pragma GCC poison edje_edit_style_del
+#pragma GCC poison edje_edit_style_tag_value_set
 //#pragma GCC poison edje_edit_style_tag_name_set
-//#pragma GCC poison edje_edit_style_tag_add
-//#pragma GCC poison edje_edit_style_tag_del
+#pragma GCC poison edje_edit_style_tag_add
+#pragma GCC poison edje_edit_style_tag_del
 
 /* Externals API */
 //#pragma GCC poison edje_edit_external_add

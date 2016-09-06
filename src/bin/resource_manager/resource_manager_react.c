@@ -284,6 +284,8 @@ _style_added(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *ei __UNUSED__)
 {
+   const char *name = (const char *)ei;
+   printf("style added [%s] \n", name);
 }
 
 static void
@@ -291,6 +293,8 @@ _style_deleted(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *ei __UNUSED__)
 {
+   const char *name = (const char *)ei;
+   printf("style deleted [%s] \n", name);
 }
 
 static void

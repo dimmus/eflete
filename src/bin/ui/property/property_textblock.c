@@ -396,8 +396,8 @@ _update_style()
    else
      evas_object_textblock_text_markup_set(tpd.current_style.textblock_style, TEST_TEXT);
 
-   edje_edit_style_tag_value_set(ap.project->global_object, tpd.current_style.st_name,
-                                 tpd.current_style.st_tag, eina_strbuf_string_get(tag));
+   CRIT_ON_FAIL(editor_style_tag_value_set(ap.project->global_object, tpd.current_style.st_name,
+                                           tpd.current_style.st_tag, eina_strbuf_string_get(tag)));
    eina_stringshare_del(tpd.current_style.stvalue);
    tpd.current_style.stvalue = eina_stringshare_add(eina_strbuf_string_get(tag));
    eina_strbuf_free(tag);
