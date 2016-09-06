@@ -187,7 +187,7 @@ _tone_play()
 
    if (!out)
      out = efl_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
-                           efl_event_callback_add(efl_self, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                           efl_event_callback_add(efl_added, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                                  _out_fail, NULL));
 
    ret = ecore_audio_obj_out_input_attach(out, in);
