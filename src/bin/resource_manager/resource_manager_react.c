@@ -606,8 +606,8 @@ _group_add(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info)
 {
-   Group *group = (Group *)event_info;
-   printf("New Group added [%s]", group->name);
+   Eina_Stringshare *group_name = (Eina_Stringshare *)event_info;
+   printf("New Group added [%s]\n", group_name);
 }
 
 static void
@@ -616,7 +616,7 @@ _group_del(void *data __UNUSED__,
            void *event_info)
 {
    Eina_Stringshare *group_name = (Eina_Stringshare *)event_info;
-   printf("Group deleted [%s]", group_name);
+   printf("Group deleted [%s]\n", group_name);
 }
 
 /* INITIAL FUNCTIONS */
@@ -656,8 +656,8 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_ADDED, _group_add, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DELETED, _group_del, project);
 }
 
 void
@@ -692,6 +692,6 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_ADDED, _group_add, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DELETED, _group_del, project);
 }

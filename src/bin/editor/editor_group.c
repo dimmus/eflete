@@ -27,7 +27,7 @@
 extern int _editor_signals_blocked;
 
 Eina_Bool
-editor_group_add(Evas_Object *obj, const char *name)
+editor_group_add(Evas_Object *obj, const char *name, Eina_Bool notify)
 {
    assert(obj != NULL);
    assert(name != NULL);
@@ -36,11 +36,13 @@ editor_group_add(Evas_Object *obj, const char *name)
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ADDED, (void *)name);
    return true;
 }
 
 Eina_Bool
-editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest)
+editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest, Eina_Bool notify)
 {
    assert(obj != NULL);
    assert(group_src != NULL);
@@ -50,11 +52,13 @@ editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_des
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ADDED, (void *)group_dest);
    return true;
 }
 
 Eina_Bool
-editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias)
+editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias, Eina_Bool notify)
 {
    assert(obj != NULL);
    assert(group_src != NULL);
@@ -64,11 +68,13 @@ editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *grou
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ADDED, (void *)group_alias);
    return true;
 }
 
 Eina_Bool
-editor_group_del(Evas_Object *obj, const char *name)
+editor_group_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 {
    assert(obj != NULL);
    assert(name != NULL);
@@ -78,6 +84,8 @@ editor_group_del(Evas_Object *obj, const char *name)
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DELETED, (void *)name);
    return true;
 }
 

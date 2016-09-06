@@ -206,12 +206,12 @@ _project_import_edj(void *data)
                             abort();
                          }
                     }
-                  if (!editor_group_copy(obj, arr[1], arr[2]))
+                  if (!editor_group_copy(obj, arr[1], arr[2], false))
                     {
                        CRIT("Can not copy group %s, to %s", arr[1], arr[2]);
                        abort();
                     }
-                  you_shall_not_pass_editor_signals(NULL);
+                  you_shall_pass_editor_signals(NULL);
                   eina_strbuf_append_printf(strbuf, " -g %s", arr[2]);
                   free(arr[0]);
                   free(arr);

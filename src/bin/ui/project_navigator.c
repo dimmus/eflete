@@ -455,14 +455,15 @@ _add_group_popup_close_cb(void *data __UNUSED__,
    if (BTN_OK == btn_res)
      {
         if ((!layout_p.selected) || (layout_p.selected->index == 0))
-          CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry)));
+          CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry), true));
         else
           {
              if (!elm_check_state_get(layout_p.check))
-               CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
+               CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry), true));
              else
-               CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry)));
+               CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, layout_p.selected->data, elm_entry_entry_get(layout_p.entry), true));
           }
+        TODO("Delete gm_group_add after RM integration");
         gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry), true);
      }
 
@@ -509,7 +510,7 @@ _folder_del(const char *prefix)
         EINA_LIST_FREE(group->aliases, alias)
           {
              tmp = eina_stringshare_add(alias->name);
-             if (editor_group_del(ap.project->global_object, tmp))
+             if (editor_group_del(ap.project->global_object, tmp, true))
                gm_group_del(ap.project, alias);
              else
                {
@@ -522,7 +523,7 @@ _folder_del(const char *prefix)
           }
 
         tmp = eina_stringshare_add(group->name);
-        if (editor_group_del(ap.project->global_object, tmp))
+        if (editor_group_del(ap.project->global_object, tmp, true))
           gm_group_del(ap.project, group);
         else
           {
@@ -617,14 +618,12 @@ _group_del_popup_close_cb(void *data,
    if (BTN_CANCEL == btn_res) return;
 
    tmp = eina_stringshare_add(group->name);
-   if (editor_group_del(ap.project->global_object, tmp))
+   if (editor_group_del(ap.project->global_object, tmp, true))
      gm_group_del(ap.project, group);
    else
      {
         msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->name);
-        popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
         eina_stringshare_del(msg);
-        return;
      }
    eina_stringshare_del(tmp);
 

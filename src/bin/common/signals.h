@@ -59,6 +59,14 @@
 #define SIGNAL_GROUP_ADDED "SIGNAL_GROUP_ADDED"
 
 /**
+ * emited when new group is added.
+ * eventinfo - pointer to Group object
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_GROUP_ADDED "SIGNAL_EDITOR_GROUP_ADDED"
+
+/**
  * emited when group is opened.
  * eventinfo - pointer to Group object
  *
@@ -73,6 +81,14 @@
  * @ingroup Window
  */
 #define SIGNAL_GROUP_DELETED "SIGNAL_GROUP_DELETED"
+
+/**
+ * emited when group is deleted.
+ * eventinfo - pointer to group name (stringshare)
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_GROUP_DELETED "SIGNAL_EDITOR_GROUP_DELETED"
 
 typedef struct {
    const char *old_name;

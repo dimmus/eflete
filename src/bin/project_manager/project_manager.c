@@ -1347,7 +1347,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
 
    /* apply group to project */
    THREAD_CONTEXT_SWITCH_BEGIN;
-   CRIT_ON_FAIL(editor_group_add(project->global_object, group));
+   CRIT_ON_FAIL(editor_group_add(project->global_object, group, false));
    CRIT_ON_FAIL(editor_save_all(project->global_object));
    obj = edje_edit_object_add(e);
    edje_object_file_set(obj, project->dev, group);

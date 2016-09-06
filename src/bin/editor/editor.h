@@ -294,16 +294,16 @@ Eina_Bool
 editor_internal_group_add(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_add(Evas_Object *obj, const char *name) EINA_WARN_UNUSED_RESULT;
+editor_group_add(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest) EINA_WARN_UNUSED_RESULT;
+editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias) EINA_WARN_UNUSED_RESULT;
+editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_del(Evas_Object *obj, const char *name) EINA_WARN_UNUSED_RESULT;
+editor_group_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 you_shall_not_pass_editor_signals(Change *change);
