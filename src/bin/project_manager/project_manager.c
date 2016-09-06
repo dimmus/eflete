@@ -458,6 +458,9 @@ pm_project_import_edj(const char *name,
    assert(path != NULL);
    assert(edj != NULL);
 
+   char *spath = eina_file_path_sanitize(path);
+   char *sedj = eina_file_path_sanitize(edj);
+
    Project_Thread *ptd;
    ptd = mem_calloc(1, sizeof(Project_Thread));
    ptd->func_progress = func_progress;
@@ -465,11 +468,13 @@ pm_project_import_edj(const char *name,
    ptd->data = (void *)data;
    ptd->result = PM_PROJECT_LAST;
    ptd->name = eina_stringshare_add(name);
-   ptd->path = eina_stringshare_add(path);
-   ptd->edj = eina_stringshare_add(edj);
+   ptd->path = eina_stringshare_add(spath);
+   ptd->edj = eina_stringshare_add(sedj);
    ptd->widgets = list;
 
    _project_import_edj(ptd);
+   free(spath);
+   free(sedj);
 }
 
 
@@ -486,6 +491,9 @@ pm_project_import_edc(const char *name,
    assert(path != NULL);
    assert(edc != NULL);
 
+   char *spath = eina_file_path_sanitize(path);
+   char *sedc = eina_file_path_sanitize(edc);
+
    Project_Thread *ptd;
    ptd = mem_calloc(1, sizeof(Project_Thread));
    ptd->func_progress = func_progress;
@@ -493,11 +501,13 @@ pm_project_import_edc(const char *name,
    ptd->data = (void *)data;
    ptd->result = PM_PROJECT_LAST;
    ptd->name = eina_stringshare_add(name);
-   ptd->path = eina_stringshare_add(path);
-   ptd->edc = eina_stringshare_add(edc);
+   ptd->path = eina_stringshare_add(spath);
+   ptd->edc = eina_stringshare_add(sedc);
    ptd->build_options = eina_stringshare_add(import_options);
 
    _project_import_edc(ptd);
+   free(spath);
+   free(sedc);
 }
 
 Eina_Bool
@@ -516,9 +526,11 @@ pm_project_open(const char *path,
 {
    assert(path != NULL);
 
+   char *spath = eina_file_path_sanitize(path);
+
    Project_Thread *ptd;
    ptd = mem_calloc(1, sizeof(Project_Thread));
-   ptd->path = eina_stringshare_add(path);
+   ptd->path = eina_stringshare_add(spath);
    ptd->func_progress = func_progress;
    ptd->func_end = func_end;
    ptd->data = (void *)data;
@@ -528,6 +540,8 @@ pm_project_open(const char *path,
    ecore_thread_feedback_run(_project_open_feedback_job, _project_open_feedback_cb,
                              _project_open_end_cb, _project_open_cancel_cb, ptd,
                              true);
+
+   free(spath);
 }
 
 void
