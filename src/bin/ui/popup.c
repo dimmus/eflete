@@ -28,12 +28,6 @@ static Evas_Object *fs;
 static Helper_Done_Cb dismiss_func;
 static void* func_data;
 
-static const Popup_Button _btn_ok         = BTN_OK;
-static const Popup_Button _btn_save       = BTN_SAVE;
-static const Popup_Button _btn_append     = BTN_APPEND;
-static const Popup_Button _btn_replace    = BTN_REPLACE;
-static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
-static const Popup_Button _btn_cancel     = BTN_CANCEL;
 static Popup_Current current;
 
 struct _Search_Data
