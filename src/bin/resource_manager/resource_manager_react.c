@@ -47,6 +47,24 @@ _get_current_group2(Project *pro)
 /* CALLBACK FUNCTIONS */
 
 static void
+_property_resource_attribute_changed(void *data __UNUSED__,
+                                     Evas_Object *obj __UNUSED__,
+                                     void *event_info)
+{
+   Attribute_Resource *attr = event_info;
+   printf("Some resource attribute was changed [%d] \n", (int)*attr);
+   switch ((int)*attr)
+     {
+      case ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION:
+      case ATTRIBUTE_RESOURCES_COLORCLASS_COLORS:
+      case ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
+      case ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
+      default:
+         break;
+     }
+}
+
+static void
 _property_attribute_changed(void *data __UNUSED__,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
@@ -637,6 +655,7 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
 }
@@ -672,6 +691,7 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_ADDED, _group_add, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DELETED, _group_del, project);
 }
