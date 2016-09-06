@@ -82,6 +82,12 @@ _gm_group_data_add(Project *pro,
 Program2 *
 _program_load(Group2 *group, Eina_Stringshare *program_name);
 
+Group2 *
+_gm_group_add(Project *pro, Eina_Stringshare *group_name);
+
+void
+_group_load(Project *pro, Group2 *group);
+
 void
 _gm_groups_load(Project *project);
 
@@ -104,6 +110,9 @@ _part_dependency_load(Project *pro, Group2 *group, Part2 *part);
 
 void
 _program_dependency_load(Project *pro, Group2 *group, Program2 *program);
+
+void
+_group_dependency_load(Project *pro, Group2 *group);
 
 void
 _resource_dependency_load(Project *pro);

@@ -636,6 +636,19 @@ _group_load(Project *pro, Group2 *group)
    _resource_group_edit_object_unload(group);
 }
 
+Group2 *
+_gm_group_add(Project *pro, Eina_Stringshare *group_name)
+{
+   Group2 *res;
+
+   res = mem_calloc(1, sizeof(Group2));
+   res->common.type = RESOURCE2_TYPE_GROUP;
+   res->common.name = eina_stringshare_add(group_name);
+   pro->RM.groups = eina_list_append(pro->RM.groups, res);
+
+   return res;
+}
+
 void
 _gm_groups_load(Project *pro)
 {
@@ -655,10 +668,7 @@ _gm_groups_load(Project *pro)
    EINA_LIST_FOREACH(collections, l, group_name)
      {
         if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
-        res = mem_calloc(1, sizeof(Group2));
-        res->common.type = RESOURCE2_TYPE_GROUP;
-        res->common.name = eina_stringshare_add(group_name);
-        pro->RM.groups = eina_list_append(pro->RM.groups, res);
+        _gm_group_add(pro, group_name);
      }
    edje_file_collection_list_free(collections);
 

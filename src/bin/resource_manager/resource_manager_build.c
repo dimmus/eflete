@@ -233,15 +233,48 @@ _program_dependency_load(Project *pro, Group2 *group, Program2 *program)
 }
 
 void
+_group_dependency_load(Project *pro, Group2 *group)
+{
+   Resource2 *used;
+   Part2 *part;
+   Program2 *program;
+   Eina_Stringshare *main_group_name;
+   Eina_List *l;
+
+   _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
+   if (edje_edit_group_alias_is(group->edit_object, group->common.name))
+     {
+        main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
+        used = resource_manager_find(pro->RM.groups, main_group_name);
+        _resource_usage_resource_add((Resource2 *)group, used);
+
+        edje_edit_string_free(main_group_name);
+
+        group->main_group = (Group2 *)used;
+        group->main_group->aliases = eina_list_append(group->main_group->aliases, group);
+     }
+   else
+     {
+        EINA_LIST_FOREACH(group->parts, l, part)
+          {
+             _part_dependency_load(pro, group, part);
+          }
+        EINA_LIST_FOREACH(group->programs, l, program)
+          {
+             _program_dependency_load(pro, group, program);
+          }
+     }
+   _resource_group_edit_object_unload(group);
+}
+
+void
 _resource_dependency_load(Project *pro)
 {
    Group2 *group;
    Resource2 *res, *used;
-   Part2 *part;
-   Program2 *program;
-   Eina_Stringshare *main_group_name, *set_image_name;
+   Eina_Stringshare *set_image_name;
    Eina_List *set_images;
-   Eina_List *l1, *l2, *l;
+   Eina_List *l1, *l2;
 
    /* image_set */
    EINA_LIST_FOREACH(pro->RM.image_sets, l1, res)
@@ -258,29 +291,6 @@ _resource_dependency_load(Project *pro)
    /* groups */
    EINA_LIST_FOREACH(pro->RM.groups, l1, group)
      {
-        _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
-        if (edje_edit_group_alias_is(group->edit_object, group->common.name))
-          {
-             main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
-             used = resource_manager_find(pro->RM.groups, main_group_name);
-             _resource_usage_resource_add((Resource2 *)group, used);
-
-             edje_edit_string_free(main_group_name);
-
-             group->main_group = (Group2 *)used;
-             group->main_group->aliases = eina_list_append(group->main_group->aliases, group);
-          }
-        else
-          {
-             EINA_LIST_FOREACH(group->parts, l, part)
-               {
-                  _part_dependency_load(pro, group, part);
-               }
-             EINA_LIST_FOREACH(group->programs, l, program)
-               {
-                  _program_dependency_load(pro, group, program);
-               }
-          }
-        _resource_group_edit_object_unload(group);
+        _group_dependency_load(pro, group);
      }
 }
