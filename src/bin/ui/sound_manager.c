@@ -266,7 +266,7 @@ _add_sample_done(void *data __UNUSED__,
         return true;
      }
 
-   edje_edit_sound_sample_add(ap.project->global_object, res->name, res->path);
+   CRIT_ON_FAIL(editor_sound_sample_add(ap.project->global_object, res->name, res->source, true));
 
    snd = (Sound_Data *)mem_malloc(sizeof(Sound_Data));
    snd->name = eina_stringshare_ref(res->name);
@@ -274,10 +274,6 @@ _add_sample_done(void *data __UNUSED__,
    snd->type = SOUND_TYPE_SAMPLE;
    snd->resource = (Resource *)res;
    elm_gengrid_item_insert_before(mng.gengrid, gic, snd, mng.tone_header, _grid_sel_cb, NULL);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
    return true;
@@ -294,7 +290,7 @@ _tone_add(void)
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(mng.tone_entry));
    frq = atoi(elm_entry_entry_get(mng.frq_entry));
-   edje_edit_sound_tone_add(ap.project->global_object, tone_name, frq);
+   CRIT_ON_FAIL(editor_sound_tone_add(ap.project->global_object, tone_name, frq, true));
 
    tone = (Tone_Resource *)resource_add(tone_name, RESOURCE_TYPE_TONE);
    tone->freq = frq;
@@ -307,9 +303,6 @@ _tone_add(void)
    snd->resource = (Resource *)tone;
    elm_gengrid_item_append(mng.gengrid, gic, snd, _grid_sel_cb, NULL);
 
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 }
 
@@ -460,7 +453,7 @@ _sound_del_cb(void *data __UNUSED__,
               request.resource_type = RESOURCE_TYPE_SOUND;
               res = (External_Resource *)resource_get(ap.project->sounds, &request);
               if (res->used_in) ERR("Unable to delete sample '%s'", res->name);
-              edje_edit_sound_sample_del(ap.project->global_object, snd->name);
+              CRIT_ON_FAIL(editor_sound_sample_del(ap.project->global_object, snd->name, true));
               ecore_file_unlink(res->path);
               resource_remove(&ap.project->sounds, (Resource *)res);
               elm_object_item_del(grid_it);
@@ -471,16 +464,12 @@ _sound_del_cb(void *data __UNUSED__,
               request.resource_type = RESOURCE_TYPE_TONE;
               res = (External_Resource *)resource_get(ap.project->tones, &request);
               if (res->used_in) ERR("Unable to delete tone '%s'", res->name);
-              edje_edit_sound_tone_del(ap.project->global_object, snd->name);
+              CRIT_ON_FAIL(editor_sound_tone_del(ap.project->global_object, snd->name, true));
               resource_remove(&ap.project->tones, (Resource *)res);
               elm_object_item_del(grid_it);
               break;
           }
      }
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
-   ap.project->changed = true;
 
    elm_object_disabled_set(mng.btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);

@@ -212,8 +212,8 @@ _colorclass_added(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *ei)
 {
-   const char *image_name = (const char *)ei;
-   printf("Colorclass added [%s] \n", image_name);
+   const char *name = (const char *)ei;
+   printf("Colorclass added [%s] \n", name);
 }
 
 static void
@@ -221,22 +221,44 @@ _colorclass_deleted(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__,
                     void *ei)
 {
-   const char *image_name = (const char *)ei;
-   printf("Colorclass deleted [%s] \n", image_name);
+   const char *name = (const char *)ei;
+   printf("Colorclass deleted [%s] \n", name);
 }
 
 static void
 _sound_added(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
-             void *ei __UNUSED__)
+             void *ei)
 {
+   const char *name = (const char *)ei;
+   printf("Sound added [%s] \n", name);
 }
 
 static void
 _sound_deleted(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
-               void *ei __UNUSED__)
+               void *ei)
 {
+   const char *name = (const char *)ei;
+   printf("Sound deleted [%s] \n", name);
+}
+
+static void
+_tone_added(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *ei)
+{
+   const char *name = (const char *)ei;
+   printf("Tone added [%s] \n", name);
+}
+
+static void
+_tone_deleted(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *ei)
+{
+   const char *name = (const char *)ei;
+   printf("Tone deleted [%s] \n", name);
 }
 
 static void
@@ -244,8 +266,8 @@ _image_added(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *ei)
 {
-   const char *image_name = (const char *)ei;
-   printf("We got new image [%s] \n", image_name);
+   const char *name = (const char *)ei;
+   printf("We got new image [%s] \n", name);
 }
 
 static void
@@ -253,8 +275,8 @@ image_deleted(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
-   const char *image_name = (const char *)ei;
-   printf("And old image was deleted [%s] \n", image_name);
+   const char *name = (const char *)ei;
+   printf("And old image was deleted [%s] \n", name);
 }
 
 static void
@@ -585,6 +607,8 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_TONE_ADDED, _tone_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_TONE_DELETED, _tone_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
@@ -621,6 +645,8 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_COLORCLASS_DELETED, _colorclass_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_ADDED, _sound_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_SOUND_DELETED, _sound_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_TONE_ADDED, _tone_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_TONE_DELETED, _tone_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);

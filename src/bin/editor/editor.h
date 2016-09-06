@@ -254,6 +254,18 @@ editor_color_class_colors_set(Evas_Object *obj, const char *name,
                               int r2, int g2, int b2, int a2,
                               int r3, int g3, int b3, int a3) EINA_WARN_UNUSED_RESULT;
 
+Eina_Bool
+editor_sound_sample_add(Evas_Object *obj, const char *name, const char *source, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_sound_sample_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_sound_tone_add(Evas_Object *obj, const char *name, int frq, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_sound_tone_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
 /* General */
 Eina_Bool
 editor_save(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;

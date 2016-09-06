@@ -409,11 +409,13 @@ _project_dummy_sample_add(Project *project)
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_SAMPLE_NAME, ap.path.sound_path);
-   edje_edit_sound_sample_add(edje_edit_obj, EFLETE_DUMMY_SAMPLE_NAME, buf);
+   if (editor_sound_sample_add(edje_edit_obj, EFLETE_DUMMY_SAMPLE_NAME, buf, false))
+     {
+        you_shall_not_pass_editor_signals(NULL);
+        CRIT_ON_FAIL(editor_save(edje_edit_obj));
+        you_shall_pass_editor_signals(NULL);
+     }
 
-   you_shall_not_pass_editor_signals(NULL);
-   CRIT_ON_FAIL(editor_save(edje_edit_obj));
-   you_shall_pass_editor_signals(NULL);
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);
 
@@ -1198,7 +1200,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         eina_binbuf_free(sound_bin);
 
         THREAD_CONTEXT_SWITCH_BEGIN;
-        CRIT_ON_FAIL(edje_edit_sound_sample_add(project->global_object, data, res_file));
+        CRIT_ON_FAIL(editor_sound_sample_add(project->global_object, data, res_file, false));
         THREAD_CONTEXT_SWITCH_END;
         res = (External_Resource *)resource_add(data, RESOURCE_TYPE_SOUND);
         res->source = eina_stringshare_add(res_file);

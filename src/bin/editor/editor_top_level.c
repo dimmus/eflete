@@ -131,3 +131,68 @@ editor_color_class_colors_set(Evas_Object *obj, const char *name,
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_sound_sample_add(Evas_Object *obj, const char *name, const char *source, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   if (!edje_edit_sound_sample_add(obj, name, source))
+     return false;
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_SOUND_ADDED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_sound_sample_del(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_sound_sample_del(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_SOUND_DELETED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_sound_tone_add(Evas_Object *obj, const char *name, int frq, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_sound_tone_add(obj, name, frq));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_TONE_ADDED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_sound_tone_del(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   CRIT_ON_FAIL(edje_edit_sound_tone_del(obj, name));
+
+   if (!editor_save(obj))
+     return false; /* i hope it will never happen */
+   _editor_project_changed();
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_TONE_DELETED, (void *)name);
+   return true;
+}

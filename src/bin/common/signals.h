@@ -291,7 +291,7 @@ typedef struct {
 
 /**
  * emited when sound is added.
- * eventinfo - NULL
+ * eventinfo - sound's name
  *
  * @ingroup Window
  */
@@ -299,7 +299,7 @@ typedef struct {
 
 /**
  * emited when sound is deleted.
- * eventinfo - NULL
+ * eventinfo - sound's name
  *
  * @ingroup Window
  */
@@ -307,7 +307,23 @@ typedef struct {
 
 /**
  * emited when tone is added.
- * eventinfo - NULL
+ * eventinfo - tone's name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_TONE_ADDED "SIGNAL_EDITOR_TONE_ADDED"
+
+/**
+ * emited when sound is deleted.
+ * eventinfo - tone's name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_TONE_DELETED "SIGNAL_EDITOR_TONE_DELETED"
+
+/**
+ * emited when tone is added.
+ * eventinfo - image's name
  *
  * @ingroup Window
  */
@@ -315,7 +331,7 @@ typedef struct {
 
 /**
  * emited when sound is deleted.
- * eventinfo - NULL
+ * eventinfo - image's name
  *
  * @ingroup Window
  */

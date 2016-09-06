@@ -65,6 +65,12 @@
 //#pragma GCC poison edje_edit_color_class_name_set
 #pragma GCC poison edje_edit_color_class_description_set
 
+/* Sound and Tone API */
+#pragma GCC poison edje_edit_sound_sample_add
+#pragma GCC poison edje_edit_sound_sample_del
+#pragma GCC poison edje_edit_sound_tone_add
+#pragma GCC poison edje_edit_sound_tone_del
+
 /* Text styles API */
 //#pragma GCC poison edje_edit_style_add
 //#pragma GCC poison edje_edit_style_del
