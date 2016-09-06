@@ -293,7 +293,9 @@ _project_edj_file_copy(Project_Thread *ptd)
 
    src = eina_stringshare_ref(ptd->edj);
    dst = eina_stringshare_ref(ptd->project->saved_edj);
-   result = ecore_file_cp(src, dst);
+   result = eina_file_copy(src, dst,
+                           EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                           NULL, NULL);
 
    DBG("Copy the .edj file to project folder.");
    eina_stringshare_del(src);
