@@ -407,6 +407,23 @@ collections {
       }
    }
 
+   group { "test/map";
+      inherit: "test/parts/all_part_types";
+      parts {
+         part { name: "rect";      description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "img";       description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "spacer";    description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "swallow";   description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "text";      description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "tb";        description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "group";     description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "proxy";     description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "box";       description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "external";  description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+         part { name: "table";     description { state: "default" 0.0; map { on:1; rotation.z:45;} } }
+      }
+   }
+
    group { name: "test/wrong_files";
       parts {
          part { name: "click_me_not_a_sound"; type: TEXT;
