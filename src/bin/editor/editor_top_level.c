@@ -63,7 +63,8 @@ editor_color_class_add(Evas_Object *obj, const char *name, Eina_Bool notify)
    assert(obj != NULL);
    assert(name != NULL);
 
-   CRIT_ON_FAIL(edje_edit_color_class_add(obj, name));
+   if (!edje_edit_color_class_add(obj, name))
+     return false;
 
    if (!editor_save(obj))
      return false; /* i hope it will never happen */
