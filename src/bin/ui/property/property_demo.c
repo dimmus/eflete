@@ -181,6 +181,14 @@ _fill_combobox_group(Evas_Object *control)
    itc = evas_object_data_get(control, "COMMON_ITC");
 
    elm_genlist_clear(control);
+
+   combobox_item = mem_malloc(sizeof(Combobox_Item));
+   combobox_item->index = i++;
+   combobox_item->data = eina_stringshare_add("None");
+   elm_genlist_item_append(control, itc,
+                           combobox_item, NULL,
+                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
    EINA_LIST_FOREACH(ap.project->groups, l, group)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
@@ -340,6 +348,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
          _fill_combobox_group(action->control);
+         elm_object_text_set(action->control, demo_pd.part->content_style);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
          property_color_control_color_set(action->control,
@@ -394,12 +403,14 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (action->type.attribute_demo)
      {
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
+         elm_object_text_set(action->control, "None");
+      break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
       case ATTRIBUTE_DEMO_ITEM_TEXT_NAME:
       case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_LAYOUT_GROUP:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:

@@ -106,6 +106,7 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 
    elm_naviframe_item_push(nf, _("Page Prev"), NULL, bt, NULL, NULL);
 }
+
 Evas_Object *
 object_generate(Demo_Part *part, Evas_Object *object)
 {
@@ -133,6 +134,8 @@ object_generate(Demo_Part *part, Evas_Object *object)
         switch (widget_type)
           {
            case WIDGET_LAYOUT:
+              if (part->content_style && !strcmp(part->content_style, "None"))
+                return NULL;
               content = elm_layout_add(object);
               elm_layout_file_set(content, ap.project->dev, part->content_style);
               break;
@@ -405,7 +408,10 @@ on_swallow_check(void *data __UNUSED__,
 
         part->object = object_generate(part, obj);
         part->change = false;
-        elm_object_part_content_set(obj, part->name, part->object);
+        if (part->object)
+          elm_object_part_content_set(obj, part->name, part->object);
+        else
+          elm_object_part_content_unset(obj, part->name);
      }
 
    if (part->object)
