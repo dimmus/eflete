@@ -33,6 +33,33 @@ images {
    image: "not_an_image.txt" RAW;
 }
 
+color_classes {
+    color_class {
+        name:  "colorclass_red_green_blue";
+        color:  255 0 0 255;
+        color2: 0 255 0 255;
+        color3: 0 0 255 255;
+    }
+    color_class {
+        name:  "colorclass_red_green_blue_transparent";
+        color:  255 0 0 125;
+        color2: 0 255 0 125;
+        color3: 0 0 255 125;
+    }
+    color_class {
+        name:  "colorclass_green_blue_red";
+        color:  0 255 0 255;
+        color2: 0 0 255 255;
+        color3: 255 0 0 255;
+    }
+    color_class {
+        name:  "colorclass_green_blue_transparent";
+        color:  0 255 0 125;
+        color2: 0 0 255 125;
+        color3: 255 0 0 125;
+    }
+}
+
 collections {
 
    sounds {
@@ -231,7 +258,7 @@ collections {
          }
       }
    }
-   group { "test/sounds";
+   group { name: "test/sounds";
       parts {
          part { name: "click_me_wav"; type: TEXT;
             description { state: "default"; color: 0 0 0 255;
@@ -295,6 +322,88 @@ collections {
             source: "click_me_tone";
             action: PLAY_TONE "tone_test" 0.5;
          }
+      }
+   }
+
+   group { name: "test/colorclasses";
+      parts {
+         part { name: "rect_rgb"; type: RECT;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.5 0.25;
+            }
+         }
+         part { name: "rect_rgba"; type: RECT;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue_transparent";
+               rel1.relative: 0.0 0.25;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+         part { name: "rect_rgb_and_color"; type: RECT;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue";
+               color: 50 200 100 255;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 0.5 0.75;
+            }
+         }
+         part { name: "rect_rgba_and_color"; type: RECT;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue_transparent";
+               color: 50 200 100 255;
+               rel1.relative: 0.0 0.75;
+               rel2.relative: 0.5 1;
+            }
+         }
+         part { name: "text_rgb"; type: TEXT;
+            effect: OUTLINE_SHADOW;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue";
+               color2: 255 255 255 255;
+               color3: 255 255 255 255;
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 1.0 0.25;
+               text { size: 42; text: "rgb color class"; }
+            }
+         }
+         part { name: "text_rgba"; type: TEXT;
+            effect: OUTLINE_SHADOW;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue_transparent";
+               color2: 255 255 255 255;
+               color3: 255 255 255 255;
+               rel1.relative: 0.5 0.25;
+               rel2.relative: 1.0 0.5;
+               text { size: 42; text: "rgba color class"; }
+            }
+         }
+         part { name: "text_rgb_and_color"; type: TEXT;
+            effect: OUTLINE_SHADOW;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue";
+               color:  50 200 100 255;
+               color2: 50 200 100 255;
+               color3: 50 200 100 255;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 1.0 0.75;
+               text { size: 42; text: "color+rgb color class"; }
+            }
+         }
+         part { name: "text_rgba_and_color"; type: TEXT;
+            effect: OUTLINE_SHADOW;
+            description { state: "default";
+               color_class: "colorclass_red_green_blue_transparent";
+               color:  50 200 100 255;
+               color2: 50 200 100 255;
+               color3: 50 200 100 255;
+               rel1.relative: 0.5 0.75;
+               rel2.relative: 1.0 1.0;
+               text { size: 42; text: "color+rgba color class"; }
+            }
+         }
+
       }
    }
 
