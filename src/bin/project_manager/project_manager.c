@@ -385,7 +385,9 @@ _project_special_group_add(Project *project)
 
    ret = edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
    assert(true == ret);
+   you_shall_not_pass_editor_signals(NULL);
    CRIT_ON_FAIL(editor_internal_group_add(edje_edit_obj));
+   you_shall_pass_editor_signals(NULL);
 
    edje_edit_string_list_free(list);
    evas_object_del(edje_edit_obj);
@@ -411,12 +413,12 @@ _project_dummy_sample_add(Project *project)
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_SAMPLE_NAME, ap.path.sound_path);
+   you_shall_not_pass_editor_signals(NULL);
    if (editor_sound_sample_add(edje_edit_obj, EFLETE_DUMMY_SAMPLE_NAME, buf, false))
      {
-        you_shall_not_pass_editor_signals(NULL);
         CRIT_ON_FAIL(editor_save(edje_edit_obj));
-        you_shall_pass_editor_signals(NULL);
      }
+   you_shall_pass_editor_signals(NULL);
 
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);
@@ -441,7 +443,9 @@ _project_dummy_image_add(Project *project)
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
+   you_shall_not_pass_editor_signals(NULL);
    CRIT_ON_FAIL(editor_image_add(edje_edit_obj, buf, false));
+   you_shall_pass_editor_signals(NULL);
 
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);
