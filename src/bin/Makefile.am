@@ -2,7 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 LOCALE_DIR = @LOCALE_DIR@
 
-bin_PROGRAMS = eflete
+bin_PROGRAMS = eflete \
+					eflete_exporter
 
 EXTRA_DIST = \
 	eflete.h \
@@ -210,6 +211,10 @@ libete.a \
 @EFL_LIBS@ \
 ${top_builddir}/src/lib/libewe.a \
 @LTLIBINTL@
+
+eflete_exporter_SOURCES = ../../src/bin/exporter/eflete_exporter.c
+eflete_exporter_CPPFLAGS = ${libete_a_CPPFLAGS}
+eflete_exporter_LDADD = ${eflete_LDADD}
 
 #Enable after Enventor compabitility will be implement
 #if HAVE_ENVENTOR
