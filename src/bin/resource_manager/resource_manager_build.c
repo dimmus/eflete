@@ -165,7 +165,7 @@ _part_dependency_load(Project *pro, Group2 *group, Part2 *part)
 {
    Part_Item2 *item;
    State2 *state;
-   Eina_Stringshare *source;
+   Eina_Stringshare *source, *group_name;
    Resource2 *res;
    Eina_List *l;
 
@@ -174,6 +174,24 @@ _part_dependency_load(Project *pro, Group2 *group, Part2 *part)
    if (res)
      _resource_usage_resource_add((Resource2 *)part, res);
    edje_edit_string_free(source);
+
+#define TEXT_RESOURCE_USES(FUNC) \
+   group_name = FUNC(group->edit_object, part->common.name); \
+   res = resource_manager_find(pro->RM.groups, group_name); \
+   _resource_usage_resource_add((Resource2 *)part, res); \
+   edje_edit_string_free(group_name);
+
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
+     {
+        TEXT_RESOURCE_USES(edje_edit_part_source_get);
+        TEXT_RESOURCE_USES(edje_edit_part_source2_get);
+        TEXT_RESOURCE_USES(edje_edit_part_source3_get);
+        TEXT_RESOURCE_USES(edje_edit_part_source4_get);
+        TEXT_RESOURCE_USES(edje_edit_part_source5_get);
+        TEXT_RESOURCE_USES(edje_edit_part_source6_get);
+     }
+
+#undef TEXT_RESOURCE_USES
 
    EINA_LIST_FOREACH(part->states, l, state)
      {
