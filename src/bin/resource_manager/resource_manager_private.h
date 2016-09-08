@@ -125,4 +125,16 @@ _resource_callbacks_register(Project *project);
 void
 _resource_callbacks_unregister(Project *project);
 
+/* RESOURCES DELETION AND FREE */
+
+void
+_resource_free(Resource2 *res);
+
+void
+_resource_part_free(Part2 *res);
+
+void
+_resource_group_free(Group2 *res);
+
+
 #endif /* RESOURCE_MANAGER_PRIVATE_H */

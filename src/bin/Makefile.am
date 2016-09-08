@@ -77,6 +77,7 @@ libete_a_SOURCES = \
 ../../src/bin/resource_manager/resource_manager_load.c \
 ../../src/bin/resource_manager/resource_manager_build.c \
 ../../src/bin/resource_manager/resource_manager_react.c \
+../../src/bin/resource_manager/resource_manager_free.c \
 ../../src/bin/logger/logger.c \
 ../../src/bin/config/config.c \
 ../../src/bin/external/syntax_color.c \

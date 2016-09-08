@@ -94,59 +94,6 @@ resource_manager_init(Project *project)
    return false;
 }
 
-void
-_resource_free(Resource2 *res)
-{
-   eina_stringshare_del(res->common.name);
-   eina_list_free(res->common.used_in);
-   eina_list_free(res->common.uses___);
-   free(res);
-}
-
-void
-_resource_part_free(Part2 *res)
-{
-   Part_Item2 *part_res;
-   State2 *state;
-   EINA_LIST_FREE(res->states, state)
-     {
-        eina_stringshare_del(state->normal);
-        eina_list_free(state->tweens);
-        _resource_free((Resource2 *)state);
-     }
-   EINA_LIST_FREE(res->items, part_res)
-     {
-        if (part_res->source)
-          eina_stringshare_del(part_res->source);
-        _resource_free((Resource2 *)part_res);
-     }
-   _resource_free((Resource2 *)res);
-}
-
-void
-_resource_group_free(Group2 *res)
-{
-   Part2 *part;
-   Program2 *program;
-   Group_Data2 *group_data;
-
-   EINA_LIST_FREE(res->parts, part)
-      _resource_part_free(part);
-
-   EINA_LIST_FREE(res->programs, program)
-     {
-        eina_list_free(program->targets);
-        eina_list_free(program->afters);
-        _resource_free((Resource2 *)program);
-     }
-   EINA_LIST_FREE(res->data_items, group_data)
-     {
-        eina_stringshare_del(group_data->source);
-        _resource_free((Resource2 *)group_data);
-     }
-   _resource_free((Resource2 *)res);
-}
-
 Eina_Bool
 resource_manager_shutdown(Project *pro)
 {
