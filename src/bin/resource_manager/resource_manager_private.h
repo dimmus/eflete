@@ -128,13 +128,63 @@ _resource_callbacks_unregister(Project *project);
 /* RESOURCES DELETION AND FREE */
 
 void
-_resource_free(Resource2 *res);
+_resource_state_free(Part2 *part, State2 *state);
 
 void
-_resource_part_free(Part2 *res);
+_resource_state_del(Group2 *group, Part2 *part, State2 *state, Change *change);
 
 void
-_resource_group_free(Group2 *res);
+_resource_part_item_free(Part2 *part, Part_Item2 *item);
 
+void
+_resource_part_item_del(Part2 *part, Part_Item2 *item);
+
+void
+_resource_part_free(Group2 *group, Part2 *part);
+
+void
+_resource_part_del(Group2 *group, Part2 *part, Change *change);
+
+void
+_resource_program_free(Group2 *group, Program2 *program);
+
+void
+_resource_program_del(Group2 *group, Program2 *program);
+
+void
+_resource_group_data_free(Group2 *group, Group_Data2 *data);
+
+void
+_resource_group_data_del(Group2 *group, Group_Data2 *data);
+
+void
+_resource_group_free(Project *pro, Group2 *group);
+
+void
+_resource_group_del(Project *pro, Group2 *group);
+
+void
+_resource_image_set_free(Image_Set2 *res_image_set);
+
+void
+_resource_image_free(Image2 *res_image);
+
+void
+_resource_tone_free(Tone2 *res_tone);
+
+void
+_resource_sound_free(Sound2 *res_sound);
+
+void
+_resource_colorclasses_free(Colorclass2 *res_colorclass);
+
+void
+_resource_styles_free(Style2 *res_style);
+
+void
+_resource_font_free(Font2 *res_font);
+
+void
+_resource_data_free(Global_Data2 *res_data);
 
 #endif /* RESOURCE_MANAGER_PRIVATE_H */

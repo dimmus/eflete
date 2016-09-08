@@ -170,6 +170,7 @@ typedef struct {
    const char *part_name;
    const char *state_name;
    double state_value;
+   Change *change;
 } Editor_State;
 /**
  * emited when state is added in editor.
@@ -222,6 +223,10 @@ typedef struct {
  *
  * @ingroup Window
  */
+typedef struct {
+   const char *part_name;
+   Change *change;
+} Editor_Part;
 #define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
 
 /**

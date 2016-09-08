@@ -893,17 +893,19 @@ _editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
                  const char *part_name)
 {
    Diff *diff;
-   Eina_Stringshare *event_info;
    Edje_Part_Type type;
    Eina_Bool res = true;
    Eina_List *states, *parts, *l, *l_s;
    Eina_Stringshare *part, *state, *name, *ref;
    double state_val;
+   Editor_Part event_info;
 
    assert(edit_object != NULL);
 
-   event_info = eina_stringshare_add(part_name);
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_DELETED, (void *)event_info);
+   event_info.part_name = eina_stringshare_add(part_name);
+   event_info.change = change;
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_DELETED, (void *)&event_info);
+   eina_stringshare_del(part_name);
 
    TODO("Remake this");
    /* External ref reset should not depend on apply flag, but it is currently needed for group import */
@@ -988,10 +990,10 @@ _editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_part_del(edit_object, part_name));
-        eina_stringshare_del(event_info);
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
      }
+   eina_stringshare_del(event_info.part_name);
    return true;
 }
 

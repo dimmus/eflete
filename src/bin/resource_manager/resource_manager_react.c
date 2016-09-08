@@ -364,46 +364,12 @@ _editor_part_deleted_cb(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *event_info)
 {
-   State2 *state;
-   Part2 *part;
-   Part_Item2 *item;
-   Eina_Stringshare *part_name = event_info;
+   const Editor_Part *editor_part = event_info;
    Project *pro = (Project *)data;
-
    Group2 *group = _get_current_group2(pro);
-   part = (Part2 *)resource_manager_find(group->parts, part_name);
+   Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_part->part_name);
 
-   TODO("Apply more complex work (with warning and error maybe?) with parts which are used by other resources later")
-   /* step by step */
-   /* 1. remove part from all "used_in" and "uses___" and cleanup */
-   _resource_usage_dependency_cleanup((Resource2 *)part);
-   eina_stringshare_del(part->common.name);
-   EINA_LIST_FREE(part->states, state)
-     {
-        /* 2.1. remove each state from all "used_in" and "uses___" and cleanup */
-        _resource_usage_dependency_cleanup((Resource2 *)state);
-        /* 2.2. cleanup list of tweens */
-        eina_list_free(state->tweens);
-        /* 2.3. free state */
-        eina_stringshare_del(state->common.name);
-        eina_stringshare_del(state->normal);
-        free(state);
-     }
-   EINA_LIST_FREE(part->items, item)
-     {
-        /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
-        _resource_usage_dependency_cleanup((Resource2 *)item);
-        /* 3.2. free item */
-        eina_stringshare_del(item->common.name);
-        free(item);
-     }
-   /* 4. cleanup items and state list */
-   eina_list_free(part->states);
-   eina_list_free(part->items);
-   /* 5. remove part from group->parts */
-   group->parts = eina_list_remove(group->parts, part);
-   /* 6. free part */
-   free(part);
+   _resource_part_del(group, part, editor_part->change);
 }
 
 static void
@@ -414,8 +380,8 @@ _editor_program_added_cb(void *data,
    Eina_Stringshare *program_name = event_info;
    Project *pro = (Project *)data;
    Group2 *group = _get_current_group2(pro);
-
    Program2 *program = _program_load(group, program_name);
+
    _program_dependency_load(pro, group, program);
 }
 
@@ -429,15 +395,7 @@ _editor_program_deleted_cb(void *data,
    Group2 *group = _get_current_group2(pro);
    Program2 *program = (Program2 *)resource_manager_find(group->programs, program_name);
 
-   /* 1.1. remove each program from all "used_in" and "uses___" and cleanup */
-   _resource_usage_dependency_cleanup((Resource2 *)program);
-   /* 1.2. cleanup list of tweens */
-   eina_list_free(program->afters);
-   eina_list_free(program->targets);
-
-   /* 1.3. free program */
-   group->programs = eina_list_remove(group->programs, program);
-   free(program);
+   _resource_program_del(group, program);
 }
 
 static void
@@ -462,11 +420,7 @@ _editor_group_data_deleted_cb(void *data,
    Group2 *group = _get_current_group2(pro);
    Group_Data2 *group_data = (Group_Data2 *)resource_manager_find(group->data_items, group_data_name);
 
-   eina_stringshare_del(group_data->common.name);
-   eina_stringshare_del(group_data->source);
-
-   group->data_items = eina_list_remove(group->data_items, group_data);
-   free(group_data);
+   _resource_group_data_del(group, group_data);
 }
 
 static void
@@ -498,13 +452,9 @@ _editor_part_item_deleted_cb(void *data,
    Project *pro = (Project *)data;
    Group2 *group = _get_current_group2(pro);
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
-   Resource2 *part_item = resource_manager_find(part->items, editor_item->item_name);
+   Part_Item2 *item = (Part_Item2 *)resource_manager_find(part->items, editor_item->item_name);
 
-   /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
-   _resource_usage_dependency_cleanup(part_item);
-   /* 3.2. free item */
-   part->items = eina_list_remove(part->items, part_item);
-   free(part_item);
+   _resource_part_item_del(part, item);
 }
 
 static void
@@ -530,20 +480,11 @@ _editor_state_deleted_cb(void *data,
 {
    const Editor_State *editor_state = event_info;
    Project *pro = (Project *)data;
-   Part2 *part;
-   State2 *state;
    Group2 *group = _get_current_group2(pro);
+   Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
+   State2 *state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
 
-   part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
-   state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
-
-   /* 2.1. remove each state from all "used_in" and "uses___" and cleanup */
-   _resource_usage_dependency_cleanup((Resource2 *)state);
-   /* 2.2. cleanup list of tweens */
-   eina_list_free(state->tweens);
-   /* 2.3. free state */
-   part->states = eina_list_remove(part->states, state);
-   free(state);
+   _resource_state_del(group, part, state, editor_state->change);
 }
 
 static void
@@ -618,96 +559,11 @@ _editor_group_del_cb(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *event_info)
 {
-   State2 *state;
-   Part2 *part;
-   Program2 *program;
-   Part_Item2 *item;
-   Group_Data2 *group_data;
-   Eina_Stringshare *group_name = (Eina_Stringshare *)event_info;
+   Eina_Stringshare *group_name = event_info;
    Project *pro = (Project *)data;
    Group2 *group = (Group2 *)resource_manager_find(pro->RM.groups, group_name);
 
-   TODO("Apply more complex work (with warning and error maybe?) with parts which are used by other resources later")
-
-   /* step by step */
-   /* 1. check if alias and remove dependencies */
-      if (group->main_group)
-        {
-           _resource_usage_dependency_cleanup((Resource2 *)group);
-           group->main_group->aliases = eina_list_remove(group->main_group->aliases, group);
-        }
-      else
-        {
-           /* 2.1. reset all dependencies to this group into NULL (items, group parts etc) */
-           TODO("Editor cleanup with group deletion")
-           /* 2.2. do NOT kill all aliases iof this group, they will be removed through this
-                   callbback, but remove alias dependencies */
-           _resource_usage_dependency_cleanup((Resource2 *)group);
-
-           EINA_LIST_FREE(group->parts, part)
-             {
-                /* 1. remove part from all "used_in" and "uses___" and cleanup */
-                _resource_usage_dependency_cleanup((Resource2 *)part);
-                eina_stringshare_del(part->common.name);
-                EINA_LIST_FREE(part->states, state)
-                  {
-                     /* 2.1. remove each state from all "used_in" and "uses___" and cleanup */
-                     _resource_usage_dependency_cleanup((Resource2 *)state);
-                     /* 2.2. cleanup list of tweens */
-                     eina_list_free(state->tweens);
-                     /* 2.3. free state */
-                     eina_stringshare_del(state->common.name);
-                     eina_stringshare_del(state->normal);
-                     free(state);
-                  }
-                EINA_LIST_FREE(part->items, item)
-                  {
-                     /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
-                     _resource_usage_dependency_cleanup((Resource2 *)item);
-                     /* 3.2. free item */
-                     eina_stringshare_del(item->common.name);
-                     free(item);
-                  }
-                /* 4. cleanup items and state list */
-                eina_list_free(part->states);
-                eina_list_free(part->items);
-                /* 5. remove part from group->parts */
-                group->parts = eina_list_remove(group->parts, part);
-                /* 6. free part */
-                free(part);
-             }
-
-           EINA_LIST_FREE(group->programs, program)
-             {
-                eina_list_free(program->targets);
-                eina_list_free(program->afters);
-                _resource_usage_dependency_cleanup((Resource2 *)program);
-                eina_stringshare_del(program->common.name);
-                free(program);
-             }
-
-           EINA_LIST_FREE(group->data_items, group_data)
-             {
-                eina_stringshare_del(group_data->source);
-                _resource_usage_dependency_cleanup((Resource2 *)group_data);
-                eina_stringshare_del(group_data->common.name);
-                eina_stringshare_del(group_data->source);
-                free(group_data);
-             }
-        }
-   eina_stringshare_del(group->widget);
-   eina_stringshare_del(group->class);
-   eina_stringshare_del(group->style);
-   eina_stringshare_del(group->common.name);
-   /* 4. cleanup items and state list */
-   eina_list_free(group->programs);
-   eina_list_free(group->parts);
-   eina_list_free(group->limits);
-   eina_list_free(group->data_items);
-   /* 5. remove part from group->parts */
-   pro->groups = eina_list_remove(pro->RM.groups, group);
-   /* 6. free part */
-   free(group);
+   _resource_group_del(pro, group);
 }
 
 /* INITIAL FUNCTIONS */
