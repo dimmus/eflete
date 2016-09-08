@@ -135,9 +135,13 @@ _edje_pick_end_cb(void *data,
 
    _project_edj_file_copy(ptd);
    _copy_meta_data_to_pro(ptd);
+
+   you_shall_not_pass_editor_signals(NULL);
    _project_special_group_add(ptd->project);
    _project_dummy_image_add(ptd->project);
    _project_dummy_sample_add(ptd->project);
+   you_shall_pass_editor_signals(NULL);
+
    _project_open_internal(ptd);
    ecore_file_unlink(ptd->source_edj);
 
