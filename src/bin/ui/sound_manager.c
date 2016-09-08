@@ -374,6 +374,8 @@ _add_tone_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **t
    ENTRY_ADD(item, mng.frq_entry, true);
    efl_event_callback_add(mng.frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.frq_validator);
    evas_object_smart_callback_add(mng.frq_entry, "changed", _validation, popup);
+   /* force validator trigger */
+   elm_entry_entry_set(mng.frq_entry, " ");
    elm_object_part_text_set(mng.frq_entry, "guide", _("Type a frequency (20 - 20000)"));
    elm_object_part_content_set(item, "elm.swallow.content", mng.frq_entry);
    /* need to manualy set not valid string for triggered validator */
