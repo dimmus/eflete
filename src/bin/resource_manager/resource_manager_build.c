@@ -101,9 +101,9 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
         if (strcmp(state->normal, EFLETE_DUMMY_IMAGE_NAME))
           {
              if (edje_edit_image_set_exists(group->edit_object, state->normal))
-               res = resource_manager_find(pro->image_sets, state->normal);
+               res = resource_manager_find(pro->RM.image_sets, state->normal);
              else
-               res = resource_manager_find(pro->images, state->normal);
+               res = resource_manager_find(pro->RM.images, state->normal);
              _resource_usage_resource_add((Resource2 *)state, res);
           }
 
