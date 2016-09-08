@@ -138,24 +138,26 @@ _on_glit_selected(void *data __UNUSED__,
 }
 
 static void
-_validate(void *data __UNUSED__,
+_validate(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
+   Evas_Object *popup = data;
+   assert(popup != NULL);
    if (ELM_REG_NOERROR != resource_name_validator_status_get(mng.popup.validator))
      {
-       popup_buttons_disabled_set(BTN_OK, true);
+       popup_button_disabled_set(popup, BTN_OK, true);
        elm_object_signal_emit(obj, "validation,default,fail", "elm");
      }
    else
      {
-       popup_buttons_disabled_set(BTN_OK, false);
+       popup_button_disabled_set(popup, BTN_OK, false);
        elm_object_signal_emit(obj, "validation,default,pass", "elm");
      }
 }
 
-Evas_Object *
-_add_style_content_get(void *data __UNUSED__, Evas_Object **to_focus)
+static Evas_Object *
+_add_style_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
@@ -163,12 +165,12 @@ _add_style_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    mng.popup.item = item;
    ENTRY_ADD(mng.popup.item, mng.popup.name, true);
    efl_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, popup);
    elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(mng.popup.item, "elm.swallow.content", mng.popup.name);
 
    if (to_focus) *to_focus = mng.popup.name;
-   popup_buttons_disabled_set(BTN_OK, true);
+   popup_button_disabled_set(popup, BTN_OK, true);
 
    return mng.popup.item;
 }
@@ -228,21 +230,21 @@ _style_add_cb(void *data __UNUSED__,
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _style_add_popup_close_cb_cb, NULL);
 }
 
-Evas_Object *
-_add_tag_content_get(void *data __UNUSED__, Evas_Object **to_focus)
+static Evas_Object *
+_add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
    LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
    ENTRY_ADD(item, mng.popup.name, true);
    efl_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, popup);
    elm_object_part_text_set(mng.popup.name, "guide", _("Type a new tag name."));
    elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
    mng.popup.item = item;
 
    if (to_focus) *to_focus = mng.popup.name;
-   popup_buttons_disabled_set(BTN_OK, true);
+   popup_button_disabled_set(popup, BTN_OK, true);
    return item;
 }
 

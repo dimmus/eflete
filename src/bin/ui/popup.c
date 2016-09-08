@@ -62,19 +62,6 @@ _delete_object_job(void *data)
    current = POPUP_NONE;
 }
 
-void
-popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
-{
-   if ((popup_btns & BTN_OK) || (popup_btns & BTN_SAVE) || (popup_btns & BTN_REPLACE))
-     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button1"), disabled);
-   if (popup_btns & BTN_DONT_SAVE)
-     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
-   if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
-     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button3"), disabled);
-   if (popup_btns & BTN_CANCEL)
-     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
-}
-
 /* async popup */
 #define POPUP_DATA "POPUP_DATA"
 typedef struct {
@@ -169,7 +156,7 @@ popup_add(const char *title,
    else /* content_get != NULL */
      {
         Evas_Object *to_focus = NULL;
-        Evas_Object *content = content_get(data, &to_focus);
+        Evas_Object *content = content_get(data, pd->popup, &to_focus);
         elm_object_content_set(pd->popup, content);
         if (to_focus)
           elm_object_focus_set(to_focus, true);

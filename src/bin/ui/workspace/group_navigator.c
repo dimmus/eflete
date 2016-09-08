@@ -1081,7 +1081,7 @@ _combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
 }
 
 static Evas_Object *
-_add_part_content_get(void *data, Evas_Object **to_focus)
+_add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
 {
    Combobox_Item *combobox_item;
    unsigned int i = 0;
@@ -1220,7 +1220,7 @@ _popup_add_group_data_close_cb(void *data,
 }
 
 static Evas_Object *
-_add_group_data_content_get(void *data, Evas_Object **to_focus)
+_add_group_data_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
@@ -1353,7 +1353,7 @@ group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state)
 }
 
 static Evas_Object *
-_add_state_content_get(void *data, Evas_Object **to_focus)
+_add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Evas_Object *box, *item;
@@ -1503,7 +1503,7 @@ group_navigator_part_item_add(Evas_Object *obj, Part *part, Eina_Stringshare * i
 }
 
 static Evas_Object *
-_add_item_content_get(void *data, Evas_Object **to_focus)
+_add_item_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Combobox_Item *combobox_item;
@@ -1636,7 +1636,7 @@ _popup_add_program_close_cb(void *data,
 }
 
 static Evas_Object *
-_add_program_content_get(void *data, Evas_Object **to_focus)
+_add_program_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;

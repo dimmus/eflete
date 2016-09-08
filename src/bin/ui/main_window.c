@@ -177,7 +177,7 @@ ui_main_window_add(void)
 
 #if !HAVE_TIZEN
 Evas_Object *
-_about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *label = (Evas_Object *) data;
    elm_object_text_set(label,
@@ -220,7 +220,7 @@ about_window_add(void)
 
 #else
 Evas_Object *
-_about_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
@@ -240,7 +240,7 @@ about_window_add(void)
 
 #endif
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *box = data;
    Evas_Object *scroller = elm_scroller_add(ap.win);

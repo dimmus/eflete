@@ -368,24 +368,26 @@ _group_sel(void *data __UNUSED__,
 }
 
 static void
-_group_validate(void *data __UNUSED__,
+_group_validate(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
+   Evas_Object *popup = data;
+   assert(popup != NULL);
    if (resource_name_validator_status_get(validator) != ELM_REG_NOERROR)
      {
-       popup_buttons_disabled_set(BTN_OK, true);
+       popup_button_disabled_set(popup, BTN_OK, true);
        elm_object_signal_emit(obj, "validation,default,fail", "elm");
      }
    else
      {
-       popup_buttons_disabled_set(BTN_OK, false);
+       popup_button_disabled_set(popup, BTN_OK, false);
        elm_object_signal_emit(obj, "validation,default,pass", "elm");
      }
 }
 
-Evas_Object *
-_add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
+static Evas_Object *
+_add_group_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
    Group *group;
@@ -399,7 +401,7 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    /* name: entry */
    LAYOUT_PROP_ADD(layout_p.box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
-   evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
+   evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, popup);
    efl_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
@@ -440,7 +442,6 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object **to_focus)
    elm_object_text_set(layout_p.combobox, _("None"));
 
    if (to_focus) *to_focus = layout_p.entry;
-   popup_buttons_disabled_set(BTN_OK, true);
 
    return layout_p.box;
 }
@@ -488,6 +489,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
    resource_name_validator_list_set(validator, &ap.project->groups, false);
    popup = popup_add(_("Create a new layout"), NULL, BTN_OK|BTN_CANCEL, _add_group_content_get, layout_p.entry);
+   popup_button_disabled_set(popup, BTN_OK, true);
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _add_group_popup_close_cb, NULL);
 }
 

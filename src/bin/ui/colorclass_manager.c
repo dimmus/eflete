@@ -59,36 +59,40 @@ struct _Colorclasses_Manager
 static Colorclasses_Manager mng;
 
 static void
-_validation(void *data __UNUSED__,
+_validation(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-  if (ELM_REG_NOERROR != resource_name_validator_status_get(mng.name_validator))
+   Evas_Object *popup = data;
+
+   assert(popup != NULL);
+
+   if (ELM_REG_NOERROR != resource_name_validator_status_get(mng.name_validator))
      {
-       popup_buttons_disabled_set(BTN_OK, true);
-       elm_object_signal_emit(obj, "validation,default,fail", "elm");
+        popup_button_disabled_set(popup, BTN_OK, true);
+        elm_object_signal_emit(obj, "validation,default,fail", "elm");
      }
    else
      {
-       popup_buttons_disabled_set(BTN_OK, false);
-       elm_object_signal_emit(obj, "validation,default,pass", "elm");
+        popup_button_disabled_set(popup, BTN_OK, false);
+        elm_object_signal_emit(obj, "validation,default,pass", "elm");
      }
 }
 
-Evas_Object *
-_add_colorclass_content_get(void *data __UNUSED__, Evas_Object **to_focus)
+static Evas_Object *
+_add_colorclass_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item = NULL;
 
    LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
    ENTRY_ADD(item, mng.entry, true);
    efl_event_callback_add(mng.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.name_validator);
-   evas_object_smart_callback_add(mng.entry, "changed", _validation, NULL);
+   evas_object_smart_callback_add(mng.entry, "changed", _validation, popup);
    elm_object_part_text_set(mng.entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", mng.entry);
    mng.item = item;
    if (to_focus) *to_focus = mng.entry;
-   popup_buttons_disabled_set(BTN_OK, true);
+   popup_button_disabled_set(popup, BTN_OK, true);
 
    return mng.item;
 }
