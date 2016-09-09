@@ -237,21 +237,38 @@ _resource_style_del(Project *pro, Group2 *group, Style2 *res_style)
 }
 
 void
-_resource_image_set_free(Project *pro __UNUSED__, Image_Set2 *res_image_set __UNUSED__)
+_resource_image_set_free(Project *pro, Image_Set2 *res)
 {
+   pro->RM.image_sets = eina_list_remove(pro->RM.image_sets, res);
 
+   eina_stringshare_del(res->common.name);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_font_free(Project *pro __UNUSED__, Font2 *res_font __UNUSED__)
+_resource_font_free(Project *pro, Font2 *res)
 {
+   pro->RM.fonts = eina_list_remove(pro->RM.fonts, res);
 
+   eina_stringshare_del(res->common.name);
+   eina_stringshare_del(res->source);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_data_free(Project *pro __UNUSED__, Global_Data2 *res_data __UNUSED__)
+_resource_data_free(Project *pro, Global_Data2 *res)
 {
+   pro->RM.global_data = eina_list_remove(pro->RM.global_data, res);
 
+   eina_stringshare_del(res->common.name);
+   eina_stringshare_del(res->source);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 /****** GROUP DELETION **********/

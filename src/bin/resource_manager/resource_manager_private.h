@@ -198,12 +198,12 @@ _resource_style_del(Project *pro, Group2 *group, Style2 *res_style);
 /***** NOT IMPLEMENTED YET BUT NEED FREEING ***********/
 
 void
-_resource_image_set_free(Project *pro, Image_Set2 *res_image_set);
+_resource_image_set_free(Project *pro, Image_Set2 *res);
 
 void
-_resource_font_free(Project *pro, Font2 *res_font);
+_resource_font_free(Project *pro, Font2 *res);
 
 void
-_resource_data_free(Project *pro, Global_Data2 *res_data);
+_resource_data_free(Project *pro, Global_Data2 *res);
 
 #endif /* RESOURCE_MANAGER_PRIVATE_H */
