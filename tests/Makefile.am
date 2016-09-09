@@ -47,21 +47,7 @@ LD = $(top_builddir)/src/bin/libete.a \
 @EFL_LIBS@ \
 ${top_builddir}/src/lib/libewe.la
 
-include_HEADERS = \
-	../tests/test_common.h \
-	../tests/utc_common.h \
-	../tests/test_ewe_init/test_ewe_init.h \
-	../tests/test_ewe_ruler/test_ewe_ruler.h \
-	../tests/test_eflete/test_eflete.h \
-	../tests/test_alloc/test_alloc.h \
-	../tests/test_diff/test_diff.h \
-	../tests/test_change/test_change.h \
-	../tests/test_history/test_history.h \
-	../tests/test_logger/test_logger.h \
-	../tests/test_project_manager/test_project_manager.h \
-	../tests/test_config/test_config.h \
-	../tests/test_cursor/test_cursor.h \
-	../tests/test_live_widget/test_live_widget.h
+
 
 ewe_init_test_SOURCES = \
 ../tests/test_ewe_init/test_ewe_init.c \
@@ -218,4 +204,18 @@ coverage:
 	echo "</body></html>" >> ../coverage.html
 
 EXTRA_DIST = \
-	tests_report_generator.py
+	tests_report_generator.py \
+	test_common.h \
+	utc_common.h \
+	test_ewe_init/test_ewe_init.h \
+	test_ewe_ruler/test_ewe_ruler.h \
+	test_eflete/test_eflete.h \
+	test_alloc/test_alloc.h \
+	test_diff/test_diff.h \
+	test_change/test_change.h \
+	test_history/test_history.h \
+	test_logger/test_logger.h \
+	test_project_manager/test_project_manager.h \
+	test_config/test_config.h \
+	test_cursor/test_cursor.h \
+	test_live_widget/test_live_widget.h
