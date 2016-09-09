@@ -329,13 +329,15 @@ typedef struct {
  */
 #define SIGNAL_PROPERTY_ATTRIBUTE_CHANGED "SIGNAL_PROPERTY_ATTRIBUTE_CHANGED"
 
+
 /**
- * emited when any attribute is changed in editor.
+ * emited when any attribute is changed.
+ * This signal goes into resource manager
  * eventinfo - Pointer to Attribute
  *
  * @ingroup Window
  */
-#define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
+#define SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED"
 
 /**
  * emited when any attribute of top level resource (image, colorclass etc) is changed in editor.
@@ -343,7 +345,24 @@ typedef struct {
  *
  * @ingroup Window
  */
-#define SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED"
+#define SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED"
+
+/**
+ * emited when any attribute is sent by resource manager (after editor).
+ * eventinfo - Pointer to Attribute
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
+
+/**
+ * emited when any attribute of top level resource (image, colorclass etc)
+ * is sent by resource manager (after editor).
+ * eventinfo - Pointer to Attribute
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED"
 
 typedef struct {
    const char *part_name;

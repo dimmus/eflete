@@ -32,6 +32,7 @@ EXTRA_DIST = \
 	project_manager/resource_manager.h \
 	resource_manager/resource_manager2.h \
 	resource_manager/resource_manager_private.h \
+	resource_manager/resource_manager_signals.h \
 	ui/cursor.h \
 	ui/history_ui.h \
 	ui/main_window.h \

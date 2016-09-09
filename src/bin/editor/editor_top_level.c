@@ -96,7 +96,7 @@ editor_color_class_description_set(Evas_Object *obj, const char *name, const cha
    assert(obj != NULL);
    assert(name != NULL);
 
-   Attribute attribute = ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION;
+   RM_Attribute_Resources attribute = RM_ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION;
 
    CRIT_ON_FAIL(edje_edit_color_class_description_set(obj, name, description));
 
@@ -104,7 +104,7 @@ editor_color_class_description_set(Evas_Object *obj, const char *name, const cha
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -117,7 +117,7 @@ editor_color_class_colors_set(Evas_Object *obj, const char *name,
    assert(obj != NULL);
    assert(name != NULL);
 
-   Attribute attribute = ATTRIBUTE_RESOURCES_COLORCLASS_COLORS;
+   RM_Attribute_Resources attribute = RM_ATTRIBUTE_RESOURCES_COLORCLASS_COLORS;
 
    CRIT_ON_FAIL(edje_edit_color_class_colors_set(obj, name,
                                                  r, g, b, a,
@@ -128,7 +128,7 @@ editor_color_class_colors_set(Evas_Object *obj, const char *name,
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -236,13 +236,13 @@ editor_style_tag_add(Evas_Object *obj, const char *name, const char *tag)
    assert(name != NULL);
 
    CRIT_ON_FAIL(edje_edit_style_tag_add(obj, name, tag));
-   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED;
+   RM_Attribute_Resources attribute = RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED;
 
    if (!editor_save(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -253,13 +253,13 @@ editor_style_tag_del(Evas_Object *obj, const char *name, const char *tag)
    assert(name != NULL);
 
    CRIT_ON_FAIL(edje_edit_style_tag_del(obj, name, tag));
-   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
+   RM_Attribute_Resources attribute = RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
 
    if (!editor_save(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -270,12 +270,14 @@ editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, 
    assert(name != NULL);
 
    CRIT_ON_FAIL(edje_edit_style_tag_value_set(obj, name, tag, value));
-   Attribute attribute = ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
+   RM_Attribute_Resources attribute = RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED;
 
    if (!editor_save(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, &attribute);
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }

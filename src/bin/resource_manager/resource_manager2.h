@@ -21,6 +21,7 @@
 #define RESOURCE_MANAGER2_H
 
 #include "eflete.h"
+#include "resource_manager_signals.h"
 
 enum _Resource2_Type
 {

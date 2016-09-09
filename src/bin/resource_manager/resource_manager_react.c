@@ -51,14 +51,15 @@ _property_resource_attribute_changed(void *data __UNUSED__,
                                      Evas_Object *obj __UNUSED__,
                                      void *event_info)
 {
-   Attribute_Resource *attr = event_info;
-   printf("Some resource attribute was changed [%d] \n", (int)*attr);
+   Attribute *attr = event_info;
+   Attribute_Resource editor_resource = (int)*attr;
+   printf("Some resource attribute was changed [%d][%d] \n", (int)*attr, editor_resource);
    switch ((int)*attr)
      {
-      case ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION:
-      case ATTRIBUTE_RESOURCES_COLORCLASS_COLORS:
-      case ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
-      case ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
+      case RM_ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION:
+      case RM_ATTRIBUTE_RESOURCES_COLORCLASS_COLORS:
+      case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
+      case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
       default:
          break;
      }
@@ -89,140 +90,142 @@ _property_attribute_changed(void *data __UNUSED__,
     ***********************************************************************
     ***********************************************************************/
 
-   Attribute *attr = event_info;
-   printf("Some attribute was changed [%d] \n", (int)*attr);
+   RM_Attribute *attr = event_info;
+   Attribute editor_resource = (int)*attr;
+
    switch ((int)*attr)
      {
-      case ATTRIBUTE_GROUP_MIN_W:
-      case ATTRIBUTE_GROUP_MIN_H:
-      case ATTRIBUTE_GROUP_MAX_W:
-      case ATTRIBUTE_GROUP_MAX_H:
-      case ATTRIBUTE_STATE_MIN_W:
-      case ATTRIBUTE_STATE_MIN_H:
-      case ATTRIBUTE_STATE_MAX_W:
-      case ATTRIBUTE_STATE_MAX_H:
-      case ATTRIBUTE_STATE_ALIGN_X:
-      case ATTRIBUTE_STATE_ALIGN_Y:
-      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
-      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
-      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
-      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
-      case ATTRIBUTE_STATE_REL1_OFFSET_X:
-      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
-      case ATTRIBUTE_STATE_REL2_OFFSET_X:
-      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
-      case ATTRIBUTE_STATE_ASPECT_MIN:
-      case ATTRIBUTE_STATE_ASPECT_MAX:
-      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
-      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
-      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
-      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
-      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
-      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
-      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
-      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
-      case ATTRIBUTE_STATE_TEXT_ALIGN_X:
-      case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
-      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
-      case ATTRIBUTE_STATE_TEXT_SIZE:
-      case ATTRIBUTE_STATE_TEXT_FIT_X:
-      case ATTRIBUTE_STATE_TEXT_FIT_Y:
-      case ATTRIBUTE_STATE_TEXT_MAX_X:
-      case ATTRIBUTE_STATE_TEXT_MAX_Y:
-      case ATTRIBUTE_STATE_TEXT_MIN_X:
-      case ATTRIBUTE_STATE_TEXT_MIN_Y:
-      case ATTRIBUTE_STATE_FIXED_H:
-      case ATTRIBUTE_STATE_FIXED_W:
-      case ATTRIBUTE_STATE_IMAGE:
-      case ATTRIBUTE_STATE_IMAGE_TWEEN:
-      case ATTRIBUTE_STATE_REL1_TO_X:
-      case ATTRIBUTE_STATE_REL1_TO_Y:
-      case ATTRIBUTE_STATE_REL2_TO_X:
-      case ATTRIBUTE_STATE_REL2_TO_Y:
-      case ATTRIBUTE_STATE_TEXT_SOURCE:
-      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
-      case ATTRIBUTE_STATE_TEXT:
-      case ATTRIBUTE_STATE_FONT:
-      case ATTRIBUTE_STATE_TEXT_STYLE:
-      case ATTRIBUTE_STATE_ASPECT_PREF:
-      case ATTRIBUTE_PART_TEXT_EFFECT:
-      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
-      case ATTRIBUTE_PART_CLIP_TO:
-      case ATTRIBUTE_PART_DRAG_CONFINE:
-      case ATTRIBUTE_PART_GROUP_SOURCE:
-      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
-      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
-      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
-      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
-      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
-      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
-      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
-      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
-      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
-      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
-      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
-      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
-      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
-      case ATTRIBUTE_STATE_MINMUL_H:
-      case ATTRIBUTE_STATE_MINMUL_W:
-      case ATTRIBUTE_PART_MULTILINE:
-      case ATTRIBUTE_PART_ENTRY_MODE:
-      case ATTRIBUTE_STATE_FILL_TYPE:
-      case ATTRIBUTE_STATE_COLOR:
-      case ATTRIBUTE_STATE_OUTLINE_COLOR:
-      case ATTRIBUTE_STATE_SHADOW_COLOR:
-      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
-      case ATTRIBUTE_STATE_MAP_ROTATION_X:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
-      case ATTRIBUTE_STATE_FILL_SMOOTH:
-      case ATTRIBUTE_STATE_VISIBLE:
-      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
-      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
-      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
-      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
-      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
-      case ATTRIBUTE_STATE_COLOR_CLASS:
-      case ATTRIBUTE_STATE_MAP_ON:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
-      case ATTRIBUTE_STATE_MAP_LIGHT:
-      case ATTRIBUTE_STATE_MAP_SMOOTH:
-      case ATTRIBUTE_STATE_MAP_ALPHA:
-      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
-      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
-      case ATTRIBUTE_PART_ITEM_ALIGN_X:
-      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
-      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
-      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
-      case ATTRIBUTE_PART_ITEM_ASPECT_H:
-      case ATTRIBUTE_PART_ITEM_ASPECT_W:
-      case ATTRIBUTE_PART_ITEM_MAX_H:
-      case ATTRIBUTE_PART_ITEM_MAX_W:
-      case ATTRIBUTE_PART_ITEM_MIN_H:
-      case ATTRIBUTE_PART_ITEM_MIN_W:
-      case ATTRIBUTE_PART_ITEM_PREFER_H:
-      case ATTRIBUTE_PART_ITEM_PREFER_W:
-      case ATTRIBUTE_PART_ITEM_SPREAD_H:
-      case ATTRIBUTE_PART_ITEM_SPREAD_W:
-      case ATTRIBUTE_PART_ITEM_SPAN_COL:
-      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
-      case ATTRIBUTE_PART_ITEM_POSITION_COL:
-      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
-      case ATTRIBUTE_PART_ITEM_SOURCE:
-      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
-      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
-      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
-      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+      case RM_ATTRIBUTE_GROUP_MIN_W:
+      case RM_ATTRIBUTE_GROUP_MIN_H:
+      case RM_ATTRIBUTE_GROUP_MAX_W:
+      case RM_ATTRIBUTE_GROUP_MAX_H:
+      case RM_ATTRIBUTE_STATE_MIN_W:
+      case RM_ATTRIBUTE_STATE_MIN_H:
+      case RM_ATTRIBUTE_STATE_MAX_W:
+      case RM_ATTRIBUTE_STATE_MAX_H:
+      case RM_ATTRIBUTE_STATE_ALIGN_X:
+      case RM_ATTRIBUTE_STATE_ALIGN_Y:
+      case RM_ATTRIBUTE_STATE_REL1_RELATIVE_X:
+      case RM_ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+      case RM_ATTRIBUTE_STATE_REL2_RELATIVE_X:
+      case RM_ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+      case RM_ATTRIBUTE_STATE_REL1_OFFSET_X:
+      case RM_ATTRIBUTE_STATE_REL1_OFFSET_Y:
+      case RM_ATTRIBUTE_STATE_REL2_OFFSET_X:
+      case RM_ATTRIBUTE_STATE_REL2_OFFSET_Y:
+      case RM_ATTRIBUTE_STATE_ASPECT_MIN:
+      case RM_ATTRIBUTE_STATE_ASPECT_MAX:
+      case RM_ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+      case RM_ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+      case RM_ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+      case RM_ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+      case RM_ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+      case RM_ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+      case RM_ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+      case RM_ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+      case RM_ATTRIBUTE_STATE_TEXT_ALIGN_X:
+      case RM_ATTRIBUTE_STATE_TEXT_ALIGN_Y:
+      case RM_ATTRIBUTE_STATE_TEXT_ELIPSIS:
+      case RM_ATTRIBUTE_STATE_TEXT_SIZE:
+      case RM_ATTRIBUTE_STATE_TEXT_FIT_X:
+      case RM_ATTRIBUTE_STATE_TEXT_FIT_Y:
+      case RM_ATTRIBUTE_STATE_TEXT_MAX_X:
+      case RM_ATTRIBUTE_STATE_TEXT_MAX_Y:
+      case RM_ATTRIBUTE_STATE_TEXT_MIN_X:
+      case RM_ATTRIBUTE_STATE_TEXT_MIN_Y:
+      case RM_ATTRIBUTE_STATE_FIXED_H:
+      case RM_ATTRIBUTE_STATE_FIXED_W:
+      case RM_ATTRIBUTE_STATE_IMAGE:
+      case RM_ATTRIBUTE_STATE_IMAGE_TWEEN:
+      case RM_ATTRIBUTE_STATE_REL1_TO_X:
+      case RM_ATTRIBUTE_STATE_REL1_TO_Y:
+      case RM_ATTRIBUTE_STATE_REL2_TO_X:
+      case RM_ATTRIBUTE_STATE_REL2_TO_Y:
+      case RM_ATTRIBUTE_STATE_TEXT_SOURCE:
+      case RM_ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+      case RM_ATTRIBUTE_STATE_TEXT:
+      case RM_ATTRIBUTE_STATE_FONT:
+      case RM_ATTRIBUTE_STATE_TEXT_STYLE:
+      case RM_ATTRIBUTE_STATE_ASPECT_PREF:
+      case RM_ATTRIBUTE_PART_TEXT_EFFECT:
+      case RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+      case RM_ATTRIBUTE_PART_CLIP_TO:
+      case RM_ATTRIBUTE_PART_DRAG_CONFINE:
+      case RM_ATTRIBUTE_PART_GROUP_SOURCE:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+      case RM_ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+      case RM_ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+      case RM_ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+      case RM_ATTRIBUTE_STATE_CONTAINER_MIN_H:
+      case RM_ATTRIBUTE_STATE_CONTAINER_MIN_V:
+      case RM_ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+      case RM_ATTRIBUTE_STATE_CONTAINER_PADING_X:
+      case RM_ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+      case RM_ATTRIBUTE_STATE_MINMUL_H:
+      case RM_ATTRIBUTE_STATE_MINMUL_W:
+      case RM_ATTRIBUTE_PART_MULTILINE:
+      case RM_ATTRIBUTE_PART_ENTRY_MODE:
+      case RM_ATTRIBUTE_STATE_FILL_TYPE:
+      case RM_ATTRIBUTE_STATE_COLOR:
+      case RM_ATTRIBUTE_STATE_OUTLINE_COLOR:
+      case RM_ATTRIBUTE_STATE_SHADOW_COLOR:
+      case RM_ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case RM_ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case RM_ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case RM_ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case RM_ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case RM_ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case RM_ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case RM_ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
+      case RM_ATTRIBUTE_STATE_FILL_SMOOTH:
+      case RM_ATTRIBUTE_STATE_VISIBLE:
+      case RM_ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+      case RM_ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+      case RM_ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+      case RM_ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
+      case RM_ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+      case RM_ATTRIBUTE_STATE_COLOR_CLASS:
+      case RM_ATTRIBUTE_STATE_MAP_ON:
+      case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+      case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+      case RM_ATTRIBUTE_STATE_MAP_LIGHT:
+      case RM_ATTRIBUTE_STATE_MAP_SMOOTH:
+      case RM_ATTRIBUTE_STATE_MAP_ALPHA:
+      case RM_ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+      case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case RM_ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+      case RM_ATTRIBUTE_PART_ITEM_ALIGN_X:
+      case RM_ATTRIBUTE_PART_ITEM_ALIGN_Y:
+      case RM_ATTRIBUTE_PART_ITEM_WEIGHT_X:
+      case RM_ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+      case RM_ATTRIBUTE_PART_ITEM_ASPECT_H:
+      case RM_ATTRIBUTE_PART_ITEM_ASPECT_W:
+      case RM_ATTRIBUTE_PART_ITEM_MAX_H:
+      case RM_ATTRIBUTE_PART_ITEM_MAX_W:
+      case RM_ATTRIBUTE_PART_ITEM_MIN_H:
+      case RM_ATTRIBUTE_PART_ITEM_MIN_W:
+      case RM_ATTRIBUTE_PART_ITEM_PREFER_H:
+      case RM_ATTRIBUTE_PART_ITEM_PREFER_W:
+      case RM_ATTRIBUTE_PART_ITEM_SPREAD_H:
+      case RM_ATTRIBUTE_PART_ITEM_SPREAD_W:
+      case RM_ATTRIBUTE_PART_ITEM_SPAN_COL:
+      case RM_ATTRIBUTE_PART_ITEM_SPAN_ROW:
+      case RM_ATTRIBUTE_PART_ITEM_POSITION_COL:
+      case RM_ATTRIBUTE_PART_ITEM_POSITION_ROW:
+      case RM_ATTRIBUTE_PART_ITEM_SOURCE:
+      case RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+      case RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+      case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
+      case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
       default:
          break;
      }
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &editor_resource);
 }
 
 static void
@@ -671,8 +674,8 @@ _resource_callbacks_register(Project *project)
    TODO("add afters and targets addition and changes")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_ADDED, _editor_group_add_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DELETED, _editor_group_del_cb, project);
 }
@@ -707,8 +710,8 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_RM_RESOURCE_ATTRIBUTE_CHANGED, _property_resource_attribute_changed, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_ADDED, _editor_group_add_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_GROUP_DELETED, _editor_group_del_cb, project);
 }

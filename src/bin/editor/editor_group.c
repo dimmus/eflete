@@ -126,7 +126,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    int old_value; \
    int min_value; \
    Diff *diff; \
-   Attribute attribute = ATTRIBUTE_GROUP_MAX_##VAL_CAPS; \
+   RM_Attribute attribute = RM_ATTRIBUTE_GROUP_MAX_##VAL_CAPS; \
  \
    assert(obj != NULL); \
    assert(new_value >= 0); \
@@ -155,7 +155,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
      { \
         CRIT_ON_FAIL(edje_edit_group_max_## VAL ##_set(obj, new_value)); \
         _editor_project_changed(); \
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
      } \
    return true; \
 }
@@ -171,7 +171,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    int old_value; \
    int max_value; \
    Diff *diff; \
-   Attribute attribute = ATTRIBUTE_GROUP_MIN_##VAL_CAPS; \
+   RM_Attribute attribute = RM_ATTRIBUTE_GROUP_MIN_##VAL_CAPS; \
  \
    assert(obj != NULL); \
    assert(new_value >= 0); \
@@ -200,7 +200,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
      { \
         CRIT_ON_FAIL(edje_edit_group_min_## VAL ##_set(obj, new_value)); \
         _editor_project_changed(); \
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
      } \
    return true; \
 }
@@ -213,7 +213,7 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                       const char *new_val)
 {
    Diff *diff;
-   Attribute attribute = ATTRIBUTE_GROUP_NAME;
+   RM_Attribute attribute = RM_ATTRIBUTE_GROUP_NAME;
    assert(edit_object != NULL);
    assert(new_val != NULL);
    if (change)
@@ -236,7 +236,7 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      {
         CRIT_ON_FAIL(edje_edit_group_name_set(edit_object, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
      }
    return true;
 }
@@ -246,7 +246,7 @@ editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *item_name, const char *new_val)
 {
    Diff *diff;
-   Attribute attribute = ATTRIBUTE_GROUP_DATA_VALUE;
+   RM_Attribute attribute = RM_ATTRIBUTE_GROUP_DATA_VALUE;
    assert(edit_object != NULL);
    assert(item_name != NULL);
    assert(new_val != NULL);
@@ -271,7 +271,7 @@ editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      {
         CRIT_ON_FAIL(edje_edit_group_data_value_set(edit_object, item_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
      }
    return true;
 }
@@ -282,7 +282,7 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 {
    Diff *diff;
    Rename ren;
-   Attribute attribute = ATTRIBUTE_GROUP_DATA_NAME;
+   RM_Attribute attribute = RM_ATTRIBUTE_GROUP_DATA_NAME;
    assert(edit_object != NULL);
    assert(item_name != NULL);
    assert(new_val != NULL);
@@ -309,7 +309,7 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
         ren.old_name = item_name;
         ren.new_name = new_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
      }
    return true;
 }
