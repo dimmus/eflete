@@ -79,13 +79,16 @@ editor_group_del(Evas_Object *obj, const char *name, Eina_Bool notify)
    assert(obj != NULL);
    assert(name != NULL);
 
+   /* for deleting and cleaning up dependencies, for groups it is important to
+      delete after cleaning up */
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DELETED, (void *)name);
+
    if (!edje_edit_group_del(obj, name))
       return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
-   if (notify)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DELETED, (void *)name);
    return true;
 }
 
