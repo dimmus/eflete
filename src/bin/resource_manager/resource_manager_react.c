@@ -247,12 +247,11 @@ _colorclass_deleted(void *data,
 {
    const char *name = (const char *)ei;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
    Colorclass2 *res_colorclass;
 
    res_colorclass = (Colorclass2 *)resource_manager_find(pro->RM.colorclasses,
                                                          name);
-   _resource_colorclass_del(pro, group, res_colorclass);
+   _resource_colorclass_del(pro, res_colorclass);
 }
 
 static void
@@ -284,11 +283,10 @@ _sound_deleted(void *data,
 {
    const char *name = (const char *)ei;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
    Sound2 *res_sound;
 
    res_sound = (Sound2 *)resource_manager_find(pro->RM.sounds, name);
-   _resource_sound_del(pro, group, res_sound);
+   _resource_sound_del(pro, res_sound);
 }
 
 static void
@@ -314,11 +312,10 @@ _tone_deleted(void *data,
 {
    const char *name = (const char *)ei;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
    Tone2 *res_tone;
 
    res_tone = (Tone2 *)resource_manager_find(pro->RM.tones, name);
-   _resource_tone_del(pro, group, res_tone);
+   _resource_tone_del(pro, res_tone);
 }
 
 static void
@@ -354,11 +351,10 @@ image_deleted(void *data,
 {
    const char *name = (const char *)ei;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
    Image2 *res_image;
 
    res_image = (Image2 *)resource_manager_find(pro->RM.images, name);
-   _resource_image_del(pro, group, res_image);
+   _resource_image_del(pro, res_image);
 }
 
 static void
@@ -383,11 +379,10 @@ _style_deleted(void *data,
 {
    const char *name = (const char *)ei;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
    Style2 *res_style;
 
    res_style = (Style2 *)resource_manager_find(pro->RM.styles, name);
-   _resource_style_del(pro, group, res_style);
+   _resource_style_del(pro, res_style);
 }
 
 static void
@@ -559,7 +554,7 @@ _editor_state_deleted_cb(void *data,
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
    State2 *state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
 
-   _resource_state_del(group, part, state, editor_state->change);
+   _resource_state_del(part, state, editor_state->change);
 }
 
 static void

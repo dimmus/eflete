@@ -575,6 +575,7 @@ _program_load(Group2 *group, Eina_Stringshare *program_name)
    program->common.name = eina_stringshare_add(program_name);
    program->type = edje_edit_program_action_get(group->edit_object,
                                                 program_name);
+   program->group = group;
 
    targets = edje_edit_program_targets_get(group->edit_object, program->common.name);
    EINA_LIST_FOREACH(targets, l2, name)

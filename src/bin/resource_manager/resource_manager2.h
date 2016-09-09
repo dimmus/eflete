@@ -139,6 +139,7 @@ struct _Program2
    Edje_Action_Type type;
    Eina_List *targets;
    Eina_List *afters;
+   Group2 *group;
 };
 
 struct _Style2

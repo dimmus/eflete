@@ -36,7 +36,7 @@ _resource_image_free(Project *pro, Image2 *res)
 }
 
 void
-_resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
+_resource_image_del(Project *pro, Image2 *res_image)
 {
    Eina_List *l, *images;
    Resource2 *res;
@@ -51,7 +51,7 @@ _resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
              state = (State2 *)res;
              if (res_image->common.name == state->normal)
                {
-                  CRIT_ON_FAIL(editor_state_image_set(group->edit_object,
+                  CRIT_ON_FAIL(editor_state_image_set(state->part->group->edit_object,
                                                       NULL,
                                                       false,
                                                       true,
@@ -64,7 +64,8 @@ _resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
                }
              else
                {
-                  CRIT_ON_FAIL(editor_state_tween_del(group->edit_object,
+                  /* NOT WORKING FOR NOW SINCE TWEEN ALREADY DELETED SOMEHOW
+                  CRIT_ON_FAIL(editor_state_tween_del(state->part->group->edit_object,
                                                       NULL,
                                                       false,
                                                       true,
@@ -72,6 +73,7 @@ _resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
                                                       state->common.name,
                                                       state->val,
                                                       res_image->common.name));
+                   */
                   state->tweens = eina_list_remove(state->tweens, res_image);
                }
           }
@@ -83,7 +85,7 @@ _resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
              images = edje_edit_image_set_images_list_get(pro->global_object,
                                                           image_set->common.name);
              idx = eina_list_data_idx(images, (void *)res_image->common.name);
-             edje_edit_image_set_image_del(group->edit_object,
+             edje_edit_image_set_image_del(pro->global_object,
                                            image_set->common.name,
                                            idx);
              edje_edit_string_list_free(images);
@@ -104,7 +106,7 @@ _resource_tone_free(Project *pro, Tone2 *res)
 }
 
 void
-_resource_tone_del(Project *pro, Group2 *group, Tone2 *res_tone)
+_resource_tone_del(Project *pro, Tone2 *res_tone)
 {
    Eina_List *l;
    Resource2 *res;
@@ -115,7 +117,7 @@ _resource_tone_del(Project *pro, Group2 *group, Tone2 *res_tone)
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             CRIT_ON_FAIL(editor_program_tone_name_set(group->edit_object,
+             CRIT_ON_FAIL(editor_program_tone_name_set(program->group->edit_object,
                                                        NULL,
                                                        false,
                                                        true,
@@ -140,7 +142,7 @@ _resource_sound_free(Project *pro, Sound2 *res)
 }
 
 void
-_resource_sound_del(Project *pro, Group2 *group, Sound2 *res_sound)
+_resource_sound_del(Project *pro, Sound2 *res_sound)
 {
    Eina_List *l;
    Resource2 *res;
@@ -151,7 +153,7 @@ _resource_sound_del(Project *pro, Group2 *group, Sound2 *res_sound)
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             CRIT_ON_FAIL(editor_program_sample_name_set(group->edit_object,
+             CRIT_ON_FAIL(editor_program_sample_name_set(program->group->edit_object,
                                                          NULL,
                                                          false,
                                                          true,
@@ -175,7 +177,7 @@ _resource_colorclass_free(Project *pro, Colorclass2 *res)
 }
 
 void
-_resource_colorclass_del(Project *pro, Group2 *group, Colorclass2 *res_colorclass)
+_resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
 {
    Eina_List *l;
    Resource2 *res;
@@ -186,7 +188,7 @@ _resource_colorclass_del(Project *pro, Group2 *group, Colorclass2 *res_colorclas
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             CRIT_ON_FAIL(editor_state_color_class_set(group->edit_object,
+             CRIT_ON_FAIL(editor_state_color_class_set(state->part->group->edit_object,
                                                        NULL,
                                                        false,
                                                        true,
@@ -211,7 +213,7 @@ _resource_style_free(Project *pro, Style2 *res)
 }
 
 void
-_resource_style_del(Project *pro, Group2 *group, Style2 *res_style)
+_resource_style_del(Project *pro, Style2 *res_style)
 {
    Eina_List *l;
    Resource2 *res;
@@ -222,14 +224,14 @@ _resource_style_del(Project *pro, Group2 *group, Style2 *res_style)
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             CRIT_ON_FAIL(editor_state_text_style_set(group->edit_object,
-                                                       NULL,
-                                                       false,
-                                                       true,
-                                                       state->part->common.name,
-                                                       state->common.name,
-                                                       state->val,
-                                                       NULL));
+             CRIT_ON_FAIL(editor_state_text_style_set(state->part->group->edit_object,
+                                                      NULL,
+                                                      false,
+                                                      true,
+                                                      state->part->common.name,
+                                                      state->common.name,
+                                                      state->val,
+                                                      NULL));
           }
      }
 
@@ -293,20 +295,24 @@ _resource_state_free(Part2 *part, State2 *state)
 }
 
 void
-_resource_state_del(Group2 *group, Part2 *part, State2 *state, Change *change)
+_resource_state_del(Part2 *part, State2 *state, Change *change)
 {
    Eina_List *l;
    Resource2 *res;
+   Program2 *program;
 
    EINA_LIST_FOREACH(state->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
-          CRIT_ON_FAIL(editor_program_filter_state_set(group->edit_object, //check this one
-                                                       change,
-                                                       false,
-                                                       true,
-                                                       res->common.name,
-                                                       NULL));
+          {
+             program = (Program2 *)res;
+             CRIT_ON_FAIL(editor_program_filter_state_set(program->group->edit_object,
+                                                          change,
+                                                          false,
+                                                          true,
+                                                          res->common.name,
+                                                          NULL));
+          }
      }
    _resource_state_free(part, state);
 }
@@ -360,6 +366,7 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
    Resource2 *res;
    State2 *state;
    Part_Item2 *item;
+   Program2 *program;
 
    EINA_LIST_FOREACH(part->common.used_in, l, res)
      {
@@ -367,7 +374,7 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
           {
              state = (State2 *)res;
              if (state->part->type == EDJE_PART_TYPE_PROXY)
-               CRIT_ON_FAIL(editor_state_proxy_source_set(group->edit_object,
+               CRIT_ON_FAIL(editor_state_proxy_source_set(state->part->group->edit_object,
                                                           change,
                                                           false,
                                                           true,
@@ -376,7 +383,7 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
                                                           state->val,
                                                           NULL));
              else if (state->part->type == EDJE_PART_TYPE_TEXT)
-               CRIT_ON_FAIL(editor_state_text_text_source_set(group->edit_object,
+               CRIT_ON_FAIL(editor_state_text_text_source_set(state->part->group->edit_object,
                                                               change,
                                                               false,
                                                               true,
@@ -386,19 +393,22 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
                                                               NULL));
           }
         else if (res->common.type == RESOURCE2_TYPE_PROGRAM)
-          CRIT_ON_FAIL(editor_program_filter_part_set(group->edit_object,
-                                                      change,
-                                                      false,
-                                                      true,
-                                                      res->common.name,
-                                                      NULL));
+          {
+             program = (Program2 *)res;
+             CRIT_ON_FAIL(editor_program_filter_part_set(program->group->edit_object,
+                                                         change,
+                                                         false,
+                                                         true,
+                                                         res->common.name,
+                                                         NULL));
+          }
      }
 
    /* kill all dependencies of part's states,
       since they will be deleted together with part */
    EINA_LIST_FOREACH(part->states, l, state)
      {
-        _resource_state_del(group, part, state, change);
+        _resource_state_del(part, state, change);
      }
    EINA_LIST_FOREACH(part->items, l, item)
      {
@@ -469,7 +479,6 @@ _resource_group_free(Project *pro, Group2 *group)
    eina_stringshare_del(group->widget);
    eina_stringshare_del(group->class);
    eina_stringshare_del(group->style);
-   eina_stringshare_del(group->common.name);
    eina_list_free(group->programs);
    eina_list_free(group->parts);
    eina_list_free(group->limits);
@@ -477,7 +486,7 @@ _resource_group_free(Project *pro, Group2 *group)
    eina_list_free(group->aliases);
 
    /* 3. cleanup common */
-   pro->groups = eina_list_remove(pro->RM.groups, group);
+   pro->RM.groups = eina_list_remove(pro->RM.groups, group);
 
    eina_stringshare_del(group->common.name);
    eina_list_free(group->common.used_in);
@@ -496,14 +505,25 @@ _resource_group_del(Project *pro, Group2 *group)
    Part2 *part;
    Part_Item2 *item;
    Group_Data2 *data;
+   Group2 *alias_group;
+
+   /* IMPORTANT
+      Since edje edit together with group deletion also delete all it's aliases
+      it's important to update dependencies and recursively remove deps for
+      every aliased group. */
+   EINA_LIST_FOREACH(group->aliases, l, alias_group)
+     {
+        _resource_group_del(pro, alias_group);
+     }
 
    EINA_LIST_FOREACH(group->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PART)
           {
              part = (Part2 *)res;
+
              if (part->type == EDJE_PART_TYPE_GROUP)
-               CRIT_ON_FAIL(editor_part_group_source_set(group->edit_object,
+               CRIT_ON_FAIL(editor_part_group_source_set(part->group->edit_object,
                                                          NULL,
                                                          false,
                                                          true,
@@ -511,18 +531,18 @@ _resource_group_del(Project *pro, Group2 *group)
                                                          NULL));
              else if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
                {
-                  CRIT_ON_FAIL(editor_part_textblock_selection_under_set(group->edit_object, NULL, false, true, part->common.name, NULL));
-                  CRIT_ON_FAIL(editor_part_textblock_selection_over_set( group->edit_object, NULL, false, true, part->common.name, NULL));
-                  CRIT_ON_FAIL(editor_part_textblock_cursor_under_set(   group->edit_object, NULL, false, true, part->common.name, NULL));
-                  CRIT_ON_FAIL(editor_part_textblock_cursor_over_set(    group->edit_object, NULL, false, true, part->common.name, NULL));
-                  CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(  group->edit_object, NULL, false, true, part->common.name, NULL));
-                  CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(   group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_selection_under_set(part->group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_selection_over_set( part->group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_cursor_under_set(   part->group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_cursor_over_set(    part->group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(  part->group->edit_object, NULL, false, true, part->common.name, NULL));
+                  CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(   part->group->edit_object, NULL, false, true, part->common.name, NULL));
                }
           }
         else if (res->common.type == RESOURCE2_TYPE_ITEM)
           {
              item = (Part_Item2 *)res;
-             CRIT_ON_FAIL(editor_part_item_source_set(group->edit_object,
+             CRIT_ON_FAIL(editor_part_item_source_set(item->part->group->edit_object,
                                                       NULL,
                                                       false,
                                                       true,

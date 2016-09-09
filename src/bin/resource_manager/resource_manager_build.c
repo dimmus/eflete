@@ -121,7 +121,7 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
    res = resource_manager_find(pro->RM.colorclasses, color_class);
    if (res)
      _resource_usage_resource_add((Resource2 *)state, res);
-   else
+   else if ((!res) && (color_class))
      {
         /* Colorclass can be specified but not defined in edc.
            If colorclass don't exist yet adding it */
@@ -194,7 +194,8 @@ _part_dependency_load(Project *pro, Group2 *group, Part2 *part)
 #define TEXT_RESOURCE_USES(FUNC) \
    group_name = FUNC(group->edit_object, part->common.name); \
    res = resource_manager_find(pro->RM.groups, group_name); \
-   _resource_usage_resource_add((Resource2 *)part, res); \
+   if (res) \
+     _resource_usage_resource_add((Resource2 *)part, res); \
    edje_edit_string_free(group_name);
 
    if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
