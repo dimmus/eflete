@@ -163,28 +163,47 @@ _resource_group_free(Project *pro, Group2 *group);
 void
 _resource_group_del(Project *pro, Group2 *group);
 
-void
-_resource_image_set_free(Image_Set2 *res_image_set);
+/* TOP LEVEL RESOURCES DELETION AND FREE */
 
 void
-_resource_image_free(Image2 *res_image);
+_resource_image_free(Project *pro, Image2 *res);
 
 void
-_resource_tone_free(Tone2 *res_tone);
+_resource_image_del(Project *pro, Group2 *group, Image2 *res_image);
 
 void
-_resource_sound_free(Sound2 *res_sound);
+_resource_tone_free(Project *pro, Tone2 *res);
 
 void
-_resource_colorclasses_free(Colorclass2 *res_colorclass);
+_resource_tone_del(Project *pro, Group2 *group, Tone2 *res_tone);
 
 void
-_resource_styles_free(Style2 *res_style);
+_resource_sound_free(Project *pro, Sound2 *res);
 
 void
-_resource_font_free(Font2 *res_font);
+_resource_sound_del(Project *pro, Group2 *group, Sound2 *res_sound);
 
 void
-_resource_data_free(Global_Data2 *res_data);
+_resource_colorclass_free(Project *pro, Colorclass2 *res);
+
+void
+_resource_colorclass_del(Project *pro, Group2 *group, Colorclass2 *res_colorclass);
+
+void
+_resource_style_free(Project *pro, Style2 *res);
+
+void
+_resource_style_del(Project *pro, Group2 *group, Style2 *res_style);
+
+/***** NOT IMPLEMENTED YET BUT NEED FREEING ***********/
+
+void
+_resource_image_set_free(Project *pro, Image_Set2 *res_image_set);
+
+void
+_resource_font_free(Project *pro, Font2 *res_font);
+
+void
+_resource_data_free(Project *pro, Global_Data2 *res_data);
 
 #endif /* RESOURCE_MANAGER_PRIVATE_H */

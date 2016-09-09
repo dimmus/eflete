@@ -116,24 +116,24 @@ resource_manager_shutdown(Project *pro)
 
    /* image_set */
    EINA_LIST_FREE(pro->RM.image_sets, res_image_set)
-     _resource_image_set_free(res_image_set);
+     _resource_image_set_free(pro, res_image_set);
    EINA_LIST_FREE(pro->RM.images, res_image)
-     _resource_image_free(res_image);
+     _resource_image_free(pro, res_image);
 
    EINA_LIST_FREE(pro->RM.tones, res_tone)
-     _resource_tone_free(res_tone);
+     _resource_tone_free(pro, res_tone);
    EINA_LIST_FREE(pro->RM.sounds, res_sound)
-     _resource_sound_free(res_sound);
+     _resource_sound_free(pro, res_sound);
 
    EINA_LIST_FREE(pro->RM.colorclasses, res_colorclass)
-     _resource_colorclasses_free(res_colorclass);
+     _resource_colorclass_free(pro, res_colorclass);
    EINA_LIST_FREE(pro->RM.styles, res_style)
-     _resource_styles_free(res_style);
+     _resource_style_free(pro, res_style);
 
    EINA_LIST_FREE(pro->RM.fonts, res_font)
-      _resource_font_free(res_font);
+      _resource_font_free(pro, res_font);
    EINA_LIST_FREE(pro->RM.global_data, res_data)
-      _resource_data_free(res_data);
+      _resource_data_free(pro, res_data);
 
    EINA_LIST_FREE(pro->RM.groups, group)
      {

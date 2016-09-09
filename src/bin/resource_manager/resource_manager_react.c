@@ -241,12 +241,18 @@ _colorclass_added(void *data,
 }
 
 static void
-_colorclass_deleted(void *data __UNUSED__,
+_colorclass_deleted(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei)
 {
    const char *name = (const char *)ei;
-   printf("Colorclass deleted [%s] \n", name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Colorclass2 *res_colorclass;
+
+   res_colorclass = (Colorclass2 *)resource_manager_find(pro->RM.colorclasses,
+                                                         name);
+   _resource_colorclass_del(pro, group, res_colorclass);
 }
 
 static void
@@ -272,12 +278,17 @@ _sound_added(void *data,
 }
 
 static void
-_sound_deleted(void *data __UNUSED__,
+_sound_deleted(void *data,
                Evas_Object *obj __UNUSED__,
                void *ei)
 {
    const char *name = (const char *)ei;
-   printf("Sound deleted [%s] \n", name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Sound2 *res_sound;
+
+   res_sound = (Sound2 *)resource_manager_find(pro->RM.sounds, name);
+   _resource_sound_del(pro, group, res_sound);
 }
 
 static void
@@ -297,12 +308,17 @@ _tone_added(void *data,
 }
 
 static void
-_tone_deleted(void *data __UNUSED__,
+_tone_deleted(void *data,
                Evas_Object *obj __UNUSED__,
                void *ei)
 {
    const char *name = (const char *)ei;
-   printf("Tone deleted [%s] \n", name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Tone2 *res_tone;
+
+   res_tone = (Tone2 *)resource_manager_find(pro->RM.tones, name);
+   _resource_tone_del(pro, group, res_tone);
 }
 
 static void
@@ -332,12 +348,17 @@ _image_added(void *data,
 }
 
 static void
-image_deleted(void *data __UNUSED__,
+image_deleted(void *data,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
    const char *name = (const char *)ei;
-   printf("And old image was deleted [%s] \n", name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Image2 *res_image;
+
+   res_image = (Image2 *)resource_manager_find(pro->RM.images, name);
+   _resource_image_del(pro, group, res_image);
 }
 
 static void
@@ -356,12 +377,17 @@ _style_added(void *data,
 }
 
 static void
-_style_deleted(void *data __UNUSED__,
+_style_deleted(void *data,
                Evas_Object *obj __UNUSED__,
-               void *ei __UNUSED__)
+               void *ei)
 {
    const char *name = (const char *)ei;
-   printf("style deleted [%s] \n", name);
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
+   Style2 *res_style;
+
+   res_style = (Style2 *)resource_manager_find(pro->RM.styles, name);
+   _resource_style_del(pro, group, res_style);
 }
 
 static void

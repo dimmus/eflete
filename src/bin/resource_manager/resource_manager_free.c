@@ -22,46 +22,237 @@
 #include "project_manager.h"
 
 /****** TOP BLOCK DELETION **********/
+
 void
-_resource_image_set_free(Image_Set2 *res_image_set __UNUSED__)
+_resource_image_free(Project *pro, Image2 *res)
 {
+   pro->RM.images = eina_list_remove(pro->RM.images, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_stringshare_del(res->source);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_image_free(Image2 *res_image __UNUSED__)
+_resource_image_del(Project *pro, Group2 *group, Image2 *res_image)
 {
+   Eina_List *l, *images;
+   Resource2 *res;
+   State2 *state;
+   Image_Set2 *image_set;
+   int idx;
+
+   EINA_LIST_FOREACH(res_image->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_STATE)
+          {
+             state = (State2 *)res;
+             if (res_image->common.name == state->normal)
+               {
+                  CRIT_ON_FAIL(editor_state_image_set(group->edit_object,
+                                                      NULL,
+                                                      false,
+                                                      true,
+                                                      state->part->common.name,
+                                                      state->common.name,
+                                                      state->val,
+                                                      EFLETE_DUMMY_IMAGE_NAME));
+                  eina_stringshare_del(state->normal);
+                  state->normal = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
+               }
+             else
+               {
+                  CRIT_ON_FAIL(editor_state_tween_del(group->edit_object,
+                                                      NULL,
+                                                      false,
+                                                      true,
+                                                      state->part->common.name,
+                                                      state->common.name,
+                                                      state->val,
+                                                      res_image->common.name));
+                  state->tweens = eina_list_remove(state->tweens, res_image);
+               }
+          }
+        else if (res->common.type == RESOURCE2_TYPE_IMAGE_SET)
+          {
+             image_set = (Image_Set2 *)res;
+
+             TODO("Make editor_image_set_image_del");
+             images = edje_edit_image_set_images_list_get(pro->global_object,
+                                                          image_set->common.name);
+             idx = eina_list_data_idx(images, (void *)res_image->common.name);
+             edje_edit_image_set_image_del(group->edit_object,
+                                           image_set->common.name,
+                                           idx);
+             edje_edit_string_list_free(images);
+          }
+     }
+   _resource_image_free(pro, res_image);
 }
 
 void
-_resource_tone_free(Tone2 *res_tone __UNUSED__)
+_resource_tone_free(Project *pro, Tone2 *res)
 {
+   pro->RM.tones = eina_list_remove(pro->RM.tones, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_sound_free(Sound2 *res_sound __UNUSED__)
+_resource_tone_del(Project *pro, Group2 *group, Tone2 *res_tone)
 {
+   Eina_List *l;
+   Resource2 *res;
+   Program2 *program;
+
+   EINA_LIST_FOREACH(res_tone->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_PROGRAM)
+          {
+             program = (Program2 *)res;
+             CRIT_ON_FAIL(editor_program_tone_name_set(group->edit_object,
+                                                       NULL,
+                                                       false,
+                                                       true,
+                                                       program->common.name,
+                                                       ""));
+          }
+     }
+
+   _resource_tone_free(pro, res_tone);
 }
 
 void
-_resource_colorclasses_free(Colorclass2 *res_colorclass __UNUSED__)
+_resource_sound_free(Project *pro, Sound2 *res)
 {
+   pro->RM.sounds = eina_list_remove(pro->RM.sounds, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_stringshare_del(res->source);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_styles_free(Style2 *res_style __UNUSED__)
+_resource_sound_del(Project *pro, Group2 *group, Sound2 *res_sound)
 {
+   Eina_List *l;
+   Resource2 *res;
+   Program2 *program;
+
+   EINA_LIST_FOREACH(res_sound->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_PROGRAM)
+          {
+             program = (Program2 *)res;
+             CRIT_ON_FAIL(editor_program_sample_name_set(group->edit_object,
+                                                         NULL,
+                                                         false,
+                                                         true,
+                                                         program->common.name,
+                                                         EFLETE_DUMMY_SAMPLE_NAME));
+          }
+     }
+
+   _resource_sound_free(pro, res_sound);
 }
 
 void
-_resource_font_free(Font2 *res_font __UNUSED__)
+_resource_colorclass_free(Project *pro, Colorclass2 *res)
 {
+   pro->RM.colorclasses = eina_list_remove(pro->RM.colorclasses, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
 }
 
 void
-_resource_data_free(Global_Data2 *res_data __UNUSED__)
+_resource_colorclass_del(Project *pro, Group2 *group, Colorclass2 *res_colorclass)
 {
+   Eina_List *l;
+   Resource2 *res;
+   State2 *state;
+
+   EINA_LIST_FOREACH(res_colorclass->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_STATE)
+          {
+             state = (State2 *)res;
+             CRIT_ON_FAIL(editor_state_color_class_set(group->edit_object,
+                                                       NULL,
+                                                       false,
+                                                       true,
+                                                       state->part->common.name,
+                                                       state->common.name,
+                                                       state->val,
+                                                       NULL));
+          }
+     }
+   _resource_colorclass_free(pro, res_colorclass);
 }
 
+void
+_resource_style_free(Project *pro, Style2 *res)
+{
+   pro->RM.styles = eina_list_remove(pro->RM.styles, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
+}
+
+void
+_resource_style_del(Project *pro, Group2 *group, Style2 *res_style)
+{
+   Eina_List *l;
+   Resource2 *res;
+   State2 *state;
+
+   EINA_LIST_FOREACH(res_style->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_STATE)
+          {
+             state = (State2 *)res;
+             CRIT_ON_FAIL(editor_state_text_style_set(group->edit_object,
+                                                       NULL,
+                                                       false,
+                                                       true,
+                                                       state->part->common.name,
+                                                       state->common.name,
+                                                       state->val,
+                                                       NULL));
+          }
+     }
+
+   _resource_style_free(pro, res_style);
+}
+
+void
+_resource_image_set_free(Project *pro __UNUSED__, Image_Set2 *res_image_set __UNUSED__)
+{
+
+}
+
+void
+_resource_font_free(Project *pro __UNUSED__, Font2 *res_font __UNUSED__)
+{
+
+}
+
+void
+_resource_data_free(Project *pro __UNUSED__, Global_Data2 *res_data __UNUSED__)
+{
+
+}
 
 /****** GROUP DELETION **********/
 
