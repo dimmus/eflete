@@ -226,12 +226,18 @@ _property_attribute_changed(void *data __UNUSED__,
 }
 
 static void
-_colorclass_added(void *data __UNUSED__,
+_colorclass_added(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *ei)
 {
+   Colorclass2 *res;
    const char *name = (const char *)ei;
-   printf("Colorclass added [%s] \n", name);
+   Project *project = (Project *)data;
+
+   res = mem_calloc(1, sizeof(Colorclass2));
+   res->common.type = RESOURCE2_TYPE_COLORCLASS;
+   res->common.name = eina_stringshare_add(name);
+   project->RM.colorclasses = eina_list_append(project->RM.colorclasses, res);
 }
 
 static void
@@ -244,12 +250,25 @@ _colorclass_deleted(void *data __UNUSED__,
 }
 
 static void
-_sound_added(void *data __UNUSED__,
+_sound_added(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei)
 {
+   Sound2 *res;
+   Eina_Stringshare *resource_folder, *sound_file;
    const char *name = (const char *)ei;
-   printf("Sound added [%s] \n", name);
+   Project *project = (Project *)data;
+
+   sound_file = edje_edit_sound_samplesource_get(project->global_object, name);
+   resource_folder = eina_stringshare_printf("%s/sounds", project->develop_path);
+
+   res = mem_calloc(1, sizeof(Sound2));
+   res->common.type = RESOURCE2_TYPE_SAMPLE;
+   res->common.name = eina_stringshare_add(name);
+   res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
+
+   project->RM.sounds = eina_list_append(project->RM.sounds, res);
+   edje_edit_string_free(sound_file);
 }
 
 static void
@@ -262,12 +281,19 @@ _sound_deleted(void *data __UNUSED__,
 }
 
 static void
-_tone_added(void *data __UNUSED__,
+_tone_added(void *data,
             Evas_Object *obj __UNUSED__,
             void *ei)
 {
+   Tone2 *res;
    const char *name = (const char *)ei;
-   printf("Tone added [%s] \n", name);
+   Project *project = (Project *)data;
+
+   res = mem_calloc(1, sizeof(Tone2));
+   res->common.type = RESOURCE2_TYPE_TONE;
+   res->common.name = eina_stringshare_add(name);
+   res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
+   project->RM.tones = eina_list_append(project->RM.tones, res);
 }
 
 static void
@@ -280,12 +306,29 @@ _tone_deleted(void *data __UNUSED__,
 }
 
 static void
-_image_added(void *data __UNUSED__,
+_image_added(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei)
 {
+   Image2 *res;
    const char *name = (const char *)ei;
-   printf("We got new image [%s] \n", name);
+   Project *project = (Project *)data;
+   Eina_Stringshare *resource_folder;
+
+   resource_folder = eina_stringshare_printf("%s/images", project->develop_path);
+
+   res = mem_calloc(1, sizeof(Image2));
+   res->common.type = RESOURCE2_TYPE_IMAGE;
+   res->common.name = eina_stringshare_add(name);
+   res->comp_type = edje_edit_image_compression_type_get(project->global_object,
+                                                         res->common.name);
+   if (res->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+     res->source = eina_stringshare_add(name);
+   else
+     res->source = eina_stringshare_printf("%s/%s", resource_folder, name);
+
+   project->RM.images = eina_list_append(project->RM.images, res);
+   eina_stringshare_del(resource_folder);
 }
 
 static void
@@ -298,12 +341,18 @@ image_deleted(void *data __UNUSED__,
 }
 
 static void
-_style_added(void *data __UNUSED__,
+_style_added(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei __UNUSED__)
 {
+   Style2 *res;
    const char *name = (const char *)ei;
-   printf("style added [%s] \n", name);
+   Project *project = (Project *)data;
+
+   res = mem_calloc(1, sizeof(Style2));
+   res->common.type = RESOURCE2_TYPE_STYLE;
+   res->common.name = eina_stringshare_add(name);
+   project->RM.styles = eina_list_append(project->RM.styles, res);
 }
 
 static void
