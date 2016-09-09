@@ -552,7 +552,7 @@ _gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_nam
    assert(group_data_name != NULL);
    assert(group != NULL);
 
-   group_data = mem_calloc(1, sizeof(Program2));
+   group_data = mem_calloc(1, sizeof(Group_Data2));
    group_data->common.type = RESOURCE2_TYPE_DATA_GROUP;
    group_data->common.name = eina_stringshare_add(group_data_name);
    group_data->source = edje_edit_group_data_value_get(group->edit_object,
