@@ -212,7 +212,9 @@ _property_attribute_changed(void *data __UNUSED__,
 {
    Attribute *attr = event_info;
 
-   assert(tabs.current_workspace != NULL);
+   /* for example when image is deleted from image manager */
+   if (!tabs.current_workspace)
+     return;
 
    switch ((int)*attr)
      {
@@ -517,13 +519,13 @@ _editor_part_deleted_cb(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info)
 {
-   Eina_Stringshare *part_name = event_info;
+   Editor_Part *part = (Editor_Part *)event_info;
 
-   assert(part_name != NULL);
+   assert(part != NULL);
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_del(tabs.current_workspace, part_name);
+   workspace_part_del(tabs.current_workspace, part->part_name);
 }
 
 static void
