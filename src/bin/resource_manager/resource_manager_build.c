@@ -81,6 +81,7 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
 {
    Eina_List *l2;
    Resource2 *res;
+   Colorclass2 *res_colorclass;
    Eina_Stringshare *source;
    Eina_Stringshare *font_name, *color_class, *style_name;
 
@@ -120,6 +121,21 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
    res = resource_manager_find(pro->RM.colorclasses, color_class);
    if (res)
      _resource_usage_resource_add((Resource2 *)state, res);
+   else
+     {
+        /* Colorclass can be specified but not defined in edc.
+           If colorclass don't exist yet adding it */
+        CRIT_ON_FAIL(editor_color_class_add(group->edit_object,
+                                            color_class,
+                                            false));
+        res_colorclass = mem_calloc(1, sizeof(Colorclass2));
+        res_colorclass->common.type = RESOURCE2_TYPE_COLORCLASS;
+        res_colorclass->common.name = eina_stringshare_add(color_class);
+        pro->RM.colorclasses = eina_list_append(pro->RM.colorclasses,
+                                                res_colorclass);
+        _resource_usage_resource_add((Resource2 *)state,
+                                     (Resource2 *)res_colorclass);
+     }
    edje_edit_string_free(color_class);
 
    if (part->type == EDJE_PART_TYPE_TEXT)
