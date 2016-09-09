@@ -434,10 +434,10 @@ _editor_program_deleted_cb(void *data,
    /* 1.2. cleanup list of tweens */
    eina_list_free(program->afters);
    eina_list_free(program->targets);
-   /* 1.3. free state */
-   free(program);
 
+   /* 1.3. free program */
    group->programs = eina_list_remove(group->programs, program);
+   free(program);
 }
 
 static void
@@ -503,9 +503,8 @@ _editor_part_item_deleted_cb(void *data,
    /* 3.1. remove each item from all "used_in" and "uses___" and cleanup */
    _resource_usage_dependency_cleanup(part_item);
    /* 3.2. free item */
-   free(part_item);
-
    part->items = eina_list_remove(part->items, part_item);
+   free(part_item);
 }
 
 static void
@@ -543,9 +542,8 @@ _editor_state_deleted_cb(void *data,
    /* 2.2. cleanup list of tweens */
    eina_list_free(state->tweens);
    /* 2.3. free state */
-   free(state);
-
    part->states = eina_list_remove(part->states, state);
+   free(state);
 }
 
 static void
