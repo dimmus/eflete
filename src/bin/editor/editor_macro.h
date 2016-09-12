@@ -470,13 +470,14 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    Diff *diff; \
    Editor_Attribute_Change send; \
    send.attribute = RM_ATTRIBUTE; \
-   send.part_name = eina_stringshare_add(name); \
-   send.value = eina_stringshare_add(new_val); \
    assert(edit_object != NULL); \
    assert(name != NULL); \
+   Eina_Stringshare *old_value = edje_edit_## REAL_FUNC ##_get(edit_object, name); \
+   send.part_name = eina_stringshare_add(name); \
+   send.value = eina_stringshare_add(new_val); \
+   send.old_value = eina_stringshare_add(old_value); \
    if (change) \
      { \
-        Eina_Stringshare *old_value = edje_edit_## REAL_FUNC ##_get(edit_object, name); \
         diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_STRING_STRING; \
         diff->redo.function = editor_## FUNC ##_set; \
@@ -499,6 +500,7 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      } \
    eina_stringshare_del(send.part_name); \
    eina_stringshare_del(send.value); \
+   eina_stringshare_del(send.old_value); \
    return true; \
 }
 

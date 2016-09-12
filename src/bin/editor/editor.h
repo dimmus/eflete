@@ -235,6 +235,7 @@ typedef struct {
    Eina_Stringshare *part_name;
    Eina_Stringshare *item_name;
    Eina_Stringshare *value;
+   Eina_Stringshare *old_value;
 } Editor_Attribute_Change;
 
 

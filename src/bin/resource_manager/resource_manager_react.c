@@ -66,7 +66,7 @@ _property_resource_attribute_changed(void *data __UNUSED__,
 }
 
 static void
-_property_attribute_changed(void *data __UNUSED__,
+_property_attribute_changed(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
 {
@@ -89,9 +89,12 @@ _property_attribute_changed(void *data __UNUSED__,
     ** > expand editor (top blocks like image, sound, etc) not supported **
     ***********************************************************************
     ***********************************************************************/
+   Resource2 *part, *source, *old_source;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
+   Project *pro = (Project *)data;
+   Group2 *group = _get_current_group2(pro);
 
    switch ((int)change->attribute)
      {
@@ -223,6 +226,19 @@ _property_attribute_changed(void *data __UNUSED__,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
       case RM_ATTRIBUTE_PART_GROUP_SOURCE:
+         part = resource_manager_find(group->parts, change->part_name);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(pro->RM.groups, change->old_value);
+              _resource_usage_resource_del(part, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(pro->RM.groups, change->value);
+              _resource_usage_resource_add(part, source);
+           }
          break;
       default:
          break;
