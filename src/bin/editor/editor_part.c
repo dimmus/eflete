@@ -263,13 +263,17 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_PART_ITEM_SOURCE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
+   Eina_Stringshare *old_value = edje_edit_part_item_source_get(edit_object, part_name, item_name);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_SOURCE;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_name = eina_stringshare_add(item_name);
+   send.old_value = eina_stringshare_add(old_value);
+   send.value = eina_stringshare_add(new_val);
    if (change)
      {
-        Eina_Stringshare *old_value = edje_edit_part_item_source_get(edit_object, part_name, item_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
         diff->redo.function = editor_part_item_source_set;
@@ -294,6 +298,10 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         CRIT_ON_FAIL(editor_save(edit_object));
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(part_name);
+   eina_stringshare_del(item_name);
+   eina_stringshare_del(old_value);
+   eina_stringshare_del(new_val);
    return true;
 }
 

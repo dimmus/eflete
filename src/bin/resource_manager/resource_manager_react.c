@@ -89,7 +89,7 @@ _property_attribute_changed(void *data,
     ** > expand editor (top blocks like image, sound, etc) not supported **
     ***********************************************************************
     ***********************************************************************/
-   Resource2 *part, *source, *old_source;
+   Resource2 *part, *source, *old_source, *item;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
@@ -219,11 +219,28 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_SPAN_ROW:
       case RM_ATTRIBUTE_PART_ITEM_POSITION_COL:
       case RM_ATTRIBUTE_PART_ITEM_POSITION_ROW:
-      case RM_ATTRIBUTE_PART_ITEM_SOURCE:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         break;
+      case RM_ATTRIBUTE_PART_ITEM_SOURCE:
+         part = resource_manager_find(group->parts, change->part_name);
+         item = resource_manager_find(((Part *)part)->items, change->item_name);
+
+         /* if old_valuye wasn't null and wasn't compared to EFLETE_INTERNAL_GROUP_NAME */
+         if (change->old_value && strcmp(change->old_value, EFLETE_INTERNAL_GROUP_NAME))
+           {
+              old_source = resource_manager_find(pro->RM.groups, change->old_value);
+              _resource_usage_resource_del(item, old_source);
+           }
+
+         /* if new value is not null and not internal group */
+         if (change->value && strcmp(change->old_value, EFLETE_INTERNAL_GROUP_NAME))
+           {
+              source = resource_manager_find(pro->RM.groups, change->value);
+              _resource_usage_resource_add(item, source);
+           }
          break;
       case RM_ATTRIBUTE_PART_GROUP_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
