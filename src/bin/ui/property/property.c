@@ -178,15 +178,25 @@ _unrealized_cb(void *data,
    elm_object_focus_set(pd->genlist, true);
 }
 
-void
+static void
 _property_del(void *data,
               Evas *e __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Property_Mode *pd = (Property_Mode *)data;
+   Property_Data *pd = (Property_Data *)data;
 
    property_group_del();
+
+   /* We need to delete all calbacks here because some of them could be triggered
+      later (i.e. unrealize_cb) and have incorrect data */
+   evas_object_smart_callback_del(pd->genlist, "expand,request", _expand_request_cb);
+   evas_object_smart_callback_del(pd->genlist, "contract,request", _contract_request_cb);
+   evas_object_smart_callback_del(pd->genlist, "expanded", _expanded_cb);
+   evas_object_smart_callback_del(pd->genlist, "contracted", _contracted_cb);
+   evas_object_smart_callback_del(pd->genlist, "realized", _realized_cb);
+   evas_object_smart_callback_del(pd->genlist, "unrealized", _unrealized_cb);
+
    free(pd);
 }
 
