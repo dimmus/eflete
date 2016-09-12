@@ -171,6 +171,7 @@ _popup_close_cb(void *data __UNUSED__,
 Eina_Bool
 project_close(void)
 {
+   Project *project_to_close;
    Evas_Object *popup;
    Eina_Stringshare *title;
 
@@ -194,8 +195,11 @@ project_close(void)
    project_navigator_project_unset();
    tabs_clean();
 
-   pm_project_close(ap.project);
+   /* some code in close project callback checks ap.project for NULL, so we need to
+      change it before closing project */
+   project_to_close = ap.project;
    ap.project = NULL;
+   pm_project_close(project_to_close);
    elm_layout_text_set(ap.win_layout, "eflete.project.time", _("Last saved: none"));
    elm_layout_text_set(ap.win_layout, "eflete.project.part", _("Project path: none"));
 
