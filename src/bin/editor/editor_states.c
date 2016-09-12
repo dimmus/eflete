@@ -554,10 +554,14 @@ editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_STATE_IMAGE_TWEEN;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
+   send.attribute = RM_ATTRIBUTE_STATE_IMAGE_TWEEN;
+   send.part_name = eina_stringshare_add(part_name);
+   send.state_name = eina_stringshare_add(state_name);
+   send.state_value = state_val;
+   send.value = eina_stringshare_add(name); /* field for add tween */
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -585,6 +589,9 @@ editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge
         if (!_editor_signals_blocked)
           evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.part_name);
+   eina_stringshare_del(send.state_name);
+   eina_stringshare_del(send.value);
    return true;
 }
 Eina_Bool
@@ -594,10 +601,14 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_STATE_IMAGE_TWEEN;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
+   send.attribute = RM_ATTRIBUTE_STATE_IMAGE_TWEEN;
+   send.part_name = eina_stringshare_add(part_name);
+   send.state_name = eina_stringshare_add(state_name);
+   send.state_value = state_val;
+   send.old_value = eina_stringshare_add(name); /* field for del tween */
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -625,6 +636,9 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
         if (!_editor_signals_blocked)
           evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.part_name);
+   eina_stringshare_del(send.state_name);
+   eina_stringshare_del(send.old_value);
    return true;
 }
 

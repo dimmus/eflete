@@ -139,8 +139,6 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_STATE_TEXT_MIN_Y:
       case RM_ATTRIBUTE_STATE_FIXED_H:
       case RM_ATTRIBUTE_STATE_FIXED_W:
-      case RM_ATTRIBUTE_STATE_IMAGE:
-      case RM_ATTRIBUTE_STATE_IMAGE_TWEEN:
       case RM_ATTRIBUTE_STATE_REL1_TO_X:
       case RM_ATTRIBUTE_STATE_REL1_TO_Y:
       case RM_ATTRIBUTE_STATE_REL2_TO_X:
@@ -214,6 +212,52 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         break;
+      case RM_ATTRIBUTE_STATE_IMAGE:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
+
+         if (change->old_value && strcmp(change->old_value, EFLETE_DUMMY_IMAGE_NAME))
+           {
+              old_source = resource_manager_find(pro->RM.images, change->old_value);
+              /* in case if not implemented image set was set up as tween, need
+                 to remove it and never come back (until image sets will be
+                 implemented of course) */
+              if (!old_source)
+                old_source = resource_manager_find(pro->RM.image_sets, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+           }
+         TODO("Support some image sets here");
+         if (change->value && strcmp(change->value, EFLETE_DUMMY_IMAGE_NAME))
+           {
+              source = resource_manager_find(pro->RM.images, change->value);
+              _resource_usage_resource_add(state, source);
+           }
+         eina_stringshare_del(((State2 *)state)->normal);
+         ((State2 *)state)->normal = eina_stringshare_add(change->value);
+         break;
+      case RM_ATTRIBUTE_STATE_IMAGE_TWEEN:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(pro->RM.images, change->old_value);
+              /* in case if not implemented image set was set up as tween, need
+                 to remove it and never come back (until image sets will be
+                 implemented of course) */
+              if (!old_source)
+                old_source = resource_manager_find(pro->RM.image_sets, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+              ((State2 *)state)->tweens = eina_list_remove(((State2 *)state)->tweens, old_source);
+           }
+         TODO("Support some image sets here");
+         if (change->value)
+           {
+              source = resource_manager_find(pro->RM.images, change->value);
+              _resource_usage_resource_add(state, source);
+              ((State2 *)state)->tweens = eina_list_append(((State2 *)state)->tweens, source);
+           }
          break;
       case RM_ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          program = resource_manager_find(group->programs, change->program_name);
