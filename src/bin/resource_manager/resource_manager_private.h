@@ -149,7 +149,7 @@ void
 _resource_program_free(Group2 *group, Program2 *program);
 
 void
-_resource_program_del(Group2 *group, Program2 *program);
+_resource_program_del(Group2 *group, Program2 *program, Change *change);
 
 void
 _resource_group_data_free(Group2 *group, Group_Data2 *data);

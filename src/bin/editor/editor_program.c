@@ -901,12 +901,13 @@ _editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __
                     const char *program_name)
 {
    Diff *diff;
-   Eina_Stringshare *event_info;
+   Editor_Program event_info;
 
    assert(edit_object != NULL);
 
-   event_info = eina_stringshare_add(program_name);
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, (void *)event_info);
+   event_info.program_name = eina_stringshare_add(program_name);
+   event_info.change = change;
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, (void *)&event_info);
 
    if (change)
      {
@@ -928,10 +929,10 @@ _editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_program_del(edit_object, program_name));
-        eina_stringshare_del(event_info);
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
      }
+   eina_stringshare_del(event_info.program_name);
    return true;
 }
 

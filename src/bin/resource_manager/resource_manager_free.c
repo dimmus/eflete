@@ -405,12 +405,29 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
         else if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             CRIT_ON_FAIL(editor_program_filter_part_set(program->group->edit_object,
+             /* if it is actually filter */
+             if (program->filter_part == part->common.name)
+               {
+                  CRIT_ON_FAIL(editor_program_filter_part_set(program->group->edit_object,
+                                                              change,
+                                                              false,
+                                                              true,
+                                                              res->common.name,
+                                                              NULL));
+                  eina_stringshare_del(program->filter_part);
+                  program->filter_part = NULL;
+               }
+             else
+               {
+                  /* if not its probably target part */
+                  CRIT_ON_FAIL(editor_program_target_del(program->group->edit_object,
                                                          change,
                                                          false,
                                                          true,
                                                          res->common.name,
-                                                         NULL));
+                                                         part->common.name));
+                  program->targets = eina_list_remove(program->targets, part);
+               }
           }
      }
 
@@ -448,8 +465,45 @@ _resource_program_free(Group2 *group, Program2 *program)
 }
 
 void
-_resource_program_del(Group2 *group, Program2 *program)
+_resource_program_del(Group2 *group, Program2 *program, Change *change)
 {
+   Eina_List *l;
+   Resource2 *res;
+   Program2 *res_program;
+
+   EINA_LIST_FOREACH(program->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_PROGRAM)
+          {
+             res_program = (Program2 *)res;
+
+             /* if its inside of targets */
+             while (eina_list_data_find_list(res_program->targets, program))
+               {
+                  /* if not its probably target part */
+                  CRIT_ON_FAIL(editor_program_target_del(program->group->edit_object,
+                                                         change,
+                                                         false,
+                                                         true,
+                                                         res->common.name,
+                                                         program->common.name));
+                  res_program->targets = eina_list_remove(res_program->targets, program);
+               }
+             /* if its inside of afters */
+             while (eina_list_data_find_list(res_program->afters, program))
+               {
+                  /* if not its probably target part */
+                  CRIT_ON_FAIL(editor_program_after_del(program->group->edit_object,
+                                                        change,
+                                                        false,
+                                                        true,
+                                                        res->common.name,
+                                                        program->common.name));
+                  res_program->afters = eina_list_remove(res_program->afters, program);
+               }
+          }
+     }
+
    /* item is not used anywhere at all */
    _resource_program_free(group, program);
 }
@@ -564,7 +618,7 @@ _resource_group_del(Project *pro, Group2 *group)
 
    EINA_LIST_FOREACH(group->programs, l, program)
      {
-        _resource_program_del(group, program);
+        _resource_program_del(group, program, NULL);
      }
    EINA_LIST_FOREACH(group->data_items, l, data)
      {

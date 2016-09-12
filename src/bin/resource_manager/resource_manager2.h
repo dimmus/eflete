@@ -140,6 +140,7 @@ struct _Program2
    Edje_Action_Type type;
    Eina_List *targets;
    Eina_List *afters;
+   Eina_Stringshare *filter_part;
    Group2 *group;
 };
 

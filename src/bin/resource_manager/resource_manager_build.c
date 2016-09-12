@@ -257,6 +257,7 @@ _program_dependency_load(Project *pro, Group2 *group, Program2 *program)
    res = resource_manager_find(group->parts, name);
    if (res)
      {
+        program->filter_part = eina_stringshare_add(name);
         _resource_usage_resource_add((Resource2 *)program, res);
         state = edje_edit_program_filter_state_get(group->edit_object, program->common.name);
         res_state = resource_manager_find(((Part2 *)res)->states, state);

@@ -28,6 +28,7 @@
 #endif
 
 #include "change.h"
+#include "resource_manager2.h"
 
 #define THREAD_CONTEXT_SWITCH_BEGIN    ecore_thread_main_loop_begin()
 #define THREAD_CONTEXT_SWITCH_END      ecore_thread_main_loop_end()
@@ -320,6 +321,9 @@ _project_open_internal(Project_Thread *ptd)
    ftd->queue = 6;
    eina_lock_new(&ftd->mutex);
    ecore_thread_global_data_add("ptd", ptd, NULL, false);
+
+   resource_manager_init(project);
+
    /* Launch images load inside thread with feedback */
    ecore_thread_feedback_run(_image_resources_feedback_job, _resources_export_feedback_cb,
                              _resources_export_end_cb, _resources_export_cancel_cb, ftd,
@@ -606,6 +610,8 @@ pm_project_close(Project *project)
    Resource *style;
 
    assert(project != NULL);
+
+   resource_manager_shutdown(project);
 
    backup = eina_stringshare_printf("%s.backup", project->dev);
    ecore_file_remove(backup);

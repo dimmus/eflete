@@ -90,7 +90,6 @@ _property_attribute_changed(void *data,
     ***********************************************************************
     ***********************************************************************/
    Resource2 *part, *state, *source, *old_source, *item, *program;
-   Eina_Stringshare *tmp_value;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
@@ -354,10 +353,7 @@ _property_attribute_changed(void *data,
          break;
       case RM_ATTRIBUTE_PROGRAM_FILTER_STATE:
          program = resource_manager_find(group->programs, change->program_name);
-
-         tmp_value = edje_edit_program_filter_part_get(group->edit_object, change->program_name);
-         part = resource_manager_find(group->parts, tmp_value);
-         edje_edit_string_free(tmp_value);
+         part = resource_manager_find(group->parts, ((Program2 *)program)->filter_part);
 
          if (change->old_value)
            {
@@ -378,12 +374,15 @@ _property_attribute_changed(void *data,
            {
               old_source = resource_manager_find(group->parts, change->old_value);
               _resource_usage_resource_del(program, old_source);
+              eina_stringshare_del(((Program2 *)program)->filter_part);
+              ((Program2 *)program)->filter_part = NULL;
            }
 
          if (change->value)
            {
               source = resource_manager_find(group->parts, change->value);
               _resource_usage_resource_add(program, source);
+              ((Program2 *)program)->filter_part = eina_stringshare_add(change->value);
            }
          break;
       case RM_ATTRIBUTE_STATE_PROXY_SOURCE:
@@ -684,12 +683,13 @@ _editor_program_deleted_cb(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info)
 {
-   Eina_Stringshare *program_name = event_info;
+   const Editor_Program *editor_part = event_info;
    Project *pro = (Project *)data;
    Group2 *group = _get_current_group2(pro);
-   Program2 *program = (Program2 *)resource_manager_find(group->programs, program_name);
+   Program2 *program = (Program2 *)resource_manager_find(group->programs,
+                                                         editor_part->program_name);
 
-   _resource_program_del(group, program);
+   _resource_program_del(group, program, editor_part->change);
 }
 
 static void

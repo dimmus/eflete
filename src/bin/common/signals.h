@@ -449,6 +449,10 @@ typedef struct {
  *
  * @ingroup Window
  */
+typedef struct {
+   const char *program_name;
+   Change *change;
+} Editor_Program;
 #define SIGNAL_EDITOR_PROGRAM_DELETED "SIGNAL_EDITOR_PROGRAM_DELETED"
 
 /**
