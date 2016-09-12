@@ -90,10 +90,10 @@ _property_attribute_changed(void *data __UNUSED__,
     ***********************************************************************
     ***********************************************************************/
 
-   RM_Attribute *attr = event_info;
-   Attribute editor_resource = (int)*attr;
+   Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
+   Attribute editor_resource = (int)change->attribute;
 
-   switch ((int)*attr)
+   switch ((int)change->attribute)
      {
       case RM_ATTRIBUTE_GROUP_MIN_W:
       case RM_ATTRIBUTE_GROUP_MIN_H:
@@ -151,7 +151,6 @@ _property_attribute_changed(void *data __UNUSED__,
       case RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
       case RM_ATTRIBUTE_PART_CLIP_TO:
       case RM_ATTRIBUTE_PART_DRAG_CONFINE:
-      case RM_ATTRIBUTE_PART_GROUP_SOURCE:
       case RM_ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
       case RM_ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
       case RM_ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
@@ -222,6 +221,9 @@ _property_attribute_changed(void *data __UNUSED__,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         break;
+      case RM_ATTRIBUTE_PART_GROUP_SOURCE:
+         break;
       default:
          break;
      }

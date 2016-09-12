@@ -34,7 +34,8 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
                            const char *part_name, const char *state_name, double state_val, int new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_STATE_TEXT_SIZE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_STATE_TEXT_SIZE;
 
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -66,7 +67,7 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      {
         CRIT_ON_FAIL(edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -90,7 +91,8 @@ editor_state_text_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                       const char *part_name, const char *state_name, double state_val, const char *new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_STATE_TEXT_STYLE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_STATE_TEXT_STYLE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
@@ -119,7 +121,7 @@ editor_state_text_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      {
        CRIT_ON_FAIL(edje_edit_state_text_set(edit_object, part_name, state_name, state_val, new_val ? new_val : ""));
        _editor_project_changed();
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }

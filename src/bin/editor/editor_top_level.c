@@ -278,6 +278,5 @@ editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, 
    if (!_editor_signals_blocked)
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
 
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }

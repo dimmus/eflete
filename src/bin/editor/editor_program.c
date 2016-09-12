@@ -51,7 +51,8 @@ editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Ein
                                    const char *program, Edje_Tween_Mode new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_TYPE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_TYPE;
 
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -80,7 +81,7 @@ editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Ein
           new_val = new_val | EDJE_TWEEN_MODE_OPT_FROM_CURRENT;
         CRIT_ON_FAIL(edje_edit_program_transition_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -91,7 +92,8 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
 {
    Diff *diff;
    Edje_Tween_Mode mode;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT;
 
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -120,7 +122,7 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
           mode = mode | EDJE_TWEEN_MODE_OPT_FROM_CURRENT;
         CRIT_ON_FAIL(edje_edit_program_transition_set(edit_object, program, mode));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -130,7 +132,8 @@ editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool m
                            const char *program, Edje_Channel new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_CHANNEL;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_CHANNEL;
    assert(edit_object != NULL);
    assert(program != NULL);
    if (change)
@@ -154,7 +157,7 @@ editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      {
         CRIT_ON_FAIL(edje_edit_program_channel_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -190,7 +193,8 @@ editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, E
                                      const char *program, double new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FACTOR;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FACTOR;
    assert(edit_object != NULL);
    assert(program != NULL);
 
@@ -228,7 +232,7 @@ editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, E
           }
 
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -251,7 +255,8 @@ editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change,
                                        const char *program, double new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT;
    assert(edit_object != NULL);
    assert(program != NULL);
 
@@ -278,7 +283,7 @@ editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change,
      {
         CRIT_ON_FAIL(edje_edit_program_transition_value1_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -302,7 +307,8 @@ editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Ei
                                     const char *program, double new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_DECAY;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_DECAY;
    assert(edit_object != NULL);
    assert(program != NULL);
 
@@ -330,7 +336,7 @@ editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Ei
      {
         CRIT_ON_FAIL(edje_edit_program_transition_value1_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -353,7 +359,8 @@ editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, 
                                       const char *program, double new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES;
    assert(edit_object != NULL);
    assert(program != NULL);
 
@@ -380,7 +387,7 @@ editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, 
      {
         CRIT_ON_FAIL(edje_edit_program_transition_value2_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -403,7 +410,8 @@ editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, E
                                      const char *program, double new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_SWINGS;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_SWINGS;
    assert(edit_object != NULL);
    assert(program != NULL);
 
@@ -430,7 +438,7 @@ editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, E
      {
         CRIT_ON_FAIL(edje_edit_program_transition_value2_set(edit_object, program, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -454,7 +462,8 @@ editor_program_transition_bezier_## VAL ##_set(Evas_Object *edit_object, Change 
                                                const char *program, double new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
  \
@@ -481,7 +490,7 @@ editor_program_transition_bezier_## VAL ##_set(Evas_Object *edit_object, Change 
      { \
        CRIT_ON_FAIL(edje_edit_program_transition_value## REAL_VAL##_set(edit_object, program, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -513,7 +522,8 @@ editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bo
                                const char *program, const char *new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_EMIT_SIGNAL;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_EMIT_SIGNAL;
    assert(edit_object != NULL);
    assert(program != NULL);
    if (change)
@@ -539,7 +549,7 @@ editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bo
        if (!edje_edit_program_emit_source_get(edit_object, program))
          CRIT_ON_FAIL(edje_edit_program_state2_set(edit_object, program, ""));
        _editor_project_changed();
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program);
      }
    return true;
@@ -551,7 +561,8 @@ editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merg
 {
    Diff *diff;
    Rename ren;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_NAME;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_NAME;
    assert(edit_object != NULL);
    assert(name != NULL);
    assert(new_val != NULL);
@@ -578,7 +589,7 @@ editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merg
         ren.old_name = name;
         ren.new_name = new_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_RENAMED, &ren);
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -588,7 +599,8 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
                           const char *program_name, Eina_Stringshare *target)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    assert(target != NULL);
@@ -613,7 +625,7 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
         CRIT_ON_FAIL(edje_edit_program_target_add(edit_object, program_name, target));
         _editor_project_changed();
         if (!_editor_signals_blocked)
-        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -623,7 +635,8 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
                           const char *program_name, Eina_Stringshare *target)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    if (change)
@@ -647,7 +660,7 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
         CRIT_ON_FAIL(edje_edit_program_target_del(edit_object, program_name, target));
         _editor_project_changed();
         if (!_editor_signals_blocked)
-        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -657,7 +670,8 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
                          const char *program_name, Eina_Stringshare *after)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    assert(after != NULL);
@@ -682,7 +696,7 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
         CRIT_ON_FAIL(edje_edit_program_after_add(edit_object, program_name, after));
         _editor_project_changed();
         if (!_editor_signals_blocked)
-          evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+          evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -692,7 +706,8 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
                          const char *program_name, Eina_Stringshare *after)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    if (change)
@@ -716,7 +731,7 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
         CRIT_ON_FAIL(edje_edit_program_after_del(edit_object, program_name, after));
         _editor_project_changed();
         if (!_editor_signals_blocked)
-          evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+          evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }

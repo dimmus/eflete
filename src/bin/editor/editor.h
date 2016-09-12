@@ -229,6 +229,14 @@ typedef enum {
    RM_ATTRIBUTE_RESOURCES_LAST
 } RM_Attribute_Resources;
 
+typedef struct {
+   RM_Attribute attribute;
+   Eina_Stringshare *group_name;
+   Eina_Stringshare *part_name;
+   Eina_Stringshare *item_name;
+   Eina_Stringshare *value;
+} Editor_Attribute_Change;
+
 
 void
 _editor_project_changed();

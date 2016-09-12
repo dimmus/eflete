@@ -29,7 +29,8 @@ editor_part_text_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, Edje_Text_Effect new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_TEXT_EFFECT;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_TEXT_EFFECT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(new_val < EDJE_TEXT_EFFECT_LAST);
@@ -55,7 +56,7 @@ editor_part_text_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      {
         CRIT_ON_FAIL(edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_shadow_direction_get(edit_object, part_name))));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -65,7 +66,8 @@ editor_part_text_shadow_direction_set(Evas_Object *edit_object, Change *change, 
                                       const char *part_name, Edje_Text_Effect new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert((new_val & EDJE_TEXT_EFFECT_MASK_BASIC) == 0);
@@ -91,7 +93,7 @@ editor_part_text_shadow_direction_set(Evas_Object *edit_object, Change *change, 
      {
         CRIT_ON_FAIL(edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_effect_get(edit_object, part_name))));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -101,7 +103,8 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
                              const char *part_name, Evas_Event_Flags new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_IGNORE_FLAGS;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_IGNORE_FLAGS;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    if (change)
@@ -125,7 +128,7 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
      {
         CRIT_ON_FAIL(edje_edit_part_ignore_flags_set(edit_object, part_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -160,7 +163,8 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
 {
    Diff *diff;
    Rename ren;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_NAME;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_NAME;
    assert(edit_object != NULL);
    assert(name != NULL);
    assert(new_val != NULL);
@@ -186,8 +190,9 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
         _editor_project_changed();
         ren.old_name = name;
         ren.new_name = new_val;
+        TODO("Maybe think about merging those two signals? I dunno")
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -197,7 +202,8 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
                                  const char *part_name, const char *item_name, Edje_Aspect_Control new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_ASPECT_MODE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_ASPECT_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -225,7 +231,7 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
         CRIT_ON_FAIL(edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -256,7 +262,8 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *item_name, const char *new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_SOURCE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_SOURCE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -285,7 +292,7 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         CRIT_ON_FAIL(editor_save(edit_object));
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -298,7 +305,8 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
 {
    Diff *diff;
    int o3, o4, o5, o6;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -326,7 +334,7 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, o4, o5, o6));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -337,7 +345,8 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
 {
    Diff *diff;
    int o3, o4, o5, o6;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -365,7 +374,7 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, n4, o5, o6));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -376,7 +385,8 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
 {
    Diff *diff;
    int o3, o4, o5, o6;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_TOP;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_TOP;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -404,7 +414,7 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, n5, o6));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -415,7 +425,8 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
 {
    Diff *diff;
    int o3, o4, o5, o6;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -443,7 +454,7 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
         CRIT_ON_FAIL(edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, o5, n6));
         CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -455,7 +466,8 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, Edje_Edit_Select_Mode new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_SELECT_MODE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_SELECT_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    if (change)
@@ -479,7 +491,7 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      {
         CRIT_ON_FAIL(edje_edit_part_select_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -489,7 +501,8 @@ editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool m
                            const char *part_name, Edje_Edit_Entry_Mode new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_ENTRY_MODE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_ENTRY_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    if (change)
@@ -513,7 +526,7 @@ editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      {
         CRIT_ON_FAIL(edje_edit_part_entry_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -523,7 +536,8 @@ editor_part_pointer_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool
                            const char *part_name, Evas_Object_Pointer_Mode new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_POINTER_MODE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_POINTER_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    if (change)
@@ -547,7 +561,7 @@ editor_part_pointer_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool
      {
         CRIT_ON_FAIL(edje_edit_part_pointer_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }
@@ -557,7 +571,8 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, unsigned char new_val)
 {
    Diff *diff;
-   RM_Attribute attribute = RM_ATTRIBUTE_PART_CURSOR_MODE;
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PART_CURSOR_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    if (change)
@@ -581,7 +596,7 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      {
         CRIT_ON_FAIL(edje_edit_part_cursor_mode_set(edit_object, part_name, new_val));
         _editor_project_changed();
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
    return true;
 }

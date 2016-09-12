@@ -23,7 +23,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, double new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -53,7 +54,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        _editor_project_changed(); \
         CRIT_ON_FAIL(editor_save(edit_object)); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -64,7 +65,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, Eina_Bool new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -94,7 +96,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        _editor_project_changed(); \
        CRIT_ON_FAIL(editor_save(edit_object)); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -105,7 +107,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, const char *new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -135,7 +138,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -146,7 +149,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, const char *new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -177,7 +181,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
       if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
       _editor_project_changed(); \
       if (!new_val) editor_state_## RESET ##_reset(edit_object, change, apply, part_name, state_name, state_val); \
-      if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+      if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
    } \
    return true; \
 }
@@ -188,7 +192,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, const char *new_val) \
 { \
    Diff *diff = NULL; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -230,7 +235,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
          } \
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    else \
      { \
@@ -253,7 +258,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    int o4, o5, o6, o7; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -288,7 +294,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      { \
        CRIT_ON_FAIL(edje_edit_state_## REAL_FUNC ##_set(edit_object, part_name, state_name, state_val, n4, n5, n6, n7)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -300,7 +306,8 @@ editor_state_## FUNC ##_## NUMBER ##_set(Evas_Object *edit_object, Change *chang
 { \
    Diff *diff; \
    int o4, o5, o6, o7; \
-   RM_Attribute attribute = RM_ATTRIBUTE ##_## NUMBER; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE ##_## NUMBER; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -336,7 +343,7 @@ editor_state_## FUNC ##_## NUMBER ##_set(Evas_Object *edit_object, Change *chang
         CRIT_ON_FAIL(edje_edit_state_## REAL_FUNC ##_set(edit_object, part_name, state_name, state_val, NUMBER - 1, n4, n5, n6, n7)); \
         _editor_project_changed(); \
         CRIT_ON_FAIL(editor_save(edit_object)); \
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -347,7 +354,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, unsigned char new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -377,7 +385,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -388,7 +396,8 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
                            const char *part_name, Eina_Bool new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    if (change) \
@@ -412,7 +421,7 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      { \
        CRIT_ON_FAIL(edje_edit_part_## FUNC ##_set(edit_object, part_name, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -423,7 +432,8 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
                            const char *part_name, int new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    if (change) \
@@ -447,7 +457,7 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      { \
        CRIT_ON_FAIL(edje_edit_part_## FUNC ##_set(edit_object, part_name, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -458,7 +468,10 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                       const char *name, const char *new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
+   send.part_name = eina_stringshare_add(name); \
+   send.value = eina_stringshare_add(new_val); \
    assert(edit_object != NULL); \
    assert(name != NULL); \
    if (change) \
@@ -482,8 +495,10 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      { \
        CRIT_ON_FAIL(edje_edit_## REAL_FUNC ##_set(edit_object, name, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
+   eina_stringshare_del(send.part_name); \
+   eina_stringshare_del(send.value); \
    return true; \
 }
 
@@ -493,7 +508,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
                                 const char *part_name, const char *item_name, double new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(item_name != NULL); \
@@ -521,7 +537,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
        CRIT_ON_FAIL(edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)); \
        CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -532,7 +548,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
                                 const char *part_name, const char *item_name, int new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(item_name != NULL); \
@@ -561,7 +578,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
      } \
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
    return true; \
 }
 
@@ -571,7 +588,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
                                 const char *part_name, const char *item_name, unsigned short new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(item_name != NULL); \
@@ -599,7 +617,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
        CRIT_ON_FAIL(edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)); \
        if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -610,7 +628,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, int new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -639,7 +658,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      { \
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -651,7 +670,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, int new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -681,7 +701,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -692,7 +712,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
                             const char *part_name, const char *state_name, double state_val, double new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -722,7 +743,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
        CRIT_ON_FAIL(edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)); \
        CRIT_ON_FAIL(editor_save(edit_object)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -733,7 +754,8 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
                            const char *program, double new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
    if (change) \
@@ -757,7 +779,7 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
      { \
        CRIT_ON_FAIL(edje_edit_program_## REAL_FUNC ##_set(edit_object, program, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
      } \
    return true; \
 }
@@ -768,7 +790,8 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
                            const char *program, const char *new_val) \
 { \
    Diff *diff; \
-   RM_Attribute attribute = RM_ATTRIBUTE; \
+   Editor_Attribute_Change send; \
+   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
    if (change) \
@@ -792,7 +815,7 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
      { \
        CRIT_ON_FAIL(edje_edit_program_## REAL_FUNC ##_set(edit_object, program, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &attribute); \
+       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program); \
      } \
    return true; \
