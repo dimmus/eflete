@@ -445,7 +445,7 @@ _handler_up_cb(void *data,
 static void
 _handler_mouse_in_cb(void *data,
                     Evas *evas __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj,
                     void *event_info __UNUSED__)
 {
    Highlight *highlight = (Highlight *)data;

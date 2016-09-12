@@ -211,7 +211,7 @@ _clicked_cb(void *data,
 }
 
 static Evas_Object *
-_content_get(void *data __UNUSED__,
+_content_get(void *data,
              Evas_Object *obj,
              const char *part)
 {

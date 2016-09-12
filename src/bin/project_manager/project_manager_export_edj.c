@@ -21,7 +21,7 @@
 
 /* Export develop edj file */
 static Eina_Bool
-_develop_edj_export_data_cb(void *data __UNUSED__,
+_develop_edj_export_data_cb(void *data,
                      int type __UNUSED__,
                      void *event_info)
 {
@@ -38,7 +38,7 @@ _develop_edj_export_data_cb(void *data __UNUSED__,
 static Eina_Bool
 _develop_edj_export_del_cb(void *data,
                      int type __UNUSED__,
-                     void *event_info __UNUSED__)
+                     void *event_info)
 {
    Project_Thread *ptd = (Project_Thread *)data;
    Ecore_Exe_Event_Del *edje_pick_exit = (Ecore_Exe_Event_Del *)event_info;
@@ -114,7 +114,7 @@ _develop_export(Project_Thread *ptd)
 
 /* Export release edj file */
 static Eina_Bool
-_data_from_edje_cc(void *data __UNUSED__,
+_data_from_edje_cc(void *data,
                    int type __UNUSED__,
                    void *event_info)
 {
@@ -133,7 +133,7 @@ _data_from_edje_cc(void *data __UNUSED__,
 static unsigned char
 _finish_from_release_edje_cc(void *data,
                              int type __UNUSED__,
-                             void *event_info __UNUSED__)
+                             void *event_info)
 {
    Edje_Exe_Data *edje_cc_data = (Edje_Exe_Data *)data;
    Project_Thread *ptd = (Project_Thread *)edje_cc_data->data;

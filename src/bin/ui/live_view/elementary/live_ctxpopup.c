@@ -82,7 +82,7 @@ _ctx_popup_create(Evas_Object *parent,
 }
 
 static void
-_labels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_icons_vertical_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, false, true, true);
@@ -90,7 +90,7 @@ _labels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *
 }
 
 static void
-_nolabels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_nolabels_icons_vertical_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, false, true, false);
@@ -98,7 +98,7 @@ _nolabels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void
 }
 
 static void
-_labels_noicons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_noicons_vertical_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, false, false, true);
@@ -106,7 +106,7 @@ _labels_noicons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void
 }
 
 static void
-_labels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_icons_horizontal_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, true, true, true);
@@ -114,7 +114,7 @@ _labels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void
 }
 
 static void
-_nolabels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_nolabels_icons_horizontal_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, true, true, false);
@@ -122,7 +122,7 @@ _nolabels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, vo
 }
 
 static void
-_labels_noicons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_noicons_horizontal_3items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 1, true, false, true);
@@ -130,7 +130,7 @@ _labels_noicons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, vo
 }
 
 static void
-_labels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_icons_vertical_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, false, true, true);
@@ -138,7 +138,7 @@ _labels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void 
 }
 
 static void
-_nolabels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_nolabels_icons_vertical_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, false, true, false);
@@ -146,7 +146,7 @@ _nolabels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, voi
 }
 
 static void
-_labels_noicons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_noicons_vertical_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, false, false, true);
@@ -154,7 +154,7 @@ _labels_noicons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, voi
 }
 
 static void
-_labels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_icons_horizontal_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, true, true, true);
@@ -162,7 +162,7 @@ _labels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, voi
 }
 
 static void
-_nolabels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_nolabels_icons_horizontal_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, true, true, false);
@@ -170,7 +170,7 @@ _nolabels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, v
 }
 
 static void
-_labels_noicons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
+_labels_noicons_horizontal_30items_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
    _ctx_popup_create(obj, data, style_name, 10, true, false, true);

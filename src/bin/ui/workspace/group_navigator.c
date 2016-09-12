@@ -770,7 +770,7 @@ _selected_cb(void *data,
 
 static void
 _on_part_name_changed(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj,
                       void *event_info __UNUSED__)
 {
    Part_List *pl = data;
@@ -791,7 +791,7 @@ _on_part_name_changed(void *data,
 
 static void
 _state_validate(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj,
                 void *event_info __UNUSED__)
 {
    Part_List *pl = data;

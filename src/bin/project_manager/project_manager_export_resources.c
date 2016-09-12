@@ -37,7 +37,7 @@ _resources_export_feedback_cb(void *data __UNUSED__,
 }
 
 void
-_resources_export_cancel_cb(void *data __UNUSED__, Ecore_Thread *th __UNUSED__)
+_resources_export_cancel_cb(void *data, Ecore_Thread *th __UNUSED__)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
    Project_Thread *ptd = ecore_thread_global_data_find("ptd");
@@ -50,7 +50,7 @@ _resources_export_cancel_cb(void *data __UNUSED__, Ecore_Thread *th __UNUSED__)
 }
 
 void
-_resources_export_end_cb(void *data __UNUSED__, Ecore_Thread *th __UNUSED__)
+_resources_export_end_cb(void *data, Ecore_Thread *th __UNUSED__)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
 

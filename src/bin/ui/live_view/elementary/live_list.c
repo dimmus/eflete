@@ -88,12 +88,10 @@ _on_list_text_check(void *data __UNUSED__,
 static void
 _list_send_signal(void *data __UNUSED__,
                   Evas_Object *obj,
-                  void *ei __UNUSED__)
+                  void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
    Elm_Object_Item *item = NULL;
-
-   assert(data != NULL);
 
    item = elm_list_first_item_get(obj);
    assert(sig != NULL);

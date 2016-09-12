@@ -21,7 +21,7 @@
 
 
 static Eina_Bool
-_data_from_edje_cc(void *data __UNUSED__,
+_data_from_edje_cc(void *data,
                    int type __UNUSED__,
                    void *event_info)
 {
@@ -40,7 +40,7 @@ _data_from_edje_cc(void *data __UNUSED__,
 static Eina_Bool
 _finish_from_edje_cc(void *data,
                      int type __UNUSED__,
-                     void *event_info __UNUSED__)
+                     void *event_info)
 {
    Edje_Exe_Data *edje_cc_data = (Edje_Exe_Data *)data;
    Project_Thread *ptd = (Project_Thread *)edje_cc_data->data;

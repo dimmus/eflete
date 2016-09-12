@@ -151,7 +151,7 @@ _glist_content_get(void *data __UNUSED__,
 
 static void
 _glist_expanded_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj,
                    void *event_info)
 {
    Elm_Object_Item *tree_main = (Elm_Object_Item *)event_info;

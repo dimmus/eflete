@@ -60,7 +60,7 @@ static Colorclasses_Manager mng;
 
 static void
 _validation(void *data,
-            Evas_Object *obj __UNUSED__,
+            Evas_Object *obj,
             void *event_info __UNUSED__)
 {
    Evas_Object *popup = data;

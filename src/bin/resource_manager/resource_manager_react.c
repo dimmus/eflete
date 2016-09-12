@@ -360,7 +360,7 @@ image_deleted(void *data,
 static void
 _style_added(void *data,
              Evas_Object *obj __UNUSED__,
-             void *ei __UNUSED__)
+             void *ei)
 {
    Style2 *res;
    const char *name = (const char *)ei;
@@ -417,7 +417,7 @@ _group_data_renamed(void *data,
    group_data->common.name = eina_stringshare_add(ren->new_name);
 }
 static void
-_editor_part_added_cb(void *data __UNUSED__,
+_editor_part_added_cb(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {

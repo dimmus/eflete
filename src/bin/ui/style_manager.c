@@ -139,7 +139,7 @@ _on_glit_selected(void *data __UNUSED__,
 
 static void
 _validate(void *data,
-          Evas_Object *obj __UNUSED__,
+          Evas_Object *obj,
           void *event_info __UNUSED__)
 {
    Evas_Object *popup = data;

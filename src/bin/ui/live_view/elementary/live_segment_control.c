@@ -86,8 +86,6 @@ _sc_send_signal(void *data __UNUSED__,
 
    Elm_Object_Item *item = NULL;
 
-   assert(data != NULL);
-
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);

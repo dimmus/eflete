@@ -141,7 +141,7 @@ _content_set(void *data,
 static void
 _mode_changed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              void *event_info)
 {
    Evas_Object *content;
 

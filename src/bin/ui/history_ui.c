@@ -145,7 +145,7 @@ _undo_item_cleanup(void *data,
 static void
 _undo_item_selected(void *data,
                    Evas_Object *obj __UNUSED__,
-                   void *ei __UNUSED__)
+                   void *ei)
 {
    History_New_UI_data *hd = data;
    int i;
@@ -223,7 +223,7 @@ history_ui_update(Evas_Object *obj)
 }
 
 static void
-_btn_undo_cb(void *data __UNUSED__,
+_btn_undo_cb(void *data,
              Evas_Object *obj __UNUSED__,
              void *eo __UNUSED__)
 {
@@ -232,7 +232,7 @@ _btn_undo_cb(void *data __UNUSED__,
 }
 
 static void
-_btn_redo_cb(void *data __UNUSED__,
+_btn_redo_cb(void *data,
              Evas_Object *obj __UNUSED__,
              void *eo __UNUSED__)
 {

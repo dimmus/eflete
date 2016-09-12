@@ -208,7 +208,7 @@ _sound_resources_load(Project *project)
 }
 
 Eina_Bool
-_font_resources_load(Project *project __UNUSED__)
+_font_resources_load(Project *project)
 {
    Font2 *res;
    Eina_List *fonts;

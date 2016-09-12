@@ -100,7 +100,7 @@ _eflete_cursor_mouse_in(void *data __UNUSED__,
 
 static void
 _eflete_cursor_mouse_out(void *data __UNUSED__,
-                         Evas *e __UNUSED__,
+                         Evas *e,
                          Evas_Object *obj,
                          void *event_info)
 {
