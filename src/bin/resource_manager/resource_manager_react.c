@@ -214,7 +214,50 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
       case RM_ATTRIBUTE_PROGRAM_AFTER:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         /* if old value - its delete after */
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(group->programs, change->old_value);
+              _resource_usage_resource_del(program, old_source);
+              ((Program2 *)program)->afters = eina_list_remove(((Program2 *)program)->afters, old_source);
+           }
+
+         /* if value - its add after */
+         if (change->value)
+           {
+              source = resource_manager_find(group->programs, change->value);
+              _resource_usage_resource_add(program, source);
+              ((Program2 *)program)->afters = eina_list_append(((Program2 *)program)->afters, source);
+           }
+         break;
       case RM_ATTRIBUTE_PROGRAM_TARGET:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         /* if old value - its delete target */
+         if (change->old_value)
+           {
+              if (((Program2 *)program)->type == EDJE_ACTION_TYPE_ACTION_STOP)
+                old_source = resource_manager_find(group->programs, change->old_value);
+              else
+                old_source = resource_manager_find(group->parts, change->old_value);
+
+              _resource_usage_resource_del(program, old_source);
+              ((Program2 *)program)->targets = eina_list_remove(((Program2 *)program)->targets, old_source);
+           }
+
+         /* if value - its add after */
+         if (change->value)
+           {
+              if (((Program2 *)program)->type == EDJE_ACTION_TYPE_ACTION_STOP)
+                source = resource_manager_find(group->programs, change->value);
+              else
+                source = resource_manager_find(group->parts, change->value);
+
+              _resource_usage_resource_del(program, source);
+              ((Program2 *)program)->targets = eina_list_append(((Program2 *)program)->targets, source);
+           }
          break;
       case RM_ATTRIBUTE_STATE_IMAGE:
          part = resource_manager_find(group->parts, change->part_name);
