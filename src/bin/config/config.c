@@ -494,7 +494,7 @@ config_save(void)
    int x, y, w, h;
    Eet_File *ef;
    Eina_Bool ok;
-   Eina_Stringshare *cfg, *tmp; 
+   Eina_Stringshare *cfg, *tmp;
 
    if (!edd_base)
      {
@@ -503,12 +503,14 @@ config_save(void)
      }
 
    evas_object_geometry_get(ap.win, &x, &y, &w, &h);
-   if (profile->general.save_win_pos)
+   TODO("find out why w/h here sometimes become close to 0");
+   if ((profile->general.save_win_pos) &&
+        (w > 200 && h > 200)) /* don't write too small windwo size to config */
      {
-        config->window.x =            x;
-        config->window.y =            y;
-        config->window.w =            w;
-        config->window.h =            h;
+        config->window.x = x;
+        config->window.y = y;
+        config->window.w = w;
+        config->window.h = h;
      }
    if (profile->general.save_ui)
      config_panes_sizes_data_update();
