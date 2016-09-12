@@ -232,14 +232,14 @@ _font_resources_load(Project *project)
    ef = eet_open(project->dev, EET_FILE_MODE_READ);
    if (eina_list_count(fonts) == 0)
      {
-        res = false;
+        res = NULL;
         goto cleanup;
      }
 
    if (!ecore_file_mkpath(resource_folder))
      {
         ERR("Failed create path %s for export fonts", resource_folder);
-        res = false;
+        res = NULL;
         goto cleanup;
      }
 
