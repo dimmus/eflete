@@ -383,14 +383,24 @@ _resource_part_del(Group2 *group, Part2 *part, Change *change)
                                                           state->val,
                                                           NULL));
              else if (state->part->type == EDJE_PART_TYPE_TEXT)
-               CRIT_ON_FAIL(editor_state_text_text_source_set(state->part->group->edit_object,
-                                                              change,
-                                                              false,
-                                                              true,
-                                                              part->common.name,
-                                                              state->common.name,
-                                                              state->val,
-                                                              NULL));
+               {
+                  CRIT_ON_FAIL(editor_state_text_text_source_set(state->part->group->edit_object,
+                                                                 change,
+                                                                 false,
+                                                                 true,
+                                                                 part->common.name,
+                                                                 state->common.name,
+                                                                 state->val,
+                                                                 NULL));
+                  CRIT_ON_FAIL(editor_state_text_source_set(state->part->group->edit_object,
+                                                            change,
+                                                            false,
+                                                            true,
+                                                            part->common.name,
+                                                            state->common.name,
+                                                            state->val,
+                                                            NULL));
+               }
           }
         else if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {

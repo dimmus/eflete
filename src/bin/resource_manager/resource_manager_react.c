@@ -89,7 +89,7 @@ _property_attribute_changed(void *data,
     ** > expand editor (top blocks like image, sound, etc) not supported **
     ***********************************************************************
     ***********************************************************************/
-   Resource2 *part, *source, *old_source, *item;
+   Resource2 *part, *state, *source, *old_source, *item;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
@@ -144,8 +144,6 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_STATE_REL1_TO_Y:
       case RM_ATTRIBUTE_STATE_REL2_TO_X:
       case RM_ATTRIBUTE_STATE_REL2_TO_Y:
-      case RM_ATTRIBUTE_STATE_TEXT_SOURCE:
-      case RM_ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
       case RM_ATTRIBUTE_STATE_TEXT:
       case RM_ATTRIBUTE_STATE_FONT:
       case RM_ATTRIBUTE_STATE_TEXT_STYLE:
@@ -218,6 +216,25 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
+      case RM_ATTRIBUTE_STATE_PROXY_SOURCE:
+      case RM_ATTRIBUTE_STATE_TEXT_SOURCE:
+      case RM_ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part *)part)->states, change->state_name, change->state_value);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(group->parts, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(group->parts, change->value);
+              _resource_usage_resource_add(state, source);
+           }
+
+         break;
       case RM_ATTRIBUTE_PART_ITEM_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
          item = resource_manager_find(((Part *)part)->items, change->item_name);
@@ -230,7 +247,7 @@ _property_attribute_changed(void *data,
            }
 
          /* if new value is not null and not internal group */
-         if (change->value && strcmp(change->old_value, EFLETE_INTERNAL_GROUP_NAME))
+         if (change->value && strcmp(change->value, EFLETE_INTERNAL_GROUP_NAME))
            {
               source = resource_manager_find(pro->RM.groups, change->value);
               _resource_usage_resource_add(item, source);

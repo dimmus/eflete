@@ -157,6 +157,15 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
         if (res)
           _resource_usage_resource_add((Resource2 *)state, res);
         edje_edit_string_free(source);
+
+        source = edje_edit_state_text_source_get(group->edit_object,
+                                                 part->common.name,
+                                                 state->common.name,
+                                                 state->val);
+        res = resource_manager_find(group->parts, source);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
+        edje_edit_string_free(source);
      }
 
    if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
