@@ -90,6 +90,7 @@ _property_attribute_changed(void *data,
     ***********************************************************************
     ***********************************************************************/
    Resource2 *part, *state, *source, *old_source, *item, *program;
+   Eina_Stringshare *tmp_value;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
@@ -146,7 +147,6 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_STATE_REL2_TO_Y:
       case RM_ATTRIBUTE_STATE_TEXT:
       case RM_ATTRIBUTE_STATE_FONT:
-      case RM_ATTRIBUTE_STATE_TEXT_STYLE:
       case RM_ATTRIBUTE_STATE_ASPECT_PREF:
       case RM_ATTRIBUTE_PART_TEXT_EFFECT:
       case RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
@@ -182,7 +182,6 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
       case RM_ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case RM_ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
-      case RM_ATTRIBUTE_STATE_COLOR_CLASS:
       case RM_ATTRIBUTE_STATE_MAP_ON:
       case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
       case RM_ATTRIBUTE_STATE_MAP_PERSPECTIVE:
@@ -216,6 +215,72 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
+      case RM_ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         if (change->old_value && strcmp(change->old_value, EFLETE_DUMMY_SAMPLE_NAME))
+           {
+              old_source = resource_manager_find(pro->RM.sounds, change->old_value);
+              _resource_usage_resource_del(program, old_source);
+           }
+
+         if (change->value && strcmp(change->value, EFLETE_DUMMY_SAMPLE_NAME))
+           {
+              source = resource_manager_find(pro->RM.sounds, change->value);
+              _resource_usage_resource_add(program, source);
+           }
+         break;
+      case RM_ATTRIBUTE_PROGRAM_TONE_NAME:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         if (change->old_value && strcmp(change->old_value, ""))
+           {
+              old_source = resource_manager_find(pro->RM.tones, change->old_value);
+              _resource_usage_resource_del(program, old_source);
+           }
+
+         if (change->value && strcmp(change->value, ""))
+           {
+              source = resource_manager_find(pro->RM.tones, change->value);
+              _resource_usage_resource_add(program, source);
+           }
+         break;
+      case RM_ATTRIBUTE_STATE_TEXT_STYLE:
+      case RM_ATTRIBUTE_STATE_COLOR_CLASS:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(pro->RM.styles, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(pro->RM.styles, change->value);
+              _resource_usage_resource_add(state, source);
+           }
+         break;
+      case RM_ATTRIBUTE_PROGRAM_FILTER_STATE:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         tmp_value = edje_edit_program_filter_part_get(group->edit_object, change->program_name);
+         part = resource_manager_find(group->parts, tmp_value);
+         edje_edit_string_free(tmp_value);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(((Part2 *)part)->states, change->old_value);
+              _resource_usage_resource_del(program, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(((Part2 *)part)->states, change->value);
+              _resource_usage_resource_add(program, source);
+           }
+         break;
       case RM_ATTRIBUTE_PROGRAM_FILTER_PART:
          program = resource_manager_find(group->programs, change->program_name);
 
@@ -235,7 +300,7 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_STATE_TEXT_SOURCE:
       case RM_ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
-         state = resource_manager_v_find(((Part *)part)->states, change->state_name, change->state_value);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
 
          if (change->old_value)
            {
@@ -251,7 +316,7 @@ _property_attribute_changed(void *data,
          break;
       case RM_ATTRIBUTE_PART_ITEM_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
-         item = resource_manager_find(((Part *)part)->items, change->item_name);
+         item = resource_manager_find(((Part2 *)part)->items, change->item_name);
 
          /* if old_valuye wasn't null and wasn't compared to EFLETE_INTERNAL_GROUP_NAME */
          if (change->old_value && strcmp(change->old_value, EFLETE_INTERNAL_GROUP_NAME))
