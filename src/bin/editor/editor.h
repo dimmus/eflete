@@ -235,6 +235,7 @@ typedef struct {
    Eina_Stringshare *part_name;
    Eina_Stringshare *item_name;
    Eina_Stringshare *state_name;
+   Eina_Stringshare *program_name;
    double state_value;
    Eina_Stringshare *value;
    Eina_Stringshare *old_value;

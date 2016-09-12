@@ -802,12 +802,15 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
-   send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
+   Eina_Stringshare *old_value = edje_edit_program_## FUNC ##_get(edit_object, program); \
+   send.attribute = RM_ATTRIBUTE; \
+   send.program_name = eina_stringshare_add(program); \
+   send.old_value = eina_stringshare_add(old_value); \
+   send.value = eina_stringshare_add(new_val); \
    if (change) \
      { \
-        Eina_Stringshare *old_value = edje_edit_program_## FUNC ##_get(edit_object, program); \
         diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_STRING_STRING; \
         diff->redo.function = editor_program_## FUNC ##_set; \
@@ -829,5 +832,8 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program); \
      } \
+   eina_stringshare_del(send.program_name); \
+   eina_stringshare_del(send.old_value); \
+   eina_stringshare_del(send.value); \
    return true; \
 }

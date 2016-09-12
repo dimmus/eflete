@@ -89,7 +89,7 @@ _property_attribute_changed(void *data,
     ** > expand editor (top blocks like image, sound, etc) not supported **
     ***********************************************************************
     ***********************************************************************/
-   Resource2 *part, *state, *source, *old_source, *item;
+   Resource2 *part, *state, *source, *old_source, *item, *program;
 
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
@@ -216,6 +216,21 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
+      case RM_ATTRIBUTE_PROGRAM_FILTER_PART:
+         program = resource_manager_find(group->programs, change->program_name);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(group->parts, change->old_value);
+              _resource_usage_resource_del(program, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(group->parts, change->value);
+              _resource_usage_resource_add(program, source);
+           }
+         break;
       case RM_ATTRIBUTE_STATE_PROXY_SOURCE:
       case RM_ATTRIBUTE_STATE_TEXT_SOURCE:
       case RM_ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
@@ -233,7 +248,6 @@ _property_attribute_changed(void *data,
               source = resource_manager_find(group->parts, change->value);
               _resource_usage_resource_add(state, source);
            }
-
          break;
       case RM_ATTRIBUTE_PART_ITEM_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
