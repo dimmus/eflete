@@ -790,9 +790,9 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
         event_info.state_name = eina_stringshare_add(state_name);
         event_info.state_value = state_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.state_name);
      }
-   eina_stringshare_del(event_info.part_name);
-   eina_stringshare_del(event_info.state_name);
    return true;
 }
 
@@ -832,9 +832,9 @@ editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
         event_info.state_name = eina_stringshare_add(state_name);
         event_info.state_value = state_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.state_name);
      }
-   eina_stringshare_del(event_info.part_name);
-   eina_stringshare_del(event_info.state_name);
    return true;
 }
 
