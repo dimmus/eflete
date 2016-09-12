@@ -213,6 +213,9 @@ _property_attribute_changed(void *data,
       case RM_ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          break;
+      case RM_ATTRIBUTE_PROGRAM_AFTER:
+      case RM_ATTRIBUTE_PROGRAM_TARGET:
+         break;
       case RM_ATTRIBUTE_STATE_IMAGE:
          part = resource_manager_find(group->parts, change->part_name);
          state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);

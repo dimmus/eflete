@@ -599,11 +599,13 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
                           const char *program_name, Eina_Stringshare *target)
 {
    Diff *diff;
-   Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    assert(target != NULL);
+   Editor_Attribute_Change send;
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
+   send.program_name = eina_stringshare_add(program_name);
+   send.value = eina_stringshare_add(target);
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -627,6 +629,8 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
         if (!_editor_signals_blocked)
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.program_name);
+   eina_stringshare_del(send.value);
    return true;
 }
 
@@ -636,9 +640,11 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    assert(edit_object != NULL);
    assert(program_name != NULL);
+   send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
+   send.program_name = eina_stringshare_add(program_name);
+   send.old_value = eina_stringshare_add(target);
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -662,6 +668,8 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
         if (!_editor_signals_blocked)
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.program_name);
+   eina_stringshare_del(send.old_value);
    return true;
 }
 
@@ -671,10 +679,12 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    assert(edit_object != NULL);
    assert(program_name != NULL);
    assert(after != NULL);
+   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
+   send.program_name = eina_stringshare_add(program_name);
+   send.value = eina_stringshare_add(after);
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -698,6 +708,8 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
         if (!_editor_signals_blocked)
           evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.program_name);
+   eina_stringshare_del(send.value);
    return true;
 }
 
@@ -707,9 +719,11 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    assert(edit_object != NULL);
    assert(program_name != NULL);
+   send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
+   send.program_name = eina_stringshare_add(program_name);
+   send.old_value = eina_stringshare_add(after);
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -733,6 +747,8 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
         if (!_editor_signals_blocked)
           evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
      }
+   eina_stringshare_del(send.program_name);
+   eina_stringshare_del(send.old_value);
    return true;
 }
 
