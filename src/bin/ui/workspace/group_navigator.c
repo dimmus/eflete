@@ -738,7 +738,7 @@ _selected_cb(void *data,
         if (pl->group->current_selected->resource_type == RESOURCE_TYPE_PART)
           {
              pl->part = (Part *)pl->group->current_selected;
-             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, pl->group->current_selected);
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, pl->part);
 #if HAVE_TIZEN
              Evas_Object *check = elm_object_item_part_content_get(glit, "elm.swallow.icon");
              if (check)
@@ -748,7 +748,7 @@ _selected_cb(void *data,
         else if (pl->group->current_selected->resource_type == RESOURCE_TYPE_STATE)
           {
              pl->part = ((State *)pl->group->current_selected)->part;
-             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, ((State *)pl->group->current_selected)->part);
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, pl->part);
              state = elm_object_item_data_get(glit);
              CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false, true,
                                                          state->part->name,
@@ -758,7 +758,7 @@ _selected_cb(void *data,
         else if (pl->group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
           {
              pl->part = ((Part_Item *)pl->group->current_selected)->part;
-             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, ((State *)pl->group->current_selected)->part);
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, pl->part);
           }
         else
           evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, NULL);
