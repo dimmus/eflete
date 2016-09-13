@@ -225,6 +225,7 @@ typedef enum {
    RM_ATTRIBUTE_RESOURCES_COLORCLASS_COLORS,
    RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED,
    RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED,
+   RM_ATTRIBUTE_RESOURCES_STYLE_TAG_CHANGED,
 
    RM_ATTRIBUTE_RESOURCES_LAST
 } RM_Attribute_Resources;
@@ -240,6 +241,21 @@ typedef struct {
    Eina_Stringshare *value;
    Eina_Stringshare *old_value;
 } Editor_Attribute_Change;
+
+typedef struct {
+   RM_Attribute_Resources attribute;
+
+   Eina_Stringshare *color_class_name;
+   Eina_Stringshare *color_class_description;
+
+   Eina_Stringshare *style_name;
+   Eina_Stringshare *tag_value;
+   Eina_Stringshare *tag_name;
+
+   int r, g, b, a;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+} Editor_Attribute_Resource_Change;
 
 
 void

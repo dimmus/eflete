@@ -51,15 +51,15 @@ _property_resource_attribute_changed(void *data __UNUSED__,
                                      Evas_Object *obj __UNUSED__,
                                      void *event_info)
 {
-   Attribute *attr = event_info;
-   Attribute_Resource editor_resource = (int)*attr;
-   printf("Some resource attribute was changed [%d][%d] \n", (int)*attr, editor_resource);
-   switch ((int)*attr)
+   Editor_Attribute_Resource_Change *change = event_info;
+   RM_Attribute_Resources editor_resource = change->attribute;
+   switch (editor_resource)
      {
       case RM_ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION:
       case RM_ATTRIBUTE_RESOURCES_COLORCLASS_COLORS:
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
+      case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_CHANGED:
       default:
          break;
      }
