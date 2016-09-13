@@ -92,7 +92,7 @@ editor_state_text_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 {
    Diff *diff;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_STATE_TEXT_STYLE;
+   send.attribute = RM_ATTRIBUTE_STATE_TEXT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
