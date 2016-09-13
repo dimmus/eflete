@@ -414,7 +414,7 @@ gm_state_add(Project *pro, Part *part, const char *state_name, double state_valu
                 If colorclass don't exist yet adding it */ \
              TODO("move this code to colorclass resource manager"); \
              you_shall_not_pass_editor_signals(NULL); \
-             if (editor_color_class_add(pro->global_object, name, false)) \
+             if (!editor_color_class_add(pro->global_object, name, false)) \
                ERR("Something wrong happened"); \
              you_shall_pass_editor_signals(NULL); \
              Colorclass_Resource *res = (Colorclass_Resource *)resource_add(name, RESOURCE_TYPE_COLORCLASS); \
