@@ -315,7 +315,7 @@ _colorclasses_resources_load(Project *project)
 {
    Eina_List *colorclasses, *l;
    Colorclass2 *res;
-   Eina_Stringshare *name;
+   Eina_Stringshare *name, *description;
 
    assert(project != NULL);
 
@@ -341,7 +341,12 @@ _colorclasses_resources_load(Project *project)
              free(res);
           }
         else
-          project->RM.colorclasses = eina_list_append(project->RM.colorclasses, res);
+          {
+             description = edje_edit_color_class_description_get(project->global_object, name);
+             res->description = eina_stringshare_add(description);
+             edje_edit_string_free(description);
+             project->RM.colorclasses = eina_list_append(project->RM.colorclasses, res);
+          }
      }
 
    edje_edit_string_list_free(colorclasses);

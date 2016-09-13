@@ -214,6 +214,7 @@ struct _Colorclass2
    struct {
       int r,g,b,a;
    } color3;
+   Eina_Stringshare *description;
 };
 
 Eina_Bool

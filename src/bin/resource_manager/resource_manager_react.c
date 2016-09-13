@@ -47,16 +47,40 @@ _get_current_group2(Project *pro)
 /* CALLBACK FUNCTIONS */
 
 static void
-_property_resource_attribute_changed(void *data __UNUSED__,
+_property_resource_attribute_changed(void *data,
                                      Evas_Object *obj __UNUSED__,
                                      void *event_info)
 {
+   Colorclass2 *cc_res;
+
    Editor_Attribute_Resource_Change *change = event_info;
+   Project *pro = (Project *)data;
+
    RM_Attribute_Resources editor_resource = change->attribute;
    switch (editor_resource)
      {
       case RM_ATTRIBUTE_RESOURCES_COLORCLASS_DESCRIPTION:
+         cc_res = (Colorclass2 *)resource_manager_find(pro->RM.colorclasses,
+                                                       change->color_class_name);
+         eina_stringshare_del(cc_res->description);
+         cc_res->description = eina_stringshare_add(change->color_class_description);
+         break;
       case RM_ATTRIBUTE_RESOURCES_COLORCLASS_COLORS:
+         cc_res = (Colorclass2 *)resource_manager_find(pro->RM.colorclasses,
+                                                       change->color_class_name);
+         cc_res->color1.r = change->r;
+         cc_res->color1.g = change->g;
+         cc_res->color1.b = change->b;
+         cc_res->color1.a = change->a;
+         cc_res->color2.r = change->r2;
+         cc_res->color2.g = change->g2;
+         cc_res->color2.b = change->b2;
+         cc_res->color2.a = change->a2;
+         cc_res->color3.r = change->r3;
+         cc_res->color3.g = change->g3;
+         cc_res->color3.b = change->b3;
+         cc_res->color3.a = change->a3;
+         break;
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_CHANGED:
