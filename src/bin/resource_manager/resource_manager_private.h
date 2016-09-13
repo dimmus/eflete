@@ -137,7 +137,7 @@ void
 _resource_state_free(Part2 *part, State2 *state);
 
 void
-_resource_state_del(Part2 *part, State2 *state, Change *change);
+_resource_state_del(Project *pro, Part2 *part, State2 *state, Change *change);
 
 void
 _resource_part_item_free(Part2 *part, Part_Item2 *item);
@@ -149,13 +149,13 @@ void
 _resource_part_free(Group2 *group, Part2 *part);
 
 void
-_resource_part_del(Group2 *group, Part2 *part, Change *change);
+_resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change);
 
 void
 _resource_program_free(Group2 *group, Program2 *program);
 
 void
-_resource_program_del(Group2 *group, Program2 *program, Change *change);
+_resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *change);
 
 void
 _resource_group_data_free(Group2 *group, Group_Data2 *data);

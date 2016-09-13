@@ -35,6 +35,7 @@ _get_current_group2(Project *pro)
    /******* AND EFLETE DOESN'T WORK WITH IT YET ***********/
    /*******************************************************/
    Group *group = tabs_current_group_get();
+   if (!group) return NULL;
    return (Group2 *)resource_manager_find(pro->RM.groups, group->name);
    /*******************************************************/
    /*******************************************************/
@@ -135,6 +136,7 @@ _property_attribute_changed(void *data,
    Attribute editor_resource = (int)change->attribute;
    Project *pro = (Project *)data;
    Group2 *group = _get_current_group2(pro);
+   if (!group) return;
 
    switch ((int)change->attribute)
      {
@@ -733,7 +735,7 @@ _editor_part_deleted_cb(void *data,
    Group2 *group = _get_current_group2(pro);
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_part->part_name);
 
-   _resource_part_del(group, part, editor_part->change);
+   _resource_part_del(pro, group, part, editor_part->change);
 }
 
 static void
@@ -760,7 +762,7 @@ _editor_program_deleted_cb(void *data,
    Program2 *program = (Program2 *)resource_manager_find(group->programs,
                                                          editor_part->program_name);
 
-   _resource_program_del(group, program, editor_part->change);
+   _resource_program_del(pro, group, program, editor_part->change);
 }
 
 static void
@@ -849,7 +851,7 @@ _editor_state_deleted_cb(void *data,
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
    State2 *state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
 
-   _resource_state_del(part, state, editor_state->change);
+   _resource_state_del(pro, part, state, editor_state->change);
 }
 
 static void
