@@ -97,7 +97,9 @@ _popup_btn_cb(void *data,
 
    ecore_job_add(_popup_del_job, pd);
    evas_object_smart_callback_call(pd->popup, POPUP_CLOSE_CB, data);
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   /* menu clould be deleted in POPUP_CLOSE_CB in exit confirmation popup */
+   if (ap.menu)
+     ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static Evas_Object *
