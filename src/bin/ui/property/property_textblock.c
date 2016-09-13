@@ -547,12 +547,26 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_textblock)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
+         TODO("Refactor this");
+         Font_Change font_change;
+         font_change.old_value = eina_stringshare_add(tpd.font);
+         font_change.value = eina_stringshare_add(str_val1);
+         font_change.style_name = eina_stringshare_add(tpd.current_style.st_name);
+         font_change.tag_name = eina_stringshare_add(tpd.current_style.st_tag);
+
+         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STYLE_TAG_CHANGED, &font_change);
+
          if (tpd.font)
            eina_stringshare_del(tpd.font);
          tpd.font = eina_stringshare_add(str_val1);
          _style_edit_update();
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
+
+         eina_stringshare_del(font_change.old_value);
+         eina_stringshare_del(font_change.value);
+         eina_stringshare_del(font_change.tag_name);
+         eina_stringshare_del(font_change.style_name);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          assert(cb_item != NULL);

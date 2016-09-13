@@ -42,6 +42,7 @@ enum _Resource2_Type
    RESOURCE2_TYPE_FONT,
    RESOURCE2_TYPE_COLORCLASS,
    RESOURCE2_TYPE_STYLE,
+   RESOURCE2_TYPE_STYLE_TAG,
    RESOURCE2_TYPE_SIZECLASS,
    RESOURCE2_TYPE_TEXTCLASS,
    RESOURCE2_TYPE_VIBRO, /* something for now? */
@@ -74,6 +75,7 @@ typedef struct _Style2 Style2;
 typedef struct _Image2 Image2;
 typedef struct _Image_Set2 Image_Set2;
 typedef struct _Tone2 Tone2;
+typedef struct _Style_Tag2 Style_Tag2;
 typedef struct _Colorclass2 Colorclass2;
 
 typedef struct _Sound2 Sound2;
@@ -148,30 +150,14 @@ struct _Style2
 {
    Resource2_Internal common;
    Eina_Stringshare *raw_style; //for set to textblock and to edje_edit
+   Eina_List *tags;
+};
 
-   /* all parsed values goes below */
+struct _Style_Tag2
+{
+   Resource2_Internal common;
    Eina_Stringshare *font;
-   int font_size;
-   int font_style_weight;
-   int font_style_width;
-   struct {
-      int r, g, b, a;
-   } color, bg_color, outer_color, inner_color, shadow_color;
-   int font_align_hor;
-   int font_valign_hor;
-   int left_margin, right_margin;
-   int wrap;
-   int linerelsize, linesize, tabstops;
-   Eina_Bool pass, bg_check, ellipsis_check;
-   int ellipsis_value;
-   int glow_style;
-   int direction;
-   Eina_Bool strikethrough_check;
-   struct {
-      int r, g, b, a;
-   } underone_color, undertwo_color, strikethrough_color, dash_color;
-   int underline;
-   int dash_width, dash_gap;
+   Style2 *style;
 };
 
 struct _Image2

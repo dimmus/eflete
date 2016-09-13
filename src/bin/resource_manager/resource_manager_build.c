@@ -313,6 +313,26 @@ _group_dependency_load(Project *pro, Group2 *group)
 }
 
 void
+_style_dependency_load(Project *pro)
+{
+   Style2 *style;
+   Resource2 *res;
+   Eina_List *l1, *l2;
+   Style_Tag2 *tag;
+
+   /* image_set */
+   EINA_LIST_FOREACH(pro->RM.styles, l1, style)
+     {
+        EINA_LIST_FOREACH(style->tags, l2, tag)
+          {
+             res = resource_manager_find(pro->RM.fonts, tag->font);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)tag, res);
+          }
+     }
+}
+
+void
 _resource_dependency_load(Project *pro)
 {
    Group2 *group;
@@ -332,6 +352,9 @@ _resource_dependency_load(Project *pro)
           }
         edje_edit_string_list_free(set_images);
      }
+
+   /* font <===> style dependencies */
+   _style_dependency_load(pro);
 
    /* groups */
    EINA_LIST_FOREACH(pro->RM.groups, l1, group)

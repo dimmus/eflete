@@ -576,6 +576,20 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_STYLE_DELETED "SIGNAL_EDITOR_STYLE_DELETED"
 
+typedef struct {
+   const char *style_name;
+   const char *tag_name;
+   const char *old_value;
+   const char *value;
+} Font_Change;
+/**
+ * emited when font was changed in property of textblock manager.
+ * eventinfo - Font_Change struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STYLE_TAG_CHANGED "SIGNAL_EDITOR_STYLE_TAG_CHANGED"
+
 /**
  * emited when part state is selected.
  * eventinfo - EEditor_State struct

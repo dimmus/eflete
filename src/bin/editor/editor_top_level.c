@@ -309,25 +309,8 @@ editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, 
 
    CRIT_ON_FAIL(edje_edit_style_tag_value_set(obj, name, tag, value));
 
-   Editor_Attribute_Resource_Change send;
-   send.attribute = RM_ATTRIBUTE_RESOURCES_STYLE_TAG_CHANGED;
-   send.style_name = eina_stringshare_add(name);
-   send.tag_name = eina_stringshare_add(tag);
-   send.tag_value = eina_stringshare_add(value);
-
    if (!editor_save(obj))
-     {
-        eina_stringshare_del(send.tag_value);
-        eina_stringshare_del(send.tag_name);
-        eina_stringshare_del(send.style_name);
-        return false; /* i hope it will never happen */
-     }
+     return false; /* i hope it will never happen */
    _editor_project_changed();
-   if (!_editor_signals_blocked)
-     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
-
-   eina_stringshare_del(send.tag_value);
-   eina_stringshare_del(send.tag_name);
-   eina_stringshare_del(send.style_name);
    return true;
 }

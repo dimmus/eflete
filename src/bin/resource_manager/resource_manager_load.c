@@ -354,11 +354,44 @@ _colorclasses_resources_load(Project *project)
 }
 
 Eina_Bool
+_styles_tag_resources_load(Project *pro, Eina_Stringshare *name, Style2 *style)
+{
+   char *pch, *tok, *data;
+   Eina_Stringshare *value;
+   Style_Tag2 *res;
+
+   value = edje_edit_style_tag_value_get(pro->global_object,
+                                         style->common.name,
+                                         name);
+   data = strdup(value);
+   edje_edit_string_free(data);
+   pch = strstr(data, "font");
+   if (!pch)
+     {
+        free(data);
+        return false;
+     }
+   pch += strlen("font");
+   tok = strtok(pch, " =");
+   if (pch)
+     {
+        res = mem_calloc(1, sizeof(Style_Tag2));
+        res->common.type = RESOURCE2_TYPE_STYLE_TAG;
+        res->common.name = eina_stringshare_add(name);
+        res->font = eina_stringshare_add(tok);
+        style->tags = eina_list_append(style->tags, res);
+        res->style = style;
+     }
+   free(data);
+   return true;
+}
+
+Eina_Bool
 _styles_resources_load(Project *project)
 {
-   Eina_List *styles, *l;
+   Eina_List *styles, *tags, *l2, *l1;
    Style2 *res;
-   Eina_Stringshare *name;
+   Eina_Stringshare *name, *tag_value;
 
    assert(project != NULL);
 
@@ -368,17 +401,18 @@ _styles_resources_load(Project *project)
         edje_edit_string_list_free(styles);
         return false;
      }
-   EINA_LIST_FOREACH(styles, l, name)
+   EINA_LIST_FOREACH(styles, l1, name)
      {
         res = mem_calloc(1, sizeof(Style2));
         res->common.type = RESOURCE2_TYPE_STYLE;
         res->common.name = eina_stringshare_add(name);
-        project->RM.styles = eina_list_append(project->RM.styles, res);
 
-        TODO("parse all values and find dependencies in here like that:");
-        /*
-            STYLES uses FONT, COLOR_CLASS?, VIBRO?
-         */
+        tags = edje_edit_style_tags_list_get(project->global_object, name);
+        EINA_LIST_FOREACH(tags, l2, tag_value)
+          {
+             _styles_tag_resources_load(project, tag_value, res);
+          }
+        project->RM.styles = eina_list_append(project->RM.styles, res);
      }
    edje_edit_string_list_free(styles);
    return true;

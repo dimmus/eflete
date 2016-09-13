@@ -52,6 +52,8 @@ _property_resource_attribute_changed(void *data,
                                      void *event_info)
 {
    Colorclass2 *cc_res;
+   Style2 *style_res;
+   Style_Tag2 *style_tag;
 
    Editor_Attribute_Resource_Change *change = event_info;
    Project *pro = (Project *)data;
@@ -82,8 +84,22 @@ _property_resource_attribute_changed(void *data,
          cc_res->color3.a = change->a3;
          break;
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_ADDED:
+         style_res = (Style2 *)resource_manager_find(pro->RM.styles,
+                                                          change->style_name);
+         style_tag = mem_calloc(1, sizeof(Style_Tag2));
+         style_tag->common.type = RESOURCE2_TYPE_STYLE_TAG;
+         style_tag->common.name = eina_stringshare_add(change->tag_name);
+         style_tag->style = style_res;
+
+         style_res->tags = eina_list_append(style_res->tags, style_tag);
+         break;
       case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_DELETED:
-      case RM_ATTRIBUTE_RESOURCES_STYLE_TAG_CHANGED:
+         style_res = (Style2 *)resource_manager_find(pro->RM.styles,
+                                                          change->style_name);
+         style_tag = (Style_Tag2 *)resource_manager_find(style_res->tags,
+                                                     change->tag_name);
+         _resource_style_tag_free(style_tag);
+         break;
       default:
          break;
      }
@@ -633,6 +649,37 @@ _style_deleted(void *data,
 }
 
 static void
+_style_changed(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *ei)
+{
+   Font_Change *font_change = (Font_Change *)ei;
+   Project *pro = (Project *)data;
+   Style2 *res_style;
+   Style_Tag2 *res_tag;
+   Resource2 *old_source, *source;
+
+   res_style = (Style2 *)resource_manager_find(pro->RM.styles, font_change->style_name);
+   res_tag = (Style_Tag2 *)resource_manager_find(res_style->tags,
+                                                 font_change->tag_name);
+   if (res_tag->font)
+     {
+        old_source = resource_manager_find(pro->RM.fonts, res_tag->font);
+        if (old_source)
+          _resource_usage_resource_del((Resource2 *)res_tag, old_source);
+        eina_stringshare_del(res_tag->font);
+        res_tag->font = NULL;
+     }
+   if (font_change->value)
+     {
+        res_tag->font = eina_stringshare_add(font_change->value);
+        source = resource_manager_find(pro->RM.fonts, res_tag->font);
+        if (source)
+          _resource_usage_resource_add((Resource2 *)res_tag, source);
+     }
+}
+
+static void
 _part_renamed(void *data,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -900,6 +947,7 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
 
    /* already implemented stack of editor changes */
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
@@ -939,6 +987,7 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
 
    /* already implemented stack of editor changes */
    evas_object_smart_callback_del_full(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);

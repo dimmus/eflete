@@ -202,8 +202,28 @@ _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
 }
 
 void
+_resource_style_tag_free(Style_Tag2 *res)
+{
+   _resource_usage_dependency_cleanup((Resource2 *)res);
+
+   res->style->tags = eina_list_remove(res->style->tags, res);
+
+   eina_stringshare_del(res->common.name);
+   eina_stringshare_del(res->font);
+   eina_list_free(res->common.used_in);
+   eina_list_free(res->common.uses___);
+   free(res);
+}
+
+void
 _resource_style_free(Project *pro, Style2 *res)
 {
+   Style_Tag2 *tag;
+   EINA_LIST_FREE(res->tags, tag)
+     {
+        _resource_style_tag_free(tag);
+     }
+
    pro->RM.styles = eina_list_remove(pro->RM.styles, res);
 
    eina_stringshare_del(res->common.name);

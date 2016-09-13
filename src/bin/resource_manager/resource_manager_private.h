@@ -54,6 +54,9 @@ Eina_Bool
 _colorclasses_resources_load(Project *project);
 
 Eina_Bool
+_styles_tag_resources_load(Project *pro, Eina_Stringshare *name, Style2 *style);
+
+Eina_Bool
 _styles_resources_load(Project *project);
 
 Eina_Bool
@@ -116,6 +119,9 @@ _group_dependency_load(Project *pro, Group2 *group);
 
 void
 _resource_dependency_load(Project *pro);
+
+void
+_style_dependency_load(Project *pro);
 
 /* REACTION TO EDITOR AND EDJE EDIT */
 
@@ -188,6 +194,9 @@ _resource_colorclass_free(Project *pro, Colorclass2 *res);
 
 void
 _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass);
+
+void
+_resource_style_tag_free(Style_Tag2 *res);
 
 void
 _resource_style_free(Project *pro, Style2 *res);
