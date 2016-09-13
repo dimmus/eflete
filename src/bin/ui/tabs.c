@@ -1112,6 +1112,7 @@ _tab_close(void *data,
    _del_tab(item);
    if (tabs.selected == it)
      {
+        tabs.selected = NULL;
         content = elm_layout_content_unset(ap.panes.left_ver, "right");
         evas_object_hide(content);
         elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
@@ -1152,6 +1153,19 @@ tabs_tab_add(Group *group)
    tabs.items = eina_list_append(tabs.items, item);
 }
 
+static void
+_tab_home_del(void *data __UNUSED__,
+              Evas *e __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   evas_object_del(tabs.home.content_open_project);
+   evas_object_del(tabs.home.content_new_project);
+   evas_object_del(tabs.home.content_import_edj);
+   evas_object_del(tabs.home.content_import_edc);
+   evas_object_del(tabs.home.content_project_info);
+}
+
 void
 tabs_home_tab_add(Tabs_Menu view)
 {
@@ -1171,6 +1185,7 @@ tabs_home_tab_add(Tabs_Menu view)
    evas_object_show(scroller);
 
    tabs.home.content = elm_layout_add(ap.win);
+   evas_object_event_callback_add(tabs.home.content, EVAS_CALLBACK_DEL, _tab_home_del, NULL);
    elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
    tabs.home.tabs = elm_toolbar_add(tabs.home.content);
    elm_layout_content_set(tabs.home.content, "elm.swallow.toolbar", tabs.home.tabs);
