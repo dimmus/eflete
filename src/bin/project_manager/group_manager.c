@@ -624,7 +624,6 @@ _group_load(Project *pro, Group *group)
                    state_request.name = state_name;
                    state_request.val = state_val;
                    state_request.resource_type = RESOURCE_TYPE_STATE;
-                   eina_stringshare_del(state_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
                      {
                         request.resource_type = RESOURCE_TYPE_PART;
@@ -639,6 +638,7 @@ _group_load(Project *pro, Group *group)
                           }
 
                      }
+                   eina_stringshare_del(state_name);
                    edje_edit_string_list_free(targets);
                    break;
                 case EDJE_ACTION_TYPE_DRAG_VAL_SET:
