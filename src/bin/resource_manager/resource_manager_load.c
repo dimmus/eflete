@@ -447,7 +447,7 @@ _group_name_parse(Group2 *group)
 }
 
 State2 *
-_gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
+_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
 {
    State2 *state;
    Eina_Stringshare *image_name;
@@ -498,7 +498,7 @@ _gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, 
 }
 
 Part_Item2 *
-_gm_part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
+_part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
 {
    Part_Item2 *item;
 
@@ -517,7 +517,7 @@ _gm_part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
 }
 
 Part2 *
-_gm_part_add(Project *pro, Group2 *group, const char *part_name)
+_part_add(Project *pro, Group2 *group, const char *part_name)
 {
    Part2 *part;
    Eina_List *states, *l;
@@ -541,7 +541,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state_name_split(state_name, &parsed_state_name, &val);
-        _gm_state_add(pro, group, part, parsed_state_name, val);
+        _state_add(pro, group, part, parsed_state_name, val);
         eina_stringshare_del(parsed_state_name);
      }
    edje_edit_string_list_free(states);
@@ -553,7 +553,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
         for (i = 0; i < items_count; i++)
           {
              item_name = edje_edit_part_item_index_name_get(group->edit_object, part_name, i);
-             _gm_part_item_add(part, item_name, i);
+             _part_item_add(part, item_name, i);
           }
      }
 
@@ -561,7 +561,7 @@ _gm_part_add(Project *pro, Group2 *group, const char *part_name)
 }
 
 Group_Data2 *
-_gm_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_name)
+_group_data_add(Project *pro, Group2 *group, Eina_Stringshare *group_data_name)
 {
    Group_Data2 *group_data;
 
@@ -636,12 +636,12 @@ _group_load(Project *pro, Group2 *group)
      {
         parts = edje_edit_parts_list_get(group->edit_object);
         EINA_LIST_FOREACH(parts, l, part_name)
-           _gm_part_add(pro, group, part_name);
+           _part_add(pro, group, part_name);
         edje_edit_string_list_free(parts);
 
         datas = edje_edit_group_data_list_get(group->edit_object);
         EINA_LIST_FOREACH(datas, l, group_data_name)
-           _gm_group_data_add(pro, group, group_data_name);
+           _group_data_add(pro, group, group_data_name);
 
         programs = edje_edit_programs_list_get(group->edit_object);
         EINA_LIST_FOREACH(programs, l, program_name)
@@ -655,7 +655,7 @@ _group_load(Project *pro, Group2 *group)
 }
 
 Group2 *
-_gm_group_add(Project *pro, Eina_Stringshare *group_name)
+_group_add(Project *pro, Eina_Stringshare *group_name)
 {
    Group2 *res;
 
@@ -668,7 +668,7 @@ _gm_group_add(Project *pro, Eina_Stringshare *group_name)
 }
 
 void
-_gm_groups_load(Project *pro)
+_groups_load(Project *pro)
 {
    Eina_List *collections, *l;
    Eina_Stringshare *group_name;
@@ -686,7 +686,7 @@ _gm_groups_load(Project *pro)
    EINA_LIST_FOREACH(collections, l, group_name)
      {
         if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
-        _gm_group_add(pro, group_name);
+        _group_add(pro, group_name);
      }
    edje_file_collection_list_free(collections);
 

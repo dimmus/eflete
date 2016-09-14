@@ -63,22 +63,22 @@ Eina_Bool
 _global_data_resources_load(Project *project);
 
 State2 *
-_gm_state_add(Project *pro,
+_state_add(Project *pro,
               Group2 *group,
               Part2 *part,
               const char *state_name,
               double state_value);
 
 Part_Item2 *
-_gm_part_item_add(Part2 *part,
+_part_item_add(Part2 *part,
                   Eina_Stringshare *item_name,
                   unsigned int i);
 
 Part2 *
-_gm_part_add(Project *project, Group2 *group, const char *part_name);
+_part_add(Project *project, Group2 *group, const char *part_name);
 
 Group_Data2 *
-_gm_group_data_add(Project *pro,
+_group_data_add(Project *pro,
                    Group2 *group,
                    Eina_Stringshare *group_data_name);
 
@@ -86,13 +86,13 @@ Program2 *
 _program_load(Group2 *group, Eina_Stringshare *program_name);
 
 Group2 *
-_gm_group_add(Project *pro, Eina_Stringshare *group_name);
+_group_add(Project *pro, Eina_Stringshare *group_name);
 
 void
 _group_load(Project *pro, Group2 *group);
 
 void
-_gm_groups_load(Project *project);
+_groups_load(Project *project);
 
 /* DEPENDENCY BUILD */
 

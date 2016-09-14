@@ -133,7 +133,7 @@ resource_manager_init(Project *project)
    _styles_resources_load(project);
    _global_data_resources_load(project);
 
-   _gm_groups_load(project);
+   _groups_load(project);
 
    _resource_dependency_load(project);
 
