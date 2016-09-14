@@ -322,6 +322,7 @@ _project_open_internal(Project_Thread *ptd)
    eina_lock_new(&ftd->mutex);
    ecore_thread_global_data_add("ptd", ptd, NULL, false);
 
+   ap.project = project;
    resource_manager_init(project);
 
    /* Launch images load inside thread with feedback */
