@@ -224,4 +224,7 @@ resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e);
 void
 resource_group_edit_object_unload(Group2 *group);
 
+void
+resource_group_edit_object_reload(Project *pro, Group2 *group);
+
 #endif /* RESOURCE_MANAGER2_H */

@@ -465,6 +465,7 @@ _editor_saved(void *data __UNUSED__,
      {
         if (!item->group) continue; /* skip home tab */
         gm_group_edit_object_reload(ap.project, item->group);
+        resource_group_edit_object_reload(ap.project, item->group2);
         if (item->content == tabs.current_workspace)
           workspace_groupview_hard_update(tabs.current_workspace);
         else
