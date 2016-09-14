@@ -172,6 +172,9 @@ _sound_resources_load(Project *project)
    sounds = edje_edit_sound_samples_list_get(project->global_object);
    EINA_LIST_FOREACH(sounds, l, sound_name)
      {
+        if (!strcmp(sound_name, EFLETE_DUMMY_SAMPLE_NAME))
+          continue;
+
         sound_file = edje_edit_sound_samplesource_get(project->global_object, sound_name);
 
         res = mem_calloc(1, sizeof(Sound2));
