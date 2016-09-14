@@ -94,12 +94,6 @@ _group_load(Project *pro, Group2 *group);
 void
 _gm_groups_load(Project *project);
 
-void
-_resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e);
-
-void
-_resource_group_edit_object_unload(Group2 *group);
-
 /* DEPENDENCY BUILD */
 
 void

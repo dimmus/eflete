@@ -218,4 +218,10 @@ resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double va
 Resource2 *
 resource_manager_id_find(const Eina_List *list, unsigned int id);
 
+void
+resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e);
+
+void
+resource_group_edit_object_unload(Group2 *group);
+
 #endif /* RESOURCE_MANAGER2_H */

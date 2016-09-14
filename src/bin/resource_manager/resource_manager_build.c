@@ -286,7 +286,7 @@ _group_dependency_load(Project *pro, Group2 *group)
    Eina_Stringshare *main_group_name;
    Eina_List *l;
 
-   _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
+   resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
    if (edje_edit_group_alias_is(group->edit_object, group->common.name))
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
@@ -309,7 +309,7 @@ _group_dependency_load(Project *pro, Group2 *group)
              _program_dependency_load(pro, group, program);
           }
      }
-   _resource_group_edit_object_unload(group);
+   resource_group_edit_object_unload(group);
 }
 
 void

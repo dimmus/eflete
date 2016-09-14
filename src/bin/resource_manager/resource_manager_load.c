@@ -443,31 +443,6 @@ _group_name_parse(Group2 *group)
    free(c);
 }
 
-void
-_resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e)
-{
-   assert(pro != NULL);
-   assert(group != NULL);
-   assert(group->edit_object == NULL);
-
-   group->edit_object = edje_edit_object_add(e);
-   if (!edje_object_mmap_set(group->edit_object, pro->mmap_file, group->common.name))
-     {
-        ERR("Can't set mmap object");
-        abort();
-     }
-}
-
-void
-_resource_group_edit_object_unload(Group2 *group)
-{
-   assert(group != NULL);
-   assert(group->edit_object != NULL);
-
-   evas_object_del(group->edit_object);
-   group->edit_object = NULL;
-}
-
 State2 *
 _gm_state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, double state_value)
 {
@@ -653,7 +628,7 @@ _group_load(Project *pro, Group2 *group)
 
    _group_name_parse(group);
 
-   _resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
+   resource_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
    if (!edje_edit_group_alias_is(group->edit_object, group->common.name))
      {
         parts = edje_edit_parts_list_get(group->edit_object);
@@ -673,7 +648,7 @@ _group_load(Project *pro, Group2 *group)
         edje_edit_string_list_free(programs);
      }
 
-   _resource_group_edit_object_unload(group);
+   resource_group_edit_object_unload(group);
 }
 
 Group2 *

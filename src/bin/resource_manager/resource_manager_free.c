@@ -51,7 +51,7 @@ _resource_image_del(Project *pro, Image2 *res_image)
              state = (State2 *)res;
              if (res_image->common.name == state->normal)
                {
-                  _resource_group_edit_object_load(pro,
+                  resource_group_edit_object_load(pro,
                                                    state->part->group,
                                                    evas_object_evas_get(ap.win));
                   CRIT_ON_FAIL(editor_state_image_set(state->part->group->edit_object,
@@ -62,7 +62,7 @@ _resource_image_del(Project *pro, Image2 *res_image)
                                                       state->common.name,
                                                       state->val,
                                                       EFLETE_DUMMY_IMAGE_NAME));
-                  _resource_group_edit_object_unload(state->part->group);
+                  resource_group_edit_object_unload(state->part->group);
                   eina_stringshare_del(state->normal);
                   state->normal = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
                }
@@ -121,7 +121,7 @@ _resource_tone_del(Project *pro, Tone2 *res_tone)
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               program->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_program_tone_name_set(program->group->edit_object,
@@ -130,7 +130,7 @@ _resource_tone_del(Project *pro, Tone2 *res_tone)
                                                        true,
                                                        program->common.name,
                                                        ""));
-             _resource_group_edit_object_unload(program->group);
+             resource_group_edit_object_unload(program->group);
           }
      }
 
@@ -161,7 +161,7 @@ _resource_sound_del(Project *pro, Sound2 *res_sound)
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               program->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_program_sample_name_set(program->group->edit_object,
@@ -170,7 +170,7 @@ _resource_sound_del(Project *pro, Sound2 *res_sound)
                                                          true,
                                                          program->common.name,
                                                          EFLETE_DUMMY_SAMPLE_NAME));
-             _resource_group_edit_object_unload(program->group);
+             resource_group_edit_object_unload(program->group);
           }
      }
 
@@ -200,7 +200,7 @@ _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               state->part->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_state_color_class_set(state->part->group->edit_object,
@@ -211,7 +211,7 @@ _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
                                                        state->common.name,
                                                        state->val,
                                                        NULL));
-             _resource_group_edit_object_unload(state->part->group);
+             resource_group_edit_object_unload(state->part->group);
           }
      }
    _resource_colorclass_free(pro, res_colorclass);
@@ -260,7 +260,7 @@ _resource_style_del(Project *pro, Style2 *res_style)
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               state->part->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_state_text_style_set(state->part->group->edit_object,
@@ -271,7 +271,7 @@ _resource_style_del(Project *pro, Style2 *res_style)
                                                       state->common.name,
                                                       state->val,
                                                       NULL));
-             _resource_group_edit_object_unload(state->part->group);
+             resource_group_edit_object_unload(state->part->group);
           }
      }
 
@@ -346,7 +346,7 @@ _resource_state_del(Project *pro, Part2 *part, State2 *state, Change *change)
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               program->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_program_filter_state_set(program->group->edit_object,
@@ -355,7 +355,7 @@ _resource_state_del(Project *pro, Part2 *part, State2 *state, Change *change)
                                                           true,
                                                           res->common.name,
                                                           NULL));
-             _resource_group_edit_object_unload(program->group);
+             resource_group_edit_object_unload(program->group);
           }
      }
    _resource_state_free(part, state);
@@ -417,7 +417,7 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               state->part->group,
                                               evas_object_evas_get(ap.win));
              if (state->part->type == EDJE_PART_TYPE_PROXY)
@@ -448,12 +448,12 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                             state->val,
                                                             NULL));
                }
-             _resource_group_edit_object_unload(state->part->group);
+             resource_group_edit_object_unload(state->part->group);
           }
         else if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               program->group,
                                               evas_object_evas_get(ap.win));
              /* if it is actually filter */
@@ -479,7 +479,7 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                          part->common.name));
                   program->targets = eina_list_remove(program->targets, part);
                }
-             _resource_group_edit_object_unload(program->group);
+             resource_group_edit_object_unload(program->group);
           }
      }
 
@@ -533,7 +533,7 @@ _resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *ch
              while (eina_list_data_find_list(res_program->targets, program))
                {
                   /* if not its probably target part */
-                  _resource_group_edit_object_load(pro,
+                  resource_group_edit_object_load(pro,
                                                    program->group,
                                                    evas_object_evas_get(ap.win));
                   CRIT_ON_FAIL(editor_program_target_del(program->group->edit_object,
@@ -542,14 +542,14 @@ _resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *ch
                                                          true,
                                                          res->common.name,
                                                          program->common.name));
-                  _resource_group_edit_object_unload(program->group);
+                  resource_group_edit_object_unload(program->group);
                   res_program->targets = eina_list_remove(res_program->targets, program);
                }
              /* if its inside of afters */
              while (eina_list_data_find_list(res_program->afters, program))
                {
                   /* if not its probably target part */
-                  _resource_group_edit_object_load(pro,
+                  resource_group_edit_object_load(pro,
                                                    program->group,
                                                    evas_object_evas_get(ap.win));
                   CRIT_ON_FAIL(editor_program_after_del(program->group->edit_object,
@@ -558,7 +558,7 @@ _resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *ch
                                                         true,
                                                         res->common.name,
                                                         program->common.name));
-                  _resource_group_edit_object_unload(program->group);
+                  resource_group_edit_object_unload(program->group);
                   res_program->afters = eina_list_remove(res_program->afters, program);
                }
           }
@@ -645,7 +645,7 @@ _resource_group_del(Project *pro, Group2 *group)
         if (res->common.type == RESOURCE2_TYPE_PART)
           {
              part = (Part2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               part->group,
                                               evas_object_evas_get(ap.win));
 
@@ -665,12 +665,12 @@ _resource_group_del(Project *pro, Group2 *group)
                   CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(  part->group->edit_object, NULL, false, true, part->common.name, NULL));
                   CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(   part->group->edit_object, NULL, false, true, part->common.name, NULL));
                }
-             _resource_group_edit_object_unload(part->group);
+             resource_group_edit_object_unload(part->group);
           }
         else if (res->common.type == RESOURCE2_TYPE_ITEM)
           {
              item = (Part_Item2 *)res;
-             _resource_group_edit_object_load(pro,
+             resource_group_edit_object_load(pro,
                                               item->part->group,
                                               evas_object_evas_get(ap.win));
              CRIT_ON_FAIL(editor_part_item_source_set(item->part->group->edit_object,
@@ -680,7 +680,7 @@ _resource_group_del(Project *pro, Group2 *group)
                                                       item->part->common.name,
                                                       item->common.name,
                                                       EFLETE_INTERNAL_GROUP_NAME));
-             _resource_group_edit_object_unload(item->part->group);
+             resource_group_edit_object_unload(item->part->group);
           }
      }
 

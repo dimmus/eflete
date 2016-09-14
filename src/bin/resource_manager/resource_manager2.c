@@ -72,6 +72,31 @@ resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double va
    return (Resource2 *)res;
 }
 
+void
+resource_group_edit_object_load(Project *pro, Group2 *group, Evas *e)
+{
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(group->edit_object == NULL);
+
+   group->edit_object = edje_edit_object_add(e);
+   if (!edje_object_mmap_set(group->edit_object, pro->mmap_file, group->common.name))
+     {
+        ERR("Can't set mmap object");
+        abort();
+     }
+}
+
+void
+resource_group_edit_object_unload(Group2 *group)
+{
+   assert(group != NULL);
+   assert(group->edit_object != NULL);
+
+   evas_object_del(group->edit_object);
+   group->edit_object = NULL;
+}
+
 Eina_Bool
 resource_manager_init(Project *project)
 {
