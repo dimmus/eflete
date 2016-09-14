@@ -4148,6 +4148,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_FILTER_PART:
          assert(cb_item_combo != NULL);
          str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
+         CRIT_ON_FAIL(editor_program_filter_state_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, NULL));
          CRIT_ON_FAIL(editor_program_filter_part_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
