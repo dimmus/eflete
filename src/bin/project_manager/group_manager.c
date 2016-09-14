@@ -52,7 +52,7 @@ do { \
 while (0);
 
 Eina_List *
-gm_group_used_groups_edj_get(Evas_Object *obj)
+_object_groups_get(Evas_Object *obj)
 {
    Eina_List *groups = NULL;
    Eina_List *parts, *l1;
@@ -64,7 +64,10 @@ gm_group_used_groups_edj_get(Evas_Object *obj)
    EINA_LIST_FOREACH(parts, l1, part)
      {
         type = edje_edit_part_type_get(obj, part);
-        if ((EDJE_PART_TYPE_GROUP != type) && (EDJE_PART_TYPE_TEXTBLOCK != type) && (EDJE_PART_TYPE_BOX != type) && (EDJE_PART_TYPE_TABLE != type))
+        if ((EDJE_PART_TYPE_GROUP != type) &&
+            (EDJE_PART_TYPE_TEXTBLOCK != type) &&
+            (EDJE_PART_TYPE_BOX != type) &&
+            (EDJE_PART_TYPE_TABLE != type))
           continue;
         SOURCE_GET(edje_edit_part_source_get)
         SOURCE_GET(edje_edit_part_source2_get)
@@ -90,8 +93,15 @@ gm_group_used_groups_edj_get(Evas_Object *obj)
 }
 #undef SOURCE_GET
 
+
 Eina_List *
-gm_group_used_images_edj_get(Evas_Object *obj)
+gm_group_used_groups_edj_get(Evas_Object *obj)
+{
+   return _object_groups_get(obj);
+}
+
+Eina_List *
+_object_images_get(Evas_Object *obj)
 {
    Eina_List *images = NULL;
    Eina_List *parts, *l1, *states, *l2, *tweens;
@@ -121,7 +131,13 @@ gm_group_used_images_edj_get(Evas_Object *obj)
 }
 
 Eina_List *
-gm_group_used_sample_edj_get(Evas_Object *obj)
+gm_group_used_images_edj_get(Evas_Object *obj)
+{
+   return _object_images_get(obj);
+}
+
+Eina_List *
+_object_samples_get(Evas_Object *obj)
 {
    Eina_List *samples = NULL;
    Eina_List *programs, *l1;
@@ -143,6 +159,13 @@ gm_group_used_sample_edj_get(Evas_Object *obj)
    edje_edit_string_list_free(programs);
 
    return _strings_list_duplicates_del(samples);
+
+}
+
+Eina_List *
+gm_group_used_sample_edj_get(Evas_Object *obj)
+{
+   return _object_samples_get(obj);
 }
 
 Eina_List *
@@ -231,7 +254,7 @@ _style_font_get(Evas_Object *obj, const char *style)
 }
 
 Eina_List *
-gm_group_used_fonts_edj_get(Evas_Object *obj)
+_object_fonts_get(Evas_Object *obj)
 {
    Eina_List *fonts = NULL;
    Eina_List *parts, *l1, *states, *l2, *style_fonts;
@@ -255,7 +278,7 @@ gm_group_used_fonts_edj_get(Evas_Object *obj)
                        real_font = edje_edit_font_path_get(obj, font);
                        if (real_font)
                          {
-                            fonts = eina_list_sorted_insert(fonts, sort_cb, eina_stringshare_add(real_font));
+                            fonts = eina_list_sorted_insert(fonts, sort_cb, eina_stringshare_add(font));
                             eina_stringshare_del(real_font);
                          }
                        eina_stringshare_del(font);
@@ -282,4 +305,10 @@ gm_group_used_fonts_edj_get(Evas_Object *obj)
    edje_edit_string_list_free(parts);
 
    return _strings_list_duplicates_del(fonts);
+}
+
+Eina_List *
+gm_group_used_fonts_edj_get(Evas_Object *obj)
+{
+   return _object_fonts_get(obj);
 }

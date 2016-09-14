@@ -27,6 +27,7 @@ EXTRA_DIST = \
 	external/syntax_color.h \
 	logger/logger.h \
 	project_manager/group_manager.h \
+	project_manager/group_manager_resources.h \
 	project_manager/project_manager.h \
 	project_manager/project_manager_private.h \
 	project_manager/resource_manager.h \
