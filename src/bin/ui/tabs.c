@@ -1111,9 +1111,10 @@ _tab_close(void *data,
 
    if (!item) return;
 
-   resource_group_edit_object_unload(tabs.current_group2);
 
    tabs.items = eina_list_remove(tabs.items, item);
+   if (tabs.current_group2)
+     resource_group_edit_object_unload(tabs.current_group2);
    tabs.current_workspace = NULL;
    tabs.current_group = NULL;
    tabs.current_group2 = NULL;
