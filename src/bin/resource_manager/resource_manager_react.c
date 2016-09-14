@@ -296,7 +296,7 @@ _property_attribute_changed(void *data,
               else
                 source = resource_manager_find(group->parts, change->value);
 
-              _resource_usage_resource_del(program, source);
+              _resource_usage_resource_add(program, source);
               ((Program2 *)program)->targets = eina_list_append(((Program2 *)program)->targets, source);
            }
          break;
