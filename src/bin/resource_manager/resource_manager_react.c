@@ -377,7 +377,6 @@ _property_attribute_changed(void *data,
            }
          break;
       case RM_ATTRIBUTE_STATE_TEXT_STYLE:
-      case RM_ATTRIBUTE_STATE_COLOR_CLASS:
          part = resource_manager_find(group->parts, change->part_name);
          state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
 
@@ -390,6 +389,22 @@ _property_attribute_changed(void *data,
          if (change->value)
            {
               source = resource_manager_find(pro->RM.styles, change->value);
+              _resource_usage_resource_add(state, source);
+           }
+         break;
+      case RM_ATTRIBUTE_STATE_COLOR_CLASS:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
+
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(pro->RM.colorclasses, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+           }
+
+         if (change->value)
+           {
+              source = resource_manager_find(pro->RM.colorclasses, change->value);
               _resource_usage_resource_add(state, source);
            }
          break;
@@ -954,19 +969,16 @@ _resource_callbacks_register(Project *project)
    /* already implemented stack of editor changes */
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
-   TODO("PART COPY - check if it is working after integration")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, project);
-   TODO("STATE COPY - check if it is working after integration")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, project);
-   TODO("add afters and targets addition and changes")
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, _property_attribute_changed, project);
