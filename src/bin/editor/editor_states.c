@@ -562,6 +562,7 @@ editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge
    send.state_name = eina_stringshare_add(state_name);
    send.state_value = state_val;
    send.value = eina_stringshare_add(name); /* field for add tween */
+   send.old_value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -609,6 +610,7 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
    send.state_name = eina_stringshare_add(state_name);
    send.state_value = state_val;
    send.old_value = eina_stringshare_add(name); /* field for del tween */
+   send.value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));

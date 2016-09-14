@@ -606,6 +606,7 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
    send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    send.program_name = eina_stringshare_add(program_name);
    send.value = eina_stringshare_add(target);
+   send.old_value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -645,6 +646,7 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
    send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    send.program_name = eina_stringshare_add(program_name);
    send.old_value = eina_stringshare_add(target);
+   send.value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -685,6 +687,7 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
    send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    send.program_name = eina_stringshare_add(program_name);
    send.value = eina_stringshare_add(after);
+   send.old_value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -724,6 +727,7 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
    send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
    send.program_name = eina_stringshare_add(program_name);
    send.old_value = eina_stringshare_add(after);
+   send.value = NULL;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
