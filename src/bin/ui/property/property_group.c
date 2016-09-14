@@ -29,6 +29,7 @@
 #include "project_manager.h"
 #include "validator.h"
 #include "shortcuts.h"
+#include "string_common.h"
 
 #define PART_MASK(TYPE) (1u << TYPE)
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
@@ -1798,7 +1799,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          return true;
       case ATTRIBUTE_PART_TYPE:
-         elm_layout_text_set(action->control, NULL, gm_part_type_text_get(((Part *)group_pd.group->current_selected)->type));
+         elm_layout_text_set(action->control, NULL, part_type_text_get(((Part *)group_pd.group->current_selected)->type));
          return true;
       case ATTRIBUTE_PROGRAM_ACTION:
          elm_layout_text_set(action->control, NULL, action_type[((Part *)group_pd.group->current_selected)->type]);

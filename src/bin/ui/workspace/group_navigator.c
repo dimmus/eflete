@@ -983,12 +983,12 @@ _part_selected_cb(void *data,
    if (item->index != 0)
      {
         type = edje_edit_part_type_get(pl->group->edit_object, elm_object_text_get(pl->popup.combobox_copy));
-        elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(type));
+        elm_object_text_set(pl->popup.combobox, part_type_text_get(type));
         elm_object_disabled_set(pl->popup.combobox, true);
      }
    else
      {
-        elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(pl->popup.part_type));
+        elm_object_text_set(pl->popup.combobox, part_type_text_get(pl->popup.part_type));
         elm_object_disabled_set(pl->popup.combobox, false);
      }
 }
@@ -1083,13 +1083,13 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
    for (i = 0; part_types[i] != EDJE_PART_TYPE_NONE; i++)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
-        combobox_item->data = eina_stringshare_add(gm_part_type_text_get(part_types[i]));
+        combobox_item->data = eina_stringshare_add(part_type_text_get(part_types[i]));
         combobox_item->index = part_types[i];
         elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(part_types[0]));
+   elm_object_text_set(pl->popup.combobox, part_type_text_get(part_types[0]));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _type_selected_cb, pl);
    elm_box_pack_end(box, item);

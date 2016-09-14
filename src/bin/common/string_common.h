@@ -65,4 +65,7 @@ string_cat(const char *str1, const char *str2);
 const char *
 string_rstr(const char *str1, const char *str2);
 
+const char *
+part_type_text_get(Edje_Part_Type part_type);
+
 #endif /* STRING_MACRO_H */
