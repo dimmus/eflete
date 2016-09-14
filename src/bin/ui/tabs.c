@@ -27,6 +27,7 @@
 
 struct _Tabs_Item {
    Group *group;
+   Group2 *group2;
    Elm_Object_Item *toolbar_item;
    Evas_Object *content;
    Eina_Bool need_recalc : 1;
@@ -59,6 +60,7 @@ struct _Tabs {
    Eina_List *items;
    Evas_Object *current_workspace;
    Group *current_group;
+   Group2 *current_group2;
    Tab_Home home;
 };
 
@@ -74,6 +76,7 @@ _content_unset(void)
    assert(tabs.layout != NULL);
    tabs.current_workspace = NULL;
    tabs.current_group = NULL;
+   tabs.current_group2 = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
    content = elm_layout_content_unset(ap.panes.left_ver, "right");
@@ -109,6 +112,7 @@ _content_set(void *data,
           elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
+        tabs.current_group2 = item->group2;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
         if (item->need_recalc)
@@ -1106,9 +1110,12 @@ _tab_close(void *data,
 
    if (!item) return;
 
+   resource_group_edit_object_unload(tabs.current_group2);
+
    tabs.items = eina_list_remove(tabs.items, item);
    tabs.current_workspace = NULL;
    tabs.current_group = NULL;
+   tabs.current_group2 = NULL;
    _del_tab(item);
    if (tabs.selected == it)
      {
@@ -1144,7 +1151,9 @@ tabs_tab_add(Group *group)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;
+   item->group2 = (Group2 *)resource_manager_find(ap.project->RM.groups, group->name);
    item->content = workspace_add(tabs.layout, group);
+   resource_group_edit_object_load(ap.project, item->group2, evas_object_evas_get(ap.win));
 
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
                                                _content_set, (void *)item);
@@ -1218,6 +1227,7 @@ tabs_home_tab_add(Tabs_Menu view)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = NULL;
+   item->group2 = NULL;
    item->content = scroller;
 #ifndef HAVE_TIZEN
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, "go-home", _("Home"),
@@ -1294,4 +1304,10 @@ Group *
 tabs_current_group_get(void)
 {
    return tabs.current_group;
+}
+
+Group2 *
+tabs_current_group2_get(void)
+{
+   return tabs.current_group2;
 }

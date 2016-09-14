@@ -28,6 +28,7 @@
  * user can create new, open, or import Eflete project.
  */
 #include "eflete.h"
+#include "resource_manager2.h"
 
 typedef enum {
    TAB_HOME_PROJECT_INFO = 0,
@@ -134,5 +135,7 @@ tabs_current_workspace_get(void);
  */
 Group *
 tabs_current_group_get(void);
+Group2 *
+tabs_current_group2_get(void);
 
 #endif /* TABS_H */
