@@ -39,7 +39,6 @@ _on_frame_swallow_check(void *data __UNUSED__,
                {
                   content = elm_object_part_content_unset(frame_obj, part->name);
                   evas_object_del(content);
-                  content = NULL;
                   part->object = NULL;
                }
 
