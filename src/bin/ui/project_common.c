@@ -83,6 +83,7 @@ exist_permission_check(const char *path, const char *name,
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to write '%s'"), path);
         popup_add(title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
+        free(pcd);
         return false;
      }
    pcd->buf = eina_strbuf_new();
