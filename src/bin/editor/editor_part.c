@@ -962,8 +962,10 @@ _editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
                   RESET_PART_REF(textblock_anchors_under, source5);
                   RESET_PART_REF(textblock_anchors_over, source6);
                }
-             if (type == EDJE_PART_TYPE_GROUP)
-               RESET_PART_REF(group_source, source);
+             else if (type == EDJE_PART_TYPE_GROUP)
+               {
+                  RESET_PART_REF(group_source, source);
+               }
 
           }
         edje_edit_string_list_free(parts);
