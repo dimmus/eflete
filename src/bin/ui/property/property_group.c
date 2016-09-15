@@ -2452,7 +2452,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          elm_genlist_clear(action->control);
          str_val1 = edje_edit_program_sample_name_get(EDIT_OBJ, PROGRAM_ARGS);
-         if (!strcmp(str_val1, EFLETE_DUMMY_SAMPLE_NAME))
+         if (!str_val1 || !strcmp(str_val1, EFLETE_DUMMY_SAMPLE_NAME))
            {
               edje_edit_string_free(str_val1);
               str_val1 = eina_stringshare_add(_("None"));
