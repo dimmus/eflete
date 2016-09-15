@@ -801,7 +801,6 @@ _external_resources_export(Eina_List *resources, const char *dst)
         ecore_file_cp(res->path, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
         free(path);
-        path = NULL;
      }
    eina_strbuf_free(buf);
 }
