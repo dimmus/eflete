@@ -977,7 +977,7 @@ _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
    Elm_Theme_Apply int_ret = ELM_THEME_APPLY_FAILED;
    int count;
    int_ret = elm_obj_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return ELM_THEME_APPLY_FAILED;
+   if (int_ret == ELM_THEME_APPLY_FAILED) return ELM_THEME_APPLY_FAILED;
 
    Ewe_Ruler_Scale *scale;
    Eina_List *ls;
