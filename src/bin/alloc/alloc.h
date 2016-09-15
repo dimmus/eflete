@@ -79,6 +79,7 @@ mem_calloc(size_t num, size_t size)
      {
         CRIT(TERM_MESSAGE);
         app_shutdown();
+        exit(EXIT_FAILURE);
      }
    return mem_block;
 }
