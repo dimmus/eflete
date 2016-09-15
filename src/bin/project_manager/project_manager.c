@@ -185,15 +185,13 @@ Eina_Bool
 _build_script_write(const char *path)
 {
    FILE *f;
-   Eina_Bool res = true;
    Eina_Strbuf *buf;
 
    f = fopen(path, "w");
    if (!f)
      {
         ERR("Could't open file '%s'", path);
-        res = false;
-        goto exit;
+        return false;
      }
 
    buf = eina_strbuf_new();
@@ -203,9 +201,8 @@ _build_script_write(const char *path)
    eina_strbuf_free(buf);
    chmod(path, S_IRWXU|S_IRWXG|S_IROTH|S_IWOTH);
 
-exit:
    fclose(f);
-   return res;
+   return true;
 }
 
 void
