@@ -177,7 +177,7 @@ popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabl
 {
    assert(popup != NULL);
 
-   if (!btn) return;
+   if (btn == BTN_NONE) return;
 
    Popup_Data *pd = evas_object_data_get(popup, POPUP_DATA);
    switch (btn)
