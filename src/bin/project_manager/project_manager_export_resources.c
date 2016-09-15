@@ -117,7 +117,7 @@ void
 _image_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -234,7 +234,7 @@ void
 _sound_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -320,7 +320,7 @@ void
 _font_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -414,7 +414,7 @@ void
 _tones_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -461,7 +461,7 @@ void
 _colorclasses_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -518,7 +518,7 @@ void
 _styles_resources_feedback_job(void *data, Ecore_Thread *th)
 {
    Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   if (!eina_lock_take(&ftd->mutex))
+   if (eina_lock_take(&ftd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
