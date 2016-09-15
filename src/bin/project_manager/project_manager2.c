@@ -35,6 +35,8 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
+static Eet_Compression compess_level = EET_COMPRESSION_HI;
+
 struct _Project_Process_Data
 {
    /** The progress callback. See #PM_Project_Progress_Cb.*/
@@ -584,4 +586,68 @@ pm_project_save(Project *project,
    //ecore_file_cp(ppd->project->dev, ppd->project->saved_edj);
    eina_file_copy(ppd->project->dev, ppd->project->saved_edj,
                   EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, _copy_progress, ppd);
+}
+
+void
+pm_project_meta_data_get(Project *project,
+                         Eina_Stringshare **name,
+                         Eina_Stringshare **authors,
+                         Eina_Stringshare **version,
+                         Eina_Stringshare **license,
+                         Eina_Stringshare **comment)
+{
+   char *tmp;
+
+   assert(project != NULL);
+   assert(project->ef != NULL);
+
+#define DATA_READ(DATA, KEY) \
+   if (DATA) \
+     { \
+        tmp = eet_read(project->ef, KEY, NULL); \
+        *DATA = eina_stringshare_add(tmp); \
+        free(tmp); \
+     }
+
+   DATA_READ(name,    PROJECT_KEY_NAME);
+   DATA_READ(authors, PROJECT_KEY_AUTHORS);
+   DATA_READ(version, PROJECT_KEY_FILE_VERSION);
+   DATA_READ(license, PROJECT_KEY_LICENSE);
+   DATA_READ(comment, PROJECT_KEY_COMMENT);
+
+#undef DATA_READ
+}
+
+Eina_Bool
+pm_project_meta_data_set(Project *project,
+                         const char *name,
+                         const char *authors,
+                         const char *version,
+                         const char *license,
+                         const char *comment)
+{
+   int bytes, size;
+   Eina_Bool res;
+
+   assert(project != NULL);
+   assert(project->ef != NULL);
+
+   res = true;
+
+#define DATA_WRITE(DATA, KEY) \
+   if (DATA) \
+     { \
+        size = (strlen(DATA) + 1) * sizeof(char); \
+        bytes = eet_write(project->ef, KEY, DATA, size, compess_level); \
+        if (bytes <= 0 ) res = false; \
+     }
+
+   DATA_WRITE(name,    PROJECT_KEY_NAME);
+   DATA_WRITE(authors, PROJECT_KEY_AUTHORS);
+   DATA_WRITE(version, PROJECT_KEY_FILE_VERSION);
+   DATA_WRITE(license, PROJECT_KEY_LICENSE);
+   DATA_WRITE(comment, PROJECT_KEY_COMMENT);
+
+#undef DATA_WRITE
+   return res;
 }
