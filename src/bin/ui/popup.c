@@ -113,7 +113,7 @@ _button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
    assert(*btn_pos < 3); /* maximum buttons count */
    assert(text != NULL);
 
-   if (!pb)
+   if (pb == BTN_NONE)
      return NULL;
 
    BUTTON_ADD(pd->popup, btn, text);
