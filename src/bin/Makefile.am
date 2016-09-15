@@ -31,6 +31,7 @@ EXTRA_DIST = \
 	project_manager/group_manager_resources.h \
 	project_manager/project_manager.h \
 	project_manager/project_manager_private.h \
+	project_manager/project_manager2.h \
 	project_manager/resource_manager.h \
 	resource_manager/resource_manager2.h \
 	resource_manager/resource_manager_private.h \
@@ -75,6 +76,7 @@ libete_a_SOURCES = \
 ../../src/bin/project_manager/project_manager_import_edc.c \
 ../../src/bin/project_manager/project_manager_export_edc.c \
 ../../src/bin/project_manager/project_manager_export_edj.c \
+../../src/bin/project_manager/project_manager2.c \
 ../../src/bin/resource_manager/resource_manager2.c \
 ../../src/bin/resource_manager/resource_manager_load.c \
 ../../src/bin/resource_manager/resource_manager_build.c \
