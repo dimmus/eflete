@@ -317,6 +317,9 @@ _helper_colorclass_dismiss(void *data,
                            const char *source __UNUSED__)
 {
    Helper_Data *helper_data = (Helper_Data *)data;
+
+   assert(helper_data != NULL);
+
    Evas_Object *follow_up = helper_data->follow_up;
 
    evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_obj_follow, NULL);
@@ -338,7 +341,7 @@ _helper_colorclass_dismiss(void *data,
    if (helper_data->button)
      evas_object_del(helper_data->button);
 
-   if (helper_data) free(helper_data);
+   free(helper_data);
 
    ecore_job_add(_delete_object_job, helper);
 }
