@@ -97,9 +97,6 @@ _project_descriptor_init(Project_Process_Data *ppd)
    EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "develop_path", develop_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "release_options", release_options, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_LIST_STRING (ppd->eed_project, Project, "images", res.images);
-   EET_DATA_DESCRIPTOR_ADD_LIST_STRING (ppd->eed_project, Project, "sounds", res.sounds);
-   EET_DATA_DESCRIPTOR_ADD_LIST_STRING (ppd->eed_project, Project, "fonts", res.fonts);
 }
 
 void
@@ -295,7 +292,6 @@ _lock_try(const char *path, Eina_Bool check, HANDLE *pro_fd)
 }
 #endif
 
-
 static Eina_Bool
 _exe_output_print(void *data,
                   int type __UNUSED__,
@@ -337,7 +333,7 @@ _project_open_internal(const char *path,
    Project_Process_Data *ppd;
    char *spath;
    Ecore_Exe_Flags flags;
-   char cmd[512];
+   char cmd[PATH_MAX];
    char *file_dir;
 
 #ifdef _WIN32
@@ -500,4 +496,92 @@ pm_project_open(const char *path,
                 const void *data)
 {
    _project_open_internal(path, func_progress, func_end, data);
+}
+
+Eina_Bool
+pm_project_close(Project *project)
+{
+   char buf[PATH_MAX];
+
+   assert(project != NULL);
+
+   snprintf(buf, sizeof(buf),
+            "%s.backup", project->dev);
+   ecore_file_unlink(buf);
+   snprintf(buf, sizeof(buf),
+            "%s/images", project->develop_path);
+   ecore_file_recursive_rm(buf);
+   snprintf(buf, sizeof(buf),
+            "%s/sounds", project->develop_path);
+   ecore_file_recursive_rm(buf);
+   snprintf(buf, sizeof(buf),
+            "%s/fonts", project->develop_path);
+   ecore_file_recursive_rm(buf);
+
+   evas_object_del(project->global_object);
+   ecore_evas_free(project->ecore_evas);
+
+   eina_file_close(project->mmap_file);
+   ecore_file_unlink(project->dev);
+
+   eina_stringshare_del(project->name);
+   eina_stringshare_del(project->dev);
+   eina_stringshare_del(project->develop_path);
+   eina_stringshare_del(project->pro_path);
+
+#ifdef HAVE_ENVENTOR
+   if (enventor_object_project_unload(project))
+     free(project->enventor);
+#endif /* HAVE_ENVENTOR */
+
+   eet_close(project->ef);
+#ifdef _WIN32
+   if (project->pro_fd != INVALID_HANDLE_VALUE)
+     CloseHandle(project->pro_fd);
+#else
+   if (project->pro_fd != -1)
+     close(project->pro_fd);
+#endif
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CLOSED, NULL);
+   free(project);
+
+   return true;
+}
+static Eina_Bool
+_copy_progress(void *data, unsigned long long done, unsigned long long total)
+{
+   Project_Process_Data * ppd = data;
+
+   if (done == total)
+     {
+        ppd->result = PM_PROJECT_SUCCESS;
+        _end_send(ppd);
+     }
+   return true;
+}
+
+void
+pm_project_save(Project *project,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data)
+{
+   assert(project != NULL);
+
+   Project_Process_Data *ppd;
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->project = project;
+   if (!editor_save_all(ppd->project->global_object))
+     {
+        ERR("Failed to save project.");
+        ppd->result = PM_PROJECT_ERROR;
+        _end_send(ppd);
+        return;
+     }
+   //ecore_file_cp(ppd->project->dev, ppd->project->saved_edj);
+   eina_file_copy(ppd->project->dev, ppd->project->saved_edj,
+                  EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, _copy_progress, ppd);
 }
