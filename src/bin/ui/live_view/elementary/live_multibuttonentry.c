@@ -36,7 +36,6 @@ _on_multibutton_swallow_check(void *data __UNUSED__,
                {
                   content = elm_object_part_content_unset(multi_item, part->name);
                   evas_object_del(content);
-                  content = NULL;
                   part->object = NULL;
                }
 
