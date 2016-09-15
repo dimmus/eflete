@@ -53,6 +53,7 @@
  */
 EFLETE_TEST(ewe_ruler_horizontal_set_test_p1)
 {
+   logger_init();
    ewe_init(0, 0);
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
@@ -91,6 +92,7 @@ END_TEST
  */
 EFLETE_TEST(ewe_ruler_horizontal_set_test_p2)
 {
+   logger_init();
    ewe_init(0, 0);
    Eina_Bool get_horizontal;
    Evas_Object *win = elm_win_util_standard_add("test", "test");
@@ -131,6 +133,7 @@ END_TEST
  */
 EFLETE_TEST(ewe_ruler_horizontal_set_test_n)
 {
+   logger_init();
    ewe_init(0, 0);
 
    ck_assert_msg(ewe_ruler_horizontal_set(NULL, EINA_FALSE) == EINA_FALSE,

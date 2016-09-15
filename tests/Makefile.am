@@ -43,9 +43,9 @@ FLAGS = \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/bin/libete.a \
+${top_builddir}/src/lib/libewe.a \
 @CHECK_LIBS@ \
-@EFL_LIBS@ \
-${top_builddir}/src/lib/libewe.la
+@EFL_LIBS@
 
 
 

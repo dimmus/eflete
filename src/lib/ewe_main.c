@@ -22,11 +22,6 @@
 EAPI int
 ewe_init(int argc, char **argv)
 {
-   if (!logger_init())
-   {
-      CRI("Can't initialize the logger");
-      return EINA_FALSE;
-   }
    elm_theme_extension_add(NULL, EWE_THEME);
    return elm_init(argc, argv);
 }

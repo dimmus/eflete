@@ -209,7 +209,7 @@ libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
 eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
-${top_builddir}/src/lib/libewe.la \
+${top_builddir}/src/lib/libewe.a \
 @LTLIBINTL@
 
 #Enable after Enventor compabitility will be implement

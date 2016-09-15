@@ -53,6 +53,7 @@
  */
 EFLETE_TEST(ewe_ruler_scale_del_test_p)
 {
+   logger_init();
    ewe_init(0, 0);
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
@@ -89,6 +90,7 @@ END_TEST
  */
 EFLETE_TEST(ewe_ruler_scale_del_test_n)
 {
+   logger_init();
    ewe_init(0, 0);
 
    ck_assert_msg(ewe_ruler_scale_del(NULL, NULL) == EINA_FALSE, "Deleted scale from NULL ruler object");
