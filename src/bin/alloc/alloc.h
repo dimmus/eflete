@@ -53,6 +53,7 @@ mem_malloc(size_t size)
      {
         CRIT(TERM_MESSAGE);
         app_shutdown();
+        exit(EXIT_FAILURE);
      }
    return mem_block;
 }
