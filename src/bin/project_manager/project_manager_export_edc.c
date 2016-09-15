@@ -56,7 +56,7 @@ _project_source_code_export_feedback_job(void *data, Ecore_Thread *th)
 {
    Eina_Stringshare *path;
    Project_Thread *ptd = (Project_Thread *)data;
-   if (!eina_lock_take(&ptd->mutex))
+   if (eina_lock_take(&ptd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
@@ -173,7 +173,7 @@ void
 _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
 {
    Project_Thread *ptd = (Project_Thread *)data;
-   if (!eina_lock_take(&ptd->mutex))
+   if (eina_lock_take(&ptd->mutex) != EINA_LOCK_SUCCEED)
      {
        ERR("Failed access data");
        ecore_thread_cancel(th);
