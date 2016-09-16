@@ -134,18 +134,21 @@ _shortcut_handle(Shortcut_Type type)
 {
    int num;
    Evas_Object *handler;
-#define SHORTCUT(NAME) \
+#define SHORTCUT(NAME, SIGNAL) \
  case SHORTCUT_TYPE_##NAME: \
-    evas_object_smart_callback_call(handler, SIGNAL_SHORTCUT_##NAME, NULL); \
+    assert(SIGNAL != NULL); \
+    evas_object_smart_callback_call(handler, SIGNAL, NULL); \
     break;
 
-#define SHORTCUT_GLOBAL_ONLY(NAME) \
+#define SHORTCUT_GLOBAL_ONLY(NAME, SIGNAL) \
  case SHORTCUT_TYPE_##NAME: \
-    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_##NAME, NULL); \
+    assert(SIGNAL != NULL); \
+    evas_object_smart_callback_call(ap.win, SIGNAL, NULL); \
     break;
 
 #define SHORTCUT_NUM(NAME, SIGNAL, NUM) \
  case SHORTCUT_TYPE_##NAME: \
+    assert(SIGNAL != NULL); \
     num = NUM; \
     evas_object_smart_callback_call(handler, SIGNAL, &num); \
     break;
@@ -157,52 +160,52 @@ _shortcut_handle(Shortcut_Type type)
 
    switch (type)
      {
-        SHORTCUT_GLOBAL_ONLY(QUIT);
-        SHORTCUT_GLOBAL_ONLY(SAVE);
-        SHORTCUT(REDO);
-        SHORTCUT(UNDO);
-        SHORTCUT(ADD_GROUP);
-        SHORTCUT(ADD_PART);
-        SHORTCUT(ADD_STATE);
-        SHORTCUT(ADD_ITEM);
-        SHORTCUT(ADD_PROGRAM);
-        SHORTCUT(ADD_DATA_ITEM);
-        SHORTCUT(DEL);
-        SHORTCUT(STATE_NEXT);
-        SHORTCUT(PART_NEXT);
-        SHORTCUT(PART_PREV);
-        SHORTCUT(PART_SHOWHIDE);
-        SHORTCUT(ALL_PARTS_SHOWHIDE);
-        SHORTCUT_NUM(TAB_NUM1, SIGNAL_SHORTCUT_TAB_NUM, 1);
-        SHORTCUT_NUM(TAB_NUM2, SIGNAL_SHORTCUT_TAB_NUM, 2);
-        SHORTCUT_NUM(TAB_NUM3, SIGNAL_SHORTCUT_TAB_NUM, 3);
-        SHORTCUT_NUM(TAB_NUM4, SIGNAL_SHORTCUT_TAB_NUM, 4);
-        SHORTCUT_NUM(TAB_NUM5, SIGNAL_SHORTCUT_TAB_NUM, 5);
-        SHORTCUT_NUM(TAB_NUM6, SIGNAL_SHORTCUT_TAB_NUM, 6);
-        SHORTCUT_NUM(TAB_NUM7, SIGNAL_SHORTCUT_TAB_NUM, 7);
-        SHORTCUT_NUM(TAB_NUM8, SIGNAL_SHORTCUT_TAB_NUM, 8);
-        SHORTCUT_NUM(TAB_NUM9, SIGNAL_SHORTCUT_TAB_NUM, 9);
-        SHORTCUT_NUM(TAB_NUM10, SIGNAL_SHORTCUT_TAB_NUM, 10);
-        SHORTCUT(TAB_NEXT);
-        SHORTCUT(TAB_PREV);
-        SHORTCUT(TAB_CLOSE);
-        SHORTCUT(TAB_IMAGE_MANAGER);
-        SHORTCUT(TAB_SOUND_MANAGER);
-        SHORTCUT(TAB_COLOR_CLASS_MANAGER);
-        SHORTCUT(TAB_STYLE_MANAGER);
-        SHORTCUT(MODE_NORMAL);
-        SHORTCUT(MODE_CODE);
-        SHORTCUT(MODE_DEMO);
-        SHORTCUT(ZOOM_IN);
-        SHORTCUT(ZOOM_OUT);
-        SHORTCUT(ZOOM_RESET);
-        SHORTCUT(FILL);
-        SHORTCUT(FIT);
-        SHORTCUT(RULERS_SHOW);
-        SHORTCUT(OBJECT_AREA);
-        SHORTCUT(CANCEL);
-        SHORTCUT(DONE);
-        SHORTCUT(HELP);
+        SHORTCUT_GLOBAL_ONLY(QUIT, signals.shortcut.quit);
+        SHORTCUT_GLOBAL_ONLY(SAVE, signals.shortcut.save);
+        SHORTCUT(REDO, signals.shortcut.history.redo);
+        SHORTCUT(UNDO, signals.shortcut.history.undo);
+        SHORTCUT(ADD_GROUP, signals.shortcut.add.group);
+        SHORTCUT(ADD_PART, signals.shortcut.add.part);
+        SHORTCUT(ADD_STATE, signals.shortcut.add.state);
+        SHORTCUT(ADD_ITEM, signals.shortcut.add.item);
+        SHORTCUT(ADD_PROGRAM, signals.shortcut.add.program);
+        SHORTCUT(ADD_DATA_ITEM, signals.shortcut.add.data_item);
+        SHORTCUT(DEL, signals.shortcut.del);
+        SHORTCUT(STATE_NEXT, signals.shortcut.workspace.select.state_next);
+        SHORTCUT(PART_NEXT, signals.shortcut.workspace.select.part_next);
+        SHORTCUT(PART_PREV, signals.shortcut.workspace.select.part_prev);
+        SHORTCUT(PART_SHOWHIDE, signals.shortcut.workspace.show_hide.part);
+        SHORTCUT(ALL_PARTS_SHOWHIDE, signals.shortcut.workspace.show_hide.all_parts);
+        SHORTCUT_NUM(TAB_NUM1, signals.shortcut.tab.num, 1);
+        SHORTCUT_NUM(TAB_NUM2, signals.shortcut.tab.num, 2);
+        SHORTCUT_NUM(TAB_NUM3, signals.shortcut.tab.num, 3);
+        SHORTCUT_NUM(TAB_NUM4, signals.shortcut.tab.num, 4);
+        SHORTCUT_NUM(TAB_NUM5, signals.shortcut.tab.num, 5);
+        SHORTCUT_NUM(TAB_NUM6, signals.shortcut.tab.num, 6);
+        SHORTCUT_NUM(TAB_NUM7, signals.shortcut.tab.num, 7);
+        SHORTCUT_NUM(TAB_NUM8, signals.shortcut.tab.num, 8);
+        SHORTCUT_NUM(TAB_NUM9, signals.shortcut.tab.num, 9);
+        SHORTCUT_NUM(TAB_NUM10, signals.shortcut.tab.num, 10);
+        SHORTCUT(TAB_NEXT, signals.shortcut.tab.next);
+        SHORTCUT(TAB_PREV, signals.shortcut.tab.prev);
+        SHORTCUT(TAB_CLOSE, signals.shortcut.tab.close);
+        SHORTCUT(TAB_IMAGE_MANAGER, signals.shortcut.manager.image);
+        SHORTCUT(TAB_SOUND_MANAGER, signals.shortcut.manager.sound);
+        SHORTCUT(TAB_COLOR_CLASS_MANAGER, signals.shortcut.manager.color_class);
+        SHORTCUT(TAB_STYLE_MANAGER, signals.shortcut.manager.style);
+        SHORTCUT(MODE_NORMAL, signals.shortcut.workspace.mode.normal);
+        SHORTCUT(MODE_CODE, signals.shortcut.workspace.mode.code);
+        SHORTCUT(MODE_DEMO, signals.shortcut.workspace.mode.demo);
+        SHORTCUT(ZOOM_IN, signals.shortcut.workspace.zoom.in);
+        SHORTCUT(ZOOM_OUT, signals.shortcut.workspace.zoom.out);
+        SHORTCUT(ZOOM_RESET, signals.shortcut.workspace.zoom.reset);
+        SHORTCUT(FILL, signals.shortcut.workspace.fill);
+        SHORTCUT(FIT, signals.shortcut.workspace.zoom.fit);
+        SHORTCUT(RULERS_SHOW, signals.shortcut.workspace.show_hide.rulers);
+        SHORTCUT(OBJECT_AREA, signals.shortcut.workspace.show_hide.object_area);
+        SHORTCUT(CANCEL, signals.shortcut.popup.cancel);
+        SHORTCUT(DONE, signals.shortcut.popup.done);
+        SHORTCUT(HELP, signals.shortcut.help);
 
       case SHORTCUT_TYPE_NONE:
          break;

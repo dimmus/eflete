@@ -20,6 +20,69 @@
 #ifndef SIGNALS_H
 #define SIGNALS_H
 
+typedef struct {
+   const struct {
+      const char *del;
+      const char *help;
+      const char *quit;
+      const char *save;
+      const struct {
+         const char *data_item;
+         const char *group;
+         const char *item;
+         const char *part;
+         const char *program;
+         const char *state;
+      } add;
+      const struct {
+         const char *redo;
+         const char *undo;
+      } history;
+      const struct {
+         const char *color_class;
+         const char *image;
+         const char *sound;
+         const char *style;
+      } manager;
+      const struct {
+         const char *cancel;
+         const char *done;
+      } popup;
+      const struct {
+         const char *close;
+         const char *next;
+         const char *prev;
+         const char *num; /* event_info - tab number */
+      } tab;
+      const struct {
+         const char *fill;
+         const struct {
+            const char *code;
+            const char *demo;
+            const char *normal;
+         } mode;
+         const struct {
+            const char *object_area;
+            const char *part;
+            const char *all_parts;
+            const char *rulers;
+         } show_hide;
+         const struct {
+            const char *part_next;
+            const char *part_prev;
+            const char *state_next;
+         } select;
+         const struct {
+            const char *in;
+            const char *out;
+            const char *reset;
+            const char *fit;
+         } zoom;
+      } workspace;
+   } shortcut;
+} Signals;
+
+extern const Signals signals;
 /**
  * emited when active group changed.
  * eventinfo - pointer to Group structure.
@@ -557,57 +620,6 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_DEMO_SIGNAL_SEND "SIGNAL_DEMO_SIGNAL_SEND"
-
-/**
- * emited when shortcut is pressed.
- * eventinfo - NULL.
- *
- * @ingroup Window
- */
-#define SIGNAL_SHORTCUT_QUIT "SIGNAL_SHORTCUT_QUIT"
-#define SIGNAL_SHORTCUT_UNDO "SIGNAL_SHORTCUT_UNDO"
-#define SIGNAL_SHORTCUT_REDO "SIGNAL_SHORTCUT_REDO"
-#define SIGNAL_SHORTCUT_SAVE "SIGNAL_SHORTCUT_SAVE"
-#define SIGNAL_SHORTCUT_ADD_GROUP "SIGNAL_SHORTCUT_ADD_GROUP"
-#define SIGNAL_SHORTCUT_ADD_PART "SIGNAL_SHORTCUT_ADD_PART"
-#define SIGNAL_SHORTCUT_ADD_STATE "SIGNAL_SHORTCUT_ADD_STATE"
-#define SIGNAL_SHORTCUT_ADD_ITEM "SIGNAL_SHORTCUT_ADD_ITEM"
-#define SIGNAL_SHORTCUT_ADD_PROGRAM "SIGNAL_SHORTCUT_ADD_PROGRAM"
-#define SIGNAL_SHORTCUT_ADD_DATA_ITEM "SIGNAL_SHORTCUT_ADD_DATA_ITEM"
-#define SIGNAL_SHORTCUT_DEL "SIGNAL_SHORTCUT_DEL"
-#define SIGNAL_SHORTCUT_TAB_NEXT "SIGNAL_SHORTCUT_TAB_NEXT"
-#define SIGNAL_SHORTCUT_TAB_PREV "SIGNAL_SHORTCUT_TAB_PREV"
-#define SIGNAL_SHORTCUT_TAB_CLOSE "SIGNAL_SHORTCUT_TAB_CLOSE"
-#define SIGNAL_SHORTCUT_TAB_IMAGE_MANAGER "SIGNAL_SHORTCUT_TAB_IMAGE_MANAGER"
-#define SIGNAL_SHORTCUT_TAB_SOUND_MANAGER "SIGNAL_SHORTCUT_TAB_SOUND_MANAGER"
-#define SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER "SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER"
-#define SIGNAL_SHORTCUT_TAB_STYLE_MANAGER "SIGNAL_SHORTCUT_TAB_STYLE_MANAGER"
-#define SIGNAL_SHORTCUT_MODE_NORMAL "SIGNAL_SHORTCUT_MODE_NORMAL"
-#define SIGNAL_SHORTCUT_MODE_CODE "SIGNAL_SHORTCUT_MODE_CODE"
-#define SIGNAL_SHORTCUT_MODE_DEMO "SIGNAL_SHORTCUT_MODE_DEMO"
-#define SIGNAL_SHORTCUT_STATE_NEXT "SIGNAL_SHORTCUT_STATE_NEXT"
-#define SIGNAL_SHORTCUT_PART_NEXT "SIGNAL_SHORTCUT_PART_NEXT"
-#define SIGNAL_SHORTCUT_PART_PREV "SIGNAL_SHORTCUT_PART_PREV"
-#define SIGNAL_SHORTCUT_PART_SHOWHIDE "SIGNAL_SHORTCUT_PART_SHOWHIDE"
-#define SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE "SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE"
-#define SIGNAL_SHORTCUT_ZOOM_IN "SIGNAL_SHORTCUT_ZOOM_IN"
-#define SIGNAL_SHORTCUT_ZOOM_OUT "SIGNAL_SHORTCUT_ZOOM_OUT"
-#define SIGNAL_SHORTCUT_ZOOM_RESET "SIGNAL_SHORTCUT_ZOOM_RESET"
-#define SIGNAL_SHORTCUT_FILL "SIGNAL_SHORTCUT_FILL"
-#define SIGNAL_SHORTCUT_FIT "SIGNAL_SHORTCUT_FIT"
-#define SIGNAL_SHORTCUT_OBJECT_AREA "SIGNAL_SHORTCUT_OBJECT_AREA"
-#define SIGNAL_SHORTCUT_RULERS_SHOW "SIGNAL_SHORTCUT_RULERS_SHOW"
-#define SIGNAL_SHORTCUT_CANCEL "SIGNAL_SHORTCUT_POPUP_CANCEL"
-#define SIGNAL_SHORTCUT_DONE "SIGNAL_SHORTCUT_POPUP_DONE"
-#define SIGNAL_SHORTCUT_HELP "SIGNAL_SHORTCUT_POPUP_HELP"
-
-/**
- * emited when shortcut is pressed.
- * eventinfo - tab number.
- *
- * @ingroup Window
- */
-#define SIGNAL_SHORTCUT_TAB_NUM "SIGNAL_SHORTCUT_TAB_NUM"
 
 /**
  * emited when workspace is changed.

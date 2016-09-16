@@ -101,8 +101,8 @@ ui_main_window_add(void)
 #endif
 
    evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _close_request, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_HELP, _help, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.quit, _close_request, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.help, _help, NULL);
 
 #if 0 // turn off the eflete main cursor, while not used elementary combobox, and not fixed bug with double cursors
    if (!cursor_main_set(ap.win, CURSOR_ARROW))

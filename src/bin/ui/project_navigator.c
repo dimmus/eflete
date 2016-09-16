@@ -778,8 +778,8 @@ project_navigator_add(void)
 
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, _btn_add_group_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_SAVE, _shortcut_save_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.group, _btn_add_group_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.save, _shortcut_save_cb, NULL);
 
    TODO("Add deletion callback and free resources");
 

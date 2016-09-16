@@ -1039,36 +1039,36 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PART, _shortcut_add_part_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, _shortcut_add_part_item_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_STATE, _shortcut_add_state_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, _shortcut_add_program_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_DATA_ITEM, _shortcut_add_data_item_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_DEL, _shortcut_del_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_STATE_NEXT, _shortcut_state_next_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_NEXT, _shortcut_part_next_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_PREV, _shortcut_part_prev_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_SHOWHIDE, _shortcut_part_showhide_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_CANCEL, _shortcut_part_unselect_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE, _shortcut_all_parts_showhide_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NEXT, _shortcut_tab_next_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_CLOSE, _shortcut_tab_close_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_NORMAL, _shortcut_mode_normal_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.part, _shortcut_add_part_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.item, _shortcut_add_part_item_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.state, _shortcut_add_state_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.program, _shortcut_add_program_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.add.data_item, _shortcut_add_data_item_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.del, _shortcut_del_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.select.state_next, _shortcut_state_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.select.part_next, _shortcut_part_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.select.part_prev, _shortcut_part_prev_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.show_hide.part, _shortcut_part_showhide_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.popup.cancel, _shortcut_part_unselect_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.show_hide.all_parts, _shortcut_all_parts_showhide_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.tab.next, _shortcut_tab_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.tab.prev, _shortcut_tab_prev_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.tab.num, _shortcut_tab_num_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.tab.close, _shortcut_tab_close_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.normal, _shortcut_mode_normal_cb, NULL);
 #if !HAVE_TIZEN
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_CODE, _shortcut_mode_code_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.code, _shortcut_mode_code_cb, NULL);
 #endif
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_DEMO, _shortcut_mode_demo_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, _shortcut_zoom_in_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, _shortcut_zoom_out_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, _shortcut_zoom_reset_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FIT, _shortcut_fit_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_SHOW, _shortcut_rulers_show_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _shortcut_undo_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _shortcut_redo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.demo, _shortcut_mode_demo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.zoom.in, _shortcut_zoom_in_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.zoom.out, _shortcut_zoom_out_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.zoom.reset, _shortcut_zoom_reset_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.zoom.fit, _shortcut_fit_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.fill, _shortcut_fill_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.show_hide.object_area, _shortcut_object_area_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.show_hide.rulers, _shortcut_rulers_show_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.history.undo, _shortcut_undo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.history.redo, _shortcut_redo_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _history_update_cb, NULL);
 
