@@ -25,7 +25,7 @@
 
 typedef struct
 {
-   Group *group;
+   Group2 *group;
 
    Evas_Object *layout;
    Evas_Object *genlist;
@@ -73,7 +73,7 @@ _part_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
                 const char *pr __UNUSED__)
 {
-   Part *part = data;
+   Demo_Part *part = data;
 
    assert(part != NULL);
    assert(part->name != NULL);
@@ -369,9 +369,9 @@ _part_renamed(void *data,
 }
 
 Evas_Object *
-demo_group_add(Group *group)
+demo_group_add(Group2 *group)
 {
-   Part *part;
+   Part2 *part;
    Eina_List *l;
    Demo_Part *demo_part;
    Demo_Signal *demo_sig;
@@ -475,7 +475,7 @@ demo_group_add(Group *group)
             (part->type == EDJE_PART_TYPE_TEXTBLOCK))
           {
              demo_part = mem_calloc(1, sizeof(Demo_Part));
-             demo_part->name = eina_stringshare_add(part->name);
+             demo_part->name = eina_stringshare_add(part->common.name);
              demo_part->type = part->type;
              demo_part->content_style = eina_stringshare_add("default");
              pl->text_list = eina_list_append(pl->text_list, demo_part);
@@ -490,7 +490,7 @@ demo_group_add(Group *group)
         else if (part->type == EDJE_PART_TYPE_SWALLOW)
           {
              demo_part = mem_calloc(1, sizeof(Demo_Part));
-             demo_part->name = eina_stringshare_add(part->name);
+             demo_part->name = eina_stringshare_add(part->common.name);
              demo_part->type = part->type;
              demo_part->content_style = eina_stringshare_add("default");
              demo_part->a = 255;
@@ -505,27 +505,26 @@ demo_group_add(Group *group)
                                      ELM_GENLIST_ITEM_NONE,
                                      NULL,
                                      NULL);
-
           }
      }
 
-   Resource *prog_name;
+   Program2 *prog_name;
    Eina_Stringshare *sig_name, *source_name, *state1, *state2;
    EINA_LIST_FOREACH(pl->group->programs, l, prog_name)
      {
-        sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->name);
-        source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->name);
-        state1 = edje_edit_program_state_get(pl->group->edit_object, prog_name->name);
-        state2 = edje_edit_program_emit_source_get(pl->group->edit_object, prog_name->name);
+        sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->common.name);
+        source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->common.name);
+        state1 = edje_edit_program_state_get(pl->group->edit_object, prog_name->common.name);
+        state2 = edje_edit_program_emit_source_get(pl->group->edit_object, prog_name->common.name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
             (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
              demo_sig = mem_calloc(1, sizeof(Demo_Signal));
-             demo_sig->prog_name = eina_stringshare_add(prog_name->name);
+             demo_sig->prog_name = eina_stringshare_add(prog_name->common.name);
              demo_sig->sig_name = eina_stringshare_add(sig_name);
              demo_sig->source_name = eina_stringshare_add(source_name);
-             demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, prog_name->name);
+             demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, prog_name->common.name);
              demo_sig->emit_signal = eina_stringshare_add(state1);
              demo_sig->emitter = eina_stringshare_add(state2);
              pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
@@ -544,7 +543,7 @@ demo_group_add(Group *group)
         eina_stringshare_del(state2);
      }
 
-   elm_object_text_set(pl->layout, pl->group->name);
+   elm_object_text_set(pl->layout, pl->group->common.name);
 
    return pl->layout;
 }
@@ -586,18 +585,18 @@ demo_group_del(Evas_Object *demo)
 }
 
 void
-demo_group_part_add(Evas_Object *demo, Part *part)
+demo_group_part_add(Evas_Object *demo, Part2 *part)
 {
    Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
    Demo_Part *demo_part;
 
-   assert(part->name != NULL);
+   assert(part->common.name != NULL);
 
    if ((part->type == EDJE_PART_TYPE_TEXT) ||
        (part->type == EDJE_PART_TYPE_TEXTBLOCK))
      {
         demo_part = mem_calloc(1, sizeof(Demo_Part));
-        demo_part->name = eina_stringshare_add(part->name);
+        demo_part->name = eina_stringshare_add(part->common.name);
         demo_part->type = part->type;
         demo_part->content_style = eina_stringshare_add("default");
         pl->text_list = eina_list_append(pl->text_list, demo_part);
@@ -612,7 +611,7 @@ demo_group_part_add(Evas_Object *demo, Part *part)
    else if (part->type == EDJE_PART_TYPE_SWALLOW)
      {
         demo_part = mem_calloc(1, sizeof(Demo_Part));
-        demo_part->name = eina_stringshare_add(part->name);
+        demo_part->name = eina_stringshare_add(part->common.name);
         demo_part->type = part->type;
         demo_part->content_style = eina_stringshare_add("default");
         demo_part->a = 255;
@@ -692,21 +691,21 @@ _part_item_del(Elm_Object_Item *pl, Demo_Part *part)
 }
 
 void
-demo_group_part_del(Evas_Object *demo, Part *part)
+demo_group_part_del(Evas_Object *demo, Part2 *part)
 {
    Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
    Demo_Part *demo_part;
    Eina_List *l;
 
    assert(pl);
-   assert(part->name != NULL);
+   assert(part->common.name != NULL);
 
    if ((part->type == EDJE_PART_TYPE_TEXT) ||
        (part->type == EDJE_PART_TYPE_TEXTBLOCK))
      {
         EINA_LIST_FOREACH(pl->text_list, l, demo_part)
           {
-             if (demo_part->name == part->name)
+             if (demo_part->name == part->common.name)
                {
                   pl->text_list = eina_list_remove(pl->text_list, demo_part);
                   _part_item_del(pl->it_text, demo_part);
@@ -720,7 +719,7 @@ demo_group_part_del(Evas_Object *demo, Part *part)
      {
         EINA_LIST_FOREACH(pl->swallow_list, l, demo_part)
           {
-             if (demo_part->name == part->name)
+             if (demo_part->name == part->common.name)
                {
                   pl->swallow_list = eina_list_remove(pl->swallow_list, demo_part);
                   _part_item_del(pl->it_swallow, demo_part);

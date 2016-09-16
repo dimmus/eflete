@@ -22,7 +22,7 @@
 #include "project_manager.h"
 
 History *
-history_add(Group *group)
+history_add(Group2 *group)
 {
    History *history;
 

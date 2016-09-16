@@ -46,6 +46,7 @@
 
 #include "eflete.h"
 #include "highlight.h"
+#include "resource_manager2.h"
 
 struct _Geom{
    int x, y, w, h;
@@ -70,7 +71,7 @@ struct _Geom{
 typedef struct _Geom Groupview_Geom;
 
 struct _Groupview_HL_Event {
-   Part *part;
+   Part2 *part;
    Evas_Coord x;
    Evas_Coord y;
    Evas_Coord w;
@@ -92,7 +93,7 @@ typedef struct _Groupview_HL_Event Groupview_HL_Event;
  * @ingroup Groupview
  */
 Evas_Object *
-groupview_add(Evas_Object *parent, Group *group);
+groupview_add(Evas_Object *parent, Group2 *group);
 
 /******************************************************************************/
 /******************************************************************************/
@@ -166,7 +167,7 @@ groupview_part_selected_geom_get(Evas_Object *obj);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_part_add(Evas_Object *obj, Part *part);
+groupview_part_add(Evas_Object *obj, Part2 *part);
 
 /**
  * Delete the part from groupview and from editable object.
@@ -179,7 +180,7 @@ groupview_part_add(Evas_Object *obj, Part *part);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_part_del(Evas_Object *obj, Part *part);
+groupview_part_del(Evas_Object *obj, Part2 *part);
 
 /**
  * Get the object area geometry.
@@ -258,7 +259,7 @@ groupview_part_select(Evas_Object *obj, const char *part);
  * @ingroup Groupview
  */
 void
-groupview_part_visible_set(Evas_Object *obj, Part *part);
+groupview_part_visible_set(Evas_Object *obj, Part2 *part);
 
 /**
  * Restack part below another part in groupview module.

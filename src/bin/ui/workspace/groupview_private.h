@@ -19,6 +19,7 @@
 
 #include "eflete.h"
 #include "highlight.h"
+#include "resource_manager2.h"
 
 typedef struct _Groupview_Smart_Data Groupview_Smart_Data;
 typedef struct _Groupview_Part Groupview_Part;
@@ -45,7 +46,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 struct _Groupview_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
-   Group *group;
+   Group2 *group;
    Evas_Object *obj;
    Evas_Object *event;
    Evas_Object *parent;
@@ -83,7 +84,7 @@ struct _Groupview_Smart_Data
  */
 struct _Groupview_Part
 {
-   Part *part;               /**< Pointer to part */
+   Part2 *part;               /**< Pointer to part */
    Groupview_Geom geom;
    Groupview_Geom object_area_geom;
    Evas_Object *draw;         /**< The evas primitive to be draw in groupview.
@@ -115,10 +116,10 @@ Groupview_Item *
 _part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
-_edit_object_part_add(Groupview_Smart_Data *sd, Part *part);
+_edit_object_part_add(Groupview_Smart_Data *sd, Part2 *part);
 
 Eina_Bool
-_edit_object_part_del(Groupview_Smart_Data *sd, Part *part);
+_edit_object_part_del(Groupview_Smart_Data *sd, Part2 *part);
 
 void
 _select_item_move_to_top(Groupview_Smart_Data *sd);

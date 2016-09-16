@@ -23,12 +23,6 @@
 #include "eflete.h"
 
 void
-gm_groups_load(Project *pro);
-
-void
-gm_groups_free(Project *pro);
-
-void
 gm_group_edit_object_load(Project *pro, Group *group, Evas *e);
 
 void
@@ -55,52 +49,4 @@ gm_group_used_styles_edj_get(Evas_Object *obj);
 Eina_List *
 gm_group_used_fonts_edj_get(Evas_Object *obj);
 
-State *
-gm_state_add(Project *pro, Part *part, const char *state_name, double state_value);
-
-Part *
-gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
-
-void
-gm_part_item_add(Project *pro, Part *part, Eina_Stringshare *item_name);
-
-Group *
-gm_group_add(Project *pro, const char *group_name, Eina_Bool emit);
-
-void
-gm_group_del(Project *pro, Group *group);
-
-void
-gm_state_del(Project *pro, State *state);
-
-void
-gm_part_del(Project *pro, Part* part);
-
-void
-gm_part_item_del(Project *pro, Part *part, Eina_Stringshare *item_name);
-
-void
-gm_part_rename(Part* part, const char *new_part_name);
-
-void
-gm_part_restack(Part *part, Part *rel_part);
-
-void
-gm_part_item_restack(Part_Item *part_item, Part_Item *relative_part_item);
-
-void
-gm_program_add(Project *pro, Group *group, Eina_Stringshare *program);
-
-void
-gm_program_del(Project *pro, Group *group, Eina_Stringshare *program);
-
-void
-gm_group_data_add(Project *pro, Group *group, Eina_Stringshare *group_data_name);
-void
-gm_group_data_del(Project *pro, Group *group, Eina_Stringshare *group_data_name);
-void
-gm_group_data_rename(Project *pro, Group *group, Resource* group_data, const char *new_data_name);
-
-const char *
-gm_part_type_text_get(Edje_Part_Type part_type);
 #endif /* GROUP_MANAGER_H */

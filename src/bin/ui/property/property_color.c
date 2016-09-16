@@ -40,9 +40,6 @@ static Property_Color_Data color_data;
 static void
 _colorclass_update(ColorClassData *selected)
 {
-   Colorclass_Resource *res;
-   Resource request;
-
    edje_object_color_class_set(selected->edje_preview,
                                "colorclass_manager/text_example_colorclass",
                                selected->current_ccl->r1,
@@ -72,25 +69,7 @@ _colorclass_update(ColorClassData *selected)
                                               selected->current_ccl->b3,
                                               selected->current_ccl->a3));
 
-   TODO("Remove and fix that after REAL RESOURCE MANAGER will exist")
-   request.resource_type = RESOURCE_TYPE_COLORCLASS;
-   request.name = selected->current_ccl->name;
-   res = (Colorclass_Resource *)resource_get(ap.project->colorclasses, &request);
-   res->color1.r = selected->current_ccl->r1;
-   res->color1.g = selected->current_ccl->g1;
-   res->color1.b = selected->current_ccl->b1;
-   res->color1.a = selected->current_ccl->a1;
-   res->color2.r = selected->current_ccl->r2;
-   res->color2.g = selected->current_ccl->g2;
-   res->color2.b = selected->current_ccl->b2;
-   res->color2.a = selected->current_ccl->a2;
-   res->color3.r = selected->current_ccl->r3;
-   res->color3.g = selected->current_ccl->g3;
-   res->color3.b = selected->current_ccl->b3;
-   res->color3.a = selected->current_ccl->a3;
-
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   ap.project->changed = true;
 }
 
 /* Colorselector widget callbacks */

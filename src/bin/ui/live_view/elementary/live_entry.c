@@ -59,7 +59,7 @@ _entry_set_params(Evas_Object *obj, Eina_Stringshare *class_name)
 }
 
 Evas_Object *
-widget_entry_create(Evas_Object *parent, const Group *group)
+widget_entry_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

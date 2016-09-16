@@ -22,7 +22,7 @@
 /* TODO: We can't set swallows or texts or even send signal into map...
    need some additional work on it */
 Evas_Object *
-widget_map_create(Evas_Object *parent, const Group *group)
+widget_map_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

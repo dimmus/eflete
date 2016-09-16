@@ -39,7 +39,7 @@ _panel_orient_get(const char *class)
 }
 
 Evas_Object *
-widget_panel_create(Evas_Object *parent, const Group *group)
+widget_panel_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

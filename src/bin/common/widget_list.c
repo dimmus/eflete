@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "resource_manager.h"
+#include "resource_manager2.h"
 #include "widget_list.h"
 
 static const char *exception[] =
@@ -305,7 +305,7 @@ widget_tree_items_get(Eina_List *groups,
    int cmp;
    int level = 0;
    const char *pos;
-   Group *group, *group_next;
+   Group2 *group, *group_next;
    size_t prefix_len;
    Eina_Stringshare *group_prefix;
    int group_prefix_len;
@@ -323,7 +323,7 @@ widget_tree_items_get(Eina_List *groups,
 
    EINA_LIST_FOREACH(groups, l, group)
      {
-        cmp = strncmp(group->name, prefix, prefix_len);
+        cmp = strncmp(group->common.name, prefix, prefix_len);
         /* skipping all groups with different prefix */
         if (cmp < 0)
           {
@@ -331,13 +331,13 @@ widget_tree_items_get(Eina_List *groups,
           }
         if (cmp > 0)
           {
-             if (strlen(group->name) < prefix_len)
+             if (strlen(group->common.name) < prefix_len)
                continue;
              else
                break; /* there is no sense to check all next groups because list is sorted */
           }
 
-        group_prefix = widget_prefix_get(group->name, level, &group_prefix_len);
+        group_prefix = widget_prefix_get(group->common.name, level, &group_prefix_len);
         if (group_prefix)
           {
              *folders_out= eina_list_append(*folders_out, eina_stringshare_ref(group_prefix));
@@ -347,7 +347,7 @@ widget_tree_items_get(Eina_List *groups,
              while ((lnext = eina_list_next(lnext)))
                {
                   group_next = eina_list_data_get(lnext);
-                  if ((group_next) && (!strncmp(group_next->name, group_prefix, group_prefix_len)))
+                  if ((group_next) && (!strncmp(group_next->common.name, group_prefix, group_prefix_len)))
                     l = lnext;
                   else
                     break;

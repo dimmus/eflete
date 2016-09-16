@@ -21,13 +21,14 @@
 #define VALIDATOR_H
 
 #include "eflete.h"
+#include "resource_manager2.h"
 
 typedef struct _Resource_Name_Validator Resource_Name_Validator;
 
 void
 resource_name_validator_list_set(Resource_Name_Validator *validator, Eina_List **list, Eina_Bool sorted);
 void
-resource_name_validator_resource_set(Resource_Name_Validator *validator, Resource *resource);
+resource_name_validator_resource_set(Resource_Name_Validator *validator, Resource2 *resource);
 Resource_Name_Validator *
 resource_name_validator_new(const char *pattern, const char *sig);
 void

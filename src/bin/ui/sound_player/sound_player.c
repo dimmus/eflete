@@ -171,14 +171,14 @@ _tone_play()
 {
    double value;
    Eina_Bool ret = false;
-   Tone_Resource *tone;
+   Tone2 *tone;
 
-   tone = (Tone_Resource *)snd->resource;
+   tone = (Tone2 *)snd->resource;
 
    if (!in)
      {
         in = efl_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
-        ecore_audio_obj_name_set(in, tone->name);
+        ecore_audio_obj_name_set(in, tone->common.name);
         efl_key_data_set(in, ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq);
         ecore_audio_obj_in_length_set(in, TONE_PLAYING_DURATION);
         efl_event_callback_add(in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
@@ -210,14 +210,14 @@ _sample_play()
 {
    double value, len = 0.0;
    Eina_Bool ret = false;
-   External_Resource *sample;
+   Sound2 *sample;
 
    if (!in)
      {
-        sample = (External_Resource *)snd->resource;
+        sample = (Sound2 *)snd->resource;
         _create_io_stream();
-        ecore_audio_obj_name_set(in, sample->path);
-        ret = ecore_audio_obj_source_set(in, sample->path);
+        ecore_audio_obj_name_set(in, sample->source);
+        ret = ecore_audio_obj_source_set(in, sample->source);
         if (!ret)
           {
              ERR("Can not set source obj for added sample");
@@ -226,7 +226,7 @@ _sample_play()
         len = ecore_audio_obj_in_length_get(in);
         elm_slider_min_max_set(rewin, 0, len);
         elm_slider_value_set(rewin, 0.0);
-        length = ecore_file_size(sample->path);
+        length = ecore_file_size(sample->source);
      }
 
    ret = ecore_audio_obj_out_input_attach(out, in);

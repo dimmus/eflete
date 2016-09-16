@@ -119,8 +119,7 @@ _grid_content_get(void *data,
    Image_Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
-   Resource *res;
-   Resource request;
+   Resource2 *res;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -135,10 +134,8 @@ _grid_content_get(void *data,
    else if (!strcmp(part, "elm.swallow.end"))
      {
         it->is_used = true;
-        request.name = it->image_name;
-        request.resource_type = RESOURCE_TYPE_IMAGE;
-        res = resource_get(ap.project->images, &request);
-        if (eina_list_count(res->used_in) == 0)
+        res = resource_manager_find(ap.project->RM.images, it->image_name);
+        if (!res->common.used_in)
           {
              image_obj = elm_icon_add(grid);
              elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");
@@ -238,7 +235,7 @@ _grid_sel_cb(void *data __UNUSED__,
 
 static inline Image_Item *
 _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
-                                       External_Resource *res)
+                                       Image2 *res)
 {
    Evas_Object *img;
 
@@ -246,13 +243,13 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    assert(res != NULL);
 
    Image_Item *it = (Image_Item *)mem_malloc(sizeof(Image_Item));
-   it->image_name = eina_stringshare_add(res->name);
+   it->image_name = eina_stringshare_add(res->common.name);
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
                                                         it->image_name);
    it->quality = edje_edit_image_compression_rate_get(edje_edit_obj,
                                                       it->image_name);
-   it->source = eina_stringshare_add(res->path);
+   it->source = eina_stringshare_add(res->source);
 
    img = _image_manager_image_create(ap.project->global_object, it);
    elm_image_object_size_get(img, &it->width, &it->height);
@@ -270,9 +267,9 @@ _on_image_done(void *data __UNUSED__,
    const Eina_List *images, *l;
    const char *selected;
    Uns_List *image = NULL;
-   External_Resource *res;
    const char *file_name;
    Evas_Object *img;
+   Eina_Stringshare *res_path;
 
    images = (Eina_List *)event_info;
 
@@ -290,21 +287,17 @@ _on_image_done(void *data __UNUSED__,
           }
         file_name = ecore_file_file_get(selected);
 
-        res = (External_Resource *)resource_add(file_name, RESOURCE_TYPE_IMAGE);
-        res->path = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
-        res->source = eina_stringshare_add(file_name);
+        res_path = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
 
-        if (!ecore_file_exists(res->path))
+        if (!ecore_file_exists(res_path))
           {
-             ecore_file_cp(selected, res->path);
-
-             resource_insert(&ap.project->images, (Resource *)res);
+             ecore_file_cp(selected, res_path);
           }
         else
           {
              ERR(_("File exist"));
              free(image);
-             resource_free((Resource *)res);
+             eina_stringshare_del(res_path);
              continue;
           }
         CRIT_ON_FAIL(editor_image_add(ap.project->global_object, selected, true));
@@ -318,10 +311,11 @@ _on_image_done(void *data __UNUSED__,
         it->quality = edje_edit_image_compression_rate_get(ap.project->global_object,
                                                            it->image_name);
 
-        it->source = eina_stringshare_add(res->path);
+        it->source = eina_stringshare_add(res_path);
         img = _image_manager_image_create(ap.project->global_object, it);
         elm_image_object_size_get(img, &it->width, &it->height);
         evas_object_del(img);
+        eina_stringshare_del(res_path);
      }
 
    return true;
@@ -359,8 +353,7 @@ _image_del_cb(void *data __UNUSED__,
    Elm_Object_Item *grid_item = NULL;
    Image_Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
-   External_Resource *res;
-   Resource request;
+   Image2 *res;
 
    assert(mng.gengrid != NULL);
 
@@ -371,17 +364,13 @@ _image_del_cb(void *data __UNUSED__,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        request.name = it->image_name;
-        request.resource_type = RESOURCE_TYPE_IMAGE;
-        res = (External_Resource *)resource_get(ap.project->images, &request);
+        res = (Image2 *)resource_manager_find(ap.project->RM.images, it->image_name);
 
-        if (!res->used_in)
+        if (!res->common.used_in)
           {
-             ecore_file_unlink(res->path);
+             ecore_file_unlink(res->source);
              elm_object_item_del(grid_item);
              CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
-             resource_remove(&ap.project->images, (Resource *)res);
-             resource_free((Resource *)res);
           }
         else
           elm_gengrid_item_selected_set(grid_item, false);
@@ -442,23 +431,23 @@ _image_manager_init(void)
    Image_Item *it = NULL;
    Eina_List *images = NULL;
    int counter = 0;
-   External_Resource *res;
+   Image2 *res;
 
-   images = ap.project->images;
+   images = ap.project->RM.images;
 
    if (images)
      {
         EINA_LIST_FOREACH(images, l, res)
            {
               counter++;
-              if (!res->name)
+              if (!res->common.name)
                 {
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
 
               /* skip dummy image */
-              if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
+              if (!strcmp(res->common.name, EFLETE_DUMMY_IMAGE_NAME)) continue;
 
               it = _image_manager_gengrid_item_data_create(ap.project->global_object, res);
               elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);

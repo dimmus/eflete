@@ -107,25 +107,25 @@ _project_source_code_export_feedback_job(void *data, Ecore_Thread *th)
    if (f) fclose(f);
 
    /* export resource */
-   if (ptd->project->images)
+   if (ptd->project->RM.images)
      {
         eina_strbuf_append_printf(buf, "%s/images/", path);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(ptd->project->images, eina_strbuf_string_get(buf));
+        _external_resources_export(ptd->project->RM.images, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
-   if (ptd->project->sounds)
+   if (ptd->project->RM.sounds)
      {
         eina_strbuf_append_printf(buf, "%s/sounds/", path);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(ptd->project->sounds, eina_strbuf_string_get(buf));
+        _external_resources_export(ptd->project->RM.sounds, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
-   if (ptd->project->fonts)
+   if (ptd->project->RM.fonts)
      {
         eina_strbuf_append_printf(buf, "%s/fonts/", path);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resources_export(ptd->project->fonts, eina_strbuf_string_get(buf));
+        _external_resources_export(ptd->project->RM.fonts, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
 
@@ -185,19 +185,20 @@ _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
 
    Eina_Stringshare *code;
    FILE *f;
-   Group *group = ptd->group;
-   Part *part;
-   State *state;
+   Group2 *group = ptd->group;
+   Part2 *part;
+   State2 *state;
    Eina_List *l, *ls;
    Eina_Stringshare *resource;
-   Resource *res;
+   Resource2 *res;
    Eina_Strbuf *buf;
    char *name;
 
-   message = eina_stringshare_printf(_("Generate group '%s' source code ..."), group->name);
+   message = eina_stringshare_printf(_("Generate group '%s' source code ..."),
+                                     group->common.name);
    ecore_thread_feedback(th, message);
 
-   name = strdup(group->name);
+   name = strdup(group->common.name);
    string_char_replace(name, '/', '_');
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s", ptd->path, name);
@@ -238,11 +239,11 @@ _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
              eina_strbuf_append_printf(buf, "%s/%s/images/", ptd->path, name);
              EINA_LIST_FOREACH(part->states, ls, state)
                {
-                  resource = edje_edit_state_image_get(group->edit_object, part->name, state->name, state->val);
+                  resource = edje_edit_state_image_get(group->edit_object, part->common.name, state->common.name, state->val);
                   message = eina_stringshare_printf(_("Export image '%s'"), resource);
                   ecore_thread_feedback(th, message);
 
-                  _external_resource_export(ptd->project->images, resource, eina_strbuf_string_get(buf));
+                  _external_resource_export(ptd->project->RM.images, resource, eina_strbuf_string_get(buf));
                   eina_stringshare_del(resource);
                }
           }
@@ -255,13 +256,13 @@ _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
              eina_strbuf_append_printf(buf, "%s/%s/fonts/", ptd->path, name);
              EINA_LIST_FOREACH(part->states, ls, state)
                {
-                  resource = edje_edit_state_font_get(group->edit_object, part->name, state->name, state->val);
+                  resource = edje_edit_state_font_get(group->edit_object, part->common.name, state->common.name, state->val);
                   Eina_Stringshare *font_res = edje_edit_font_path_get(group->edit_object, resource);
 
                   message = eina_stringshare_printf(_("Export font '%s'"), font_res);
                   ecore_thread_feedback(th, message);
 
-                  _external_resource_export(ptd->project->fonts, font_res, eina_strbuf_string_get(buf));
+                  _external_resource_export(ptd->project->RM.fonts, font_res, eina_strbuf_string_get(buf));
                   eina_stringshare_del(resource);
                   eina_stringshare_del(font_res);
                }
@@ -272,15 +273,15 @@ _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
 
    EINA_LIST_FOREACH(group->programs, l, res)
      {
-        resource = edje_edit_program_sample_name_get(group->edit_object, res->name);
+        resource = edje_edit_program_sample_name_get(group->edit_object, res->common.name);
         if (!resource) continue;
 
         eina_strbuf_reset(buf);
         eina_strbuf_append_printf(buf, "%s/%s/sounds/", ptd->path, name);
-        message = eina_stringshare_printf(_("Export sound '%s'"), res->name);
+        message = eina_stringshare_printf(_("Export sound '%s'"), res->common.name);
         ecore_thread_feedback(th, message);
 
-        _external_resource_export(ptd->project->sounds, resource, eina_strbuf_string_get(buf));
+        _external_resource_export(ptd->project->RM.sounds, resource, eina_strbuf_string_get(buf));
         eina_stringshare_del(resource);
      }
 
@@ -292,5 +293,3 @@ _group_source_code_export_feedback_job(void *data, Ecore_Thread *th)
    free(name);
    return;
 }
-
-

@@ -35,7 +35,7 @@
 
 #include "eflete.h"
 #include "group_manager.h"
-#include "resource_manager.h"
+#include "resource_manager2.h"
 
 /* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 5
@@ -94,16 +94,6 @@ struct _Project
       Eina_List *global_data;
    } RM; /* rename to resource_manager,
             this is just to make coding simplier. easier and faster */
-
-   Eina_List *groups;
-   Eina_List *images;
-   Eina_List *image_sets;
-   Eina_List *sounds;
-   Eina_List *tones;
-   Eina_List *fonts;
-   Eina_List *colorclasses;
-   Eina_List *styles;
-   Eina_List *global_data;
 
    Eina_File *mmap_file; /**< mmaped dev file*/
 
@@ -424,7 +414,7 @@ pm_project_resource_export(Project *pro, const char* dir_path);
  */
 void
 pm_group_source_code_export(Project *project,
-                            Group *group,
+                            Group2 *group,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,

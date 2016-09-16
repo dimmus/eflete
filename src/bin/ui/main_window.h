@@ -545,7 +545,7 @@ typedef enum {
 
 struct _Sound_Data {
    Sound_Type type;
-   Resource *resource; /* for SAMPLE it's External_Resource, TONE - Tone_Resource */
+   Resource2 *resource; /* for SAMPLE it's External_Resource, TONE - Tone_Resource */
    Eina_Stringshare *name;
    Eina_Stringshare *type_label;
 };

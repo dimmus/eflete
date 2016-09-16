@@ -62,7 +62,7 @@
 #define ACTION_SOUND_TONE ACTION_MASK(EDJE_ACTION_TYPE_SOUND_TONE)
 
 struct _Property_Group_Data {
-   Group *group;
+   Group2 *group;
 
    Resource_Name_Validator *part_name_validator;
    Resource_Name_Validator *group_data_name_validator;
@@ -214,14 +214,14 @@ _part_name_get(void)
    if (!group_pd.group->current_selected)
      return NULL;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
-     return group_pd.group->current_selected->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PART)
+     return group_pd.group->current_selected->common.name;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
-     return ((State *)group_pd.group->current_selected)->part->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+     return ((State2 *)group_pd.group->current_selected)->part->common.name;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
-     return ((Part_Item *)group_pd.group->current_selected)->part->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM)
+     return ((Part_Item2 *)group_pd.group->current_selected)->part->common.name;
 
    TODO("Add item case")
    return NULL;
@@ -234,8 +234,8 @@ _state_name_get(void)
    if (!group_pd.group->current_selected)
      return NULL;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
-     return group_pd.group->current_selected->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+     return group_pd.group->current_selected->common.name;
 
    return NULL;
 }
@@ -247,8 +247,8 @@ _state_val_get(void)
    if (!group_pd.group->current_selected)
      return 0;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
-     return ((State *)group_pd.group->current_selected)->val;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+     return ((State2 *)group_pd.group->current_selected)->val;
 
    return 0;
 }
@@ -260,8 +260,8 @@ _item_name_get(void)
    if (!group_pd.group->current_selected)
      return NULL;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
-     return group_pd.group->current_selected->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM)
+     return group_pd.group->current_selected->common.name;
 
    return NULL;
 }
@@ -273,8 +273,8 @@ _data_name_get(void)
    if (!group_pd.group->current_selected)
      return NULL;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA)
-     return group_pd.group->current_selected->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_DATA_GROUP)
+     return group_pd.group->current_selected->common.name;
 
    return NULL;
 }
@@ -286,8 +286,8 @@ _program_name_get(void)
    if (!group_pd.group->current_selected)
      return NULL;
 
-   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
-     return group_pd.group->current_selected->name;
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM)
+     return group_pd.group->current_selected->common.name;
 
    return NULL;
 }
@@ -334,32 +334,32 @@ _on_group_changed(void *data,
 
    if (!group_pd.group->current_selected) /* group_only */
      {
-        DBG("selected group \"%s\"", group_pd.group ? group_pd.group->name : NULL);
+        DBG("selected group \"%s\"", group_pd.group ? group_pd.group->common.name : NULL);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
      }
-   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
+   else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PART)
      {
-        DBG("selected part \"%s\"", group_pd.group->current_selected->name);
+        DBG("selected part \"%s\"", group_pd.group->current_selected->common.name);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
      }
-   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+   else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
      {
         DBG("selected state \"%s %.2f\"", _state_name_get(), _state_val_get());
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
      }
-   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
+   else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM)
      {
-        DBG("selected program \"%s\"", group_pd.group->current_selected->name);
+        DBG("selected program \"%s\"", group_pd.group->current_selected->common.name);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
      }
-   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA)
+   else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_DATA_GROUP)
      {
-        DBG("selected group_data \"%s\"", group_pd.group->current_selected->name);
+        DBG("selected group_data \"%s\"", group_pd.group->current_selected->common.name);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
      }
-   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
+   else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM)
      {
-        DBG("selected program \"%s\"", group_pd.group->current_selected->name);
+        DBG("selected program \"%s\"", group_pd.group->current_selected->common.name);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
 
         if (_expand_done)
@@ -410,25 +410,25 @@ _filter_cb(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_GROUP_TITLE:
          return group_pd.group->current_selected == NULL;
       case PROPERTY_GROUP_ITEM_PART_TITLE:
-         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART));
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PART));
       case PROPERTY_GROUP_ITEM_STATE_TITLE:
-         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE));
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE));
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
-         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM));
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM));
       case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
-         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM));
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM));
       case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
-         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA));
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_DATA_GROUP));
 
       default:
          if (group_pd.group->current_selected == NULL)
             return true;
-         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
-           return !!(pa->filter_data.part_types & PART_MASK(((Part *)group_pd.group->current_selected)->type));
-         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
-           return !!(pa->filter_data.part_types & PART_MASK(((State *)group_pd.group->current_selected)->part->type));
-         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
-           return !!(pa->filter_data.action_types & ACTION_MASK(((Program *)group_pd.group->current_selected)->type));
+         else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PART)
+           return !!(pa->filter_data.part_types & PART_MASK(((Part2 *)group_pd.group->current_selected)->type));
+         else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+           return !!(pa->filter_data.part_types & PART_MASK(((State2 *)group_pd.group->current_selected)->part->type));
+         else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM)
+           return !!(pa->filter_data.action_types & ACTION_MASK(((Program2 *)group_pd.group->current_selected)->type));
          else
            return true;
      }
@@ -438,10 +438,10 @@ static Eina_Bool
 _transition_filter_cb(Property_Attribute *pa)
 {
    if (!group_pd.group->current_selected) return false;
-   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return false;
-   if (((Program *)group_pd.group->current_selected)->type != EDJE_ACTION_TYPE_STATE_SET) return false;
+   if (group_pd.group->current_selected->common.type != RESOURCE2_TYPE_PROGRAM) return false;
+   if (((Program2 *)group_pd.group->current_selected)->type != EDJE_ACTION_TYPE_STATE_SET) return false;
 
-   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.group->current_selected->name);
+   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.group->current_selected->common.name);
 
    assert(pa != NULL);
 
@@ -1103,7 +1103,7 @@ static void
 _styles_combobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *l;
-   Resource *style;
+   Style2 *style;
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
@@ -1131,11 +1131,11 @@ _styles_combobox_fill(Evas_Object *combo, const char *selected)
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 
-   EINA_LIST_FOREACH(ap.project->styles, l, style)
+   EINA_LIST_FOREACH(ap.project->RM.styles, l, style)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
-        combobox_item->data = eina_stringshare_add(style->name);
+        combobox_item->data = eina_stringshare_add(style->common.name);
         elm_genlist_item_append(combo, itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1146,7 +1146,7 @@ static void
 _groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
 {
    Eina_List *l;
-   Group *group;
+   Group2 *group;
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
@@ -1170,13 +1170,13 @@ _groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 
-   EINA_LIST_FOREACH(ap.project->groups, l, group)
+   EINA_LIST_FOREACH(ap.project->RM.groups, l, group)
      {
         if (group != group_pd.group)
           {
              combobox_item = mem_malloc(sizeof(Combobox_Item));
              combobox_item->index = i++;
-             combobox_item->data = eina_stringshare_add(group->name);
+             combobox_item->data = eina_stringshare_add(group->common.name);
              elm_genlist_item_append(combo, itc,
                                      combobox_item, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1191,7 +1191,7 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
-   Resource *sample;
+   Sound2 *sample;
 
    assert(with_none || selected != NULL);
 
@@ -1220,12 +1220,12 @@ _sample_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_n
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 
-   EINA_LIST_FOREACH(ap.project->sounds, l, sample)
+   EINA_LIST_FOREACH(ap.project->RM.sounds, l, sample)
      {
-        if (!strcmp(sample->name, EFLETE_DUMMY_SAMPLE_NAME)) continue;
+        if (!strcmp(sample->common.name, EFLETE_DUMMY_SAMPLE_NAME)) continue;
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
-        combobox_item->data = eina_stringshare_add(sample->name);
+        combobox_item->data = eina_stringshare_add(sample->common.name);
         elm_genlist_item_append(combo, itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1239,7 +1239,7 @@ _tone_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_non
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
-   Resource *tone;
+   Tone2 *tone;
 
    assert(with_none || selected != NULL);
 
@@ -1260,11 +1260,11 @@ _tone_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_non
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 
-   EINA_LIST_FOREACH(ap.project->tones, l, tone)
+   EINA_LIST_FOREACH(ap.project->RM.tones, l, tone)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
-        combobox_item->data = eina_stringshare_add(tone->name);
+        combobox_item->data = eina_stringshare_add(tone->common.name);
         elm_genlist_item_append(combo, itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1275,7 +1275,7 @@ static void
 _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
 {
    Eina_List *l;
-   Part *part;
+   Part2 *part;
    unsigned int i = 1;
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
@@ -1300,11 +1300,11 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part *)group_pd.group->current_selected))
+             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part2 *)group_pd.group->current_selected))
                {
                   combobox_item = mem_malloc(sizeof(Combobox_Item));
                   combobox_item->index = i++;
-                  combobox_item->data = eina_stringshare_add(part->name);
+                  combobox_item->data = eina_stringshare_add(part->common.name);
                   elm_genlist_item_append(combo, itc,
                                           combobox_item, NULL,
                                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1315,11 +1315,11 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if (part != (Part *)group_pd.group->current_selected)
+             if (part != (Part2 *)group_pd.group->current_selected)
                {
                   combobox_item = mem_malloc(sizeof(Combobox_Item));
                   combobox_item->index = i++;
-                  combobox_item->data = eina_stringshare_add(part->name);
+                  combobox_item->data = eina_stringshare_add(part->common.name);
                   elm_genlist_item_append(combo, itc,
                                           combobox_item, NULL,
                                           ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1332,9 +1332,8 @@ static void
 _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char *selected, Eina_Bool ignore_value)
 {
    Eina_List *l;
-   Resource request;
-   Part *part;
-   State *state;
+   Part2 *part;
+   State2 *state;
    const char *state_name = NULL;
    unsigned int i = 1;
    Combobox_Item *combobox_item;
@@ -1357,24 +1356,22 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
 
    elm_object_disabled_set(combo, false);
 
-   request.resource_type = RESOURCE_TYPE_PART;
-   request.name = part_name;
-   part = (Part *)resource_get(group_pd.group->parts, &request);
+   part = (Part2 *)resource_manager_find(group_pd.group->parts, part_name);
 
    if (ignore_value)
      {
         /* skipping states with same name but different value */
         EINA_LIST_FOREACH(part->states, l, state)
           {
-             if (state_name && !strcmp(state_name, state->name))
+             if (state_name && !strcmp(state_name, state->common.name))
                continue;
              combobox_item = mem_malloc(sizeof(Combobox_Item));
              combobox_item->index = i++;
-             combobox_item->data = eina_stringshare_add(state->name);
+             combobox_item->data = eina_stringshare_add(state->common.name);
              elm_genlist_item_append(combo, itc,
                                      combobox_item, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
-             state_name = state->name;
+             state_name = state->common.name;
           }
      }
    else
@@ -1383,7 +1380,7 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
           {
              combobox_item = mem_malloc(sizeof(Combobox_Item));
              combobox_item->index = i++;
-             combobox_item->data = eina_stringshare_add(state->name);
+             combobox_item->data = eina_stringshare_add(state->common.name);
              elm_genlist_item_append(combo, itc,
                                      combobox_item, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1485,7 +1482,7 @@ static void
 _programs_combobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *l;
-   Program *program;
+   Program2 *program;
    Elm_Genlist_Item_Class *itc;
    unsigned int i = 0;
    Combobox_Item *combobox_item;
@@ -1508,7 +1505,7 @@ _programs_combobox_fill(Evas_Object *combo, const char *selected)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
-        combobox_item->data = eina_stringshare_add(program->name);
+        combobox_item->data = eina_stringshare_add(program->common.name);
         elm_genlist_item_append(combo, itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -1586,7 +1583,7 @@ _afters_get(Property_Attribute *pa __UNUSED__)
 
    if (!group_pd.group) return NULL;
    if (!group_pd.group->current_selected) return NULL;
-   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return NULL;
+   if (group_pd.group->current_selected->common.type != RESOURCE2_TYPE_PROGRAM) return NULL;
 
    afters = edje_edit_program_afters_get(EDIT_OBJ, PROGRAM_ARGS);
    afters = eina_list_append(afters, NULL);
@@ -1617,7 +1614,7 @@ _targets_init_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
-   switch (((Program *)group_pd.group->current_selected)->type)
+   switch (((Program2 *)group_pd.group->current_selected)->type)
      {
       case EDJE_ACTION_TYPE_ACTION_STOP:
          _programs_combobox_fill(action->control, pa->data);
@@ -1686,7 +1683,7 @@ _targets_get(Property_Attribute *pa __UNUSED__)
 
    if (!group_pd.group) return NULL;
    if (!group_pd.group->current_selected) return NULL;
-   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return NULL;
+   if (group_pd.group->current_selected->common.type != RESOURCE2_TYPE_PROGRAM) return NULL;
 
    targets = edje_edit_program_targets_get(EDIT_OBJ, PROGRAM_ARGS);
    targets = eina_list_append(targets, NULL);
@@ -1727,7 +1724,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
-         property_entry_set(action->control, group_pd.group->name);
+         property_entry_set(action->control, group_pd.group->common.name);
          return true;
       case ATTRIBUTE_STATE_NAME:
          str_val1 = eina_stringshare_printf("%s %.2f",
@@ -1799,10 +1796,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          return true;
       case ATTRIBUTE_PART_TYPE:
-         elm_layout_text_set(action->control, NULL, part_type_text_get(((Part *)group_pd.group->current_selected)->type));
+         elm_layout_text_set(action->control, NULL, part_type_text_get(((Part2 *)group_pd.group->current_selected)->type));
          return true;
       case ATTRIBUTE_PROGRAM_ACTION:
-         elm_layout_text_set(action->control, NULL, action_type[((Part *)group_pd.group->current_selected)->type]);
+         elm_layout_text_set(action->control, NULL, action_type[((Part2 *)group_pd.group->current_selected)->type]);
          return true;
       case ATTRIBUTE_PART_SCALE:
          bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
@@ -2606,11 +2603,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          group_pd.history.format = _("group name changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->name));
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->common.name));
          break;
       case ATTRIBUTE_STATE_NAME:
          group_pd.history.format = _("state name changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->current_selected->name));
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->current_selected->common.name));
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          group_pd.history.format = _("program name changed from \"%s\" to \"%s\"");

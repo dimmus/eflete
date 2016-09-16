@@ -32,7 +32,7 @@ typedef struct {
    Evas_Object *btn_undo;
    Evas_Object *btn_redo;
    History *history;
-   Group *group;
+   Group2 *group;
    int to_undo;
    int to_redo;
 } History_New_UI_data;

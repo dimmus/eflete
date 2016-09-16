@@ -103,7 +103,7 @@ struct _Group2
    Eina_Stringshare *style;   /**< parsed style name */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
-//   Resource *current_selected;
+   Resource2 *current_selected;
    History *history;          /**< history of changes in the group */
 };
 

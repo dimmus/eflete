@@ -96,7 +96,5 @@ _project_import_edc(Project_Thread *ptd)
    ptd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _data_from_edje_cc, edje_cc_data);
    ptd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, edje_cc_data);
 
-
    return;
 }
-

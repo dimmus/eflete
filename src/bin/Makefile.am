@@ -71,10 +71,8 @@ libete_a_SOURCES = \
 ../../src/bin/project_manager/project_manager_open.c \
 ../../src/bin/project_manager/project_manager_import_edj.c \
 ../../src/bin/project_manager/project_manager_import_edc.c \
-../../src/bin/project_manager/project_manager_export_resources.c \
 ../../src/bin/project_manager/project_manager_export_edc.c \
 ../../src/bin/project_manager/project_manager_export_edj.c \
-../../src/bin/project_manager/resource_manager.c \
 ../../src/bin/resource_manager/resource_manager2.c \
 ../../src/bin/resource_manager/resource_manager_load.c \
 ../../src/bin/resource_manager/resource_manager_build.c \

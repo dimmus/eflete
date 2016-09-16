@@ -135,7 +135,7 @@ _tree_nodes_get(Eina_List *groups_list, Node *node)
    Eina_List *folders = NULL, *groups = NULL;
    Eina_Stringshare *prefix;
    Node *n;
-   Group *group;
+   Group2 *group;
 
    widget_tree_items_get(groups_list, node->name, &folders, &groups);
    EINA_LIST_FREE(folders, prefix)
@@ -148,7 +148,7 @@ _tree_nodes_get(Eina_List *groups_list, Node *node)
    EINA_LIST_FREE(groups, group)
      {
         n = mem_calloc(1, sizeof(Node));
-        n->name = eina_stringshare_add(group->name);
+        n->name = eina_stringshare_add(group->common.name);
         node->list = eina_list_append(node->list, n);
      }
 }
@@ -161,7 +161,7 @@ _edj_changed_cb(void *data __UNUSED__,
    Eina_List *collections, *l, *groups_list = NULL;
    Eina_List *folders = NULL, *groups = NULL;
    Eina_Stringshare *group_name, *prefix;
-   Group *group;
+   Group2 *group;
    Node *node;
 
    if (tab_edj.prev_edj_path && !strcmp(tab_edj.prev_edj_path, elm_entry_entry_get(tab_edj.edj)))
@@ -185,8 +185,8 @@ _edj_changed_cb(void *data __UNUSED__,
    collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
    EINA_LIST_FOREACH(collections, l, group_name)
      {
-        group = mem_calloc(1, sizeof(Group));
-        group->name = eina_stringshare_ref(group_name);
+        group = mem_calloc(1, sizeof(Group2));
+        group->common.name = eina_stringshare_ref(group_name);
         groups_list = eina_list_append(groups_list, group);
      }
    edje_file_collection_list_free(collections);
@@ -208,7 +208,7 @@ _edj_changed_cb(void *data __UNUSED__,
    EINA_LIST_FREE(groups, group)
      {
         node = mem_calloc(1, sizeof(Node));
-        node->name = eina_stringshare_ref(group->name);
+        node->name = eina_stringshare_ref(group->common.name);
         elm_genlist_item_append(tab_edj.genlist,
                                 itc,
                                 node,
@@ -220,7 +220,7 @@ _edj_changed_cb(void *data __UNUSED__,
    edje_file_cache_flush();
    EINA_LIST_FREE(groups_list, group)
      {
-        eina_stringshare_del(group->name);
+        eina_stringshare_del(group->common.name);
         free(group);
      }
 

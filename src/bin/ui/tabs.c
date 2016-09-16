@@ -26,8 +26,7 @@
 #include "change.h"
 
 struct _Tabs_Item {
-   Group *group;
-   Group2 *group2;
+   Group2 *group;
    Elm_Object_Item *toolbar_item;
    Evas_Object *content;
    Eina_Bool need_recalc : 1;
@@ -59,8 +58,7 @@ struct _Tabs {
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
-   Group *current_group;
-   Group2 *current_group2;
+   Group2 *current_group;
    Tab_Home home;
 };
 
@@ -76,7 +74,6 @@ _content_unset(void)
    assert(tabs.layout != NULL);
    tabs.current_workspace = NULL;
    tabs.current_group = NULL;
-   tabs.current_group2 = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
    content = elm_layout_content_unset(ap.panes.left_ver, "right");
@@ -112,7 +109,6 @@ _content_set(void *data,
           elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
-        tabs.current_group2 = item->group2;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
         if (item->need_recalc)
@@ -170,7 +166,7 @@ _mode_changed(void *data __UNUSED__,
 }
 
 static Tabs_Item *
-_find_tab(Group *group)
+_find_tab(Group2 *group)
 {
    Eina_List *l;
    Tabs_Item *item;
@@ -418,17 +414,13 @@ _part_renamed(void *data __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   Part *part;
-   Resource request;
+   Part2 *part;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
    assert(ren != NULL);
 
-   request.resource_type = RESOURCE_TYPE_PART;
-   request.name = ren->old_name;
-   part = (Part *)resource_get(tabs.current_group->parts, &request);
-   gm_part_rename(part, ren->new_name);
+   part = (Part2 *)resource_manager_find(tabs.current_group->parts, ren->old_name);
    workspace_group_navigator_update_part(tabs.current_workspace, part);
 }
 
@@ -438,17 +430,13 @@ _group_data_renamed(void *data __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   Resource *group_data;
-   Resource request;
+   Resource2 *group_data;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
    assert(ren != NULL);
 
-   request.resource_type = RESOURCE_TYPE_DATA;
-   request.name = ren->old_name;
-   group_data = resource_get(tabs.current_group->data_items, &request);
-   gm_group_data_rename(ap.project, tabs.current_group, group_data, ren->new_name);
+   group_data = resource_manager_find(tabs.current_group->data_items, ren->old_name);
    workspace_group_navigator_update_group_data(tabs.current_workspace, group_data);
 }
 
@@ -464,8 +452,7 @@ _editor_saved(void *data __UNUSED__,
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
         if (!item->group) continue; /* skip home tab */
-        gm_group_edit_object_reload(ap.project, item->group);
-        resource_group_edit_object_reload(ap.project, item->group2);
+        resource_group_edit_object_reload(ap.project, item->group);
         if (item->content == tabs.current_workspace)
           workspace_groupview_hard_update(tabs.current_workspace);
         else
@@ -1111,13 +1098,9 @@ _tab_close(void *data,
 
    if (!item) return;
 
-
    tabs.items = eina_list_remove(tabs.items, item);
-   if (tabs.current_group2)
-     resource_group_edit_object_unload(tabs.current_group2);
    tabs.current_workspace = NULL;
    tabs.current_group = NULL;
-   tabs.current_group2 = NULL;
    _del_tab(item);
    if (tabs.selected == it)
      {
@@ -1132,7 +1115,7 @@ _tab_close(void *data,
 }
 
 void
-tabs_tab_add(Group *group)
+tabs_tab_add(Group2 *group)
 {
    Tabs_Item *item;
 
@@ -1153,11 +1136,9 @@ tabs_tab_add(Group *group)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;
-   item->group2 = (Group2 *)resource_manager_find(ap.project->RM.groups, group->name);
    item->content = workspace_add(tabs.layout, group);
-   resource_group_edit_object_load(ap.project, item->group2, evas_object_evas_get(ap.win));
 
-   item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
+   item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->common.name,
                                                _content_set, (void *)item);
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
@@ -1229,7 +1210,6 @@ tabs_home_tab_add(Tabs_Menu view)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = NULL;
-   item->group2 = NULL;
    item->content = scroller;
 #ifndef HAVE_TIZEN
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, "go-home", _("Home"),
@@ -1302,14 +1282,8 @@ tabs_current_workspace_get(void)
    return tabs.current_workspace;
 }
 
-Group *
+Group2 *
 tabs_current_group_get(void)
 {
    return tabs.current_group;
-}
-
-Group2 *
-tabs_current_group2_get(void)
-{
-   return tabs.current_group2;
 }

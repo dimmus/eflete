@@ -283,7 +283,7 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
 /*********** GEN LIST CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_genlist_create(Evas_Object *parent, const Group *group)
+widget_genlist_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

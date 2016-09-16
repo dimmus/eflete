@@ -35,7 +35,7 @@ _project_navigator_group_open(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   tabs_tab_add((Group *)event_info);
+   tabs_tab_add((Group2 *)event_info);
 }
 
 static void

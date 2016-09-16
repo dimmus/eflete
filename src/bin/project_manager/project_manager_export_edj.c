@@ -81,7 +81,7 @@ _develop_export(Project_Thread *ptd)
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    Eina_Stringshare *cmd;
    Eina_List *l;
-   Group *group;
+   Group2 *group;
 
    CRIT_ON_FAIL(editor_save_all(ptd->project->global_object));
    Eina_Stringshare *msg = eina_stringshare_printf(_("Export to file '%s'"), ptd->path);
@@ -98,9 +98,9 @@ _develop_export(Project_Thread *ptd)
      }
    cmd = eina_stringshare_printf("%s -i %s", cmd, ptd->project->dev);
 
-   EINA_LIST_FOREACH(ptd->project->groups, l, group)
+   EINA_LIST_FOREACH(ptd->project->RM.groups, l, group)
      {
-        cmd = eina_stringshare_printf("%s -g %s", cmd, group->name);
+        cmd = eina_stringshare_printf("%s -g %s", cmd, group->common.name);
      }
    DBG("Run command for export: %s", cmd);
    ecore_exe_pipe_run(cmd, flags, NULL);

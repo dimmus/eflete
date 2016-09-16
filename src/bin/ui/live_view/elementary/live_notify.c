@@ -147,7 +147,7 @@ _on_click(void *data,
 }
 
 Evas_Object *
-widget_notify_create(Evas_Object *parent, const Group *group)
+widget_notify_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

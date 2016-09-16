@@ -691,9 +691,9 @@ _image_gengrid_init(Helper_Data *helper_data)
    Item *it = NULL;
    Eina_List *images = NULL;
    int counter = 0;
-   External_Resource *res;
+   Image2 *res;
 
-   images = ap.project->images;
+   images = ap.project->RM.images;
 
    /* initial zero image */
    it = (Item *)mem_malloc(sizeof(Item));
@@ -706,16 +706,16 @@ _image_gengrid_init(Helper_Data *helper_data)
         EINA_LIST_FOREACH(images, l, res)
            {
               counter++;
-              if (!res->name)
+              if (!res->common.name)
                 {
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
+              if (!strcmp(res->common.name, EFLETE_DUMMY_IMAGE_NAME)) continue;
 
               it = (Item *)mem_malloc(sizeof(Item));
-              it->image_name = eina_stringshare_add(res->name);
-              it->source = eina_stringshare_add(res->path);
+              it->image_name = eina_stringshare_add(res->common.name);
+              it->source = eina_stringshare_add(res->source);
               elm_gengrid_item_append(helper_data->gengrid, gic, it, NULL, NULL);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(helper_data->gengrid),
@@ -749,7 +749,7 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
-   Resource *res, request;
+   Resource2 *res;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -764,10 +764,8 @@ _grid_content_get(void *data,
      }
    else if ((!strcmp(part, "elm.swallow.end") && (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)))
      {
-        request.resource_type = RESOURCE_TYPE_IMAGE;
-        request.name = it->image_name;
-        res = resource_get(ap.project->images, &request);
-        if (eina_list_count(res->used_in) == 0)
+        res = resource_manager_find(ap.project->RM.images, it->image_name);
+        if (eina_list_count(res->common.used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
              elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");

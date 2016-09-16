@@ -65,7 +65,7 @@ typedef struct
    /** The temporary directory. Should be stored here for a correct clean temporary files. */
    Eina_Tmpstr *tmp_dirname;
    /** The group, which source should be exported into edc. */
-   Group *group;
+   Group2 *group;
    /** Temporary path, for deliver works path between pipes and threads */
    Eina_Stringshare *tmp_path;
 

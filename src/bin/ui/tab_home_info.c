@@ -72,10 +72,10 @@ _tab_project_update()
      {
         pm_project_meta_data_get(ap.project, NULL, &authors, &version, &license, &comment);
         _info_set(false, ap.project->name, ap.project->pro_path,
-                  eina_list_count(ap.project->images) - 1, /* dummy image should not be counted */
-                  eina_list_count(ap.project->sounds) + eina_list_count(ap.project->tones) - 1,/* dummy sample should not be counted */
-                  eina_list_count(ap.project->fonts),
-                  version, authors, license, comment);
+                  eina_list_count(ap.project->RM.images) - 1, /* dummy image should not be counted */
+                  eina_list_count(ap.project->RM.sounds) + eina_list_count(ap.project->RM.tones) - 1,/* dummy sample should not be counted */
+                  eina_list_count(ap.project->RM.fonts),
+                  authors, version, license, comment);
      }
 }
 

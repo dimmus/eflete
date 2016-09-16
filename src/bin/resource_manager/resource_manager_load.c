@@ -40,7 +40,7 @@ _global_data_resources_load(Project *project)
         res->common.type = RESOURCE2_TYPE_DATA_GLOBAL;
         res->common.name = eina_stringshare_add(key);
         res->source = edje_edit_data_value_get(project->global_object, key);
-        project->global_data = eina_list_append(project->global_data, res);
+        project->RM.global_data = eina_list_append(project->RM.global_data, res);
      }
 
    edje_edit_string_list_free(data);

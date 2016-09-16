@@ -33,10 +33,10 @@ static void
 _groupview_part_free(Groupview_Part *gp);
 
 static Groupview_Part *
-_part_draw_add(Groupview_Smart_Data *sd, Part *part);
+_part_draw_add(Groupview_Smart_Data *sd, Part2 *part);
 
 static void
-_part_draw_del(Groupview_Smart_Data *sd, Part *part);
+_part_draw_del(Groupview_Smart_Data *sd, Part2 *part);
 
 static void
 _item_draw_del(Groupview_Item *ge_item);
@@ -58,7 +58,7 @@ _box_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp);
 
 Eina_Bool
 _edit_object_part_add(Groupview_Smart_Data *sd,
-                      Part *part)
+                      Part2 *part)
 {
    Groupview_Part *gp;
 
@@ -73,7 +73,7 @@ _edit_object_part_add(Groupview_Smart_Data *sd,
 }
 
 Eina_Bool
-_edit_object_part_del(Groupview_Smart_Data *sd, Part *part)
+_edit_object_part_del(Groupview_Smart_Data *sd, Part2 *part)
 {
    assert(sd != NULL);
    assert(sd->parts != NULL);
@@ -123,7 +123,7 @@ _parts_list_new(Groupview_Smart_Data *sd)
 {
    Groupview_Part *gp;
    Eina_List *l;
-   Part *part;
+   Part2 *part;
    Eina_List *parts;
 
    assert(sd != NULL);
@@ -177,7 +177,7 @@ _parts_list_find(Eina_List *parts, const char *part)
 
    EINA_LIST_FOREACH(parts, l, gp)
      {
-        if (gp->part->name == part)
+        if (gp->part->common.name == part)
           return gp;
      }
    return NULL;
@@ -231,14 +231,14 @@ _conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, const ch
    int min_w, min_h, max_w, max_h, w, h;
 
    cell_content = edje_object_add(evas_object_evas_get(sd->obj));
-   item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->name, item_name);
+   item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->common.name, item_name);
    edje_object_file_set(cell_content, ap.project->dev, item_source);
    eina_stringshare_del(item_source);
    /* hide this object, it need only for calculate cell size */
    evas_object_hide(cell_content);
 
-   min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, gp->part->name, item_name);
-   min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, gp->part->name, item_name);
+   min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, gp->part->common.name, item_name);
+   min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, gp->part->common.name, item_name);
 
    // Calculation according to box/table item implementation in efl 1.13 at edje_load.c
    if ((min_w <= 0) && (min_h <= 0))
@@ -252,8 +252,8 @@ _conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, const ch
    else
      evas_object_size_hint_min_set(cell_content, min_w, min_h);
 
-   max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->name, item_name);
-   max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->name, item_name);
+   max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->common.name, item_name);
+   max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->common.name, item_name);
    evas_object_size_hint_max_set(cell_content, max_w, max_h);
 
    return cell_content;
@@ -291,8 +291,8 @@ _part_table_items_add(Groupview_Smart_Data *sd, Groupview_Part *gp, Eina_List **
              elm_object_signal_emit(cell, "border,part_item", "eflete");
              EINA_LIST_FOREACH(items_draw[i][j], l, item_name)
                {
-                  span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, item_name);
-                  span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, item_name);
+                  span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->common.name, item_name);
+                  span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->common.name, item_name);
 
                   cell_content = _conteiner_cell_sizer_add(sd, gp, item_name);
                   evas_object_table_pack(gp->container, cell_content, i, j, span_col, span_row);
@@ -312,7 +312,7 @@ _part_table_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
 
    Eina_List *l;
-   Part_Item *item;
+   Part_Item2 *item;
    int span_c, span_r, col, row, col_pos, row_pos, i, j;
    const Evas_Object *table;
    Eina_List ***items_draw;
@@ -323,20 +323,20 @@ _part_table_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
    elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
 
-   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+   table = edje_object_part_object_get(sd->group->edit_object, gp->part->common.name);
    evas_object_table_col_row_size_get(table, &col, &row);
    items_draw = (Eina_List ***)mem_calloc(1, sizeof(Eina_List **) * col);
    for (i = 0; i < col; i++)
      items_draw[i] = (Eina_List **)mem_calloc(1, sizeof(Eina_List *) * row);
    EINA_LIST_FOREACH(gp->part->items, l, item)
      {
-        col_pos = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, item->name);
-        row_pos = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, item->name);
-        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, item->name);
-        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, item->name);
+        col_pos = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->common.name, item->common.name);
+        row_pos = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->common.name, item->common.name);
+        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->common.name, item->common.name);
+        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->common.name, item->common.name);
 
         if (items_draw[col_pos][row_pos] == (Eina_List *)-1) items_draw[col_pos][row_pos] = NULL;
-        items_draw[col_pos][row_pos] = eina_list_append(items_draw[col_pos][row_pos], item->name);
+        items_draw[col_pos][row_pos] = eina_list_append(items_draw[col_pos][row_pos], item->common.name);
         for (i = col_pos; i < (col_pos + span_c); i++)
           {
              for (j = row_pos; j < (row_pos + span_r); j++)
@@ -414,9 +414,8 @@ _edje_box_layout_builtin_find(const char *name)
 static void
 _part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
-
    Eina_List *l;
-   Part_Item *part_item;
+   Part_Item2 *part_item;
    int i, spread_w, spread_h;
    Evas_Object *cell, *cell_content;
    Groupview_Item *item;
@@ -429,8 +428,8 @@ _part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 
    EINA_LIST_FOREACH(gp->part->items, l, part_item)
      {
-        spread_w = edje_edit_part_item_spread_w_get(sd->group->edit_object, gp->part->name, part_item->name);
-        spread_h = edje_edit_part_item_spread_h_get(sd->group->edit_object, gp->part->name, part_item->name);
+        spread_w = edje_edit_part_item_spread_w_get(sd->group->edit_object, gp->part->common.name, part_item->common.name);
+        spread_h = edje_edit_part_item_spread_h_get(sd->group->edit_object, gp->part->common.name, part_item->common.name);
         for (i = 0; i < (spread_w * spread_h); i++)
           {
              cell = elm_layout_add(sd->parent);
@@ -439,13 +438,13 @@ _part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
              evas_object_show(cell);
              elm_object_signal_emit(cell, "border,part_item", "eflete");
 
-             cell_content = _conteiner_cell_sizer_add(sd, gp, part_item->name);
+             cell_content = _conteiner_cell_sizer_add(sd, gp, part_item->common.name);
              elm_object_content_set(cell, cell_content);
              evas_object_box_append(gp->container, cell);
              if (i == 0)
                {
                   item = mem_malloc(sizeof(Groupview_Item));
-                  item->name = eina_stringshare_add(part_item->name);
+                  item->name = eina_stringshare_add(part_item->common.name);
                   item->layout = cell;
                   gp->items = eina_list_append(gp->items, item);
                }
@@ -463,17 +462,17 @@ _box_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
    assert(sd != NULL);
    assert(gp != NULL);
 
-   PART_STATE_GET(sd->group->edit_object, gp->part->name)
+   PART_STATE_GET(sd->group->edit_object, gp->part->common.name)
 
-   layout = edje_edit_state_box_layout_get(sd->group->edit_object, gp->part->name, state, value);
+   layout = edje_edit_state_box_layout_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_box_layout_set(gp->container, _edje_box_layout_builtin_find(layout), NULL, NULL);
 
-   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->name, state, value);
-   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->name, state, value);
+   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->common.name, state, value);
+   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_box_align_set(gp->container, align_x, align_y);
 
-   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->name, state, value);
-   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->name, state, value);
+   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->common.name, state, value);
+   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_box_padding_set(gp->container, pad_x, pad_y);
 
    PART_STATE_FREE
@@ -502,7 +501,7 @@ _part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
    assert(sd != NULL);
    assert(gp != NULL);
 
-   edje_object_part_geometry_get(sd->group->edit_object, gp->part->name, &x, &y, &w, &h);
+   edje_object_part_geometry_get(sd->group->edit_object, gp->part->common.name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->group->edit_object, &xe, &ye, &we, &he);
 
    gp->geom.x = x * sd->zoom + xe;
@@ -525,17 +524,17 @@ _part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
         double x_align, y_align;
         const Evas_Object *ro;
         Evas_Coord ro_w, ro_h;
-        ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+        ro = edje_object_part_object_get(sd->group->edit_object, gp->part->common.name);
         evas_object_geometry_get(ro, NULL, NULL, &ro_w, &ro_h);
         evas_object_resize(gp->proxy_part, ro_w * sd->zoom, ro_h * sd->zoom);
 
         x_align = edje_edit_state_text_align_x_get(sd->group->edit_object,
-                                                   gp->part->name,
-                                                   gp->part->current_state->name,
+                                                   gp->part->common.name,
+                                                   gp->part->current_state->common.name,
                                                    gp->part->current_state->val);
         y_align = edje_edit_state_text_align_y_get(sd->group->edit_object,
-                                                   gp->part->name,
-                                                   gp->part->current_state->name,
+                                                   gp->part->common.name,
+                                                   gp->part->current_state->common.name,
                                                    gp->part->current_state->val);
         evas_object_size_hint_align_set(gp->proxy_part, x_align, y_align);
      }
@@ -554,13 +553,14 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
      {
       case EDJE_PART_TYPE_TEXT:
       case EDJE_PART_TYPE_TEXTBLOCK:
-         str = edje_edit_state_text_get(sd->group->edit_object, gp->part->name,
-                                        gp->part->current_state->name,
+         str = edje_edit_state_text_get(sd->group->edit_object,
+                                        gp->part->common.name,
+                                        gp->part->current_state->common.name,
                                         gp->part->current_state->val);
          if (!str || !strcmp(str, ""))
-           edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
+           edje_object_part_text_set(sd->group->edit_object, gp->part->common.name, gp->part->common.name);
          else
-           edje_object_part_text_set(sd->group->edit_object, gp->part->name, str);
+           edje_object_part_text_set(sd->group->edit_object, gp->part->common.name, str);
          eina_stringshare_del(str);
          _common_param_update(gp, sd->group->edit_object);
          break;
@@ -604,7 +604,7 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
 }
 
 static Groupview_Part *
-_part_draw_add(Groupview_Smart_Data *sd, Part *part)
+_part_draw_add(Groupview_Smart_Data *sd, Part2 *part)
 {
    Groupview_Part *gp;
 
@@ -694,14 +694,14 @@ _part_draw_add(Groupview_Smart_Data *sd, Part *part)
 }
 
 static void
-_part_draw_del(Groupview_Smart_Data *sd, Part *part)
+_part_draw_del(Groupview_Smart_Data *sd, Part2 *part)
 {
    Groupview_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
 
-   gp = _parts_list_find(sd->parts, part->name);
+   gp = _parts_list_find(sd->parts, part->common.name);
 
    assert(gp != NULL);
 
@@ -731,8 +731,8 @@ _color_apply(Groupview_Part *gp, Evas_Object *edit_obj, const char *state, doubl
    assert(edit_obj != NULL);
    assert(state != NULL);
 
-   edje_edit_state_color_get(edit_obj, gp->part->name, state, value, &r, &g, &b, &a);
-   color_class = edje_edit_state_color_class_get(edit_obj, gp->part->name, state, value);
+   edje_edit_state_color_get(edit_obj, gp->part->common.name, state, value, &r, &g, &b, &a);
+   color_class = edje_edit_state_color_class_get(edit_obj, gp->part->common.name, state, value);
    if (color_class)
      {
         if (edje_edit_color_class_colors_get(edit_obj, color_class, &cr, &cg, &cb, &ca,
@@ -762,24 +762,24 @@ _image_proxy_common_param_update(Evas_Object *image, Groupview_Part *gp, Evas_Ob
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   PART_STATE_GET(edit_obj, gp->part->name)
+   PART_STATE_GET(edit_obj, gp->part->common.name)
 
    _color_apply(gp, edit_obj, state, value);
 
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(image,
-            edje_edit_state_fill_smooth_get(edit_obj, gp->part->name, state, value));
+            edje_edit_state_fill_smooth_get(edit_obj, gp->part->common.name, state, value));
 
    /* take fill params here, because need to know is default params set*/
-   fill_x = edje_edit_state_fill_origin_relative_x_get(edit_obj, gp->part->name, state, value);
-   fill_y = edje_edit_state_fill_origin_relative_y_get(edit_obj, gp->part->name, state, value);
-   fill_w = edje_edit_state_fill_size_relative_x_get(edit_obj, gp->part->name, state, value);
-   fill_h = edje_edit_state_fill_size_relative_y_get(edit_obj, gp->part->name, state, value);
-   fill_origin_offset_x = edje_edit_state_fill_origin_offset_x_get(edit_obj, gp->part->name, state, value);
-   fill_origin_offset_y = edje_edit_state_fill_origin_offset_y_get(edit_obj, gp->part->name, state, value);
-   fill_size_offset_x = edje_edit_state_fill_size_offset_x_get(edit_obj, gp->part->name, state, value);
-   fill_size_offset_y = edje_edit_state_fill_size_offset_y_get(edit_obj, gp->part->name, state, value);
-   if (edje_edit_state_fill_type_get(edit_obj, gp->part->name, state, value))
+   fill_x = edje_edit_state_fill_origin_relative_x_get(edit_obj, gp->part->common.name, state, value);
+   fill_y = edje_edit_state_fill_origin_relative_y_get(edit_obj, gp->part->common.name, state, value);
+   fill_w = edje_edit_state_fill_size_relative_x_get(edit_obj, gp->part->common.name, state, value);
+   fill_h = edje_edit_state_fill_size_relative_y_get(edit_obj, gp->part->common.name, state, value);
+   fill_origin_offset_x = edje_edit_state_fill_origin_offset_x_get(edit_obj, gp->part->common.name, state, value);
+   fill_origin_offset_y = edje_edit_state_fill_origin_offset_y_get(edit_obj, gp->part->common.name, state, value);
+   fill_size_offset_x = edje_edit_state_fill_size_offset_x_get(edit_obj, gp->part->common.name, state, value);
+   fill_size_offset_y = edje_edit_state_fill_size_offset_y_get(edit_obj, gp->part->common.name, state, value);
+   if (edje_edit_state_fill_type_get(edit_obj, gp->part->common.name, state, value))
      {
         /* If image tiled, set fill param to evas image object */
         evas_object_image_size_get(image, &img_w, &img_h);
@@ -835,14 +835,14 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   PART_STATE_GET(edit_obj, gp->part->name)
+   PART_STATE_GET(edit_obj, gp->part->common.name)
 
    evas_object_image_source_set(gp->proxy_dead_part, NULL);
    evas_object_image_source_set(gp->proxy_dead_part,
-                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
+                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->common.name));
    evas_object_image_source_visible_set(gp->proxy_dead_part, false);
 
-   image_normal = edje_edit_state_image_get(edit_obj, gp->part->name, state, value);
+   image_normal = edje_edit_state_image_get(edit_obj, gp->part->common.name, state, value);
    if (!image_normal) return;
    if (edje_edit_image_compression_type_get(edit_obj, image_normal) == EDJE_EDIT_IMAGE_COMP_USER)
      {
@@ -859,11 +859,11 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
           WARN("Could not update image:\"%s\"\n", evas_load_error_str(err));
      }
 
-   edje_edit_state_image_border_get(edit_obj, gp->part->name, state, value,
+   edje_edit_state_image_border_get(edit_obj, gp->part->common.name, state, value,
                                     &bl, &br, &bt, &bb);
    evas_object_image_border_set(gp->proxy_part, bl, br, bt, bb);
 
-   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->part->name, state, value);
+   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->part->common.name, state, value);
    if (middle == 0)
      evas_object_image_border_center_fill_set(gp->proxy_part, EVAS_BORDER_FILL_NONE);
    else if (middle == 1)
@@ -881,16 +881,16 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
 
       This calculation was taken from edje_calc.c functions
       =================================================================== */
-   map_on = edje_edit_state_map_on_get(edit_obj, gp->part->name, state, value);
+   map_on = edje_edit_state_map_on_get(edit_obj, gp->part->common.name, state, value);
    if (map_on)
      {
-        edje_object_part_geometry_get(edit_obj, gp->part->name, NULL, NULL, &w, &h);
-        rot_part = edje_edit_state_map_rotation_center_get(edit_obj, gp->part->name, state, value);
+        edje_object_part_geometry_get(edit_obj, gp->part->common.name, NULL, NULL, &w, &h);
+        rot_part = edje_edit_state_map_rotation_center_get(edit_obj, gp->part->common.name, state, value);
 
         if (rot_part)
           edje_object_part_geometry_get(edit_obj, rot_part, &rx, &ry, &rw, &rh);
         else
-          edje_object_part_geometry_get(edit_obj, gp->part->name, &rx, &ry, &rw, &rh);
+          edje_object_part_geometry_get(edit_obj, gp->part->common.name, &rx, &ry, &rw, &rh);
 
         evas_object_geometry_get(edit_obj, &xe, &ye, NULL, NULL);
 
@@ -899,8 +899,8 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
         center_z = 0;
 
         m = evas_map_new(4);
-        evas_map_smooth_set(m, edje_edit_state_map_smooth_get(edit_obj, gp->part->name, state, value));
-        evas_map_alpha_set(m, edje_edit_state_map_alpha_get(edit_obj, gp->part->name, state, value));
+        evas_map_smooth_set(m, edje_edit_state_map_smooth_get(edit_obj, gp->part->common.name, state, value));
+        evas_map_alpha_set(m, edje_edit_state_map_alpha_get(edit_obj, gp->part->common.name, state, value));
         evas_map_util_points_populate_from_object(m, gp->proxy_part);
 
         evas_object_image_size_get(gp->proxy_part, &iw, &ih);
@@ -910,13 +910,13 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
         evas_map_point_image_uv_set(m, 3, 0.0, ih);
 
         /* map color */
-        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 0, &r, &g, &b, &a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->common.name, state, value, 0, &r, &g, &b, &a);
         evas_map_point_color_set(m, 0, r, g, b, a);
-        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 1, &r, &g, &b, &a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->common.name, state, value, 1, &r, &g, &b, &a);
         evas_map_point_color_set(m, 1, r, g, b, a);
-        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 2, &r, &g, &b, &a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->common.name, state, value, 2, &r, &g, &b, &a);
         evas_map_point_color_set(m, 2, r, g, b, a);
-        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 3, &r, &g, &b, &a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->common.name, state, value, 3, &r, &g, &b, &a);
         evas_map_point_color_set(m, 3, r, g, b, a);
 
         /* zoom */
@@ -924,13 +924,13 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
         evas_map_util_zoom(m, 1.0, 1.0, center_x, center_y);
 
         /* rotate */
-        edje_edit_state_map_rotation_get(edit_obj, gp->part->name, state, value, &rotX, &rotY, &rotZ);
+        edje_edit_state_map_rotation_get(edit_obj, gp->part->common.name, state, value, &rotX, &rotY, &rotZ);
         evas_map_util_3d_rotate(m, rotX, rotY, rotZ, center_x, center_y, center_z);
 
         /* calculate perspective point */
-        if (edje_edit_state_map_perspective_on_get(edit_obj, gp->part->name, state, value))
+        if (edje_edit_state_map_perspective_on_get(edit_obj, gp->part->common.name, state, value))
           {
-             perpective = edje_edit_state_map_perspective_get(edit_obj, gp->part->name, state, value);
+             perpective = edje_edit_state_map_perspective_get(edit_obj, gp->part->common.name, state, value);
              if (perpective)
                {
                   edje_object_part_geometry_get(edit_obj, perpective, &rx, &ry, &rw, &rh);
@@ -949,7 +949,7 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
           }
 
         /* calculate light color & position etc. if there is one */
-        light = edje_edit_state_map_light_get(edit_obj, gp->part->name, state, value);
+        light = edje_edit_state_map_light_get(edit_obj, gp->part->common.name, state, value);
         if (light)
           {
              edje_object_part_geometry_get(edit_obj, light, &rx, &ry, &rw, &rh);
@@ -963,7 +963,7 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
           }
 
         /* handle backface culling (object is facing away from view */
-        if (edje_edit_state_map_backface_cull_get(edit_obj, gp->part->name, state, value))
+        if (edje_edit_state_map_backface_cull_get(edit_obj, gp->part->common.name, state, value))
           {
              if (evas_map_util_clockwise_get(m))
                evas_object_show(gp->proxy_part);
@@ -988,10 +988,10 @@ _proxy_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   PART_STATE_GET(edit_obj, gp->part->name)
+   PART_STATE_GET(edit_obj, gp->part->common.name)
 
    sd = evas_object_data_get(gp->draw, "sd");
-   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->part->name, state, value);
+   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->part->common.name, state, value);
    if (proxy_source)
      {
         elm_object_signal_emit(gp->layout, "border,default", "eflete");
@@ -1016,7 +1016,7 @@ _common_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
 
    evas_object_image_source_set(gp->proxy_part, NULL);
    evas_object_image_source_set(gp->proxy_part,
-                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
+                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->common.name));
    evas_object_image_source_visible_set(gp->proxy_part, false);
 }
 
@@ -1030,17 +1030,17 @@ _table_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
    assert(sd != NULL);
    assert(gp != NULL);
 
-   PART_STATE_GET(sd->group->edit_object, gp->part->name)
+   PART_STATE_GET(sd->group->edit_object, gp->part->common.name)
 
-   homogeneous = edje_edit_state_table_homogeneous_get(sd->group->edit_object, gp->part->name, state, value);
+   homogeneous = edje_edit_state_table_homogeneous_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_table_homogeneous_set(gp->container, homogeneous);
 
-   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->name, state, value);
-   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->name, state, value);
+   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->common.name, state, value);
+   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_table_align_set(gp->container, align_x, align_y);
 
-   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->name, state, value);
-   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->name, state, value);
+   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->common.name, state, value);
+   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->common.name, state, value);
    evas_object_table_padding_set(gp->container, pad_x, pad_y);
 
    PART_STATE_FREE
@@ -1059,8 +1059,8 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 
    assert(sd != NULL);
 
-   PART_STATE_GET(sd->group->edit_object, gp->part->name)
-   const char *name = gp->part->name;
+   PART_STATE_GET(sd->group->edit_object, gp->part->common.name)
+   const char *name = gp->part->common.name;
 
    xc = sd->geom.x;
    wc = sd->geom.w;

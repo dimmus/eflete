@@ -69,7 +69,7 @@ _create_toolbar(Evas_Object *obj, const char *class, const char *style)
 }
 
 Evas_Object *
-widget_toolbar_create(Evas_Object *parent, const Group *group)
+widget_toolbar_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

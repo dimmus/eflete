@@ -196,7 +196,7 @@ _create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
 /*********** GEN GRID CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const Group *group)
+widget_gengrid_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

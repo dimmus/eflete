@@ -22,7 +22,7 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-demo_add(Evas_Object *parent, Group *group)
+demo_add(Evas_Object *parent, Group2 *group)
 {
    Evas_Object *obj = NULL;
 

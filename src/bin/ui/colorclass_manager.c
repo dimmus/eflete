@@ -106,7 +106,6 @@ _colorclass_add_popup_close_cb(void *data,
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
-   Colorclass_Resource *res;
    Popup_Button btn_res = (Popup_Button)event_info;
 
    assert(edit != NULL);
@@ -116,8 +115,6 @@ _colorclass_add_popup_close_cb(void *data,
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
         it->name = elm_entry_entry_get(mng.entry);
 
-        res = (Colorclass_Resource *)resource_add(it->name, RESOURCE_TYPE_COLORCLASS);
-        resource_insert(&ap.project->colorclasses, (Resource *)res);
         CRIT_ON_FAIL(editor_color_class_add(ap.project->global_object, eina_stringshare_add(it->name), true));
 
         glit_ccl = elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
@@ -140,7 +137,7 @@ _colorclass_add_cb(void *data,
 {
    Evas_Object *popup;
    mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.name_validator, &ap.project->colorclasses, true);
+   resource_name_validator_list_set(mng.name_validator, &ap.project->RM.colorclasses, true);
    popup = popup_add(_("Create a new layout"), NULL, BTN_OK|BTN_CANCEL, _add_colorclass_content_get, mng.entry);
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _colorclass_add_popup_close_cb, data);
 }
@@ -150,20 +147,13 @@ _colorclass_del_cb(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Resource *res;
-   Resource request;
    Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(mng.genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
    Colorclass_Item *ccl = elm_object_item_data_get(it);
 
-   request.resource_type = RESOURCE_TYPE_COLORCLASS;
-   request.name = ccl->name;
-   res = resource_get(ap.project->colorclasses, &request);
    CRIT_ON_FAIL(editor_color_class_del(ap.project->global_object, ccl->name, true));
-   resource_remove(&ap.project->colorclasses, res);
-   resource_free(res);
    elm_object_item_del(it);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
@@ -186,7 +176,7 @@ _colorclass_del_cb(void *data __UNUSED__,
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
-             symbs += strlen(res->name);
+             symbs += strlen(res->common.name);
              break; TODO("remove this break after warning style remake")
           }
         WARN("%s", buf);
@@ -393,11 +383,11 @@ _colorclass_manager_init(void)
 {
    Eina_List *l = NULL;
    Colorclass_Item *it = NULL;
-   Colorclass_Resource *res;
+   Colorclass2 *res;
 
    assert(ap.project != NULL);
 
-   EINA_LIST_FOREACH(ap.project->colorclasses, l, res)
+   EINA_LIST_FOREACH(ap.project->RM.colorclasses, l, res)
      {
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
 
@@ -416,7 +406,7 @@ _colorclass_manager_init(void)
         it->b3 = res->color3.b;
         it->a3 = res->color3.a;
 
-        it->name = eina_stringshare_add(res->name);
+        it->name = eina_stringshare_add(res->common.name);
         elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }

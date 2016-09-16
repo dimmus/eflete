@@ -38,4 +38,4 @@
  * @ingroup Demo
  */
 Evas_Object *
-demo_add(Evas_Object *parent, Group *group);
+demo_add(Evas_Object *parent, Group2 *group);

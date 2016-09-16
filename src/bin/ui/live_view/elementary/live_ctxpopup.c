@@ -178,7 +178,7 @@ _labels_noicons_horizontal_30items_cb(void *data, Evas_Object *obj, void *event_
 }
 
 Evas_Object *
-widget_ctxpopup_create(Evas_Object *parent, const Group *group)
+widget_ctxpopup_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

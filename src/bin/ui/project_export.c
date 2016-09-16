@@ -289,12 +289,12 @@ _export_group_source_code(void *data __UNUSED__,
    Eina_Stringshare *path;
    Eina_Strbuf *buf;
    char *name;
-   Group *group;
+   Group2 *group;
 
    assert(selected != NULL);
 
    group = tabs_current_group_get();
-   name = strdup(group->name);
+   name = strdup(group->common.name);
    string_char_replace(name, '/', '_');
 
    path = eina_stringshare_add((const char *)eina_list_data_get(selected));

@@ -34,6 +34,7 @@
 
 #include "eflete.h"
 #include "demo_group.h"
+#include "resource_manager2.h"
 
 typedef enum
 {
@@ -56,7 +57,7 @@ typedef enum
  * @ingroup Workspace
  */
 Evas_Object *
-workspace_add(Evas_Object *parent, Group *group);
+workspace_add(Evas_Object *parent, Group2 *group);
 
 /**
  * Update part info in part list
@@ -67,7 +68,7 @@ workspace_add(Evas_Object *parent, Group *group);
  * @ingroup Workspace
  */
 void
-workspace_group_navigator_update_part(Evas_Object *obj, Part *part);
+workspace_group_navigator_update_part(Evas_Object *obj, Part2 *part);
 
 /**
  * Update group_data info in group_data list
@@ -78,7 +79,7 @@ workspace_group_navigator_update_part(Evas_Object *obj, Part *part);
  * @ingroup Workspace
  */
 void
-workspace_group_navigator_update_group_data(Evas_Object *obj, Resource *group_data);
+workspace_group_navigator_update_group_data(Evas_Object *obj, Resource2 *group_data);
 
 /**
  * Update the parts attributes, with recalculation.

@@ -24,27 +24,6 @@
 #include "tabs.h"
 #include "string_common.h"
 
-/* TEMPORARY FUNCTION WHICH SHOULD BE DELETED AFTER RESOURCE_MANAGER2 IMPLEMENTED */
-Group2 *
-_get_current_group2(Project *pro)
-{
-   /*******************************************************/
-   /******** THIS BEHAVIOUR SHOULD BE CHANGED *************/
-   /*******************************************************/
-   /******* BECAUSE GROUP2 DIFFERENT FROM GROUP ***********/
-   /******* AND EFLETE DOESN'T WORK WITH IT YET ***********/
-   /*******************************************************/
-   Group *group = tabs_current_group_get();
-   if (!group) return NULL;
-   return (Group2 *)resource_manager_find(pro->RM.groups, group->name);
-   /*******************************************************/
-   /*******************************************************/
-   /*******************************************************/
-   /*******************************************************/
-   /*******************************************************/
-   /*******************************************************/
-}
-
 /* CALLBACK FUNCTIONS */
 
 static void
@@ -135,7 +114,7 @@ _property_attribute_changed(void *data,
    Editor_Attribute_Change *change = (Editor_Attribute_Change *)event_info;
    Attribute editor_resource = (int)change->attribute;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    if (!group) return;
 
    switch ((int)change->attribute)
@@ -697,15 +676,14 @@ _style_changed(void *data,
 }
 
 static void
-_part_renamed(void *data,
+_part_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
    Part2 *current_part;
-   Project *pro = (Project *)data;
 
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
 
    current_part = (Part2 *)resource_manager_find(group->parts, ren->old_name);
    eina_stringshare_del(current_part->common.name);
@@ -713,15 +691,14 @@ _part_renamed(void *data,
 }
 
 static void
-_group_data_renamed(void *data,
+_group_data_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
    Group_Data2 *group_data;
-   Project *pro = (Project *)data;
 
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    group_data = (Group_Data2 *)resource_manager_find(group->data_items, ren->old_name);
 
    eina_stringshare_del(group_data->common.name);
@@ -735,7 +712,7 @@ _editor_part_added_cb(void *data,
    Eina_Stringshare *part_name = event_info;
    Project *pro = (Project *)data;
 
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part = _part_add(pro, group, part_name);
    _part_dependency_load(pro, group, part);
 }
@@ -747,7 +724,7 @@ _editor_part_deleted_cb(void *data,
 {
    const Editor_Part *editor_part = event_info;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_part->part_name);
 
    _resource_part_del(pro, group, part, editor_part->change);
@@ -760,7 +737,7 @@ _editor_program_added_cb(void *data,
 {
    Eina_Stringshare *program_name = event_info;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Program2 *program = _program_load(group, program_name);
 
    _program_dependency_load(pro, group, program);
@@ -773,7 +750,7 @@ _editor_program_deleted_cb(void *data,
 {
    const Editor_Program *editor_part = event_info;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Program2 *program = (Program2 *)resource_manager_find(group->programs,
                                                          editor_part->program_name);
 
@@ -787,19 +764,18 @@ _editor_group_data_added_cb(void *data,
 {
    Eina_Stringshare *group_data_name = event_info;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
 
    _group_data_add(pro, group, group_data_name);
 }
 
 static void
-_editor_group_data_deleted_cb(void *data,
+_editor_group_data_deleted_cb(void *data __UNUSED__,
                               Evas_Object *obj __UNUSED__,
                               void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
-   Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Group_Data2 *group_data = (Group_Data2 *)resource_manager_find(group->data_items, group_data_name);
 
    _resource_group_data_del(group, group_data);
@@ -814,7 +790,7 @@ _editor_part_item_added_cb(void *data,
    Resource2 *used;
    Part_Item2 *item;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
    unsigned int count = eina_list_count(part->items);
 
@@ -826,13 +802,12 @@ _editor_part_item_added_cb(void *data,
 }
 
 static void
-_editor_part_item_deleted_cb(void *data,
+_editor_part_item_deleted_cb(void *data __UNUSED__,
                              Evas_Object *obj __UNUSED__,
                              void *event_info)
 {
    const Editor_Item *editor_item = event_info;
-   Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
    Part_Item2 *item = (Part_Item2 *)resource_manager_find(part->items, editor_item->item_name);
 
@@ -848,7 +823,7 @@ _editor_state_added_cb(void *data __UNUSED__,
    Project *pro = (Project *)data;
    Part2 *part;
    State2 *state;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
 
    part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
    state = _state_add(pro, group, part, editor_state->state_name, editor_state->state_value);
@@ -862,7 +837,7 @@ _editor_state_deleted_cb(void *data,
 {
    const Editor_State *editor_state = event_info;
    Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_state->part_name);
    State2 *state = (State2 *)resource_manager_v_find(part->states, editor_state->state_name, editor_state->state_value);
 
@@ -870,13 +845,12 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
-_editor_part_restacked_cb(void *data,
+_editor_part_restacked_cb(void *data __UNUSED__,
                           Evas_Object *obj __UNUSED__,
                           void *event_info)
 {
    const Editor_Part_Restack *editor_part_restack = event_info;
-   Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part2 *part, *rel_part = NULL;
    Eina_List *rel_l;
 
@@ -897,13 +871,12 @@ _editor_part_restacked_cb(void *data,
 }
 
 static void
-_editor_part_item_restacked_cb(void *data,
+_editor_part_item_restacked_cb(void *data __UNUSED__,
                                Evas_Object *obj __UNUSED__,
                                void *event_info)
 {
    const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
-   Project *pro = (Project *)data;
-   Group2 *group = _get_current_group2(pro);
+   Group2 *group = tabs_current_group_get();
    Part_Item2 *part_item, *relative_part_item;
    Part2 *part = (Part2 *)resource_manager_find(group->parts,
                                                 editor_part_item_restack->part_name);

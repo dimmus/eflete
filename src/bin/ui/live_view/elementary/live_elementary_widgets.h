@@ -102,103 +102,103 @@ send_signal(void *data, Evas_Object *obj, void *event_info);
  * !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  ! *
  *****************************************************/
 Evas_Object *
-layout_custom_create(Evas_Object *parent, const Group *group);
+layout_custom_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_actionslider_create(Evas_Object *parent, const Group *group);
+widget_actionslider_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_bg_create(Evas_Object *parent, const Group *group);
+widget_bg_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_bubble_create(Evas_Object *parent, const Group *group);
+widget_bubble_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_button_create(Evas_Object *parent, const Group *group);
+widget_button_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_calendar_create(Evas_Object *parent, const Group *group);
+widget_calendar_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_check_create(Evas_Object *parent, const Group *group);
+widget_check_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_clock_create(Evas_Object *parent, const Group *group);
+widget_clock_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_ctxpopup_create(Evas_Object *parent, const Group *group);
+widget_ctxpopup_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_datetime_create(Evas_Object *parent, const Group *group);
+widget_datetime_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_entry_create(Evas_Object *parent, const Group *group);
+widget_entry_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_frame_create(Evas_Object *parent, const Group *group);
+widget_frame_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const Group *group);
+widget_gengrid_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_genlist_create(Evas_Object *parent, const Group *group);
+widget_genlist_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_label_create(Evas_Object *parent, const Group *group);
+widget_label_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_layout_create(Evas_Object *parent, const Group *group);
+widget_layout_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_list_create(Evas_Object *parent, const Group *group);
+widget_list_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_map_create(Evas_Object *parent, const Group *group);
+widget_map_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_multibuttonentry_create(Evas_Object *parent, const Group *group);
+widget_multibuttonentry_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_notify_create(Evas_Object *parent, const Group *group);
+widget_notify_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_panel_create(Evas_Object *parent, const Group *group);
+widget_panel_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_panes_create(Evas_Object *parent, const Group *group);
+widget_panes_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_popup_create(Evas_Object *parent, const Group *group);
+widget_popup_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_radio_create(Evas_Object *parent, const Group *group);
+widget_radio_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_scroller_create(Evas_Object *parent, const Group *group);
+widget_scroller_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_segment_control_create(Evas_Object *parent, const Group *group);
+widget_segment_control_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_separator_create(Evas_Object *parent, const Group *group);
+widget_separator_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_slider_create(Evas_Object *parent, const Group *group);
+widget_slider_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_spinner_create(Evas_Object *parent, const Group *group);
+widget_spinner_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_toolbar_create(Evas_Object *parent, const Group *group);
+widget_toolbar_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_progressbar_create(Evas_Object *parent, const Group *group);
+widget_progressbar_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_naviframe_create(Evas_Object *parent, const Group *group);
+widget_naviframe_create(Evas_Object *parent, const Group2 *group);
 
 Evas_Object *
-widget_colorselector_create(Evas_Object *parent, const Group *group);
+widget_colorselector_create(Evas_Object *parent, const Group2 *group);
 
 /*****************************************************
  *****************************************************

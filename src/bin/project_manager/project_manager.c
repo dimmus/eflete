@@ -240,25 +240,6 @@ _gm_group_load_end_cb(void *data,
 }
 
 void
-_gm_group_load_feedback_job(void *data, Ecore_Thread *th)
-{
-   Feedback_Thread_Data *ftd = (Feedback_Thread_Data *)data;
-   Project_Thread *ptd = ecore_thread_global_data_find("ptd");
-   if (!eina_lock_take(&ftd->mutex))
-     {
-       ERR("Failed access data");
-       ecore_thread_cancel(th);
-       return;
-     }
-   Project *project = (Project *) ptd->project;
-
-   Eina_Stringshare *message = eina_stringshare_printf(_("Load group tree"));
-   ecore_thread_feedback(th, message);
-
-   gm_groups_load(project);
-}
-
-void
 _copy_meta_data_to_pro(Project_Thread *ptd)
 {
    Eet_File *ef;
@@ -325,47 +306,8 @@ _project_open_internal(Project_Thread *ptd)
    ap.project = project;
    resource_manager_init(project);
 
-   /* Launch images load inside thread with feedback */
-   ecore_thread_feedback_run(_image_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
-
-   /* Launch sound load inside thread with feedback */
-   ecore_thread_feedback_run(_sound_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
-
-   /* Launch font load inside thread with feedback */
-   ecore_thread_feedback_run(_font_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
-
-   /* Launch tones load inside thread with feedback */
-   ecore_thread_feedback_run(_tones_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
-
-   /* Launch colorclasses load inside thread with feedback */
-   ecore_thread_feedback_run(_colorclasses_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
-
-   /* Launch colorclasses load inside thread with feedback */
-   ecore_thread_feedback_run(_styles_resources_feedback_job, _resources_export_feedback_cb,
-                             _resources_export_end_cb, _resources_export_cancel_cb, ftd,
-                             true);
-
-   /*------------------------------------------------*/
+   TODO("Remove later on")
+   _end_send(ptd);
 }
 
 void
@@ -603,12 +545,7 @@ pm_project_build(Project *project __UNUSED__, Build build_profile __UNUSED__)
 Eina_Bool
 pm_project_close(Project *project)
 {
-   Eina_Stringshare *backup, *data;
-   Eina_Stringshare *resource_folder;
-   External_Resource *image, *sound, *font;
-   Tone_Resource *tone;
-   Colorclass_Resource *cc;
-   Resource *style;
+   Eina_Stringshare *backup, *resource_folder;
 
    assert(project != NULL);
 
@@ -638,54 +575,6 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
    eina_stringshare_del(project->pro_path);
-
-   gm_groups_free(project);
-   EINA_LIST_FREE(project->images, image)
-     {
-        eina_stringshare_del(image->name);
-        eina_list_free(image->used_in);
-        eina_stringshare_del(image->source);
-        free(image);
-     }
-   EINA_LIST_FREE(project->sounds, sound)
-     {
-        eina_stringshare_del(sound->name);
-        eina_list_free(sound->used_in);
-        eina_stringshare_del(sound->source);
-        free(sound);
-     }
-   EINA_LIST_FREE(project->fonts, font)
-     {
-        eina_stringshare_del(font->name);
-        eina_list_free(font->used_in);
-        eina_stringshare_del(font->source);
-        free(font);
-     }
-   EINA_LIST_FREE(project->tones, tone)
-     {
-        eina_stringshare_del(tone->name);
-        eina_list_free(tone->used_in);
-        free(tone);
-     }
-   EINA_LIST_FREE(project->colorclasses, cc)
-     {
-        eina_stringshare_del(cc->name);
-        eina_list_free(cc->used_in);
-        free(cc);
-     }
-   EINA_LIST_FREE(project->styles, style)
-     {
-        eina_stringshare_del(style->name);
-        eina_list_free(style->used_in);
-        free(style);
-     }
-
-   EINA_LIST_FREE(project->res.images, data)
-      eina_stringshare_del(data);
-   EINA_LIST_FREE(project->res.sounds, data)
-      eina_stringshare_del(data);
-   EINA_LIST_FREE(project->res.fonts, data)
-      eina_stringshare_del(data);
 
 #ifdef HAVE_ENVENTOR
    if (enventor_object_project_unload(project))
@@ -781,29 +670,42 @@ _external_resources_export(Eina_List *resources, const char *dst)
 {
    Eina_Strbuf *buf;
    Eina_List *l;
-   External_Resource *res;
+   Resource2 *res;
+   Sound2 *sound;
+   Font2 *font;
+   Image2 *image;
    char *path;
+   Eina_Stringshare *res_source = NULL;
 
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
      {
-        if (res->resource_type == RESOURCE_TYPE_SOUND)
+        if (res->common.type == RESOURCE2_TYPE_SAMPLE)
           {
-             eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(res->source));
+             sound = (Sound2 *)res;
+             res_source = eina_stringshare_add(sound->source);
+             eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(sound->source));
           }
-        else if (res->path == NULL)
-          eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
-        else
+        if (res->common.type == RESOURCE2_TYPE_IMAGE)
           {
-             eina_strbuf_append_printf(buf, "%s/%s", dst, res->source);
+             image = (Image2 *)res;
+             res_source = eina_stringshare_add(image->source);
+             eina_strbuf_append_printf(buf, "%s/%s", dst, image->source);
+          }
+        if (res->common.type == RESOURCE2_TYPE_FONT)
+          {
+             font = (Font2 *)res;
+             res_source = eina_stringshare_add(font->source);
+             eina_strbuf_append_printf(buf, "%s/%s", dst, font->source);
           }
         path = ecore_file_dir_get(eina_strbuf_string_get(buf));
         if (!ecore_file_is_dir(path))
           {
              ecore_file_mkpath(path);
           }
-        ecore_file_cp(res->path, eina_strbuf_string_get(buf));
+        ecore_file_cp(res_source, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
+        eina_stringshare_del(res_source);
         free(path);
      }
    eina_strbuf_free(buf);
@@ -814,25 +716,35 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
 {
    Eina_Strbuf *buf;
    Eina_List *l;
-   External_Resource *res;
+   Resource2 *res;
+   Sound2 *sound;
+   Font2 *font;
+   Image2 *image;
    char *path = NULL;
+   Eina_Stringshare *res_source = NULL;
 
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
      {
-        if (name == res->name)
+        if (name == res->common.name)
           {
-             if (res->resource_type == RESOURCE_TYPE_SOUND)
+             if (res->common.type == RESOURCE2_TYPE_SAMPLE)
                {
-                  eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(res->source));
+                  sound = (Sound2 *)res;
+                  res_source = eina_stringshare_add(sound->source);
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, ecore_file_file_get(sound->source));
                }
-             else if (res->path == NULL)
+             if (res->common.type == RESOURCE2_TYPE_IMAGE)
                {
-                  eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+                  image = (Image2 *)res;
+                  res_source = eina_stringshare_add(image->source);
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, image->source);
                }
-             else
+             if (res->common.type == RESOURCE2_TYPE_FONT)
                {
-                  eina_strbuf_append_printf(buf, "%s/%s", dst, res->source);
+                  font = (Font2 *)res;
+                  res_source = eina_stringshare_add(font->source);
+                  eina_strbuf_append_printf(buf, "%s/%s", dst, font->source);
                }
 
              path = ecore_file_dir_get(eina_strbuf_string_get(buf));
@@ -841,9 +753,11 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
                {
                   ecore_file_mkpath(path);
                }
-             ecore_file_cp(res->path, eina_strbuf_string_get(buf));
+             ecore_file_cp(res_source, eina_strbuf_string_get(buf));
              eina_strbuf_reset(buf);
+             eina_stringshare_del(res_source);
              free(path);
+             path = NULL;
              break;
           }
      }
@@ -852,7 +766,7 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
 
 void
 pm_group_source_code_export(Project *project,
-                            Group *group,
+                            Group2 *group,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
@@ -1079,6 +993,13 @@ pm_lock_check(const char *path)
    return _lock_try(path, false, NULL);
 }
 
+
+#if 0
+/*
+===================================================================
++++               UNCOMMET IT LATER OR REUSE IT                 +++
+===================================================================
+*/
 Eina_Bool
 pm_project_group_import(Project *project, const char *edj, const char *group)
 {
@@ -1124,7 +1045,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
               * resource folder, in currect case - path to folder with images */
              res = eina_list_data_get(project->images);
              res_dir = ecore_file_dir_get(res->source);
-             request.resource_type = RESOURCE_TYPE_IMAGE;
+             request.common.type = RESOURCE2_TYPE_IMAGE;
              request.name = data;
              res = (External_Resource *)resource_get(project->images, &request);
              if ((res) &&
@@ -1161,7 +1082,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         THREAD_CONTEXT_SWITCH_END;
 
         CRIT_ON_FAIL(editor_image_add(ap.project->global_object, res_file, false));
-        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_IMAGE);
+        res = (External_Resource *)resource_add(data, RESOURCE2_TYPE_IMAGE);
         res->source = eina_stringshare_add(data);
         resource_insert(&project->images, (Resource *)res);
 
@@ -1179,7 +1100,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
           {
              res = eina_list_data_get(project->sounds);
              res_dir = ecore_file_dir_get(res->source);
-             request.resource_type = RESOURCE_TYPE_SOUND;
+             request.common.type = RESOURCE2_TYPE_SAMPLE;
              request.name = data;
              res = (External_Resource *)resource_get(project->sounds, &request);
              if ((res) &&
@@ -1211,7 +1132,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
         THREAD_CONTEXT_SWITCH_BEGIN;
         CRIT_ON_FAIL(editor_sound_sample_add(project->global_object, data, res_file, false));
         THREAD_CONTEXT_SWITCH_END;
-        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_SOUND);
+        res = (External_Resource *)resource_add(data, RESOURCE2_TYPE_SAMPLE);
         res->source = eina_stringshare_add(res_file);
         resource_insert(&project->sounds, (Resource *)res);
 
@@ -1231,7 +1152,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
                {
                   res = eina_list_data_get(project->fonts);
                   res_dir = ecore_file_dir_get(res->source);
-                  request.resource_type = RESOURCE_TYPE_FONT;
+                  request.common.type = RESOURCE2_TYPE_FONT;
                   request.name = data;
                   res = (External_Resource *)resource_get(project->fonts, &request);
                   if ((res) &&
@@ -1265,7 +1186,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
              THREAD_CONTEXT_SWITCH_BEGIN;
              edje_edit_font_add(project->global_object, res_file, data);
              THREAD_CONTEXT_SWITCH_END;
-             res = (External_Resource *)resource_add(data, RESOURCE_TYPE_FONT);
+             res = (External_Resource *)resource_add(data, RESOURCE2_TYPE_FONT);
              res->source = eina_stringshare_add(res_file);
              resource_insert(&project->fonts, (Resource *)res);
 
@@ -1280,7 +1201,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    resources = gm_group_used_color_classes_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
-        request.resource_type = RESOURCE_TYPE_COLORCLASS;
+        request.common.type = RESOURCE2_TYPE_COLORCLASS;
         request.name = data;
         res = (External_Resource *)resource_get(project->colorclasses, &request);
         if ((res) &&
@@ -1300,7 +1221,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
                                                    c2_r, c2_g, c2_b, c2_a,
                                                    c3_r, c3_g, c3_b, c3_a));
         THREAD_CONTEXT_SWITCH_END;
-        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_COLORCLASS);
+        res = (External_Resource *)resource_add(data, RESOURCE2_TYPE_COLORCLASS);
         resource_insert(&project->colorclasses, (Resource *)res);
      }
    /* color_classes imported */
@@ -1309,7 +1230,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
    resources = gm_group_used_styles_edj_get(obj);
    EINA_LIST_FOREACH(resources, l, data)
      {
-        request.resource_type = RESOURCE_TYPE_STYLE;
+        request.common.type = RESOURCE2_TYPE_STYLE;
         request.name = data;
         res = (External_Resource *)resource_get(project->styles, &request);
         if ((res) &&
@@ -1331,7 +1252,7 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
              eina_stringshare_del(source);
              THREAD_CONTEXT_SWITCH_END;
           }
-        res = (External_Resource *)resource_add(data, RESOURCE_TYPE_STYLE);
+        res = (External_Resource *)resource_add(data, RESOURCE2_TYPE_STYLE);
         resource_insert(&project->styles, (Resource *)res);
      }
    /* styles imported */
@@ -1377,3 +1298,4 @@ pm_project_group_import(Project *project, const char *edj, const char *group)
 
    return true;
 }
+#endif

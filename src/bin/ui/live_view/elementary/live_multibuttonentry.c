@@ -99,7 +99,7 @@ _multibutton_send_signal(void *data __UNUSED__,
 }
 
 Evas_Object *
-widget_multibuttonentry_create(Evas_Object *parent, const Group *group)
+widget_multibuttonentry_create(Evas_Object *parent, const Group2 *group)
 {
    assert(parent != NULL);
    assert(group != NULL);

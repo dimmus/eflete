@@ -230,7 +230,6 @@ _groupview_smart_calculate(Evas_Object *o)
         sd->geom.y = y;
         sd->geom.w = w;
         sd->geom.h = h;
-
      }
    sd->manual_calc = false;
 
@@ -260,7 +259,7 @@ _groupview_smart_set_user(Evas_Smart_Class *sc)
 }
 
 Evas_Object *
-groupview_add(Evas_Object *parent, Group *group)
+groupview_add(Evas_Object *parent, Group2 *group)
 {
    Evas *e;
    Evas_Object *obj;
@@ -359,7 +358,7 @@ groupview_part_selected_geom_get(Evas_Object *obj)
 }
 
 Eina_Bool
-groupview_part_add(Evas_Object *obj, Part *part)
+groupview_part_add(Evas_Object *obj, Part2 *part)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -369,7 +368,7 @@ groupview_part_add(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupview_part_del(Evas_Object *obj, Part *part)
+groupview_part_del(Evas_Object *obj, Part2 *part)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -464,7 +463,7 @@ groupview_parts_separated(Evas_Object *obj __UNUSED__,
            send the name of selected item(part), for hilight and widget list
            events. */
         DBG("Separate mod off; selected part is %s",
-            sd->selected ? sd->selected->part->name : NULL);
+            sd->selected ? sd->selected->part->common.name : NULL);
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
@@ -516,14 +515,14 @@ groupview_part_select(Evas_Object *obj, const char *part)
 TODO("remove this from public API and use callback from part list");
 
 void
-groupview_part_visible_set(Evas_Object *obj, Part *part)
+groupview_part_visible_set(Evas_Object *obj, Part2 *part)
 {
    Groupview_Part *gp;
    GROUPVIEW_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
-   gp = _parts_list_find(sd->parts, part->name);
+   gp = _parts_list_find(sd->parts, part->common.name);
 
    assert(gp != NULL);
    if (part->visible)

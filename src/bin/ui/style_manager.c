@@ -181,7 +181,6 @@ _style_add_popup_close_cb_cb(void *data __UNUSED__,
                              void *event_info)
 {
    Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
-   Resource *res;
    const char *style_name;
    Elm_Object_Item *glit;
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -207,9 +206,6 @@ _style_add_popup_close_cb_cb(void *data __UNUSED__,
    elm_genlist_item_selected_set(glit, true);
    elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
-   res = resource_add(style_name, RESOURCE_TYPE_STYLE);
-   resource_insert(&ap.project->styles, res);
-
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
 
 close:
@@ -224,7 +220,7 @@ _style_add_cb(void *data __UNUSED__,
 {
    Evas_Object *popup;
    mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
+   resource_name_validator_list_set(mng.popup.validator, &ap.project->RM.styles, true);
 
    popup = popup_add(_("Add textblock style"), NULL, BTN_OK|BTN_CANCEL, _add_style_content_get, mng.popup.name);
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _style_add_popup_close_cb_cb, NULL);
@@ -251,7 +247,6 @@ _add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to
 typedef struct {
    Eina_Stringshare *style_name, *tag_name;
    Elm_Object_Item *glit, *glit_parent;
-   Eina_List *resources;
 } Tag_Popup_Data;
 
 static void
@@ -259,7 +254,6 @@ _tag_add_popup_close_cb(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *event_info)
 {
-   Resource *res;
    Popup_Button btn_res = (Popup_Button) event_info;
    Tag_Popup_Data *tpd = data;
 
@@ -283,8 +277,6 @@ _tag_add_popup_close_cb(void *data,
    elm_genlist_item_bring_in(tpd->glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
 close:
-   EINA_LIST_FREE(tpd->resources, res)
-      resource_free(res);
    evas_object_del(mng.popup.item);
    resource_name_validator_free(mng.popup.validator);
    free(tpd);
@@ -294,9 +286,8 @@ _tag_add_cb(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   Resource *res;
+   Style2 *res;
    Eina_Stringshare *buf;
-   Eina_List *tags, *l;
    Evas_Object *popup;
    Tag_Popup_Data * tpd = mem_calloc(1, sizeof(Tag_Popup_Data));
 
@@ -314,15 +305,9 @@ _tag_add_cb(void *data __UNUSED__,
    else
      tpd->style_name = elm_object_item_data_get(tpd->glit_parent);
 
-   tags = edje_edit_style_tags_list_get(ap.project->global_object, tpd->style_name);
-   EINA_LIST_FOREACH(tags, l, buf)
-     {
-        res = resource_add(buf, RESOURCE_TYPE_TAG);
-        resource_insert(&tpd->resources, res);
-     }
-   edje_edit_string_list_free(tags);
+   res = (Style2 *)resource_manager_find(ap.project->RM.styles, tpd->style_name);
    mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(mng.popup.validator, &tpd->resources, true);
+   resource_name_validator_list_set(mng.popup.validator, &res->tags, true);
 
    buf = eina_stringshare_printf(_("Add tag for style: %s"), tpd->style_name);
    popup = popup_add(buf, NULL, BTN_OK|BTN_CANCEL, _add_tag_content_get, mng.popup.name);
@@ -337,8 +322,6 @@ _btn_del_cb(void *data __UNUSED__,
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
-   Resource *res;
-   Resource request;
    Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
@@ -349,11 +332,7 @@ _btn_del_cb(void *data __UNUSED__,
    if (!glit_parent)
      {
         style_name = elm_object_item_data_get(glit);
-        request.resource_type = RESOURCE_TYPE_STYLE;
-        request.name = style_name;
-        res = resource_get(ap.project->styles, &request);
         CRIT_ON_FAIL(editor_style_del(edje_edit_obj, style_name, true));
-        resource_remove(&ap.project->styles, res);
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
    else
@@ -477,7 +456,7 @@ _search_tag_item_node(Evas_Object *obj,
                {
                   elm_genlist_item_expanded_set(item_start, true);
                   search_data->last_item_found = elm_genlist_search_by_text_item_get(obj, item_start,
-                                                                        "elm.text", tag, 0);
+                                                                                     "elm.text", tag, 0);
                   elm_genlist_item_selected_set(search_data->last_item_found, true);
                   elm_genlist_item_bring_in(search_data->last_item_found, ELM_GENLIST_ITEM_SCROLLTO_TOP);
                   elm_object_focus_set(search_data->search_entry, true);
@@ -570,7 +549,7 @@ _search_changed(void *data __UNUSED__,
             mng.style_search_data.last_item_found = NULL;
          }
        elm_genlist_item_bring_in(elm_genlist_first_item_get(mng.genlist),
-                                                            ELM_GENLIST_ITEM_SCROLLTO_TOP);
+                                 ELM_GENLIST_ITEM_SCROLLTO_TOP);
        return;
      }
 
@@ -776,15 +755,15 @@ static void
 _style_mamanger_init(void)
 {
    Eina_List *l_st;
-   Resource *res;
+   Resource2 *res;
    Elm_Object_Item *glit_style;
 
-   EINA_LIST_FOREACH(ap.project->styles, l_st, res)
+   EINA_LIST_FOREACH(ap.project->RM.styles, l_st, res)
      {
         glit_style = elm_genlist_item_append(mng.genlist, _itc_style,
-                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
+                                             res->common.name, NULL, ELM_GENLIST_ITEM_TREE,
                                              _on_glit_selected, NULL);
-        elm_object_item_data_set(glit_style, (char *)res->name);
+        elm_object_item_data_set(glit_style, (char *)res->common.name);
      }
 }
 
@@ -822,7 +801,7 @@ style_manager_add()
    elm_icon_standard_set(ic, "text2");
    mw_icon_set(mng.win, ic);
 
-   if(mng.layout) goto done;
+   if (mng.layout) goto done;
 
    mng.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(mng.layout, "layout", "manager", "internal");

@@ -24,7 +24,7 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                           const Group *group);
+                           const Group2 *group);
 };
 
 static struct _live_widget_item widgets[] =
@@ -66,7 +66,7 @@ static struct _live_widget_item widgets[] =
 };
 
 Evas_Object *
-live_widget_create(Group *group,
+live_widget_create(Group2 *group,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;

@@ -21,6 +21,7 @@
 #define GROUP_NAVIGATOR_H
 
 #include "eflete.h"
+#include "resource_manager2.h"
 
 /**
  * @defgroup Partlist Partlist
@@ -48,7 +49,7 @@
  * @ingroup Partlist
  */
 Evas_Object *
-group_navigator_add(Evas_Object *parent, Group *group);
+group_navigator_add(Evas_Object *parent, Group2 *group);
 
 Evas_Object *
 group_navigator_dummy_get(void);
@@ -57,44 +58,44 @@ group_navigator_dummy_get(void);
  * @ingroup Partlist
  */
 void
-group_navigator_select(Evas_Object *obj, Resource *res);
+group_navigator_select(Evas_Object *obj, Resource2 *res);
 
 /**
  * @ingroup Partlist
  */
 void
-group_navigator_part_update(Evas_Object *obj, Part *part);
+group_navigator_part_update(Evas_Object *obj, Part2 *part);
 
 void
-group_navigator_group_data_update(Evas_Object *obj, Resource *group_data);
+group_navigator_group_data_update(Evas_Object *obj, Resource2 *group_data);
 
 void
-group_navigator_part_state_select(Evas_Object *obj, State *state);
+group_navigator_part_state_select(Evas_Object *obj, State2 *state);
 
 void
-group_navigator_part_add(Evas_Object *obj, Part *part);
+group_navigator_part_add(Evas_Object *obj, Part2 *part);
 
 void
-group_navigator_part_del(Evas_Object *obj, Part *part);
+group_navigator_part_del(Evas_Object *obj, Part2 *part);
 
 void
-group_navigator_part_item_add(Evas_Object *obj, Part *part, Eina_Stringshare * item_name);
+group_navigator_part_item_add(Evas_Object *obj, Part2 *part, Eina_Stringshare * item_name);
 
 void
-group_navigator_part_item_del(Evas_Object *obj, Part_Item *item);
+group_navigator_part_item_del(Evas_Object *obj, Part_Item2 *item);
 
 void
-group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state);
+group_navigator_part_state_add(Evas_Object *obj, Part2 *part, State2 *state);
 
 void
-group_navigator_part_state_del(Evas_Object *obj, Part *part, State *state);
+group_navigator_part_state_del(Evas_Object *obj, Part2 *part, State2 *state);
 
 void
-group_navigator_part_restack(Evas_Object *obj, Part *part, Part *rel_part);
+group_navigator_part_restack(Evas_Object *obj, Part2 *part, Part2 *rel_part);
 
 void
 group_navigator_part_item_restack(Evas_Object *obj,
-                                  Part *part,
+                                  Part2 *part,
                                   Eina_Stringshare *part_item,
                                   Eina_Stringshare *relative_part_item);
 
@@ -102,13 +103,13 @@ void
 group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);
 
 void
-group_navigator_program_del(Evas_Object *obj, Program *program);
+group_navigator_program_del(Evas_Object *obj, Program2 *program);
 
 void
 group_navigator_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data);
 
 void
-group_navigator_group_data_del(Evas_Object *obj, Resource *group_data);
+group_navigator_group_data_del(Evas_Object *obj, Resource2 *group_data);
 
 void
 group_navigator_add_part_request(Evas_Object *obj);

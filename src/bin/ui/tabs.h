@@ -94,7 +94,7 @@ tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widg
  * @ingroup Tabs
  */
 void
-tabs_tab_add(Group *group);
+tabs_tab_add(Group2 *group);
 
 /**
  * Add home tab.
@@ -133,9 +133,7 @@ tabs_current_workspace_get(void);
  *
  * @ingroup Tabs
  */
-Group *
-tabs_current_group_get(void);
 Group2 *
-tabs_current_group2_get(void);
+tabs_current_group_get(void);
 
 #endif /* TABS_H */

@@ -21,6 +21,7 @@
 #define DEMO_GROUP_H
 
 #include "eflete.h"
+#include "resource_manager2.h"
 
 /**
  * @defgroup Partlist Partlist
@@ -122,7 +123,7 @@ struct Demo_Signal_
  * @ingroup DemoGroup
  */
 Evas_Object *
-demo_group_add(Group *group);
+demo_group_add(Group2 *group);
 
 /**
  * @ingroup DemoGroup
@@ -134,13 +135,13 @@ demo_group_del(Evas_Object *demo_group);
  * @ingroup DemoGroup
  */
 void
-demo_group_part_add(Evas_Object *demo, Part *part);
+demo_group_part_add(Evas_Object *demo, Part2 *part);
 
 /**
  * @ingroup DemoGroup
  */
 void
-demo_group_part_del(Evas_Object *demo, Part *part);
+demo_group_part_del(Evas_Object *demo, Part2 *part);
 
 /**
  * @ingroup DemoGroup
