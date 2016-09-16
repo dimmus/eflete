@@ -21,18 +21,24 @@
 #include "property_private.h"
 #include "main_window.h"
 
+typedef struct {
+   int r, g, b, a;
+} Color;
+#define COLOR_DATA "COLOR_DATA"
+
 static void
 _on_color_change(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
-   int r, g, b, a;
+   Color *c;
    Evas_Object *control = data;
 
    assert(control != NULL);
 
-   elm_colorselector_color_get(obj, &r, &g, &b, &a);
-   property_color_control_color_set(control, r, g, b, a);
+   c = evas_object_data_get(control, COLOR_DATA);
+   elm_colorselector_color_get(obj, &c->r, &c->g, &c->b, &c->a);
+   property_color_control_color_set(control, c->r, c->g, c->b, c->a);
    evas_object_smart_callback_call(control, "changed", NULL);
 }
 
@@ -70,10 +76,24 @@ _on_color_clicked(void *data __UNUSED__,
    elm_object_scroll_freeze_push(control);
 }
 
+static void
+_color_free(void *data,
+            Evas *e __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Color *c = data;
+
+   assert(c != NULL);
+
+   free(c);
+}
+
 Evas_Object *
 property_color_control_add(Evas_Object *parent)
 {
    Evas_Object *control, *color;
+   Color *c;
 
    assert(parent != NULL);
 
@@ -91,6 +111,10 @@ property_color_control_add(Evas_Object *parent)
                                   popup_active_helper_close,
                                   (void*)(uintptr_t)POPUP_COLORSELECTOR_HELPER);
 
+   c = mem_calloc(1, sizeof(Color));
+   evas_object_data_set(control, COLOR_DATA, c);
+   evas_object_event_callback_add(control, EVAS_CALLBACK_FREE, _color_free, c);
+
    return control;
 }
 
@@ -98,12 +122,22 @@ void
 property_color_control_color_set(Evas_Object *control, int r, int g, int b, int a)
 {
    Evas_Object *color;
+   Color *c;
 
    assert(control != NULL);
    assert((r >= 0) && (r <= 255));
    assert((g >= 0) && (g <= 255));
    assert((b >= 0) && (b <= 255));
    assert((a >= 0) && (a <= 255));
+
+   c = evas_object_data_get(control, COLOR_DATA);
+
+   assert(c != NULL);
+
+   c->r = r;
+   c->g = g;
+   c->b = b;
+   c->a = a;
 
    color = elm_layout_content_get(control, NULL);
    evas_color_argb_premul(a, &r, &g, &b);
@@ -113,10 +147,14 @@ property_color_control_color_set(Evas_Object *control, int r, int g, int b, int 
 void
 property_color_control_color_get(Evas_Object *control, int *r, int *g, int *b, int *a)
 {
-   Evas_Object *color;
-
    assert(control != NULL);
 
-   color = elm_layout_content_get(control, NULL);
-   evas_object_color_get(color, r, g, b, a);
+   Color *color = evas_object_data_get(control, COLOR_DATA);
+
+   assert(color != NULL);
+
+   *r = color->r;
+   *g = color->g;
+   *b = color->b;
+   *a = color->a;
 }
