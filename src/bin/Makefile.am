@@ -63,6 +63,7 @@ libete_a_SOURCES = \
 ../../src/bin/eflete.c \
 ../../src/bin/common/string_common.c \
 ../../src/bin/common/signals.c \
+../../src/bin/common/tizen_hacks.c \
 ../../src/bin/common/validator.c \
 ../../src/bin/common/widget_list.c \
 ../../src/bin/project_manager/group_manager.c \
