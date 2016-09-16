@@ -80,6 +80,14 @@ typedef struct {
          } zoom;
       } workspace;
    } shortcut;
+   const struct {
+      const struct {
+         const char *changed;
+         const char *changed_user;
+         const char *drag_start;
+         const char *drag_stop;
+      } spinner;
+   } elm;
 } Signals;
 
 extern const Signals signals;

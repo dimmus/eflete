@@ -1,6 +1,6 @@
 /*
  * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
+ * Copyright (C) 2013-2016 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
@@ -78,6 +78,15 @@ const Signals signals = {
                     .reset          = "signal.shortcut.workspace.zoom.reset",
                     .fit            = "signal.shortcut.workspace.zoom.fit",
                },
+          },
+     },
+
+     .elm = {
+          .spinner = {
+               .changed             = "changed",
+               .changed_user        = "changed",
+               .drag_start          = "spinner,drag,start",
+               .drag_stop           = "spinner,drag,stop",
           },
      },
 };

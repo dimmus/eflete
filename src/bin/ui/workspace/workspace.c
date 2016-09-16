@@ -502,7 +502,7 @@ _zoom_controls_add(Workspace_Data *wd)
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom, 10, 1000, 10, true);
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 76, 0);
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, 100);
-   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "changed", _spinner_zoom_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, signals.elm.spinner.changed_user, _spinner_zoom_cb, wd);
    elm_object_part_content_set(zoom_layout, "swallow.spinner", wd->toolbar.zoom.cmb_zoom);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, zoom_layout);
@@ -618,11 +618,9 @@ _container_size_controls_add(Workspace_Data *wd)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
 
-   wd->toolbar.container_sizer.spinner_w = elm_spinner_add(wd->toolbar.obj);
-   elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_w, 0, 9999);
-   elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_w, true);
+   SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_w, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_w, "vertical");
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, "changed", _spinner_container_change, wd);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, signals.elm.spinner.changed_user, _spinner_container_change, wd);
 #if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
@@ -641,11 +639,9 @@ _container_size_controls_add(Workspace_Data *wd)
    elm_object_part_content_set(size_controls, "chain", wd->toolbar.container_sizer.check_chain);
 #endif
 
-   wd->toolbar.container_sizer.spinner_h = elm_spinner_add(wd->toolbar.obj);
-   elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_h, 0, 9999);
-   elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_h, true);
+   SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_h, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_h, "vertical");
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, "changed", _spinner_container_change, wd);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, signals.elm.spinner.changed_user, _spinner_container_change, wd);
 #if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
