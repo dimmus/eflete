@@ -702,7 +702,7 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 
          tweens = edje_edit_state_tweens_list_get(edit_object, part_name, state_name, state_val);
          EINA_LIST_FOREACH(tweens, l, tween)
-            res = res && editor_state_tween_del(edit_object, change, apply, false, part_name, state_name, state_val, tween);
+            res = res && editor_state_tween_del(edit_object, change, false, apply, part_name, state_name, state_val, tween);
          edje_edit_string_list_free(tweens);
          break;
       case EDJE_PART_TYPE_PROXY:

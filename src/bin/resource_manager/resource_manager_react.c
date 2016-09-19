@@ -317,10 +317,11 @@ _property_attribute_changed(void *data,
               _resource_usage_resource_del(state, old_source);
               ((State2 *)state)->tweens = eina_list_remove(((State2 *)state)->tweens, old_source);
            }
-         TODO("Support some image sets here");
          if (change->value)
            {
               source = resource_manager_find(pro->RM.images, change->value);
+              if (!source)
+                source = resource_manager_find(pro->RM.image_sets, change->value);
               _resource_usage_resource_add(state, source);
               ((State2 *)state)->tweens = eina_list_append(((State2 *)state)->tweens, source);
            }

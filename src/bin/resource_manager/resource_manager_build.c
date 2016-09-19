@@ -99,7 +99,7 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
 
    if (part->type == EDJE_PART_TYPE_IMAGE)
      {
-        if (strcmp(state->normal, EFLETE_DUMMY_IMAGE_NAME))
+        if (state->normal && strcmp(state->normal, EFLETE_DUMMY_IMAGE_NAME))
           {
              if (edje_edit_image_set_exists(group->edit_object, state->normal))
                res = resource_manager_find(pro->RM.image_sets, state->normal);
