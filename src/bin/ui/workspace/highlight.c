@@ -236,7 +236,7 @@ _handler_down_cb(void *data,
 
    highlight->clicked = true;
    evas_object_smart_callback_call(highlight->smart_object,
-                                   "hl,drag,start", highlight->events);
+                                   signals.eflete.highlight.drag_start, highlight->events);
 }
 
 static void
@@ -435,7 +435,7 @@ _handler_up_cb(void *data,
    handler->highlight->clicked = false;
 
    evas_object_smart_callback_call(handler->highlight->smart_object,
-                                   "hl,drag,stop", handler->highlight->events);
+                                   signals.eflete.highlight.drag_stop, handler->highlight->events);
 }
 
 /*
@@ -573,7 +573,7 @@ _smart_calc(Evas_Object *obj)
 
    if (highlight->clicked)
      evas_object_smart_callback_call(highlight->smart_object,
-                                     "hl,changed", highlight->events);
+                                     signals.eflete.highlight.changed, highlight->events);
 }
 
 /* create and setup a new example smart object's internals */

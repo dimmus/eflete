@@ -386,8 +386,8 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          break;
       case PROPERTY_CONTROL_COLOR:
          content = property_color_control_add(parent);
-         evas_object_smart_callback_add(content, "changed", _start_change_cb, pa);
-         evas_object_smart_callback_add(content, "dismissed", _stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.eflete.property.color_control.changed, _start_change_cb, pa);
+         evas_object_smart_callback_add(content, signals.eflete.property.color_control.dismissed, _stop_cb, pa);
          break;
       case PROPERTY_CONTROL_COLORSEL:
          content = elm_colorselector_add(parent);
@@ -426,15 +426,15 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          break;
       case PROPERTY_CONTROL_IMAGE_NORMAL:
          content = property_image_normal_control_add(parent);
-         evas_object_smart_callback_add(content, "image,changed", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.eflete.property.image_normal_control.changed, _start_change_stop_cb, pa);
          break;
       case PROPERTY_CONTROL_IMAGE_TWEEN:
          content = property_image_tween_control_add(parent);
-         evas_object_smart_callback_add(content, "image,tween,changed", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.eflete.property.image_tween_control.changed, _start_change_stop_cb, pa);
          break;
       case PROPERTY_CONTROL_IMAGE_SELECTOR:
          content = property_image_selector_get(parent);
-         evas_object_smart_callback_add(content, "changed,demo,image", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.eflete.property.image_selector.changed, _start_change_stop_cb, pa);
          evas_object_show(content);
          break;
       case PROPERTY_CONTROL_NONE:

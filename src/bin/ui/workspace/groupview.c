@@ -291,9 +291,9 @@ groupview_add(Evas_Object *parent, Group *group)
 
    sd->highlight = highlight_add(sd->box);
    evas_object_color_set(sd->highlight, HIGHLIGHT_COLOR);
-   evas_object_smart_callback_add(sd->highlight, "hl,drag,start", _hl_part_drag_start_cb, sd);
-   evas_object_smart_callback_add(sd->highlight, "hl,changed", _hl_part_changed_cb, sd);
-   evas_object_smart_callback_add(sd->highlight, "hl,drag,stop", _hl_part_drag_stop_cb, sd);
+   evas_object_smart_callback_add(sd->highlight, signals.eflete.highlight.drag_start, _hl_part_drag_start_cb, sd);
+   evas_object_smart_callback_add(sd->highlight, signals.eflete.highlight.changed, _hl_part_changed_cb, sd);
+   evas_object_smart_callback_add(sd->highlight, signals.eflete.highlight.drag_stop, _hl_part_drag_stop_cb, sd);
    evas_object_smart_member_add(sd->highlight, obj);
 
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)

@@ -38,7 +38,7 @@ _on_image_done(void *data,
    if (strcmp(value, selected) == 0) return true;
    property_entry_set(data, selected);
 
-   evas_object_smart_callback_call(data, "changed,demo,image", NULL);
+   evas_object_smart_callback_call(data, signals.eflete.property.image_selector.changed, NULL);
 
    return true;
 }

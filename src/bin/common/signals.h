@@ -80,6 +80,40 @@ typedef struct {
          } zoom;
       } workspace;
    } shortcut;
+
+   const struct {
+      const struct {
+         const char *done;
+         const char *cancel;
+         const char *show_animation_finished;
+         const char *hide_animation_finished;
+      } modal_window;
+      const struct {
+         const char *changed;
+         const char *handler_br_moved;
+      } container;
+      const struct {
+         const char *drag_start;
+         const char *drag_stop;
+         const char *changed;
+      } highlight;
+      const struct {
+         const struct {
+            const char *changed;
+            const char *dismissed;
+         } color_control;
+         const struct {
+            const char *changed;
+         } image_normal_control;
+         const struct {
+            const char *changed;
+         } image_tween_control;
+         const struct {
+            const char *changed;
+         } image_selector;
+      } property;
+   } eflete;
+
    const struct {
       const struct {
          const char *changed;

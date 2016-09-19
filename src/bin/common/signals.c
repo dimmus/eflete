@@ -81,6 +81,39 @@ const Signals signals = {
           },
      },
 
+     .eflete = {
+          .modal_window = {
+               .done                   = "[eflete]done",
+               .cancel                 = "[eflete]cancel",
+               .show_animation_finished= "[eflete]show,animation,finished",
+               .hide_animation_finished= "[eflete]hide,animation,finished",
+          },
+          .container = {
+               .changed                = "[eflete]changed",
+               .handler_br_moved       = "[eflete]handler,BR,moved",
+          },
+          .highlight = {
+               .drag_start             = "[eflete]hl,drag,start",
+               .drag_stop              = "[eflete]hl,drag,stop",
+               .changed                = "[eflete]changed",
+          },
+          .property = {
+               .color_control = {
+                    .changed           = "[eflete]color,changed",
+                    .dismissed         = "[eflete]color,dismissed",
+               },
+               .image_normal_control = {
+                    .changed           = "[eflete]image,normal,changed",
+               },
+               .image_tween_control = {
+                    .changed           = "[eflete]image,tween,changed",
+               },
+               .image_selector = {
+                    .changed           = "[eflete]image,selector,changed",
+               },
+          },
+     },
+
      .elm = {
           .spinner = {
                .changed                = "changed",

@@ -22,9 +22,6 @@
 #include "main_window.h"
 #include "shortcuts.h"
 
-#define SIGNAL_DONE "done"
-#define SIGNAL_CANCEL "cancel"
-
 static void
 _response_cb(void *data,
              Evas_Object *obj __UNUSED__,
@@ -87,7 +84,7 @@ _anim_show_finish(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, "show,anim,finished", "eflete");
+   evas_object_smart_callback_call(mw, signals.eflete.modal_window.show_animation_finished, "eflete");
 
    img = elm_layout_content_get(obj, "elm.swallow.content");
    evas_object_image_source_visible_set(img, true);
@@ -107,7 +104,7 @@ _anim_hide_finish(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, "hide,anim,finished", "eflete");
+   evas_object_smart_callback_call(mw, signals.eflete.modal_window.hide_animation_finished, "eflete");
 
    img = elm_layout_content_get(obj, "elm.swallow.content");
    evas_object_image_source_visible_set(img, true);
@@ -157,7 +154,7 @@ _mw_close(void *data,
    assert(mw != NULL);
 
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
-   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
+   evas_object_smart_callback_call(mw, signals.eflete.modal_window.cancel, NULL);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
@@ -171,7 +168,7 @@ _mw_done(void *data,
    assert(mw != NULL);
 
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
-   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
+   evas_object_smart_callback_call(mw, signals.eflete.modal_window.done, NULL);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 

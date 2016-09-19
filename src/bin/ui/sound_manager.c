@@ -556,8 +556,8 @@ sound_manager_add(void)
 
    mng.win = mw_add();
    mw_title_set(mng.win, _("Sound manager"));
-   evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
-   evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
+   evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
+   evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
 #if !HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "image2");

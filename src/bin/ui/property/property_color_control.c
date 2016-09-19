@@ -39,7 +39,7 @@ _on_color_change(void *data,
    c = evas_object_data_get(control, COLOR_DATA);
    elm_colorselector_color_get(obj, &c->r, &c->g, &c->b, &c->a);
    property_color_control_color_set(control, c->r, c->g, c->b, c->a);
-   evas_object_smart_callback_call(control, "changed", NULL);
+   evas_object_smart_callback_call(control, signals.eflete.property.color_control.changed, NULL);
 }
 
 static Eina_Bool
@@ -52,7 +52,7 @@ _on_dismissed(void *data,
    assert(control != NULL);
 
    elm_object_scroll_freeze_pop(control);
-   evas_object_smart_callback_call(control, "dismissed", NULL);
+   evas_object_smart_callback_call(control, signals.eflete.property.color_control.dismissed, NULL);
 
    evas_object_hide(obj);
    return true;

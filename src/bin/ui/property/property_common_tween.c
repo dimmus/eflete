@@ -90,7 +90,7 @@ _del_tween_image(void *data,
      }
 
    eina_list_free(selected);
-   evas_object_smart_callback_call(control, "image,tween,changed", NULL);
+   evas_object_smart_callback_call(control, signals.eflete.property.image_tween_control.changed, NULL);
 }
 
 static Eina_Bool
@@ -110,7 +110,7 @@ _on_image_editor_tween_done(void *data,
         added_tweens = eina_list_append(added_tweens, name);
      }
 
-   evas_object_smart_callback_call(control, "image,tween,changed", NULL);
+   evas_object_smart_callback_call(control, signals.eflete.property.image_tween_control.changed, NULL);
 TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_pop(tween_list);
 

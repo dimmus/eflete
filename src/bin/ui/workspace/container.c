@@ -26,17 +26,8 @@
 
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
-static const char SIG_CHANGED[] = "container,changed";
-static const char SIG_HANDLER_BR_MOVE[] = "handler,BR,moved";
-
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
 static const char SWALLOW[] = "eflete.swallow.container";
-
-static const Evas_Smart_Cb_Description _smart_callbacks[] = {
-   {SIG_CHANGED, "(iiii)"},
-   {SIG_HANDLER_BR_MOVE, "(ii)"},
-   {NULL, NULL}
-};
 
 struct _Container_Smart_Data
 {
@@ -81,7 +72,7 @@ struct _Container_Smart_Data
  * object that is inherited from general Smart Object. */
 EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
                         Evas_Smart_Class, Evas_Smart_Class,
-                        evas_object_smart_clipped_class_get, _smart_callbacks);
+                        evas_object_smart_clipped_class_get, NULL);
 
 static void
 _mouse_down_hRB_cb(void *data,
@@ -127,7 +118,7 @@ _mouse_move_hBR_cb(void *data,
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
 
-   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, &sd->zoom1);
+   evas_object_smart_callback_call(o, signals.eflete.container.handler_br_moved, &sd->zoom1);
    evas_object_smart_changed(o);
 }
 
@@ -258,7 +249,7 @@ _container_smart_move(Evas_Object *o,
    evas_object_move(sd->container, sd->size.x, sd->size.y);
    evas_object_move(sd->handler_BR.obj, sd->size.x + sd->size.w, sd->size.y + sd->size.h);
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
+   evas_object_smart_callback_call(o, signals.eflete.container.changed, &sd->size);
 }
 
 static void
@@ -363,7 +354,7 @@ _container_smart_calculate(Evas_Object *o)
    snprintf(buff, 16, "%i %i", sd->zoom1.w, sd->zoom1.h);
    edje_object_part_text_set(sd->container, TEXT_TOOLTIP, buff);
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->zoom1);
+   evas_object_smart_callback_call(o, signals.eflete.container.changed, &sd->zoom1);
 
    if ((int)sd->zoom > 1) divisior = (int)sd->zoom;
    sd->dx = sd->dx % divisior;

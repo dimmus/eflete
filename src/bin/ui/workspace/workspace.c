@@ -1100,7 +1100,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    area->container = container_add(area->scroller);
    evas_object_size_hint_weight_set(area->container, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    container_handler_size_set(area->container, 8, 8);
-   evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
+   evas_object_smart_callback_add(area->container, signals.eflete.container.changed, _container_changed, wd);
    elm_object_content_set(area->helper, area->container);
    container_container_size_set(area->container, 350, 350);
 
