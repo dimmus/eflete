@@ -46,7 +46,8 @@ _after_export_dev_check(void *data)
    ap.splash = splash_add(ap.win, _export_develop_setup, _export_teardown, NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   popup_fileselector_helper_dismiss();
+   if (!ap.path.export_edj)
+     popup_fileselector_helper_dismiss();
 }
 
 static Eina_Bool
@@ -122,7 +123,8 @@ _after_export_release_check(void *data)
                            NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   popup_fileselector_helper_dismiss();
+   if (!ap.path.export_edj)
+     popup_fileselector_helper_dismiss();
 }
 
 static Eina_Bool
@@ -202,7 +204,8 @@ _after_export_source_code_check(void *data)
    ap.splash = splash_add(ap.win, _export_source_code_setup, _export_teardown, NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   popup_fileselector_helper_dismiss();
+   if (!ap.path.export_edc.path)
+     popup_fileselector_helper_dismiss();
 }
 
 static Eina_Bool
