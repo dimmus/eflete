@@ -46,7 +46,7 @@ group { name: "elm/win/inwin/modal_window";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            max: 960 625;
+            max: 1005 625;
             rel1.relative: 0.1 0.1;
             rel2.relative: 0.9 0.9;
          }

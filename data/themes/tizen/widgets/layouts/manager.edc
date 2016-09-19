@@ -251,8 +251,8 @@ group { name: "elm/layout/manager/property";
          type: RECT;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            min: 355 480;
-            max: 355 -1;
+            min: 400 480;
+            max: 400 -1;
             color_class: "manager_content_border";
             rel1 {
                relative: 0.0 1.0;
