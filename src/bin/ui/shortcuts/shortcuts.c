@@ -534,7 +534,7 @@ shortcuts_init(void)
    ap.shortcuts->shortcuts_handler_unpress = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
                                                                       _key_unpress_event_cb,
                                                                       NULL);
-   evas_object_smart_callback_add(ap.win, "unfocused", _win_unfocused_cb, NULL);
+   evas_object_smart_callback_add(ap.win, signals.elm.win.unfocused, _win_unfocused_cb, NULL);
 
    _default_shortcuts_add();
 

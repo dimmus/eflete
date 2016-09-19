@@ -368,11 +368,11 @@ sound_player_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(rewin, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(rewin);
    elm_object_part_content_set(control, "eflete.swallow.fast", rewin);
-   evas_object_smart_callback_add(rewin, "changed", _on_rewin_cb, NULL);
+   evas_object_smart_callback_add(rewin, signals.elm.slider.changed, _on_rewin_cb, NULL);
 
    BT_ADD(control, play, icon, "media_player/play");
    elm_object_part_content_set(rewin, NULL, play);
-   evas_object_smart_callback_add(play, "clicked", _on_play_cb, NULL);
+   evas_object_smart_callback_add(play, signals.elm.button.clicked, _on_play_cb, NULL);
    elm_object_disabled_set(play, true);
 
    vio.get_length = _snd_file_get_length;

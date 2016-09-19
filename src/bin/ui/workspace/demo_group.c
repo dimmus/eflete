@@ -221,7 +221,7 @@ _content_get(void *data,
         BUTTON_ADD(obj, button, NULL);
         ICON_STANDARD_ADD(button, ic, false, "media_player/play");
         elm_object_part_content_set(button, NULL, ic);
-        evas_object_smart_callback_add(button, "clicked", _clicked_cb, data);
+        evas_object_smart_callback_add(button, signals.elm.button.clicked, _clicked_cb, data);
      }
    return button;
 }
@@ -437,11 +437,11 @@ demo_group_add(Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, _program_add, pl);
 
-   evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.expand_request, _expand_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.contract_request, _contract_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.expanded, _expanded_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.contracted, _contracted_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.selected, _selected_cb, pl);
    evas_object_data_set(pl->genlist, DEMO_GROUP_DATA, pl);
 
    pl->it_swallow = elm_genlist_item_append(pl->genlist,

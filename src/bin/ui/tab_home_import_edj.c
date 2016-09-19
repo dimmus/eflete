@@ -339,7 +339,7 @@ _genlist_content_get(void *data,
    CHECK_ADD(obj, check);
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, node->check);
-   evas_object_smart_callback_add(check, "changed", _check_widget, node);
+   evas_object_smart_callback_add(check, signals.elm.check.changed, _check_widget, node);
    return check;
 }
 
@@ -556,14 +556,14 @@ _tab_import_edj_add(void)
 
    BUTTON_ADD(tab_edj.layout, tab_edj.btn_create, _("Create"))
    elm_object_part_content_set(tab_edj.layout, "elm.swallow.btn_create", tab_edj.btn_create);
-   evas_object_smart_callback_add(tab_edj.btn_create, "clicked", _import, NULL);
+   evas_object_smart_callback_add(tab_edj.btn_create, signals.elm.button.clicked, _import, NULL);
    elm_object_disabled_set(tab_edj.btn_create, true);
 
    /* label.name */
    elm_object_part_text_set(tab_edj.layout, "label.name", _("Project name:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.name, true)
    efl_event_callback_add(tab_edj.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edj.name_validator);
-   evas_object_smart_callback_add(tab_edj.name, "changed", _name_changed_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.name, signals.elm.entry.changed, _name_changed_cb, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.name", tab_edj.name);
    /* label.path */
    elm_object_part_text_set(tab_edj.layout, "label.path", _("Path to project:"));
@@ -575,7 +575,7 @@ _tab_import_edj_add(void)
    /* label.path */
    elm_object_part_text_set(tab_edj.layout, "label.edj", _("Path to edj-file:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.edj, true)
-   evas_object_smart_callback_add(tab_edj.edj, "changed", _edj_changed_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.edj, signals.elm.entry.changed, _edj_changed_cb, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.edj", tab_edj.edj);
    elipsis_btn_add(tab_edj.edj, _elipsis_edj, NULL);
 
@@ -585,7 +585,7 @@ _tab_import_edj_add(void)
 
    /* check all */
    CHECK_ADD(tab_edj.layout, tab_edj.ch_all);
-   evas_object_smart_callback_add(tab_edj.ch_all, "changed", _on_check_all, NULL);
+   evas_object_smart_callback_add(tab_edj.ch_all, signals.elm.check.changed, _on_check_all, NULL);
    elm_object_disabled_set(tab_edj.ch_all, true);
    elm_object_part_content_set(tab_edj.layout, "swallow.all_widgets_check", tab_edj.ch_all);
    elm_object_part_text_set(tab_edj.layout, "label.widgets", _("Widgets:"));
@@ -598,11 +598,11 @@ _tab_import_edj_add(void)
 
    /* genlist */
    tab_edj.genlist = elm_genlist_add(ap.win);
-   evas_object_smart_callback_add(tab_edj.genlist, "activated", _on_item_activated, NULL);
-   evas_object_smart_callback_add(tab_edj.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(tab_edj.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(tab_edj.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(tab_edj.genlist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, signals.elm.genlist.activated, _on_item_activated, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, signals.elm.genlist.expand_request, _expand_request_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, signals.elm.genlist.contract_request, _contract_request_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, signals.elm.genlist.expanded, _expanded_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, signals.elm.genlist.contracted, _contracted_cb, NULL);
 
    elm_object_part_content_set(tab_edj.layout, "swallow.widgets", tab_edj.genlist);
    evas_object_event_callback_add(tab_edj.layout, EVAS_CALLBACK_DEL, _tab_import_edj_del, NULL);

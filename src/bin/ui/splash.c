@@ -87,7 +87,7 @@ splash_add(Evas_Object *parent,
      {
         BUTTON_ADD(sdata.win, bt, "Cancel");
         elm_object_content_set(sdata.win, bt);
-        evas_object_smart_callback_add(bt, "clicked", _on_splash_close, NULL);
+        evas_object_smart_callback_add(bt, signals.elm.button.clicked, _on_splash_close, NULL);
      }
 
    elm_layout_signal_callback_add(sdata.win, "setup", "eflete", _on_setup, NULL);

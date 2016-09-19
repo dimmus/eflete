@@ -87,7 +87,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    bt = elm_button_add(nf);
    elm_object_text_set(bt, _("Back"));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_smart_callback_add(bt, signals.elm.button.clicked, _pop_page_cb, nf);
    evas_object_show(bt);
 
    elm_naviframe_item_push(nf, _("Page Next"), bt, NULL, NULL, NULL);
@@ -101,7 +101,7 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    bt = elm_button_add(nf);
    elm_object_text_set(bt, _("Back"));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_smart_callback_add(bt, signals.elm.button.clicked, _pop_page_cb, nf);
    evas_object_show(bt);
 
    elm_naviframe_item_push(nf, _("Page Prev"), NULL, bt, NULL, NULL);
@@ -369,12 +369,12 @@ object_generate(Demo_Part *part, Evas_Object *object)
               bt = elm_button_add(content);
               elm_object_text_set(bt, _("Prev page"));
               elm_object_part_content_set(content, "elm.swallow.prev_btn", bt);
-              evas_object_smart_callback_add(bt, "clicked", _prev_page_cb, content);
+              evas_object_smart_callback_add(bt, signals.elm.button.clicked, _prev_page_cb, content);
 
               bt2 = elm_button_add(content);
               elm_object_text_set(bt2, _("Next page"));
               elm_object_part_content_set(content, "elm.swallow.next_btn", bt2);
-              evas_object_smart_callback_add(bt2, "clicked", _next_page_cb, content);
+              evas_object_smart_callback_add(bt2, signals.elm.button.clicked, _next_page_cb, content);
               break;
           }
         Elm_Theme *theme = elm_theme_new();

@@ -87,6 +87,80 @@ typedef struct {
          const char *drag_start;
          const char *drag_stop;
       } spinner;
+      const struct {
+         const char *clicked;
+      } button;
+      const struct {
+         const char *changed;
+         const char *changed_user;
+         const char *activated;
+         const char *clicked;
+         const char *unfocused;
+      } entry;
+      const struct {
+         const char *clicked;
+         const char *selected;
+         const char *dismissed;
+      } hoversel;
+      const struct {
+         const char *changed;
+      } radio;
+      const struct {
+         const char *changed;
+      } check;
+      const struct {
+         const char *expand_request;
+         const char *expanded;
+         const char *contract_request;
+         const char *contracted;
+         const char *selected;
+         const char *unselected;
+         const char *pressed;
+         const char *activated;
+         const char *realized;
+         const char *unrealized;
+         const char *clicked_double;
+      } genlist;
+      const struct {
+         const char *unselected;
+         const char *clicked_double;
+      } gengrid;
+      const struct {
+         const char *changed;
+         const char *drag_start;
+         const char *drag_stop;
+      } slider;
+      const struct {
+         const char *delete_request;
+         const char *unfocused;
+      } win;
+      const struct {
+         const char *expanded;
+         const char *dismissed;
+         const char *item_pressed;
+         const char *item_selected;
+      } combobox;
+      const struct {
+         const char *clicked;
+      } menu;
+      const struct {
+         const char *press;
+         const char *unpress;
+      } panes;
+      const struct {
+         const char *done;
+         const char *selected;
+         const char *activated;
+      } fileselector;
+      const struct {
+         const char *color_item_selected;
+         const char *color_item_longpressed;
+         const char *changed;
+         const char *changed_user;
+      } colorselector;
+      const struct {
+         const char *dismissed;
+      } ctxpopup;
    } elm;
 } Signals;
 

@@ -218,14 +218,14 @@ property_image_tween_control_add(Evas_Object *parent)
    BUTTON_ADD(item, button, NULL)
    ICON_STANDARD_ADD(button, icon, true, "plus");
    elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _add_tween_image,
                                   item);
    elm_layout_content_set(item, "elm.swallow.add", button);
 
    BUTTON_ADD(item, button, NULL)
    ICON_STANDARD_ADD(button, icon, true, "minus");
    elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add(button, "clicked", _del_tween_image,
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _del_tween_image,
                                   item);
    elm_layout_content_set(item, "elm.swallow.del", button);
 

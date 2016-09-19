@@ -401,7 +401,7 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **
    /* name: entry */
    LAYOUT_PROP_ADD(layout_p.box, _("Name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
-   evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, popup);
+   evas_object_smart_callback_add(layout_p.entry, signals.elm.entry.changed, _group_validate, popup);
    efl_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
@@ -412,13 +412,13 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **
    LAYOUT_PROP_ADD(layout_p.box, _("Copy of"), "popup", "1swallow")
    layout_p.layout_combo = item;
    COMBOBOX_ADD(item, layout_p.combobox)
-   evas_object_smart_callback_add(layout_p.combobox, "item,pressed", _group_sel, NULL);
+   evas_object_smart_callback_add(layout_p.combobox, signals.elm.combobox.item_pressed, _group_sel, NULL);
    elm_layout_content_set(item, NULL, layout_p.combobox);
    elm_box_pack_end(layout_p.box, item);
    /* alias: check */
    LAYOUT_PROP_ADD(layout_p.box, _("Alias"), "popup", "1swallow")
    CHECK_ADD(item, layout_p.check)
-   evas_object_smart_callback_add(layout_p.check, "changed", _alias_ch, NULL);
+   evas_object_smart_callback_add(layout_p.check, signals.elm.check.changed, _alias_ch, NULL);
    elm_object_disabled_set(layout_p.check, true);
    elm_layout_content_set(item, NULL, layout_p.check);
    elm_box_pack_end(layout_p.box, item);
@@ -749,12 +749,12 @@ project_navigator_add(void)
    evas_object_show(project_navigator.layout);
 
    project_navigator.btn_add = elm_button_add(project_navigator.layout);
-   evas_object_smart_callback_add(project_navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.btn_add, signals.elm.button.clicked, _btn_add_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_add, "plus");
    elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn1", project_navigator.btn_add);
 
    project_navigator.btn_del = elm_button_add(project_navigator.layout);
-   evas_object_smart_callback_add (project_navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
+   evas_object_smart_callback_add (project_navigator.btn_del, signals.elm.button.clicked, _btn_del_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_del, "minus");
    elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn0", project_navigator.btn_del);
    elm_object_disabled_set(project_navigator.btn_del, true);
@@ -763,18 +763,18 @@ project_navigator_add(void)
    elm_genlist_homogeneous_set(project_navigator.genlist, true);
    evas_object_show(project_navigator.genlist);
    elm_object_content_set(project_navigator.layout, project_navigator.genlist);
-   evas_object_smart_callback_add (project_navigator.genlist, "selected", _selected_cb, NULL);
-   evas_object_smart_callback_add (project_navigator.genlist, "unselected", _unselected_cb, NULL);
+
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.clicked_double, _on_clicked_double, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.expand_request, _expand_request_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.contract_request, _contract_request_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.expanded, _expanded_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.contracted, _contracted_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.selected, _selected_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, signals.elm.genlist.unselected, _unselected_cb, NULL);
    /*elm_genlist_tree_effect_enabled_set(project_navigator.genlist, EINA_TRUE);*/
 
    elm_object_text_set(project_navigator.layout, _("None"));
    elm_object_disabled_set(project_navigator.layout, true);
-
-   evas_object_smart_callback_add(project_navigator.genlist, "clicked,double", _on_clicked_double, NULL);
-   evas_object_smart_callback_add(project_navigator.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(project_navigator.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(project_navigator.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(project_navigator.genlist, "contracted", _contracted_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);

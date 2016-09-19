@@ -87,7 +87,7 @@ _add_colorclass_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Obje
    LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
    ENTRY_ADD(item, mng.entry, true);
    efl_event_callback_add(mng.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.name_validator);
-   evas_object_smart_callback_add(mng.entry, "changed", _validation, popup);
+   evas_object_smart_callback_add(mng.entry, signals.elm.entry.changed, _validation, popup);
    elm_object_part_text_set(mng.entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", mng.entry);
    mng.item = item;
@@ -357,7 +357,7 @@ _radio_switcher_add(Evas_Object *obj,
    evas_object_show(radio);
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, obj);
+   evas_object_smart_callback_add(radio, signals.elm.radio.changed, func, obj);
    elm_radio_group_add(radio, group);
 
    return radio;
@@ -470,26 +470,26 @@ colorclass_manager_add(void)
 #endif
    evas_object_show(mng.genlist);
    elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.genlist);
-   evas_object_smart_callback_add(mng.genlist, "selected", _on_selected, NULL);
-   evas_object_smart_callback_add(mng.genlist, "unselected", _on_unselected, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.selected, _on_selected, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.unselected, _on_unselected, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.pressed, _search_reset_cb, &(mng.style_search_data));
 
    search = _manager_search_field_create(mng.layout);
    elm_object_part_content_set(mng.layout, "elm.swallow.search", search);
-   evas_object_smart_callback_add(search, "changed", _search_changed, NULL);
-   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, NULL);
-   evas_object_smart_callback_add(mng.genlist, "pressed", _search_reset_cb, &(mng.style_search_data));
+   evas_object_smart_callback_add(search, signals.elm.entry.changed, _search_changed, NULL);
+   evas_object_smart_callback_add(search, signals.elm.entry.activated, _search_nxt_gd_item, NULL);
    mng.style_search_data.search_entry = search;
    mng.style_search_data.last_item_found = NULL;
 
    /* Controls (add, remove) of colorclasses */
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus_managers");
-   evas_object_smart_callback_add(button, "clicked", _colorclass_add_cb, &mng);
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _colorclass_add_cb, &mng);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.del_button = elm_button_add(mng.layout);
    elm_object_style_set(mng.del_button, "minus_managers");
-   evas_object_smart_callback_add(mng.del_button, "clicked", _colorclass_del_cb, NULL);
+   evas_object_smart_callback_add(mng.del_button, signals.elm.button.clicked, _colorclass_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, EINA_TRUE);
 

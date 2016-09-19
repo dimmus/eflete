@@ -243,12 +243,12 @@ property_add(Evas_Object *parent, Property_Mode mode)
 
    evas_object_data_set(pd->genlist, PROPERTY_DATA, pd);
 
-   evas_object_smart_callback_add(pd->genlist, "expand,request", _expand_request_cb, pd);
-   evas_object_smart_callback_add(pd->genlist, "contract,request", _contract_request_cb, pd);
-   evas_object_smart_callback_add(pd->genlist, "expanded", _expanded_cb, pd);
-   evas_object_smart_callback_add(pd->genlist, "contracted", _contracted_cb, pd);
-   evas_object_smart_callback_add(pd->genlist, "realized", _realized_cb, pd);
-   evas_object_smart_callback_add(pd->genlist, "unrealized", _unrealized_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.expand_request, _expand_request_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.contract_request, _contract_request_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.expanded, _expanded_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.contracted, _contracted_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.realized, _realized_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, signals.elm.genlist.unrealized, _unrealized_cb, pd);
 
    pd->mode = mode;
    switch (mode)

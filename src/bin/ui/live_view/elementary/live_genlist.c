@@ -267,14 +267,10 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
 
    if (type ==  ELM_GENLIST_ITEM_TREE)
      {
-        evas_object_smart_callback_add(glist, "expand,request",
-                                       _expand_request_cb, NULL);
-        evas_object_smart_callback_add(glist, "contract,request",
-                                       _contract_request_cb, NULL);
-        evas_object_smart_callback_add(glist, "expanded",
-                                       _glist_expanded_cb, ic);
-        evas_object_smart_callback_add(glist, "contracted",
-                                       _glist_contracted_cb, NULL);
+        evas_object_smart_callback_add(glist, signals.elm.genlist.expand_request, _expand_request_cb, NULL);
+        evas_object_smart_callback_add(glist, signals.elm.genlist.contract_request, _contract_request_cb, NULL);
+        evas_object_smart_callback_add(glist, signals.elm.genlist.expanded, _glist_expanded_cb, ic);
+        evas_object_smart_callback_add(glist, signals.elm.genlist.contracted, _glist_contracted_cb, NULL);
      }
 
    elm_object_style_set(glist, genlist_style);

@@ -39,7 +39,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    bt = elm_button_add(nf);
    elm_object_text_set(bt, _("Back"));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_smart_callback_add(bt, signals.elm.button.clicked, _pop_page_cb, nf);
    evas_object_show(bt);
 
    elm_naviframe_item_push(nf, _("Page Next"), bt, NULL, NULL, item_style_name);
@@ -53,7 +53,7 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    bt = elm_button_add(nf);
    elm_object_text_set(bt, _("Back"));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_smart_callback_add(bt, signals.elm.button.clicked, _pop_page_cb, nf);
    evas_object_show(bt);
 
    elm_naviframe_item_push(nf, _("Page Prev"), NULL, bt, NULL, item_style_name);
@@ -88,12 +88,12 @@ _on_naviframe_swallow_check(void *data __UNUSED__,
              if (!strcmp(part->name, "elm.swallow.prev_btn"))
                {
                   elm_object_text_set(part->object, _("Prev page"));
-                  evas_object_smart_callback_add(part->object, "clicked", _prev_page_cb, obj);
+                  evas_object_smart_callback_add(part->object, signals.elm.button.clicked, _prev_page_cb, obj);
                }
              else if (!strcmp(part->name, "elm.swallow.next_btn"))
                {
                   elm_object_text_set(part->object, _("Next page"));
-                  evas_object_smart_callback_add(part->object, "clicked", _next_page_cb, obj);
+                  evas_object_smart_callback_add(part->object, signals.elm.button.clicked, _next_page_cb, obj);
                }
           }
         part->change = false;

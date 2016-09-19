@@ -363,7 +363,7 @@ _add_tone_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **t
    LAYOUT_PROP_ADD(box, _("Tone name:"), "popup", "1swallow")
    ENTRY_ADD(item, mng.tone_entry, true);
    efl_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.tone_validator);
-   evas_object_smart_callback_add(mng.tone_entry, "changed", _validation, popup);
+   evas_object_smart_callback_add(mng.tone_entry, signals.elm.entry.changed, _validation, popup);
    elm_object_part_text_set(mng.tone_entry, "guide", _("Type a new tone name"));
    elm_object_part_content_set(item, "elm.swallow.content", mng.tone_entry);
    /* need to manualy set not valid string for triggered validator */
@@ -373,7 +373,7 @@ _add_tone_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **t
    LAYOUT_PROP_ADD(box, _("Frequency:"), "popup", "1swallow")
    ENTRY_ADD(item, mng.frq_entry, true);
    efl_event_callback_add(mng.frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.frq_validator);
-   evas_object_smart_callback_add(mng.frq_entry, "changed", _validation, popup);
+   evas_object_smart_callback_add(mng.frq_entry, signals.elm.entry.changed, _validation, popup);
    /* force validator trigger */
    elm_entry_entry_set(mng.frq_entry, " ");
    elm_object_part_text_set(mng.frq_entry, "guide", _("Type a frequency (20 - 20000)"));
@@ -618,18 +618,18 @@ sound_manager_add(void)
    elm_gengrid_item_size_set(mng.gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(mng.gengrid, 0.0, 0.0);
    elm_gengrid_group_item_size_set(mng.gengrid, ITEM_HEIGHT/3, ITEM_HEIGHT/3);
-   evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_unsel_cb, NULL);
+   evas_object_smart_callback_add(mng.gengrid, signals.elm.gengrid.unselected, _grid_unsel_cb, NULL);
    elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.gengrid);
 
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus_managers");
-   evas_object_smart_callback_add(button, "clicked", _sound_add_cb, NULL);
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _sound_add_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.btn_del = elm_button_add(mng.layout);
    elm_object_style_set(mng.btn_del, "minus_managers");
-   evas_object_smart_callback_add(mng.btn_del, "clicked", _sound_del_cb, NULL);
+   evas_object_smart_callback_add(mng.btn_del, signals.elm.button.clicked, _sound_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.btn_del);
    elm_object_disabled_set(mng.btn_del, true);
 
@@ -646,8 +646,8 @@ sound_manager_add(void)
    elm_object_style_set(search_entry, "search");
 #endif
    elm_layout_content_set(mng.layout, "elm.swallow.search", search_entry);
-   evas_object_smart_callback_add(search_entry, "changed", _search_changed_cb, NULL);
-   evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
+   evas_object_smart_callback_add(search_entry, signals.elm.entry.changed, _search_changed_cb, NULL);
+   evas_object_smart_callback_add(search_entry, signals.elm.entry.activated, _find_next_cb, NULL);
    mng.sound_search_data.search_entry = search_entry;
    mng.sound_search_data.last_item_found = NULL;
 

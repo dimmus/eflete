@@ -100,7 +100,7 @@ ui_main_window_add(void)
    elm_win_title_set(ap.win, "EFL Edje Theme Editor");
 #endif
 
-   evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
+   evas_object_smart_callback_add(ap.win, signals.elm.win.delete_request, _close_request, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.quit, _close_request, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.help, _help, NULL);
 

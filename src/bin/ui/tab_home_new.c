@@ -169,7 +169,7 @@ _genlist_content_get(void *data,
    CHECK_ADD(ap.win, check);
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
-   evas_object_smart_callback_add(check, "changed", _check_widget, data);
+   evas_object_smart_callback_add(check, signals.elm.check.changed, _check_widget, data);
    return check;
 }
 
@@ -597,14 +597,14 @@ _tab_new_project_add(void)
 
    BUTTON_ADD(tab_new.layout, tab_new.btn_create, _("Create"))
    elm_object_part_content_set(tab_new.layout, "elm.swallow.btn_create", tab_new.btn_create);
-   evas_object_smart_callback_add(tab_new.btn_create, "clicked", _on_create, NULL);
+   evas_object_smart_callback_add(tab_new.btn_create, signals.elm.button.clicked, _on_create, NULL);
    elm_object_disabled_set(tab_new.btn_create, true);
 
    /* label.name */
    elm_object_part_text_set(tab_new.layout, "label.name", _("Project name:"));
    ENTRY_ADD(tab_new.layout, tab_new.name, true)
    efl_event_callback_add(tab_new.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_new.name_validator);
-   evas_object_smart_callback_add(tab_new.name, "changed", _validate, NULL);
+   evas_object_smart_callback_add(tab_new.name, signals.elm.entry.changed, _validate, NULL);
    elm_object_part_content_set(tab_new.layout, "swallow.name", tab_new.name);
    /* label.path */
    elm_object_part_text_set(tab_new.layout, "label.path", _("Path to project:"));
@@ -617,13 +617,13 @@ _tab_new_project_add(void)
 
    /* check all */
    CHECK_ADD(tab_new.layout, tab_new.ch_all);
-   evas_object_smart_callback_add(tab_new.ch_all, "changed", _on_check_all, NULL);
+   evas_object_smart_callback_add(tab_new.ch_all, signals.elm.check.changed, _on_check_all, NULL);
    elm_object_part_content_set(tab_new.layout, "swallow.all_widgets_check", tab_new.ch_all);
    elm_object_part_text_set(tab_new.layout, "label.widgets", _("Widgets:"));
 
    /* genlist */
    tab_new.genlist = elm_genlist_add(ap.win);
-   evas_object_smart_callback_add(tab_new.genlist, "activated", _on_item_activated, NULL);
+   evas_object_smart_callback_add(tab_new.genlist, signals.elm.genlist.activated, _on_item_activated, NULL);
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
    itc->func.text_get = _genlist_label_get;

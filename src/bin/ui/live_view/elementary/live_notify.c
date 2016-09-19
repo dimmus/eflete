@@ -169,7 +169,7 @@ widget_notify_create(Evas_Object *parent, const Group *group)
    BOX_ADD(parent, bx, false, false);
    elm_object_content_set(noti, bx);
 
-   evas_object_smart_callback_add(btn, "clicked", _on_click, noti);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _on_click, noti);
 
    object = elm_box_add(parent);
    elm_box_pack_end(object, btn);

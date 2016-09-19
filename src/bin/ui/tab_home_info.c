@@ -107,17 +107,17 @@ _tab_project_info_add(void)
 
    BUTTON_ADD(tab_info.layout, tab_info.btn_save, _("Save"))
    elm_object_part_content_set(tab_info.layout, "elm.swallow.btn_create", tab_info.btn_save);
-   evas_object_smart_callback_add(tab_info.btn_save, "clicked", _save, NULL);
+   evas_object_smart_callback_add(tab_info.btn_save, signals.elm.button.clicked, _save, NULL);
    elm_object_disabled_set(tab_info.btn_save, true);
 
    LABEL_ADD(tab_info.layout, tab_info.label, NULL)
    elm_object_part_content_set(tab_info.layout, "swallow.project_info", tab_info.label);
 
    meta_controls_add(tab_info.layout, &tab_info.meta);
-   evas_object_smart_callback_add(tab_info.meta.version, "changed,user", _validate, NULL);
-   evas_object_smart_callback_add(tab_info.meta.authors, "changed,user", _validate, NULL);
-   evas_object_smart_callback_add(tab_info.meta.licenses, "changed,user", _validate, NULL);
-   evas_object_smart_callback_add(tab_info.meta.comment, "changed,user", _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.version, signals.elm.entry.changed_user, _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.authors, signals.elm.entry.changed_user, _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.licenses, signals.elm.entry.changed_user, _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.comment, signals.elm.entry.changed_user, _validate, NULL);
 
    return tab_info.layout;
 }

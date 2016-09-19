@@ -64,7 +64,7 @@ _ctx_popup_create(Evas_Object *parent,
 
    Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
    elm_object_style_set(ctxpopup, style_name);
-   evas_object_smart_callback_add(ctxpopup, "dismissed", _dismissed_cb, parent);
+   evas_object_smart_callback_add(ctxpopup, signals.elm.ctxpopup.dismissed, _dismissed_cb, parent);
 
    elm_ctxpopup_horizontal_set(ctxpopup, horizontal);
 

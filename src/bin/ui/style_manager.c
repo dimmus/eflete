@@ -165,7 +165,7 @@ _add_style_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **
    mng.popup.item = item;
    ENTRY_ADD(mng.popup.item, mng.popup.name, true);
    efl_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, popup);
+   evas_object_smart_callback_add(mng.popup.name, signals.elm.entry.changed, _validate, popup);
    elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(mng.popup.item, "elm.swallow.content", mng.popup.name);
 
@@ -238,7 +238,7 @@ _add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to
    LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
    ENTRY_ADD(item, mng.popup.name, true);
    efl_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
-   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, popup);
+   evas_object_smart_callback_add(mng.popup.name, signals.elm.entry.changed, _validate, popup);
    elm_object_part_text_set(mng.popup.name, "guide", _("Type a new tag name."));
    elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
    mng.popup.item = item;
@@ -717,7 +717,7 @@ _radio_switcher_add(Evas_Object *entry_prev,
    evas_object_show(radio);
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, entry_prev);
+   evas_object_smart_callback_add(radio, signals.elm.radio.changed, func, entry_prev);
    elm_radio_group_add(radio, group);
 
    return radio;
@@ -873,18 +873,18 @@ style_manager_add()
 
    mng.genlist = elm_genlist_add(mng.layout);
    elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.genlist);
-   evas_object_smart_callback_add(mng.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(mng.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(mng.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(mng.genlist, "contracted", _contracted_cb, NULL);
-   evas_object_smart_callback_add(mng.genlist, "unselected", _on_unselected_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.expand_request, _expand_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.expanded, _expanded_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.contract_request, _contract_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.contracted, _contracted_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.unselected, _on_unselected_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, signals.elm.genlist.pressed, _search_reset_cb, &(mng.style_search_data));
    evas_object_show(mng.genlist);
 
    search = _style_manager_search_field_create(mng.layout);
    elm_object_part_content_set(mng.layout, "elm.swallow.search", search);
-   evas_object_smart_callback_add(search, "changed", _search_changed, NULL);
-   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, NULL);
-   evas_object_smart_callback_add(mng.genlist, "pressed", _search_reset_cb, &(mng.style_search_data));
+   evas_object_smart_callback_add(search, signals.elm.entry.changed, _search_changed, NULL);
+   evas_object_smart_callback_add(search, signals.elm.entry.activated, _search_nxt_gd_item, NULL);
    mng.style_search_data.search_entry = search;
    mng.style_search_data.last_item_found = NULL;
 
@@ -894,12 +894,12 @@ style_manager_add()
 
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "plus_managers");
-   evas_object_smart_callback_add(button_add, "clicked", _btn_add_cb, NULL);
+   evas_object_smart_callback_add(button_add, signals.elm.button.clicked, _btn_add_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button_add);
 
    mng.button_del = elm_button_add(ap.win);
    elm_object_style_set(mng.button_del, "minus_managers");
-   evas_object_smart_callback_add(mng.button_del, "clicked", _btn_del_cb, NULL);
+   evas_object_smart_callback_add(mng.button_del, signals.elm.button.clicked, _btn_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.button_del);
    elm_object_disabled_set(mng.button_del, true);
 

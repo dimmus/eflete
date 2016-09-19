@@ -337,11 +337,11 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_CHECK:
          CHECK_ADD(parent, content);
          elm_object_style_set(content, "toggle");
-         evas_object_smart_callback_add(content, "changed", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.check.changed, _start_change_stop_cb, pa);
          break;
       case PROPERTY_CONTROL_BUTTON:
          BUTTON_ADD(parent, content, NULL);
-         evas_object_smart_callback_add(content, "clicked", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.button.clicked, _start_change_stop_cb, pa);
          break;
       case PROPERTY_CONTROL_COMBOBOX:
          COMBOBOX_ADD(parent, content);
@@ -350,9 +350,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          itc->func.text_get = _combobox_text_get;
          itc->func.del = _combobox_item_del;
          evas_object_data_set(content, "COMMON_ITC", itc);
-         evas_object_smart_callback_add(content, "item,pressed", _combobox_item_pressed_cb, pa);
-         evas_object_smart_callback_add(content, "expanded", _combobox_expanded_cb, pa);
-         evas_object_smart_callback_add(content, "dismissed", _combobox_dismissed_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.item_pressed, _combobox_item_pressed_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.expanded, _combobox_expanded_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.dismissed, _combobox_dismissed_cb, pa);
          break;
       case PROPERTY_CONTROL_COMBOBOX_CC:
          COMBOBOX_ADD(parent, content);
@@ -363,9 +363,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          itc->func.del = _combobox_cc_item_del;
          evas_object_data_set(content, "COMMON_ITC", itc);
          elm_object_style_set(content, "color_class");
-         evas_object_smart_callback_add(content, "item,pressed", _combobox_item_pressed_cb, pa);
-         evas_object_smart_callback_add(content, "expanded", _combobox_expanded_cb, pa);
-         evas_object_smart_callback_add(content, "dismissed", _combobox_dismissed_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.item_pressed, _combobox_item_pressed_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.expanded, _combobox_expanded_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.combobox.dismissed, _combobox_dismissed_cb, pa);
          break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
@@ -380,9 +380,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          break;
       case PROPERTY_CONTROL_ENTRY:
          ENTRY_ADD(parent, content, true);
-         evas_object_smart_callback_add(content, "changed,user", _start_change_cb, pa);
-         evas_object_smart_callback_add(content, "activated", _stop_cb, pa);
-         evas_object_smart_callback_add(content, "unfocused", _stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.entry.changed_user, _start_change_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.entry.activated, _stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.entry.unfocused, _stop_cb, pa);
          break;
       case PROPERTY_CONTROL_COLOR:
          content = property_color_control_add(parent);
@@ -393,8 +393,8 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          content = elm_colorselector_add(parent);
          elm_colorselector_mode_set(content, ELM_COLORSELECTOR_ALL);
          TODO("start/stop callbacks for this item type would be incorrect. Add correct one if needed");
-         evas_object_smart_callback_add(content, "changed,user", _start_change_stop_cb, pa);
-         evas_object_smart_callback_add(content, "color,item,selected", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.colorselector.changed_user, _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.colorselector.color_item_selected, _start_change_stop_cb, pa);
 
 #if HAVE_TIZEN
          /* Dirty hack for set size to color picker */

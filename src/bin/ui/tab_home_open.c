@@ -152,18 +152,18 @@ _tab_open_project_add(void)
    tab.btn_clear = elm_button_add(ap.win);
    elm_object_text_set(tab.btn_clear, _("Clear list"));
    elm_layout_content_set(tab.layout, "elm.swallow.btn_clear", tab.btn_clear);
-   evas_object_smart_callback_add(tab.btn_clear, "clicked", _recent_clear, NULL);
+   evas_object_smart_callback_add(tab.btn_clear, signals.elm.button.clicked, _recent_clear, NULL);
 
    tab.fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(tab.fs, false);
    elm_fileselector_path_set(tab.fs, profile_get()->general.projects_folder);
    elm_fileselector_custom_filter_append(tab.fs, _eflete_filter, NULL, "Eflete Files");
-   evas_object_smart_callback_add(tab.fs, "done", _open_done, NULL);
-   evas_object_smart_callback_add(tab.fs, "selected", _selected, NULL);
+   evas_object_smart_callback_add(tab.fs, signals.elm.fileselector.done, _open_done, NULL);
+   evas_object_smart_callback_add(tab.fs, signals.elm.fileselector.selected, _selected, NULL);
    /* small hack for disabling 'Open' button when .pro is not selected */
    evas_object_smart_callback_add(elm_layout_content_get(tab.fs, "elm.swallow.files"),
-                                  "unselected", _unselected, NULL);
-   evas_object_smart_callback_add(tab.fs, "activated", _open_done, NULL);
+                                  signals.elm.genlist.unselected, _unselected, NULL);
+   evas_object_smart_callback_add(tab.fs, signals.elm.fileselector.activated, _open_done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.filters"));
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.cancel"));
@@ -228,7 +228,7 @@ _tab_open_project_recents_update(void)
         elm_object_part_text_set(btn, "elm.text", r->name);
         elm_object_part_text_set(btn, "elm.subtext", r->path);
         evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
-        evas_object_smart_callback_add(btn, "clicked", _open_recent, r);
+        evas_object_smart_callback_add(btn, signals.elm.button.clicked, _open_recent, r);
         elm_box_pack_end(box, btn);
         evas_object_show(btn);
      }

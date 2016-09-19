@@ -286,7 +286,7 @@ _caption_content_get(void *data,
           evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
           edje_object_animation_set(elm_layout_edje_get(content), true);
 
-          evas_object_smart_callback_add(content, "changed", _on_parts_eye_clicked, NULL);
+          evas_object_smart_callback_add(content, signals.elm.check.changed, _on_parts_eye_clicked, NULL);
        }
 
    return content;
@@ -311,7 +311,7 @@ _part_content_get(void *data,
         elm_object_style_set(content, "eye");
         evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
         edje_object_animation_set(elm_layout_edje_get(content), true);
-        evas_object_smart_callback_add(content, "changed", _on_eye_clicked, _part);
+        evas_object_smart_callback_add(content, signals.elm.check.changed, _on_eye_clicked, _part);
      }
    if (!strcmp(part, "elm.swallow.end"))
      {
@@ -1099,14 +1099,14 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
    efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->part_name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new part"));
    resource_name_validator_list_set(pl->part_name_validator, &pl->group->parts, false);
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_part_name_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, signals.elm.entry.changed, _on_part_name_changed, pl);
    evas_object_show(pl->popup.entry_name);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Part type"), "popup", "1swallow")
    COMBOBOX_ADD(item, pl->popup.combobox)
-   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
    for (i = 0; part_types[i]; i++)
      {
@@ -1119,12 +1119,12 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
      }
    elm_object_text_set(pl->popup.combobox, part_types[0]);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _type_selected_cb, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _type_selected_cb, pl);
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Part copy"), "popup", "1swallow")
    COMBOBOX_ADD(item, pl->popup.combobox_copy)
-   evas_object_smart_callback_add(pl->popup.combobox_copy, "item,pressed",
+   evas_object_smart_callback_add(pl->popup.combobox_copy, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
    combobox_item = mem_malloc(sizeof(Combobox_Item));
    combobox_item->index = 0;
@@ -1145,7 +1145,7 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
      }
    evas_object_show(pl->popup.combobox_copy);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox_copy);
-   evas_object_smart_callback_add(pl->popup.combobox_copy, "item,selected", _part_selected_cb, pl);
+   evas_object_smart_callback_add(pl->popup.combobox_copy, signals.elm.combobox.item_selected, _part_selected_cb, pl);
    elm_box_pack_end(box, item);
 
    if (to_focus) *to_focus = pl->popup.entry_name;
@@ -1231,7 +1231,7 @@ _add_group_data_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Obje
    efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->group_data_name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new group_data"));
    resource_name_validator_list_set(pl->group_data_name_validator, &pl->group->data_items, false);
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_group_data_name_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, signals.elm.entry.changed, _on_group_data_name_changed, pl);
    evas_object_show(pl->popup.entry_name);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1370,7 +1370,7 @@ _add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **
    ENTRY_ADD(item, pl->popup.entry_name, true);
    efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _state_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, signals.elm.entry.changed, _state_validate, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new state"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1380,7 +1380,7 @@ _add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **
    elm_object_style_set(pl->popup.spinner_value, "vertical");
    elm_spinner_label_format_set(pl->popup.spinner_value, "%1.2f");
    elm_object_part_text_set(item, "elm.subtext", _("Available values: 0.0 - 1.0"));
-   evas_object_smart_callback_add(pl->popup.spinner_value, "changed", _state_validate, pl);
+   evas_object_smart_callback_add(pl->popup.spinner_value, signals.elm.spinner.changed_user, _state_validate, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.spinner_value);
    elm_box_pack_end(box, item);
 
@@ -1407,10 +1407,10 @@ _add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
         eina_stringshare_del(label);
      }
-   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
    evas_object_show(pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _state_selected_cb, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _state_selected_cb, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    elm_box_pack_end(box, item);
 
@@ -1519,7 +1519,7 @@ _add_item_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
    ENTRY_ADD(item, pl->popup.entry_name, true);
    efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, signals.elm.entry.changed, _item_validate, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new item"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1541,11 +1541,11 @@ _add_item_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
           }
      }
-   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
    evas_object_show(pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "dismissed", _item_validate, pl);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _item_selected, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.dismissed, _item_validate, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _item_selected, pl);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
 
    elm_box_pack_end(box, item);
@@ -1651,7 +1651,7 @@ _add_program_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object 
    efl_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          resource_name_validator_helper, pl->program_name_validator);
    resource_name_validator_list_set(pl->program_name_validator, &pl->group->programs, false);
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, signals.elm.entry.changed, _program_validate, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter the name of the new program"));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1669,9 +1669,9 @@ _add_program_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object 
      }
    elm_object_text_set(pl->popup.combobox, program_actions[0]);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,pressed",
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
-   evas_object_smart_callback_add(pl->popup.combobox, "item,selected", _program_selected_cb, pl);
+   evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _program_selected_cb, pl);
 
    elm_box_pack_end(box, item);
    pl->popup.box = box;
@@ -2504,13 +2504,13 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->group = group;
 
    BTN_ADD(pl->layout, pl->btn_add, "elm.swallow.btn1", "plus");
-   evas_object_smart_callback_add(pl->btn_add, "clicked", _on_btn_plus_clicked, pl);
+   evas_object_smart_callback_add(pl->btn_add, signals.elm.button.clicked, _on_btn_plus_clicked, pl);
    BTN_ADD(pl->layout, pl->btn_del, "elm.swallow.btn0", "minus");
-   evas_object_smart_callback_add(pl->btn_del, "clicked", _on_btn_minus_clicked, pl);
+   evas_object_smart_callback_add(pl->btn_del, signals.elm.button.clicked, _on_btn_minus_clicked, pl);
    BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn3", "down");
-   evas_object_smart_callback_add(pl->btn_down, "clicked", _on_btn_down_clicked, pl);
+   evas_object_smart_callback_add(pl->btn_down, signals.elm.button.clicked, _on_btn_down_clicked, pl);
    BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn2", "up");
-   evas_object_smart_callback_add(pl->btn_up, "clicked", _on_btn_up_clicked, pl);
+   evas_object_smart_callback_add(pl->btn_up, signals.elm.button.clicked, _on_btn_up_clicked, pl);
 
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
@@ -2561,12 +2561,12 @@ group_navigator_add(Evas_Object *parent, Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
-   evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
-   evas_object_smart_callback_add(pl->genlist, "unselected", _unselected_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.expand_request, _expand_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.contract_request, _contract_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.expanded, _expanded_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.contracted, _contracted_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.selected, _selected_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, signals.elm.genlist.unselected, _unselected_cb, pl);
    evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
    /*elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);*/
 

@@ -256,7 +256,7 @@ history_ui_add(Evas_Object *parent, History *history)
    Evas_Object *btn = elm_button_add(hd->layout);
    elm_object_style_set(btn, "undo");
    evas_object_show(btn);
-   evas_object_smart_callback_add(btn, "clicked", _btn_undo_cb, hd);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _btn_undo_cb, hd);
    hd->btn_undo = btn;
 
    Evas_Object *undo_layout = elm_layout_add(hd->layout);
@@ -270,9 +270,9 @@ history_ui_add(Evas_Object *parent, History *history)
    evas_object_size_hint_weight_set(hd->undo_cmbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(hd->undo_cmbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_style_set(hd->undo_cmbx, "history");
-   evas_object_smart_callback_add(hd->undo_cmbx, "clicked", _expanded_undo, hd);
-   evas_object_smart_callback_add(hd->undo_cmbx, "selected", _undo_item_selected, hd);
-   evas_object_smart_callback_add(hd->undo_cmbx, "dismissed", _undo_item_cleanup, hd);
+   evas_object_smart_callback_add(hd->undo_cmbx, signals.elm.hoversel.clicked, _expanded_undo, hd);
+   evas_object_smart_callback_add(hd->undo_cmbx, signals.elm.hoversel.selected, _undo_item_selected, hd);
+   evas_object_smart_callback_add(hd->undo_cmbx, signals.elm.hoversel.dismissed, _undo_item_cleanup, hd);
 
    evas_object_show(hd->undo_cmbx);
    elm_object_part_content_set(undo_layout, "arrow", hd->undo_cmbx);
@@ -281,7 +281,7 @@ history_ui_add(Evas_Object *parent, History *history)
    btn = elm_button_add(hd->layout);
    elm_object_style_set(btn, "redo");
    evas_object_show(btn);
-   evas_object_smart_callback_add(btn, "clicked", _btn_redo_cb, hd);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _btn_redo_cb, hd);
    hd->btn_redo = btn;
 
    Evas_Object *redo_layout = elm_layout_add(hd->layout);
@@ -295,9 +295,9 @@ history_ui_add(Evas_Object *parent, History *history)
    evas_object_size_hint_weight_set(hd->redo_cmbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(hd->redo_cmbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_style_set(hd->redo_cmbx, "history");
-   evas_object_smart_callback_add(hd->redo_cmbx, "clicked", _expanded_redo, hd);
-   evas_object_smart_callback_add(hd->redo_cmbx, "selected", _redo_item_selected, hd);
-   evas_object_smart_callback_add(hd->redo_cmbx, "dismissed", _redo_item_cleanup, hd);
+   evas_object_smart_callback_add(hd->redo_cmbx, signals.elm.hoversel.clicked, _expanded_redo, hd);
+   evas_object_smart_callback_add(hd->redo_cmbx, signals.elm.hoversel.selected, _redo_item_selected, hd);
+   evas_object_smart_callback_add(hd->redo_cmbx, signals.elm.hoversel.dismissed, _redo_item_cleanup, hd);
    evas_object_show(hd->redo_cmbx);
    elm_object_part_content_set(redo_layout, "arrow", hd->redo_cmbx);
    elm_object_part_content_set(hd->layout, "redo", redo_layout);

@@ -118,7 +118,7 @@ _button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
 
    BUTTON_ADD(pd->popup, btn, text);
    evas_object_data_set(btn, POPUP_DATA, pd);
-   evas_object_smart_callback_add(btn, "clicked", _popup_btn_cb, (void *)pb);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _popup_btn_cb, (void *)pb);
    elm_object_part_content_set(pd->popup, position_name[*btn_pos], btn);
    *btn_pos = *btn_pos + 1;
 
@@ -479,8 +479,8 @@ _fileselector_helper(const char *title,
 
    elm_fileselector_path_set(fs, (path && (strcmp(path, ""))) ? path :
                              (ap.last_path) ? ap.last_path : profile_get()->general.projects_folder);
-   evas_object_smart_callback_add(fs, "done", _done, follow_up);
-   evas_object_smart_callback_add(fs, "activated", _done, follow_up);
+   evas_object_smart_callback_add(fs, signals.elm.fileselector.done, _done, follow_up);
+   evas_object_smart_callback_add(fs, signals.elm.fileselector.activated, _done, follow_up);
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
    evas_object_resize(helper, FS_W, FS_H);
 
@@ -856,7 +856,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
         BUTTON_ADD(fs, helper_data->button, _("Ok"))
         elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
-        evas_object_smart_callback_add(helper_data->button, "clicked", _done_image, helper_data);
+        evas_object_smart_callback_add(helper_data->button, signals.elm.button.clicked, _done_image, helper_data);
         evas_object_show(helper_data->button);
      }
    else
@@ -864,7 +864,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         elm_gengrid_multi_select_set(helper_data->gengrid, false);
         elm_gengrid_multi_select_mode_set(helper_data->gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-        evas_object_smart_callback_add(helper_data->gengrid, "clicked,double", _done_image, helper_data);
+        evas_object_smart_callback_add(helper_data->gengrid, signals.elm.gengrid.clicked_double, _done_image, helper_data);
      }
    elm_gengrid_item_size_set(helper_data->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(helper_data->gengrid, 0.0, 0.0);
@@ -893,9 +893,9 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 #endif
 
    elm_object_part_content_set(fs, "eflete.swallow.search_line", entry);
-   evas_object_smart_callback_add(entry, "changed",
+   evas_object_smart_callback_add(entry, signals.elm.entry.changed,
                                   _on_images_search_entry_changed_cb, helper_data);
-   evas_object_smart_callback_add(entry, "activated",
+   evas_object_smart_callback_add(entry, signals.elm.entry.activated,
                                   _search_next_gengrid_item_cb, helper_data);
    helper_data->image_search_data.search_entry = entry;
    helper_data->image_search_data.last_item_found = NULL;
@@ -903,7 +903,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    BUTTON_ADD(fs, button, NULL);
    ICON_STANDARD_ADD(button, icon, true, "image2");
    elm_object_content_set(button, icon);
-   evas_object_smart_callback_add(button, "clicked", _btn_image_manager_cb, NULL);
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _btn_image_manager_cb, NULL);
    elm_object_part_content_set(fs, "eflete.swallow.button", button);
    elm_layout_signal_emit(fs, "button,show", "eflete");
 
@@ -998,9 +998,9 @@ popup_colorselector_helper(Evas_Object *follow_up,
    elm_colorselector_palette_color_add(fs, 255, 255, 255, 255);
    elm_colorselector_palette_color_add(fs, 200, 200, 200, 255);
 #endif
-   evas_object_smart_callback_add(fs, "changed", func_change, data);
-   evas_object_smart_callback_add(fs, "color,item,selected", func_change, data);
-   evas_object_smart_callback_add(fs, "color,item,longpressed", func_change, data);
+   evas_object_smart_callback_add(fs, signals.elm.colorselector.changed, func_change, data);
+   evas_object_smart_callback_add(fs, signals.elm.colorselector.color_item_selected, func_change, data);
+   evas_object_smart_callback_add(fs, signals.elm.colorselector.color_item_longpressed, func_change, data);
 
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
@@ -1010,7 +1010,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
 #if !HAVE_TIZEN
    BUTTON_ADD(fs, helper_data->button, _("Ok"))
    elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
-   evas_object_smart_callback_add(helper_data->button, "clicked", _colorclass_done, helper_data);
+   evas_object_smart_callback_add(helper_data->button, signals.elm.button.clicked, _colorclass_done, helper_data);
    evas_object_show(helper_data->button);
 #endif
 

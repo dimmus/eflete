@@ -581,25 +581,25 @@ image_manager_add(void)
    elm_gengrid_multi_select_set(mng.gengrid, true);
    elm_gengrid_multi_select_mode_set(mng.gengrid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
    elm_gengrid_select_mode_set(mng.gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_sel_cb, NULL);
+   evas_object_smart_callback_add(mng.gengrid, signals.elm.gengrid.unselected, _grid_sel_cb, NULL);
    evas_object_show(mng.gengrid);
 
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus_managers");
-   evas_object_smart_callback_add(button, "clicked", _image_add_cb, NULL);
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _image_add_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.del_button = elm_button_add(mng.layout);
    elm_object_style_set(mng.del_button, "minus_managers");
-   evas_object_smart_callback_add(mng.del_button, "clicked", _image_del_cb, NULL);
+   evas_object_smart_callback_add(mng.del_button, signals.elm.button.clicked, _image_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, true);
 
    // Search line add
    search_entry = _image_manager_search_field_create(mng.layout);
    elm_object_part_content_set(mng.layout, "elm.swallow.search", search_entry);
-   evas_object_smart_callback_add(search_entry, "changed", _entry_changed_cb, NULL);
-   evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
+   evas_object_smart_callback_add(search_entry, signals.elm.entry.changed, _entry_changed_cb, NULL);
+   evas_object_smart_callback_add(search_entry, signals.elm.entry.activated, _find_next_cb, NULL);
    mng.image_search_data.search_entry = search_entry;
    mng.image_search_data.last_item_found = NULL;
 

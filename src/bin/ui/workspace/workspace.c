@@ -451,7 +451,7 @@ _zoom_controls_add(Workspace_Data *wd)
    Elm_Object_Item *tb_it;
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
-   evas_object_smart_callback_add(wd->toolbar.zoom.fit, "clicked", _fit_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.fit, signals.elm.button.clicked, _fit_cb, wd);
 #if HAVE_TIZEN
    elm_object_style_set(wd->toolbar.zoom.fit, "fit");
 #else
@@ -467,19 +467,19 @@ _zoom_controls_add(Workspace_Data *wd)
    wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
    elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
    elm_slider_value_set(wd->toolbar.zoom.slider, 100);
-   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,start", _slider_zoom_start_cb, wd);
-   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
-   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "slider,drag,stop", _slider_zoom_stop_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_start, _slider_zoom_start_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.changed, _slider_zoom_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_stop, _slider_zoom_stop_cb, wd);
 #if HAVE_TIZEN
    Evas_Object *btn = elm_button_add(wd->toolbar.obj);
    elm_object_style_set(btn, "minus_zoom");
    evas_object_show(btn);
-   evas_object_smart_callback_add(btn, "clicked", _btn_minus_zoom_cb, wd);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _btn_minus_zoom_cb, wd);
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", btn);
    btn = elm_button_add(wd->toolbar.obj);
    elm_object_style_set(btn, "plus_zoom");
    evas_object_show(btn);
-   evas_object_smart_callback_add(btn, "clicked", _btn_plus_zoom_cb, wd);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _btn_plus_zoom_cb, wd);
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", btn);
 #else
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
@@ -518,7 +518,7 @@ _zoom_controls_add(Workspace_Data *wd)
    wd->toolbar.zoom.itc->func.del = _combobox_item_del;
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
    elm_object_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
-   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "item,pressed", _zoom_selected_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, signals.elm.combobox.item_pressed, _zoom_selected_cb, wd);
    while (zoom_values[i])
     {
       text = eina_stringshare_printf("%d%%", zoom_values[i]);
@@ -610,7 +610,7 @@ _container_size_controls_add(Workspace_Data *wd)
 
    wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, "changed", _container_lock, wd);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, signals.elm.check.changed, _container_lock, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
 
@@ -630,7 +630,7 @@ _container_size_controls_add(Workspace_Data *wd)
 
    wd->toolbar.container_sizer.check_chain = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, "changed", _container_aspect_change, wd);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, signals.elm.check.changed, _container_aspect_change, wd);
 
 #if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -667,7 +667,7 @@ _radio_switcher_add(Workspace_Data *wd,
    radio = elm_radio_add(wd->layout);
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, wd);
+   evas_object_smart_callback_add(radio, signals.elm.radio.changed, func, wd);
    elm_radio_group_add(radio, group);
 
    return radio;
@@ -1041,7 +1041,7 @@ static void
 _menu_add(Workspace_Data *wd)
 {
    wd->menu.obj = elm_menu_add(ap.win);
-   evas_object_smart_callback_add(wd->menu.obj, "clicked", _menu_dismissed, wd);
+   evas_object_smart_callback_add(wd->menu.obj, signals.elm.menu.clicked, _menu_dismissed, wd);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL, wd);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL, wd);
    elm_menu_item_separator_add(wd->menu.obj, NULL);
@@ -1503,7 +1503,7 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 95, 0);
    elm_object_text_set(wd->toolbar.libraries_switcher, _("Library"));
    elm_object_style_set(wd->toolbar.libraries_switcher, "library");
-   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "item,pressed", _library_select, wd);
+   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, signals.elm.combobox.item_pressed, _library_select, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
 
@@ -1557,7 +1557,7 @@ workspace_add(Evas_Object *parent, Group *group)
 #else
    CHECK_ADD(wd->layout, wd->toolbar.mode_switcher);
    elm_object_style_set(wd->toolbar.mode_switcher, "demo");
-   evas_object_smart_callback_add(wd->toolbar.mode_switcher, "changed", _mode_cb, wd);
+   evas_object_smart_callback_add(wd->toolbar.mode_switcher, signals.elm.check.changed, _mode_cb, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1586,8 +1586,8 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_style_set(wd->panes_h, "pan_hide");
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
-   evas_object_smart_callback_add(wd->panes_h, "press", _panes_h_press, wd);
-   evas_object_smart_callback_add(wd->panes_h, "unpress", _panes_h_unpress, wd);
+   evas_object_smart_callback_add(wd->panes_h, signals.elm.panes.press, _panes_h_press, wd);
+   evas_object_smart_callback_add(wd->panes_h, signals.elm.panes.unpress, _panes_h_unpress, wd);
    elm_layout_content_set(wd->layout, NULL, wd->panes_h);
 
    ENTRY_ADD(wd->panes_h, wd->code.obj, false)
@@ -2285,7 +2285,7 @@ workspace_code_changed(Evas_Object *obj)
    elm_object_text_set(layout, _("Project is changed"));
    btn = elm_button_add(layout);
    elm_object_text_set(btn, _("Reload"));
-   evas_object_smart_callback_add(btn, "clicked", _code_reload, wd);
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _code_reload, wd);
    elm_object_content_set(layout, btn);
 
    elm_object_part_content_set(wd->code.obj, "elm.swallow.overlay", layout);
