@@ -239,6 +239,9 @@ about_window_add(void)
 }
 
 #endif
+
+#if !HAVE_TIZEN
+
 static Evas_Object *
 _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
@@ -294,7 +297,6 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Ob
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(scroller);
    elm_box_pack_end(box, scroller);
-
    return box;
 }
 
@@ -308,3 +310,137 @@ shortcuts_window_add(void)
    popup_add(_("Help: shortcuts"), NULL, BTN_OK, _shortcuts_window_content_get, content);
    return NULL;
 }
+#else
+static char *
+_label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
+{
+   return strdup((char *)data);
+}
+static Evas_Object *
+_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+{
+   Evas_Object *box = data;
+   static const char *global_hotkeys[] = {
+                       "F1 - show shortcuts list (this dialog)",
+                       "F2 - normal mode",
+                       "F3 - code mode",
+                       "F4 - demo mode",
+                       "F7 - open image manager",
+                       "F8 - open sound manager",
+                       "F9 - open style manager",
+                       "F10 - open colorclass manager",
+                       "ctrl + q - quit",
+                       NULL};
+   static const char *workspace_hotkeys[] = {
+                       "ctrl + s - save",
+                       "ctrl + z - undo",
+                       "ctrl + y - redo",
+                       "ctrl + n - add new group",
+                       "q - add new part",
+                       "w - add new state",
+                       "e - add new item",
+                       "r - add new program",
+                       "t - add new data item",
+                       "del - delete selected part/state/item/etc",
+                       "s - select next state of active part",
+                       "z - select prev part",
+                       "x - select next part",
+                       "ESC - unselect",
+                       "o - show/hide object area",
+                       "ctrl + wheel_up/KP_ADD - zoom in",
+                       "ctrl + wheel_down/KP_SUB - zoom out",
+                       "KP_DIV - set zoom to 100%",
+                       NULL};
+   static const char *tabs_hotkeys[] = {
+                       "ctrl + w - close tab",
+                       "ctrl + num - switch to tab 1-10",
+                       "tab/ctrl + pg_down - switch to next tab",
+                       "shift + tab / ctrl + pg_up - switch to prev tab",
+                       NULL};
+
+   static const char *popup_hotkeys[] = {
+                       "Enter - OK",
+                       "ESC - cancel",
+                        NULL};
+
+
+
+   Evas_Object *genlist = elm_genlist_add(ap.win);
+   Elm_Genlist_Item_Class *group_itc = elm_genlist_item_class_new();
+   group_itc->item_style = "group_index";
+   group_itc->func.text_get = _label_get;
+
+   Elm_Genlist_Item_Class *shortcut_itc = elm_genlist_item_class_new();
+   shortcut_itc->item_style = "shortcuts";
+   shortcut_itc->func.text_get = _label_get;
+
+   Elm_Genlist_Item_Class *empty_itc = elm_genlist_item_class_new();
+   empty_itc->item_style = "empty";
+
+   int i = 0;
+   Elm_Object_Item *global_group = elm_genlist_item_append(genlist, group_itc, strdup("Global"),
+                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; global_hotkeys[i] != NULL; i++)
+     {
+       elm_genlist_item_append(genlist, shortcut_itc, global_hotkeys[i],
+                               global_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+   elm_genlist_item_append(genlist, empty_itc, NULL,
+                           global_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+   Elm_Object_Item *workspace_group = elm_genlist_item_append(genlist, group_itc, strdup("Workspace"),
+                                                        NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; workspace_hotkeys[i] != NULL; i++)
+     {
+       elm_genlist_item_append(genlist, shortcut_itc, workspace_hotkeys[i],
+                               workspace_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+   elm_genlist_item_append(genlist, empty_itc, NULL,
+                           workspace_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+
+   Elm_Object_Item *tabs_group = elm_genlist_item_append(genlist, group_itc, strdup("Tabs"),
+                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; tabs_hotkeys[i] != NULL; i++)
+     {
+       elm_genlist_item_append(genlist, shortcut_itc, tabs_hotkeys[i],
+                               tabs_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+   elm_genlist_item_append(genlist, empty_itc, NULL,
+                           tabs_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+
+   Elm_Object_Item *popup_group = elm_genlist_item_append(genlist, group_itc, strdup("Popup"),
+                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; popup_hotkeys[i] != NULL; i++)
+     {
+       elm_genlist_item_append(genlist, shortcut_itc, popup_hotkeys[i],
+                               popup_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+   elm_genlist_item_append(genlist, empty_itc, NULL,
+                           popup_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+
+   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(genlist);
+   Evas_Object *layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(layout, "layout", "shortcuts", "default");
+   elm_layout_content_set(layout, "elm.swallow.content", genlist);
+   evas_object_show(layout);
+   elm_box_pack_end(box, layout);
+   elm_object_style_set(popup, "shortcuts");
+   return box;
+}
+
+Evas_Object *
+shortcuts_window_add(void)
+{
+   Evas_Object *content = elm_box_add(ap.win);
+
+   evas_object_size_hint_min_set(content, 420, 460);
+
+   popup_add(_("Help: shortcuts"), NULL, BTN_OK, _shortcuts_window_content_get, content);
+   return NULL;
+}
+#endif

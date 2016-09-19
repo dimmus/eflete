@@ -2257,6 +2257,18 @@ group { name: "elm/layout/about/default";
    }
 }
 
+group { name: "elm/layout/shortcuts/default";
+   parts {
+     part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 420 420;
+            max: 420 420;
+         }
+      }
+   }
+}
+
 #include "layouts/manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"

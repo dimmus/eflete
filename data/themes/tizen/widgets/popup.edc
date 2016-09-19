@@ -4,6 +4,7 @@
 /*popup widget specific notify style style*/
 
 group { name: "elm/notify/block_events/popup/default";
+   alias: "elm/notify/block_events/popup/shortcuts";
    parts {
       part { name: "block_events";
          type: RECT;
@@ -38,6 +39,7 @@ group { name: "elm/notify/block_events/popup/default";
    }
 }
 group { name: "elm/notify/center/popup/default";
+  alias: "elm/notify/center/popup/shortcuts";
   parts {
       part { name: "shadow";
          type: IMAGE;
@@ -102,6 +104,7 @@ group { name: "elm/label/base/popup/default";
       }
    }
 }
+
 group { name: "elm/popup/base/default";
    images {
       image: "General/cd_icon.png" COMP;
@@ -215,6 +218,7 @@ group { name: "elm/popup/base/default";
 }
 
 group { name: "elm/popup/content/popup/default";
+   alias: "elm/popup/content/popup/shortcuts";
    parts{
       part{ name:"elm.swallow.content";
          type: SWALLOW;
@@ -225,8 +229,122 @@ group { name: "elm/popup/content/popup/default";
    }
 }
 
+group { name: "elm/popup/base/shortcuts";
+   images {
+      image: "General/cd_icon.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 385 0;
+         }
+      }
+      part { name: "elm.text.title";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 0 30;
+            max: -1 30;
+            color_class: "genlist_text_tree";
+            text {
+               font: FN;
+               size: 15;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 7 0;
+               to_x: "title.image";
+               to_y: "base";
+            }
+            rel2.to: "base";
+         }
+      }
+      part { name: "content_bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color_class: "manager_bg";
+            rel1.to_y: "separator.title";
+            rel2.to_y: "separator.action_area";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 420 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 0;
+               to_y: "separator.title";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -1;
+               to_y: "separator.action_area";
+            }
+         }
+      }
+      part { name: "separator.action_area";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            max: -1 1;
+            color_class: "button_border";
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "elm.swallow.action_area";
+            }
+         }
+      }
+      part { name: "elm.swallow.action_area";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 420 60;
+            max: -1 60;
+         }
+      }
+      part { name: "separator.title";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            max: -1 1;
+            color: 204 204 204 255;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.text.title";
+            }
+         }
+      }
+      part { name: "title.image";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 16 16;
+            max: 16 16;
+            image.normal: "General/cd_icon.png";
+            rel1.offset: 10 7;
+            rel2 {
+               offset: -1 -8;
+               to: "base";
+            }
+         }
+      }
+   }
+}
+
+
 
 group { name: "elm/popup/item/popup/default";
+   alias: "elm/popup/item/popup/shortcuts";
    script {
       public item_state = POPUP_ITEM_STATE_ENABLED;
    }
@@ -549,6 +667,7 @@ group { name: "elm/popup/item/popup/default";
 }
 
 group { name: "elm/popup/buttons1/popup/default";
+   alias: "elm/popup/buttons1/popup/shortcuts";
    parts{
       part { name: "elm.swallow.content.button1";
          type: SWALLOW;
