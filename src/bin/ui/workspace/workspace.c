@@ -1834,7 +1834,7 @@ workspace_part_state_add(Evas_Object *obj,
 
    part = (Part2 *)resource_manager_find(wd->group->parts, part_name);
    group_navigator_select(wd->group_navi, (Resource2 *)part);
-   state = (State2 *)resource_manager_v_find(wd->group->parts, state_name, state_val);
+   state = (State2 *)resource_manager_v_find(part->states, state_name, state_val);
    group_navigator_part_state_add(wd->group_navi, part, state);
 }
 

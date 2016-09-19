@@ -384,6 +384,7 @@ typedef struct {
  *
  * @ingroup Window
  */
+#define SIGNAL_EDITOR_STATE_PREDELETED "SIGNAL_EDITOR_STATE_PREDELETED"
 #define SIGNAL_EDITOR_STATE_DELETED "SIGNAL_EDITOR_STATE_DELETED"
 
 typedef struct {
@@ -425,6 +426,7 @@ typedef struct {
    const char *part_name;
    Change *change;
 } Editor_Part;
+#define SIGNAL_EDITOR_PART_PREDELETED "SIGNAL_EDITOR_PART_PREDELETED"
 #define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
 
 /**
