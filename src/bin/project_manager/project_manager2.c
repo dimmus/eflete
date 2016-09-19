@@ -400,9 +400,9 @@ _lock_try(const char *path, Eina_Bool check, HANDLE *pro_fd)
 #endif
 
 static Eina_Bool
-_exe_output_print(void *data,
-                  int type __UNUSED__,
-                  void *event_info)
+_exe_output_handler(void *data,
+                    int type __UNUSED__,
+                    void *event_info)
 {
    int i;
    Ecore_Exe_Event_Data *edje_cc_msg = (Ecore_Exe_Event_Data *)event_info;
@@ -416,11 +416,24 @@ _exe_output_print(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
+static Eina_Bool
+_exe_error_handler(void *data,
+                   int type __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Project_Process_Data *ppd = data;
+
+   ppd->result = PM_PROJECT_ERROR;
+   _end_send(ppd);
+
+   return ECORE_CALLBACK_DONE;
+}
+
 
 static Eina_Bool
-_exe_finish(void *data,
-            int type __UNUSED__,
-            void *event_info __UNUSED__)
+_exe_finish_handler(void *data,
+                    int type __UNUSED__,
+                    void *event_info __UNUSED__)
 {
    Project_Process_Data *ppd = data;
    Project *project = (Project *) ppd->project;
@@ -431,7 +444,7 @@ _exe_finish(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
-static void
+static Eina_Bool
 _project_open_internal(Project_Process_Data *ppd)
 {
    Ecore_Exe_Flags flags;
@@ -455,14 +468,14 @@ _project_open_internal(Project_Process_Data *ppd)
      {
         /* really this case is unlickly, but we need handle it */
         ERR("Project file already locked by another application");
-        return;
+        return false;
      }
 
    ef = eet_open(ppd->path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      {
         ERR("Failed to open project file handler");
-        return;
+        return false;
      }
 
    _project_descriptor_init(ppd);
@@ -471,7 +484,7 @@ _project_open_internal(Project_Process_Data *ppd)
    if (!ppd->project)
      {
         ERR("Failed to load project data");
-        return;
+        return false;
      }
 
    ppd->project->ef = ef;
@@ -540,7 +553,7 @@ _project_open_internal(Project_Process_Data *ppd)
      {
         CRIT("Missing internal group '"EFLETE_INTERNAL_GROUP_NAME" in file %s\n",
              ppd->project->saved_edj);
-        return;
+        return false;
      }
    _project_dev_file_create(ppd->project);
    ppd->project->mmap_file = eina_file_open(ppd->project->dev, false);
@@ -554,7 +567,7 @@ _project_open_internal(Project_Process_Data *ppd)
    if (EDJE_LOAD_ERROR_NONE != error)
      {
          CRIT("Could not load internal object: %s\n", edje_load_error_str(error));
-         return;
+         return false;
      }
 
    pm_project_meta_data_get(ppd->project, &ppd->project->name, NULL, NULL, NULL, NULL);
@@ -571,13 +584,14 @@ _project_open_internal(Project_Process_Data *ppd)
    flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
            ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    ecore_exe_pipe_run(cmd, flags, NULL);
-   //ecore_exe_auto_limits_set(exe_cmd, 0, -1, 1, 1);
 
-   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_print, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_print, ppd);
-   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_finish, ppd);
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_finish_handler, ppd);
 
    free(file_dir);
+
+   return true;
 }
 
 void
@@ -599,7 +613,11 @@ pm_project_open(const char *path,
    ppd->func_end = func_end;
    ppd->data = (void *)data;
 
-   _project_open_internal(ppd);
+   if (!_project_open_internal(ppd))
+     {
+        eina_stringshare_del(ppd->path);
+        free(ppd);
+     }
 
    free(spath);
 }
@@ -609,7 +627,7 @@ _project_import_edj(void *data)
 {
    Project_Process_Data *ppd = data;
    Eina_Stringshare *edj_in, *edj_out;
-   Eina_List *l, *groups;
+   Eina_List *l;
    Eina_Stringshare *group;
    Evas_Object *obj = NULL;
    Eina_Strbuf *strbuf;
@@ -636,9 +654,7 @@ _project_import_edj(void *data)
         _end_send(ppd);
         return;
      }
-   groups = edje_file_collection_list(ppd->edj);
-
-   if (ppd->widgets && (eina_list_count(groups) != eina_list_count(ppd->widgets)))
+   if (ppd->widgets)
      {
         //msg = eina_stringshare_printf(_("Merging groups from choosen file"));
         snprintf(buf, sizeof(buf), "Merging groups from choosen file");
@@ -721,21 +737,16 @@ _project_import_edj(void *data)
         TODO("check result")
         _project_edj_file_copy(ppd);
         _copy_meta_data_to_pro(ppd);
-        _project_open_internal(ppd);
-        /*
         if (!_project_open_internal(ppd))
           {
              eina_stringshare_del(ppd->path);
              free(ppd);
              return;
           }
-          */
         _project_special_group_add(ppd->project);
         _project_dummy_image_add(ppd->project);
         _project_dummy_sample_add(ppd->project);
      }
-   edje_edit_string_list_free(groups);
-   return;
 }
 
 void
@@ -820,8 +831,8 @@ _project_import_edc(void *data)
 
    ecore_exe_pipe_run(buf, flags, NULL);
 
-   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_print, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_print, ppd);
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
 
    return;
