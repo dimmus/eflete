@@ -19,6 +19,7 @@
 
 #define _GNU_SOURCE
 #include "project_manager2.h"
+#include "resource_manager2.h"
 #include <fcntl.h>
 
 #ifndef _WIN32
@@ -130,6 +131,66 @@ _project_special_group_add(Project *project)
    edje_edit_string_list_free(groups);
 }
 
+static Project *
+_project_files_create(Project_Process_Data *ppd)
+{
+   Project *pro;
+   Eina_Bool error = false;
+   char buf[PATH_MAX];
+
+   _project_descriptor_init(ppd);
+
+   snprintf(buf, sizeof(buf), "%s/%s", ppd->path, ppd->name);
+   if (ecore_file_mkdir(buf))
+     {
+        DBG("Create the folder '%s' for new project '%s'", buf, ppd->name);
+     }
+   else
+     {
+        ERR("Could't create a project folder!");
+        error = true;
+     }
+   if (error) return NULL;
+
+   pro = (Project *)mem_calloc(1, sizeof(Project));
+   pro->version = PROJECT_FILE_VERSION;
+   pro->name = eina_stringshare_add(ppd->name);
+   pro->dev = eina_stringshare_printf("%s/%s.dev", buf, ppd->name);
+   pro->saved_edj = eina_stringshare_printf("%s/%s.edj", buf, ppd->name);
+   pro->develop_path = eina_stringshare_printf("%s/develop", buf);
+
+   snprintf(buf, sizeof(buf), "%s/%s/%s.pro", ppd->path, ppd->name, ppd->name);
+   pro->ef = eet_open(buf, EET_FILE_MODE_READ_WRITE);
+   DBG("Create a specific project file '%s': %s", buf, error ? "failed" : "success");
+   pro->pro_fd = -1;
+   ecore_file_mkdir(pro->develop_path);
+   snprintf(buf, sizeof(buf), "%s/images", pro->develop_path);
+   ecore_file_mkdir(buf);
+   snprintf(buf, sizeof(buf), "%s/sounds", pro->develop_path);
+   ecore_file_mkdir(buf);
+   snprintf(buf, sizeof(buf), "%s/fonts", pro->develop_path);
+   ecore_file_mkdir(buf);
+
+   if (!eet_data_write(pro->ef, ppd->eed_project, PROJECT_FILE_KEY, pro, compess_level))
+     error = true;
+
+   _pm_project_descriptor_shutdown(ppd);
+   if (error)
+     {
+        ERR("Could't create a .pro file! ")
+        eina_stringshare_del(pro->name);
+        eina_stringshare_del(pro->dev);
+        eina_stringshare_del(pro->saved_edj);
+        eina_stringshare_del(pro->develop_path);
+        free(pro);
+        pro = NULL;
+     }
+   else
+     eet_sync(pro->ef);
+
+   return pro;
+}
+
 static void
 _project_dummy_sample_add(Project *project)
 {
@@ -179,6 +240,50 @@ _project_dummy_image_add(Project *project)
 
    ecore_evas_free(ecore_evas);
    edje_edit_string_list_free(groups);
+}
+
+static Eina_Bool
+_project_edj_file_copy(Project_Process_Data *ppd)
+{
+   Eina_Stringshare *src, *dst;
+   Eina_Bool result;
+
+   src = eina_stringshare_ref(ppd->edj);
+   dst = eina_stringshare_ref(ppd->project->saved_edj);
+   result = eina_file_copy(src, dst,
+                           EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                           NULL, NULL);
+
+   DBG("Copy the .edj file to project folder.");
+   eina_stringshare_del(src);
+   eina_stringshare_del(dst);
+
+   return result;
+}
+
+static void
+_copy_meta_data_to_pro(Project_Process_Data *ppd)
+{
+   Eet_File *ef;
+   char *name, *authors, *version, *license, *comment;
+
+   ef = eet_open(ppd->edj, EET_FILE_MODE_READ_WRITE);
+
+   name = strdup(ppd->name);
+   authors = eet_read(ef, PROJECT_KEY_AUTHORS, NULL);
+   version = eet_read(ef, PROJECT_KEY_FILE_VERSION, NULL);
+   license = eet_read(ef, PROJECT_KEY_LICENSE, NULL);
+   comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
+   eet_close(ef);
+
+   pm_project_meta_data_set(ppd->project, name, authors,
+                            version, license, comment);
+
+   if (name) free(name);
+   if (authors) free(authors);
+   if (version) free(version);
+   if (license) free(license);
+   if (comment) free(comment);
 }
 
 static Eina_Bool
@@ -327,13 +432,8 @@ _exe_finish(void *data,
 }
 
 static void
-_project_open_internal(const char *path,
-                PM_Project_Progress_Cb func_progress,
-                PM_Project_End_Cb func_end,
-                const void *data)
+_project_open_internal(Project_Process_Data *ppd)
 {
-   Project_Process_Data *ppd;
-   char *spath;
    Ecore_Exe_Flags flags;
    char cmd[PATH_MAX];
    char *file_dir;
@@ -343,16 +443,6 @@ _project_open_internal(const char *path,
 #else
     int pro_fd;
 #endif
-
-   assert(path != NULL);
-
-   spath = eina_file_path_sanitize(path);
-
-   ppd = mem_calloc(1, sizeof(Project_Process_Data));
-   ppd->path = eina_stringshare_add(spath);
-   ppd->func_progress = func_progress;
-   ppd->func_end = func_end;
-   ppd->data = (void *)data;
 
    Eet_File *ef;
    char *tmp;
@@ -469,13 +559,13 @@ _project_open_internal(const char *path,
 
    pm_project_meta_data_get(ppd->project, &ppd->project->name, NULL, NULL, NULL, NULL);
    if (!ppd->project->name)
-     ppd->project->name = eina_stringshare_add(ecore_file_strip_ext(ecore_file_file_get(spath)));
+     ppd->project->name = eina_stringshare_add(ecore_file_strip_ext(ecore_file_file_get(ppd->path)));
 
    _project_dev_file_create(ppd->project);
 
 /******************************************************************************/
-   file_dir = ecore_file_dir_get(spath);
-   snprintf(cmd, strlen(ppd->project->saved_edj) + strlen("eflete_exporter --edj ") + strlen(file_dir) + strlen(" --path /develop") + 1,
+   file_dir = ecore_file_dir_get(ppd->path);
+   snprintf(cmd, sizeof(cmd),
             "eflete_exporter --edj %s --path %s/develop", ppd->project->saved_edj, file_dir);
 
    flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
@@ -488,7 +578,6 @@ _project_open_internal(const char *path,
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_finish, ppd);
 
    free(file_dir);
-   free(spath);
 }
 
 void
@@ -497,7 +586,278 @@ pm_project_open(const char *path,
                 PM_Project_End_Cb func_end,
                 const void *data)
 {
-   _project_open_internal(path, func_progress, func_end, data);
+   Project_Process_Data *ppd;
+   char *spath;
+
+   assert(path != NULL);
+
+   spath = eina_file_path_sanitize(path);
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->path = eina_stringshare_add(spath);
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+
+   _project_open_internal(ppd);
+
+   free(spath);
+}
+
+void
+_project_import_edj(void *data)
+{
+   Project_Process_Data *ppd = data;
+   Eina_Stringshare *edj_in, *edj_out;
+   Eina_List *l, *groups;
+   Eina_Stringshare *group;
+   Evas_Object *obj = NULL;
+   Eina_Strbuf *strbuf;
+   char buf[PATH_MAX];
+   //Edje_Exe_Data *edje_pick_data;
+
+   //Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edj);
+   snprintf(buf, sizeof(buf), "Start import '%s' file as new project", ppd->edj);
+   if (ppd->func_progress) ppd->func_progress(NULL, buf);
+   //eina_stringshare_del(msg);
+
+   /* Replace void with ptd */
+   ppd->project = _project_files_create(ppd);
+
+   assert(ppd->project != NULL);
+
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
+   ppd->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", ppd->path, ppd->name, ppd->name);
+
+   if (!_lock_try(ppd->project->pro_path, true, &ppd->project->pro_fd))
+     {
+        /* really this case is unlickly, but we need handle it */
+        ppd->result = PM_PROJECT_LOCKED;
+        _end_send(ppd);
+        return;
+     }
+   groups = edje_file_collection_list(ppd->edj);
+
+   if (ppd->widgets && (eina_list_count(groups) != eina_list_count(ppd->widgets)))
+     {
+        //msg = eina_stringshare_printf(_("Merging groups from choosen file"));
+        snprintf(buf, sizeof(buf), "Merging groups from choosen file");
+        if (ppd->func_progress) ppd->func_progress(NULL, buf);
+        //eina_stringshare_del(msg);
+
+        eina_file_mkdtemp("eflete_build_XXXXXX", &ppd->tmp_dirname);
+        edj_in = eina_stringshare_printf("%s/in.edj", ppd->tmp_dirname);
+        edj_out = eina_stringshare_printf("%s/out.edj", ppd->tmp_dirname);
+        ecore_file_cp(ppd->edj, edj_in);
+
+        /* prepare the cmd string for run edje_pick */
+        strbuf = eina_strbuf_new();
+        eina_strbuf_append_printf(strbuf, "edje_pick -o %s -i %s", edj_out, edj_in);
+
+        EINA_LIST_FOREACH(ppd->widgets, l, group)
+          {
+             if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
+               {
+                  char **arr = eina_str_split(group, "***", 0);
+                  you_shall_not_pass_editor_signals(NULL);
+                  /* load any group for coping */
+                  if (!obj)
+                    {
+                       obj = edje_edit_object_add(evas_object_evas_get(ap.win));
+                       if (!edje_object_file_set(obj, edj_in, arr[1]))
+                         {
+                            CRIT("Can't load object");
+                            abort();
+                         }
+                    }
+                  if (!editor_group_copy(obj, arr[1], arr[2], false))
+                    {
+                       CRIT("Can not copy group %s, to %s", arr[1], arr[2]);
+                       abort();
+                    }
+                  you_shall_pass_editor_signals(NULL);
+                  eina_strbuf_append_printf(strbuf, " -g %s", arr[2]);
+                  free(arr[0]);
+                  free(arr);
+               }
+             else
+               eina_strbuf_append_printf(strbuf, " -g %s", group);
+          }
+
+        eina_stringshare_del(ppd->edj);
+        ppd->edj = eina_stringshare_ref(edj_out);
+        ppd->source_edj = eina_stringshare_ref(edj_in);
+
+        /*
+           edje_pick_data = mem_malloc(sizeof(Edje_Exe_Data));
+           edje_pick_data->cmd = eina_stringshare_add(eina_strbuf_string_get(strbuf));
+           edje_pick_data->flags  = ECORE_EXE_PIPE_READ |
+           ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+           ECORE_EXE_PIPE_ERROR |
+           ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+           edje_pick_data->data = (void *)ptd;
+           edje_pick_data->exe_cmd = ecore_exe_pipe_run(edje_pick_data->cmd, edje_pick_data->flags, NULL);
+           edje_pick_data->exe_pid = ecore_exe_pid_get(edje_pick_data->exe_cmd);
+           eina_strbuf_free(strbuf);
+
+           eina_stringshare_del(edj_in);
+           eina_stringshare_del(edj_out);
+
+           ptd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _data_from_edje_pick_cb,
+           (void *)edje_pick_data);
+           ptd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _edje_pick_end_cb,
+           (void *)edje_pick_data);
+           ptd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _data_from_edje_pick_cb,
+           (void *)edje_pick_data);
+           */
+     }
+   else
+     {
+        //msg = eina_stringshare_printf(_("Import processing"));
+        snprintf(buf, sizeof(buf), "Import processing");
+        if (ppd->func_progress) ppd->func_progress(NULL, buf);
+        //eina_stringshare_del(msg);
+
+        TODO("check result")
+        _project_edj_file_copy(ppd);
+        _copy_meta_data_to_pro(ppd);
+        _project_open_internal(ppd);
+        /*
+        if (!_project_open_internal(ppd))
+          {
+             eina_stringshare_del(ppd->path);
+             free(ppd);
+             return;
+          }
+          */
+        _project_special_group_add(ppd->project);
+        _project_dummy_image_add(ppd->project);
+        _project_dummy_sample_add(ppd->project);
+     }
+   edje_edit_string_list_free(groups);
+   return;
+}
+
+void
+pm_project_import_edj(const char *name,
+                      const char *path,
+                      const char *edj,
+                      Eina_List *list,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end ,
+                      const void *data)
+{
+   Project_Process_Data *ppd;
+
+   assert(name != NULL);
+   assert(path != NULL);
+   assert(edj != NULL);
+
+   char *spath = eina_file_path_sanitize(path);
+   char *sedj = eina_file_path_sanitize(edj);
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+   ppd->name = eina_stringshare_add(name);
+   ppd->path = eina_stringshare_add(spath);
+   ppd->edj = eina_stringshare_add(sedj);
+   ppd->widgets = list;
+
+   ecore_job_add(_project_import_edj, ppd);
+
+   free(spath);
+   free(sedj);
+}
+
+static Eina_Bool
+_finish_from_edje_cc(void *data,
+                     int type __UNUSED__,
+                     void *event_info)
+{
+   Project_Process_Data *ppd = data;
+   Ecore_Exe_Event_Del *edje_cc_exit = (Ecore_Exe_Event_Del *)event_info;
+   char buf[PATH_MAX];
+
+   if (edje_cc_exit->exit_code != 0)
+     {
+        ppd->result = PM_PROJECT_ERROR;
+        _end_send(ppd);
+        return ECORE_CALLBACK_DONE;
+     }
+
+   if (ppd->func_progress)
+     {
+        snprintf(buf, sizeof(buf), "Data for importing prepare");
+        if (ppd->func_progress) ppd->func_progress(NULL, buf);
+     }
+
+   _project_import_edj(ppd);
+
+   return ECORE_CALLBACK_DONE;
+}
+
+void
+_project_import_edc(void *data)
+{
+   Project_Process_Data *ppd = data;
+   char buf[PATH_MAX];
+   Ecore_Exe_Flags flags;
+
+   assert(ppd != NULL);
+
+   snprintf(buf, sizeof(buf), "Start import '%s' file as new project", ppd->edc);
+   if (ppd->func_progress) ppd->func_progress(NULL, buf);
+
+   eina_file_mkdtemp("eflete_build_XXXXXX", &ppd->tmp_dirname);
+   ppd->edj = eina_stringshare_printf("%s/out.edj", ppd->tmp_dirname);
+   snprintf(buf, sizeof(buf),
+            "edje_cc -v %s %s %s", ppd->edc, ppd->edj, ppd->build_options);
+   flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+           ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+
+   ecore_exe_pipe_run(buf, flags, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_print, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_print, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
+
+   return;
+}
+
+void
+pm_project_import_edc(const char *name,
+                      const char *path,
+                      const char *edc,
+                      const char *import_options,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      const void *data)
+{
+   Project_Process_Data *ppd;
+
+   assert(name != NULL);
+   assert(path != NULL);
+   assert(edc != NULL);
+
+   char *spath = eina_file_path_sanitize(path);
+   char *sedc = eina_file_path_sanitize(edc);
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+   ppd->name = eina_stringshare_add(name);
+   ppd->path = eina_stringshare_add(spath);
+   ppd->edc = eina_stringshare_add(sedc);
+   ppd->build_options = eina_stringshare_add(import_options);
+
+   _project_import_edc(ppd);
+   free(spath);
+   free(sedc);
 }
 
 Eina_Bool
@@ -549,6 +909,7 @@ pm_project_close(Project *project)
 
    return true;
 }
+
 static Eina_Bool
 _copy_progress(void *data, unsigned long long done, unsigned long long total)
 {
