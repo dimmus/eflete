@@ -18,7 +18,6 @@
  */
 
 #include "main_window.h"
-#include "preference.h"
 #include "tabs.h"
 #include "workspace.h"
 #include "shortcuts.h"

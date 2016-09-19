@@ -8,9 +8,6 @@ src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
 src/bin/project_manager/project_manager.c
 src/bin/ui/cursor.c
-src/bin/ui/editors/animator.c
-src/bin/ui/editors/animator_program_editor.c
-src/bin/ui/editors/animator_program_sequence.c
 src/bin/ui/colorclass_manager.c
 src/bin/ui/image_manager.c
 src/bin/ui/sound_manager.c
@@ -54,7 +51,6 @@ src/bin/ui/main_window.c
 src/bin/ui/menu.c
 src/bin/ui/modal_window/modal_window.c
 src/bin/ui/project_navigator.c
-src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
 src/bin/ui/property/property.c
 src/bin/ui/property/property_group.c

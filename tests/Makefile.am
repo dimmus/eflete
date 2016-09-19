@@ -34,7 +34,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
 -I${top_srcdir}/src/bin/ui/notification \
--I${top_srcdir}/src/bin/ui/preference \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/tests \

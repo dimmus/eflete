@@ -48,7 +48,6 @@ EXTRA_DIST = \
 	ui/live_view/live_widgets.h \
 	ui/live_view/elementary/live_elementary_widgets.h \
 	ui/modal_window/modal_window.h \
-	ui/preference/preference.h \
 	ui/shortcuts/shortcuts.h \
 	ui/workspace/groupview.h \
 	ui/workspace/groupview_private.h \
@@ -183,7 +182,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/alloc \
 -I${top_srcdir}/src/bin/editor \
 -I${top_srcdir}/src/bin/external \
--I${top_srcdir}/src/bin/preference \
 -I${top_srcdir}/src/bin/common \
 -I${top_srcdir}/src/bin/logger \
 -I${top_srcdir}/src/bin/project_manager \
@@ -201,7 +199,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/workspace \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
--I${top_srcdir}/src/bin/ui/preference \
 @EFL_CFLAGS@ \
 @EFLETE_DEFINE@
 
