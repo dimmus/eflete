@@ -175,7 +175,8 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
                                                     state->common.name,
                                                     state->val);
         res = resource_manager_find(pro->RM.styles, style_name);
-        _resource_usage_resource_add((Resource2 *)state, res);
+        if (res)
+          _resource_usage_resource_add((Resource2 *)state, res);
         edje_edit_string_free(style_name);
      }
    TODO("Implement size_class and text_class stuff")
