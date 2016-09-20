@@ -1275,7 +1275,7 @@ static void
 _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
 {
    Eina_List *l;
-   Part2 *part;
+   Part2 *part, *part_check;
    unsigned int i = 1;
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
@@ -1296,11 +1296,16 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+     part_check = ((State2 *)group_pd.group->current_selected)->part;
+   else
+     part_check = (Part2 *)group_pd.group->current_selected;
+
    if (allowed_types_mask)
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part2 *)group_pd.group->current_selected))
+             if ((PART_MASK(part->type) & allowed_types_mask) && (part != part_check))
                {
                   combobox_item = mem_malloc(sizeof(Combobox_Item));
                   combobox_item->index = i++;
@@ -1315,7 +1320,7 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if (part != (Part2 *)group_pd.group->current_selected)
+             if (part != part_check)
                {
                   combobox_item = mem_malloc(sizeof(Combobox_Item));
                   combobox_item->index = i++;
