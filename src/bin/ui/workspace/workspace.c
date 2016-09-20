@@ -1184,6 +1184,7 @@ _mode_cb(void *data,
          //elm_object_part_content_set(wd->panes, "right", wd->group_navi);
          evas_object_show(wd->group_navi);
          _zoom_controls_disabled_set(wd, false);
+         elm_object_disabled_set(wd->toolbar.history, false);
          evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, wd->group);
 
          area = &wd->normal;
@@ -1203,6 +1204,7 @@ _mode_cb(void *data,
          demo_group_demo_update(wd->demo_navi);
 
          _zoom_controls_disabled_set(wd, true);
+         elm_object_disabled_set(wd->toolbar.history, true);
          evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 
          area = &wd->demo;
