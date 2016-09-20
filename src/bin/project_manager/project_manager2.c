@@ -507,15 +507,6 @@ _project_open_internal(Project_Process_Data *ppd)
    eina_stringshare_replace(&ppd->project->saved_edj, tmp);
    free(tmp);
 
-   ppd->project->mmap_file = eina_file_open(ppd->project->dev, false);
-
-   ppd->project->changed = false;
-   ppd->project->close_request = false;
-   ppd->project->ecore_evas = ecore_evas_buffer_new(0, 0);
-   ppd->project->global_object = edje_edit_object_add(ecore_evas_get(ppd->project->ecore_evas));
-   edje_object_mmap_set(ppd->project->global_object, ppd->project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
-
-
    //message = eina_stringshare_add(_("Checking project version"));
 
    /* checking for older project versions and upgrading them version-by-version */
@@ -574,7 +565,6 @@ _project_open_internal(Project_Process_Data *ppd)
    if (!ppd->project->name)
      ppd->project->name = eina_stringshare_add(ecore_file_strip_ext(ecore_file_file_get(ppd->path)));
 
-   _project_dev_file_create(ppd->project);
 
 /******************************************************************************/
    file_dir = ecore_file_dir_get(ppd->path);
