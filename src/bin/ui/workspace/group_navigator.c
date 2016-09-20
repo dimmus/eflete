@@ -1009,16 +1009,29 @@ _part_selected_cb(void *data,
                   void *event_info)
 {
    Part_List *pl = data;
+   Elm_Genlist_Item *glit;
    Combobox_Item *item;
+   Edje_Part_Type type;
 
    assert(pl != NULL);
 
    item = elm_object_item_data_get(event_info);
    pl->popup.copy_part = item->index;
    if (item->index != 0)
-     elm_object_disabled_set(pl->popup.combobox, true);
+     {
+        type = edje_edit_part_type_get(pl->group->edit_object, elm_object_text_get(pl->popup.combobox_copy));
+        elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(type));
+        elm_object_disabled_set(pl->popup.combobox, true);
+     }
    else
-     elm_object_disabled_set(pl->popup.combobox, false);
+     {
+        glit = elm_genlist_first_item_get(pl->popup.combobox);
+        item = elm_object_item_data_get(glit);
+        elm_object_text_set(pl->popup.combobox, item->data);
+        pl->popup.part_type = 0;
+
+        elm_object_disabled_set(pl->popup.combobox, false);
+     }
 }
 
 static void
