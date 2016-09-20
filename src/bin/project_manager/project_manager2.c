@@ -430,9 +430,9 @@ _exe_error_handler(void *data,
 
 
 static Eina_Bool
-_exe_finish_handler(void *data,
-                    int type __UNUSED__,
-                    void *event_info __UNUSED__)
+_exporter_finish_handler(void *data,
+                         int type __UNUSED__,
+                         void *event_info __UNUSED__)
 {
    Project_Process_Data *ppd = data;
    Project *project = (Project *) ppd->project;
@@ -577,7 +577,7 @@ _project_open_internal(Project_Process_Data *ppd)
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
-   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_finish_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exporter_finish_handler, ppd);
 
    free(file_dir);
 
@@ -612,6 +612,29 @@ pm_project_open(const char *path,
    free(spath);
 }
 
+static Eina_Bool
+_edje_pick_finish_handler(void *data,
+                          int type __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Project_Process_Data *ppd = data;
+
+   /* reset path variable for open project. _project_open_internal use this
+    * var for path to .pro file */
+   eina_stringshare_del(ppd->path);
+   ppd->path = eina_stringshare_ref(ppd->project->pro_path);
+
+   ecore_event_handler_del(ppd->del_handler);
+   ecore_event_handler_del(ppd->error_handler);
+   ecore_event_handler_del(ppd->data_handler);
+
+   ecore_file_cp(ppd->edj, ppd->project->saved_edj);
+   if (!_project_open_internal(ppd))
+     return ECORE_CALLBACK_CANCEL;
+   else
+     return ECORE_CALLBACK_DONE;
+}
+
 void
 _project_import_edj(Project_Process_Data *ppd)
 {
@@ -622,7 +645,7 @@ _project_import_edj(Project_Process_Data *ppd)
    Eina_Strbuf *strbuf;
    char buf[PATH_MAX];
    unsigned int count;
-   //Edje_Exe_Data *edje_pick_data;
+   Ecore_Exe_Flags flags;
 
    //Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edj);
    snprintf(buf, sizeof(buf), "Start import '%s' file as new project", ppd->edj);
@@ -698,28 +721,14 @@ _project_import_edj(Project_Process_Data *ppd)
         ppd->edj = eina_stringshare_ref(edj_out);
         ppd->source_edj = eina_stringshare_ref(edj_in);
 
-        /*
-           edje_pick_data = mem_malloc(sizeof(Edje_Exe_Data));
-           edje_pick_data->cmd = eina_stringshare_add(eina_strbuf_string_get(strbuf));
-           edje_pick_data->flags  = ECORE_EXE_PIPE_READ |
-           ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-           ECORE_EXE_PIPE_ERROR |
-           ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-           edje_pick_data->data = (void *)ptd;
-           edje_pick_data->exe_cmd = ecore_exe_pipe_run(edje_pick_data->cmd, edje_pick_data->flags, NULL);
-           edje_pick_data->exe_pid = ecore_exe_pid_get(edje_pick_data->exe_cmd);
-           eina_strbuf_free(strbuf);
+        flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+        ecore_exe_pipe_run(eina_strbuf_string_get(strbuf), flags, NULL);
+        eina_strbuf_free(strbuf);
 
-           eina_stringshare_del(edj_in);
-           eina_stringshare_del(edj_out);
-
-           ptd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _data_from_edje_pick_cb,
-           (void *)edje_pick_data);
-           ptd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _edje_pick_end_cb,
-           (void *)edje_pick_data);
-           ptd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _data_from_edje_pick_cb,
-           (void *)edje_pick_data);
-           */
+        ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+        ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+        ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _edje_pick_finish_handler, ppd);
      }
    else
      {
@@ -731,15 +740,15 @@ _project_import_edj(Project_Process_Data *ppd)
         TODO("check result")
         _project_edj_file_copy(ppd);
         _copy_meta_data_to_pro(ppd);
+        _project_special_group_add(ppd->project);
+        _project_dummy_image_add(ppd->project);
+        _project_dummy_sample_add(ppd->project);
         if (!_project_open_internal(ppd))
           {
              eina_stringshare_del(ppd->path);
              free(ppd);
              return;
           }
-        _project_special_group_add(ppd->project);
-        _project_dummy_image_add(ppd->project);
-        _project_dummy_sample_add(ppd->project);
      }
 }
 
@@ -798,6 +807,10 @@ _finish_from_edje_cc(void *data,
         snprintf(buf, sizeof(buf), "Data for importing prepare");
         if (ppd->func_progress) ppd->func_progress(NULL, buf);
      }
+
+   ecore_event_handler_del(ppd->del_handler);
+   ecore_event_handler_del(ppd->error_handler);
+   ecore_event_handler_del(ppd->data_handler);
 
    _project_import_edj(ppd);
 
