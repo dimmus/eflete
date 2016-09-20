@@ -1818,6 +1818,8 @@ workspace_part_item_del(Evas_Object *obj,
    assert(item != NULL);
 
    group_navigator_select(wd->group_navi, (Resource2 *)part);
+   group_navigator_part_item_del(wd->group_navi, item);
+
 }
 
 void

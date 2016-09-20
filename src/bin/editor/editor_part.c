@@ -730,7 +730,11 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   if (!_editor_signals_blocked)
+     {
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_PREDELETED, (void *)&event_info);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+     }
    if (change)
      {
         source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);

@@ -511,7 +511,7 @@ _editor_part_deleted_cb(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info)
 {
-   Editor_Part *part = (Editor_Part *)event_info;
+   const Editor_Part *part = (Editor_Part *)event_info;
 
    assert(part != NULL);
    assert(tabs.current_group != NULL);
@@ -539,7 +539,7 @@ _editor_program_deleted_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info)
 {
-   Editor_Program *program = (Editor_Program *)event_info;
+   const Editor_Program *program = (Editor_Program *)event_info;
 
    assert(program != NULL);
    assert(tabs.current_group != NULL);
@@ -1021,7 +1021,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_PREDELETED, _editor_part_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_PREDELETED, _editor_part_item_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, NULL);
