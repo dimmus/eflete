@@ -911,7 +911,15 @@ _editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __
 
    event_info.program_name = eina_stringshare_add(program_name);
    event_info.change = change;
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, (void *)&event_info);
+   if (!_editor_signals_blocked)
+     {
+        /* so in here we need to delete program from workspace, groupedit,
+           all kind of UI part lists since they use original Resource structure,
+           and only after that we can finally delete it,
+           so keep those signals in this order please */
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_PREDELETED, (void *)&event_info);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, (void *)&event_info);
+     }
 
    if (change)
      {
