@@ -287,10 +287,13 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    Diff *diff;
    Rename ren;
    Editor_Attribute_Change send;
-   send.attribute = RM_ATTRIBUTE_GROUP_DATA_NAME;
    assert(edit_object != NULL);
    assert(item_name != NULL);
    assert(new_val != NULL);
+
+   send.attribute = RM_ATTRIBUTE_GROUP_DATA_NAME;
+   send.old_value = eina_stringshare_add(item_name);
+   send.value = eina_stringshare_add(new_val);
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -313,9 +316,14 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
         _editor_project_changed();
         ren.old_name = item_name;
         ren.new_name = new_val;
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+        if (!_editor_signals_blocked)
+          {
+             evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
+             evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+          }
      }
+   eina_stringshare_del(send.old_value);
+   eina_stringshare_del(send.value);
    return true;
 }
 
