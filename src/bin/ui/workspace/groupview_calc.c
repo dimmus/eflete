@@ -996,16 +996,18 @@ _proxy_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
      {
         elm_object_signal_emit(gp->layout, "border,default", "eflete");
         source = _parts_list_find(sd->parts, proxy_source);
-        evas_object_image_source_set(gp->proxy_part, source->proxy_part);
-        evas_object_image_source_clip_set(gp->proxy_part, false);
-        evas_object_image_source_visible_set (gp->proxy_part, false);
-        _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
+        if (source)
+          {
+             evas_object_image_source_set(gp->proxy_part, source->proxy_part);
+             evas_object_image_source_clip_set(gp->proxy_part, false);
+             evas_object_image_source_visible_set (gp->proxy_part, false);
+             _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
+             return; /* no need in unsetting */
+          }
      }
-   else
-     {
-        evas_object_image_source_set(gp->proxy_part, NULL);
-        elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
-     }
+   /* if part was deleted or no proxy set yet we go in this code line */
+   evas_object_image_source_set(gp->proxy_part, NULL);
+   elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
 }
 
 static void
