@@ -827,7 +827,7 @@ style_manager_add()
    mng.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
    elm_object_part_text_set(mng.layout, "elm.text", _("Preview"));
-   elm_layout_text_set(mng.layout, "elm.subtext", _("Font list"));
+   elm_layout_text_set(mng.layout, "elm.subtext", _("Textblock styles list"));
    mng.panes = elm_panes_add(mng.win);
    elm_panes_content_right_size_set(mng.panes, 0);
    elm_panes_content_right_min_size_set(mng.panes, 400);
