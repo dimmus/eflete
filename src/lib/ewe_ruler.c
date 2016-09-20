@@ -658,6 +658,7 @@ _ewe_ruler_marker_relative_set(Eo *obj,
      }
    marker->rel_position = pos;
 
+   sd->text_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -698,6 +699,7 @@ _ewe_ruler_marker_absolute_set(Eo *obj,
      }
    marker->abs_position = pos;
 
+   sd->text_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -736,6 +738,7 @@ _ewe_ruler_marker_visible_set(Eo *obj EINA_UNUSED,
      evas_object_hide(marker->obj);
    else if (sd->ruler_visible)
      evas_object_show(marker->obj);
+   sd->text_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -967,8 +970,10 @@ _ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
         sd->position_changed = EINA_FALSE;
      }
    if (sd->text_changed)
-     _set_labels(sd);
-   _place_markers(sd);
+     {
+        _set_labels(sd);
+        _place_markers(sd);
+     }
 }
 
 EOLIAN static Elm_Theme_Apply
