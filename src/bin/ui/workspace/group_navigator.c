@@ -86,18 +86,18 @@ typedef struct
    } popup;
 } Part_List;
 
-static char *part_types[] = {
-     N_("Rectangle"),
-     N_("Text"),
-     N_("Image"),
-     N_("Swallow"),
-     N_("Textblock"),
-     N_("Group"),
-     N_("Box"),
-     N_("Table"),
-     N_("Proxy"),
-     N_("Spacer"),
-     NULL
+static Edje_Part_Type part_types[] = {
+     EDJE_PART_TYPE_RECTANGLE,
+     EDJE_PART_TYPE_TEXT,
+     EDJE_PART_TYPE_IMAGE,
+     EDJE_PART_TYPE_SWALLOW,
+     EDJE_PART_TYPE_TEXTBLOCK,
+     EDJE_PART_TYPE_GROUP,
+     EDJE_PART_TYPE_BOX,
+     EDJE_PART_TYPE_TABLE,
+     EDJE_PART_TYPE_PROXY,
+     EDJE_PART_TYPE_SPACER,
+     EDJE_PART_TYPE_NONE
 };
 static const char *program_actions[] = {
      N_("None"),
@@ -906,7 +906,6 @@ _popup_add_part_close_cb(void *data,
    Popup_Button pb = (Popup_Button)ei;
    if (pb != BTN_OK) return;
 
-   Edje_Part_Type type = EDJE_PART_TYPE_NONE;
    Part_List *pl = data;
    const char *name, *copy_name;
    Eina_Stringshare *msg;
@@ -928,46 +927,11 @@ _popup_add_part_close_cb(void *data,
      }
    else
      {
-        switch (pl->popup.part_type)
-          {
-           case 0:
-              type = EDJE_PART_TYPE_RECTANGLE;
-              break;
-           case 1:
-              type = EDJE_PART_TYPE_TEXT;
-              break;
-           case 2:
-              type = EDJE_PART_TYPE_IMAGE;
-              break;
-           case 3:
-              type = EDJE_PART_TYPE_SWALLOW;
-              break;
-           case 4:
-              type = EDJE_PART_TYPE_TEXTBLOCK;
-              break;
-           case 5:
-              type = EDJE_PART_TYPE_GROUP;
-              break;
-           case 6:
-              type = EDJE_PART_TYPE_BOX;
-              break;
-           case 7:
-              type = EDJE_PART_TYPE_TABLE;
-              break;
-           case 8:
-              type = EDJE_PART_TYPE_PROXY;
-              break;
-           case 9:
-              type = EDJE_PART_TYPE_SPACER;
-              break;
-          }
-        assert(type != EDJE_PART_TYPE_NONE);
-
         name = elm_entry_entry_get(pl->popup.entry_name);
         msg = eina_stringshare_printf(_("added new part \"%s\""), name);
         change = change_add(msg);
-        CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, type));
-        pl->popup.part_type = 0; /* get that selected stuff down, next type RECT again */
+        CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, pl->popup.part_type));
+        pl->popup.part_type = EDJE_PART_TYPE_RECTANGLE; /* get that selected stuff down, next type RECT again */
      }
 
    history_change_add(pl->group->history, change);
@@ -1009,7 +973,6 @@ _part_selected_cb(void *data,
                   void *event_info)
 {
    Part_List *pl = data;
-   Elm_Genlist_Item *glit;
    Combobox_Item *item;
    Edje_Part_Type type;
 
@@ -1025,11 +988,7 @@ _part_selected_cb(void *data,
      }
    else
      {
-        glit = elm_genlist_first_item_get(pl->popup.combobox);
-        item = elm_object_item_data_get(glit);
-        elm_object_text_set(pl->popup.combobox, item->data);
-        pl->popup.part_type = 0;
-
+        elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(pl->popup.part_type));
         elm_object_disabled_set(pl->popup.combobox, false);
      }
 }
@@ -1121,16 +1080,16 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
    COMBOBOX_ADD(item, pl->popup.combobox)
    evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_pressed,
                                   _combobox_item_pressed_cb, NULL);
-   for (i = 0; part_types[i]; i++)
+   for (i = 0; part_types[i] != EDJE_PART_TYPE_NONE; i++)
      {
         combobox_item = mem_malloc(sizeof(Combobox_Item));
-        combobox_item->data = eina_stringshare_add(part_types[i]);
-        combobox_item->index = i;
+        combobox_item->data = eina_stringshare_add(gm_part_type_text_get(part_types[i]));
+        combobox_item->index = part_types[i];
         elm_genlist_item_append(pl->popup.combobox, pl->popup.itc,
                                 combobox_item, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   elm_object_text_set(pl->popup.combobox, part_types[0]);
+   elm_object_text_set(pl->popup.combobox, gm_part_type_text_get(part_types[0]));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, signals.elm.combobox.item_selected, _type_selected_cb, pl);
    elm_box_pack_end(box, item);
