@@ -132,7 +132,7 @@ _project_special_group_add(Project *project)
 }
 
 static Project *
-_project_files_create(Project_Process_Data *ppd)
+_project_create(Project_Process_Data *ppd)
 {
    Project *pro;
    Eina_Bool error = false;
@@ -185,9 +185,8 @@ _project_files_create(Project_Process_Data *ppd)
         free(pro);
         pro = NULL;
      }
-   else
-     eet_sync(pro->ef);
 
+   eet_close(pro->ef);
    return pro;
 }
 
@@ -440,6 +439,7 @@ _exe_finish_handler(void *data,
 
    resource_manager_init(project);
 
+   ppd->result = PM_PROJECT_SUCCESS;
    _end_send(ppd);
    return ECORE_CALLBACK_DONE;
 }
@@ -613,15 +613,15 @@ pm_project_open(const char *path,
 }
 
 void
-_project_import_edj(void *data)
+_project_import_edj(Project_Process_Data *ppd)
 {
-   Project_Process_Data *ppd = data;
    Eina_Stringshare *edj_in, *edj_out;
-   Eina_List *l;
+   Eina_List *l, *groups;
    Eina_Stringshare *group;
    Evas_Object *obj = NULL;
    Eina_Strbuf *strbuf;
    char buf[PATH_MAX];
+   unsigned int count;
    //Edje_Exe_Data *edje_pick_data;
 
    //Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edj);
@@ -630,7 +630,7 @@ _project_import_edj(void *data)
    //eina_stringshare_del(msg);
 
    /* Replace void with ptd */
-   ppd->project = _project_files_create(ppd);
+   ppd->project = _project_create(ppd);
 
    assert(ppd->project != NULL);
 
@@ -644,7 +644,11 @@ _project_import_edj(void *data)
         _end_send(ppd);
         return;
      }
-   if (ppd->widgets)
+
+   groups = edje_file_collection_list(ppd->edj);
+   count = eina_list_count(groups);
+   edje_edit_string_list_free(groups);
+   if (ppd->widgets && (count != eina_list_count(ppd->widgets)))
      {
         //msg = eina_stringshare_printf(_("Merging groups from choosen file"));
         snprintf(buf, sizeof(buf), "Merging groups from choosen file");
@@ -719,10 +723,10 @@ _project_import_edj(void *data)
      }
    else
      {
-        //msg = eina_stringshare_printf(_("Import processing"));
-        snprintf(buf, sizeof(buf), "Import processing");
-        if (ppd->func_progress) ppd->func_progress(NULL, buf);
-        //eina_stringshare_del(msg);
+        /* reset path variable for open project. _project_open_internal use this
+         * var for path to .pro file */
+        eina_stringshare_del(ppd->path);
+        ppd->path = eina_stringshare_ref(ppd->project->pro_path);
 
         TODO("check result")
         _project_edj_file_copy(ppd);
@@ -767,7 +771,7 @@ pm_project_import_edj(const char *name,
    ppd->edj = eina_stringshare_add(sedj);
    ppd->widgets = list;
 
-   ecore_job_add(_project_import_edj, ppd);
+   _project_import_edj(ppd);
 
    free(spath);
    free(sedj);
