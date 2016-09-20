@@ -815,12 +815,18 @@ _search_next_gengrid_item_cb(void *data,
 }
 
 static void
+_image_manager_add_job(void *data __UNUSED__)
+{
+   image_manager_add();
+}
+
+static void
 _btn_image_manager_cb(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
    _helper_dismiss(NULL, helper, NULL, NULL);
-   image_manager_add();
+   ecore_job_add(_image_manager_add_job, NULL);
 }
 
 void
