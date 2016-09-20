@@ -21,8 +21,39 @@
 #include "resource_manager_private.h"
 #include "project_manager.h"
 
-/****** TOP BLOCK DELETION **********/
-
+/*****************************************************************************
+ *****************************************************************************
+ ********************** IMPORTANT ABOUT GROUP_LOAD/UNLOAD ********************
+ *****************************************************************************
+ *****************************************************************************
+ ** in case if group is already loaded as tab, we dont need to              **
+ ** load that case again and then close, that's why it's                    **
+ ** important to check if group is already loaded. In this case             **
+ ** ALWAYS use those API pair this way:                                     **
+ *****************************************************************************
+ ** void                                                                    **
+ ** _something_del()                                                        **
+ ** {                                                                       **
+ **    <stuff>                                                              **
+ **    Eina_Bool is_opened = false;                                         **
+ **    <more stuff>                                                         **
+ **    ...                                                                  **
+ **    if (!state->part->group->edit_object)                                **
+ **      {                                                                  **
+ **         is_opened = true;                                               **
+ **         resource_group_edit_object_load(Project *,                      **
+ **                                         Group *,                        **
+ **                                         evas_object_evas_get(ap.win));  **
+ **      }                                                                  **
+ **    ...                                                                  **
+ **    <work with dependecies and edje_edit>                                **
+ **    ...                                                                  **
+ **    if (is_opened)                                                       **
+ **      resource_group_edit_object_unload(Group *);                        **
+ **    is_opened = false;                                                   **
+ ** }                                                                       **
+ *****************************************************************************
+ *****************************************************************************/
 void
 _resource_image_free(Project *pro, Image2 *res)
 {
@@ -44,6 +75,8 @@ _resource_image_del(Project *pro, Image2 *res_image)
    Image_Set2 *image_set;
    int idx;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(res_image->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_STATE)
@@ -51,9 +84,13 @@ _resource_image_del(Project *pro, Image2 *res_image)
              state = (State2 *)res;
              if (res_image->common.name == state->normal)
                {
-                  resource_group_edit_object_load(pro,
-                                                   state->part->group,
-                                                   evas_object_evas_get(ap.win));
+                  if (!state->part->group->edit_object)
+                    {
+                       is_opened = true;
+                       resource_group_edit_object_load(pro,
+                                                       state->part->group,
+                                                       evas_object_evas_get(ap.win));
+                    }
                   CRIT_ON_FAIL(editor_state_image_set(state->part->group->edit_object,
                                                       NULL,
                                                       false,
@@ -62,7 +99,8 @@ _resource_image_del(Project *pro, Image2 *res_image)
                                                       state->common.name,
                                                       state->val,
                                                       EFLETE_DUMMY_IMAGE_NAME));
-                  resource_group_edit_object_unload(state->part->group);
+                  if (is_opened)
+                    resource_group_edit_object_unload(state->part->group);
                   eina_stringshare_del(state->normal);
                   state->normal = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
                }
@@ -116,21 +154,28 @@ _resource_tone_del(Project *pro, Tone2 *res_tone)
    Resource2 *res;
    Program2 *program;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(res_tone->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             resource_group_edit_object_load(pro,
-                                              program->group,
-                                              evas_object_evas_get(ap.win));
+             if (!program->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  program->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_program_tone_name_set(program->group->edit_object,
                                                        NULL,
                                                        false,
                                                        true,
                                                        program->common.name,
                                                        ""));
-             resource_group_edit_object_unload(program->group);
+             if (is_opened)
+               resource_group_edit_object_unload(program->group);
           }
      }
 
@@ -156,21 +201,28 @@ _resource_sound_del(Project *pro, Sound2 *res_sound)
    Resource2 *res;
    Program2 *program;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(res_sound->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             resource_group_edit_object_load(pro,
-                                              program->group,
-                                              evas_object_evas_get(ap.win));
+             if (!program->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  program->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_program_sample_name_set(program->group->edit_object,
                                                          NULL,
                                                          false,
                                                          true,
                                                          program->common.name,
                                                          EFLETE_DUMMY_SAMPLE_NAME));
-             resource_group_edit_object_unload(program->group);
+             if (is_opened)
+               resource_group_edit_object_unload(program->group);
           }
      }
 
@@ -195,14 +247,20 @@ _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
    Resource2 *res;
    State2 *state;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(res_colorclass->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             resource_group_edit_object_load(pro,
-                                              state->part->group,
-                                              evas_object_evas_get(ap.win));
+             if (!state->part->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  state->part->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_state_color_class_set(state->part->group->edit_object,
                                                        NULL,
                                                        false,
@@ -211,7 +269,8 @@ _resource_colorclass_del(Project *pro, Colorclass2 *res_colorclass)
                                                        state->common.name,
                                                        state->val,
                                                        NULL));
-             resource_group_edit_object_unload(state->part->group);
+             if (is_opened)
+               resource_group_edit_object_unload(state->part->group);
           }
      }
    _resource_colorclass_free(pro, res_colorclass);
@@ -255,14 +314,20 @@ _resource_style_del(Project *pro, Style2 *res_style)
    Resource2 *res;
    State2 *state;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(res_style->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             resource_group_edit_object_load(pro,
-                                              state->part->group,
-                                              evas_object_evas_get(ap.win));
+             if (!state->part->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  state->part->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_state_text_style_set(state->part->group->edit_object,
                                                       NULL,
                                                       false,
@@ -271,7 +336,8 @@ _resource_style_del(Project *pro, Style2 *res_style)
                                                       state->common.name,
                                                       state->val,
                                                       NULL));
-             resource_group_edit_object_unload(state->part->group);
+             if (is_opened)
+               resource_group_edit_object_unload(state->part->group);
           }
      }
 
@@ -341,21 +407,28 @@ _resource_state_del(Project *pro, Part2 *part, State2 *state, Change *change)
    Resource2 *res;
    Program2 *program;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(state->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             resource_group_edit_object_load(pro,
-                                              program->group,
-                                              evas_object_evas_get(ap.win));
+             if (!program->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  program->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_program_filter_state_set(program->group->edit_object,
                                                           change,
                                                           false,
                                                           true,
                                                           res->common.name,
                                                           NULL));
-             resource_group_edit_object_unload(program->group);
+             if (is_opened)
+               resource_group_edit_object_unload(program->group);
           }
      }
    _resource_state_free(part, state);
@@ -412,14 +485,20 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
    Part_Item2 *item;
    Program2 *program;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(part->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_STATE)
           {
              state = (State2 *)res;
-             resource_group_edit_object_load(pro,
-                                              state->part->group,
-                                              evas_object_evas_get(ap.win));
+             if (!state->part->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  state->part->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              if (state->part->type == EDJE_PART_TYPE_PROXY)
                CRIT_ON_FAIL(editor_state_proxy_source_set(state->part->group->edit_object,
                                                           change,
@@ -448,14 +527,21 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                             state->val,
                                                             NULL));
                }
-             resource_group_edit_object_unload(state->part->group);
+             if (is_opened)
+               resource_group_edit_object_unload(state->part->group);
+             else
+               resource_group_edit_object_reload(pro, state->part->group);
           }
         else if (res->common.type == RESOURCE2_TYPE_PROGRAM)
           {
              program = (Program2 *)res;
-             resource_group_edit_object_load(pro,
-                                              program->group,
-                                              evas_object_evas_get(ap.win));
+             if (!program->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  program->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              /* if it is actually filter */
              if (program->filter_part == part->common.name)
                {
@@ -479,8 +565,10 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                          part->common.name));
                   program->targets = eina_list_remove(program->targets, part);
                }
-             resource_group_edit_object_unload(program->group);
+             if (is_opened)
+               resource_group_edit_object_unload(program->group);
           }
+        is_opened = false;
      }
 
    /* kill all dependencies of part's states,
@@ -523,6 +611,8 @@ _resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *ch
    Resource2 *res;
    Program2 *res_program;
 
+   Eina_Bool is_opened = false;
+
    EINA_LIST_FOREACH(program->common.used_in, l, res)
      {
         if (res->common.type == RESOURCE2_TYPE_PROGRAM)
@@ -533,35 +623,46 @@ _resource_program_del(Project *pro, Group2 *group, Program2 *program, Change *ch
              while (eina_list_data_find_list(res_program->targets, program))
                {
                   /* if not its probably target part */
-                  resource_group_edit_object_load(pro,
-                                                   program->group,
-                                                   evas_object_evas_get(ap.win));
+                  if (!program->group->edit_object)
+                    {
+                       is_opened = true;
+                       resource_group_edit_object_load(pro,
+                                                       program->group,
+                                                       evas_object_evas_get(ap.win));
+                    }
                   CRIT_ON_FAIL(editor_program_target_del(program->group->edit_object,
                                                          change,
                                                          false,
                                                          true,
                                                          res->common.name,
                                                          program->common.name));
-                  resource_group_edit_object_unload(program->group);
+                  if (is_opened)
+                    resource_group_edit_object_unload(program->group);
                   res_program->targets = eina_list_remove(res_program->targets, program);
                }
              /* if its inside of afters */
              while (eina_list_data_find_list(res_program->afters, program))
                {
                   /* if not its probably target part */
-                  resource_group_edit_object_load(pro,
-                                                   program->group,
-                                                   evas_object_evas_get(ap.win));
+                  if (!program->group->edit_object)
+                    {
+                       is_opened = true;
+                       resource_group_edit_object_load(pro,
+                                                       program->group,
+                                                       evas_object_evas_get(ap.win));
+                    }
                   CRIT_ON_FAIL(editor_program_after_del(program->group->edit_object,
                                                         change,
                                                         false,
                                                         true,
                                                         res->common.name,
                                                         program->common.name));
-                  resource_group_edit_object_unload(program->group);
+                  if (is_opened)
+                    resource_group_edit_object_unload(program->group);
                   res_program->afters = eina_list_remove(res_program->afters, program);
                }
           }
+        is_opened = false;
      }
 
    /* item is not used anywhere at all */
@@ -631,6 +732,8 @@ _resource_group_del(Project *pro, Group2 *group)
    Group_Data2 *data;
    Group2 *alias_group;
 
+   Eina_Bool is_opened = false;
+
    /* IMPORTANT
       Since edje edit together with group deletion also delete all it's aliases
       it's important to update dependencies and recursively remove deps for
@@ -645,10 +748,13 @@ _resource_group_del(Project *pro, Group2 *group)
         if (res->common.type == RESOURCE2_TYPE_PART)
           {
              part = (Part2 *)res;
-             resource_group_edit_object_load(pro,
-                                              part->group,
-                                              evas_object_evas_get(ap.win));
-
+             if (!part->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  part->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              if (part->type == EDJE_PART_TYPE_GROUP)
                CRIT_ON_FAIL(editor_part_group_source_set(part->group->edit_object,
                                                          NULL,
@@ -665,14 +771,19 @@ _resource_group_del(Project *pro, Group2 *group)
                   CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(  part->group->edit_object, NULL, false, true, part->common.name, NULL));
                   CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(   part->group->edit_object, NULL, false, true, part->common.name, NULL));
                }
-             resource_group_edit_object_unload(part->group);
+             if (is_opened)
+               resource_group_edit_object_unload(part->group);
           }
         else if (res->common.type == RESOURCE2_TYPE_ITEM)
           {
              item = (Part_Item2 *)res;
-             resource_group_edit_object_load(pro,
-                                              item->part->group,
-                                              evas_object_evas_get(ap.win));
+             if (!item->part->group->edit_object)
+               {
+                  is_opened = true;
+                  resource_group_edit_object_load(pro,
+                                                  item->part->group,
+                                                  evas_object_evas_get(ap.win));
+               }
              CRIT_ON_FAIL(editor_part_item_source_set(item->part->group->edit_object,
                                                       NULL,
                                                       false,
@@ -680,8 +791,10 @@ _resource_group_del(Project *pro, Group2 *group)
                                                       item->part->common.name,
                                                       item->common.name,
                                                       EFLETE_INTERNAL_GROUP_NAME));
-             resource_group_edit_object_unload(item->part->group);
+             if (is_opened)
+               resource_group_edit_object_unload(item->part->group);
           }
+        is_opened = false;
      }
 
    EINA_LIST_FOREACH(group->programs, l, program)
