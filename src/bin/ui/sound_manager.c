@@ -246,13 +246,13 @@ _add_sample_done(void *data __UNUSED__,
 
    res_path = eina_stringshare_printf("%s/sounds/%s", ap.project->develop_path, sound_name);
 
-   if (!ecore_file_exists(res->source))
+   if (!ecore_file_exists(res_path))
      {
-        ecore_file_cp(selected, res->source);
+        ecore_file_cp(selected, res_path);
      }
    else
      {
-        ERR(_("File '%s' exist"), res->source);
+        ERR(_("File '%s' exist"), res_path);
         return true;
      }
 

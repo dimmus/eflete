@@ -592,13 +592,13 @@ _image_added(void *data,
 
    res = mem_calloc(1, sizeof(Image2));
    res->common.type = RESOURCE2_TYPE_IMAGE;
-   res->common.name = eina_stringshare_add(name);
+   res->common.name = eina_stringshare_add(ecore_file_file_get(name));
    res->comp_type = edje_edit_image_compression_type_get(project->global_object,
                                                          res->common.name);
    if (res->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      res->source = eina_stringshare_add(name);
    else
-     res->source = eina_stringshare_printf("%s/%s", resource_folder, name);
+     res->source = eina_stringshare_printf("%s/%s", resource_folder, ecore_file_file_get(name));
 
    project->RM.images = eina_list_append(project->RM.images, res);
    eina_stringshare_del(resource_folder);
