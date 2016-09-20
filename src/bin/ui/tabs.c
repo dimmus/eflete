@@ -1029,7 +1029,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_PREDELETED, _editor_program_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_PREDELETED, _editor_group_data_deleted_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, signals.shortcut.add.part, _shortcut_add_part_cb, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.add.item, _shortcut_add_part_item_cb, NULL);

@@ -732,6 +732,10 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    event_info.item_name = eina_stringshare_add(item_name);
    if (!_editor_signals_blocked)
      {
+        /* so in here we need to delete part from workspace, groupedit,
+           all kind of UI part lists since they use original Resource structure,
+           and only after that we can finally delete it,
+           so keep those signals in this order please */
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_PREDELETED, (void *)&event_info);
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
      }
