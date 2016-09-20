@@ -165,6 +165,8 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
    Rename ren;
    Editor_Attribute_Change send;
    send.attribute = RM_ATTRIBUTE_PART_NAME;
+   send.old_value = eina_stringshare_add(name);
+   send.value = eina_stringshare_add(new_val);
    assert(edit_object != NULL);
    assert(name != NULL);
    assert(new_val != NULL);
@@ -191,9 +193,14 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
         ren.old_name = name;
         ren.new_name = new_val;
         TODO("Maybe think about merging those two signals? I dunno")
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
-        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+        if (!_editor_signals_blocked)
+          {
+             evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
+             evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+          }
      }
+   eina_stringshare_del(send.old_value);
+   eina_stringshare_del(send.value);
    return true;
 }
 

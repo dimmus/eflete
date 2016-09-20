@@ -479,6 +479,11 @@ _property_attribute_changed(void *data,
               _resource_usage_resource_add(part, source);
            }
          break;
+      case RM_ATTRIBUTE_PART_NAME:
+         part = resource_manager_find(group->parts, change->old_value);
+         eina_stringshare_del(part->common.name);
+         part->common.name = eina_stringshare_add(change->value);
+         break;
       default:
          break;
      }
@@ -674,21 +679,6 @@ _style_changed(void *data,
         if (source)
           _resource_usage_resource_add((Resource2 *)res_tag, source);
      }
-}
-
-static void
-_part_renamed(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *ei)
-{
-   Rename *ren = ei;
-   Part2 *current_part;
-
-   Group2 *group = tabs_current_group_get();
-
-   current_part = (Part2 *)resource_manager_find(group->parts, ren->old_name);
-   eina_stringshare_del(current_part->common.name);
-   current_part->common.name = eina_stringshare_add(ren->new_name);
 }
 
 static void
@@ -941,7 +931,6 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
 
    /* already implemented stack of editor changes */
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
@@ -978,7 +967,6 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
 
    /* already implemented stack of editor changes */
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_PART_RENAMED, _part_renamed, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, project);
    evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, project);
