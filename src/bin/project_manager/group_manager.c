@@ -1117,23 +1117,23 @@ gm_group_data_rename(Project *pro, Group *group, Resource* group_data, const cha
  * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
  */
 static char *part_types[] = {
-     "NONE",
-     "RECTANGLE",
-     "TEXT",
-     "IMAGE",
-     "SWALLOW",
-     "TEXTBLOCK",
-     "GRADIENT",
-     "GROUP",
-     "BOX",
-     "TABLE",
-     "EXTERNAL",
-     "PROXY",
-     "SPACER",
-     "MESH NODE",
-     "LIGHT",
-     "CAMERA",
-     "SNAPSHOT"
+     "None",
+     "Rectangle",
+     "Text",
+     "Image",
+     "Swallow",
+     "Textblock",
+     "Gradient",
+     "Group",
+     "Box",
+     "Table",
+     "External",
+     "Proxy",
+     "Spacer",
+     "Mesh node",
+     "Light",
+     "Camera",
+     "Snapshot"
 };
 static unsigned int part_types_count = 16;
 
