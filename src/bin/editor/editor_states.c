@@ -397,6 +397,7 @@ editor_state_image_border_left_set(Evas_Object *edit_object, Change *change, Ein
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, n4, o5, o6, o7));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -437,6 +438,7 @@ editor_state_image_border_right_set(Evas_Object *edit_object, Change *change, Ei
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, n5, o6, o7));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -477,6 +479,7 @@ editor_state_image_border_top_set(Evas_Object *edit_object, Change *change, Eina
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, o5, n6, o7));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -517,6 +520,7 @@ editor_state_image_border_bottom_set(Evas_Object *edit_object, Change *change, E
    if (apply)
      {
         CRIT_ON_FAIL(edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, o5, o6, n7));
+        CRIT_ON_FAIL(editor_save(edit_object));
         _editor_project_changed();
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
      }
@@ -525,10 +529,10 @@ editor_state_image_border_bottom_set(Evas_Object *edit_object, Change *change, E
 
 /**********************/
 
-EDITOR_STATE_UCHAR(image_border_fill, ATTRIBUTE_STATE_IMAGE_BORDER_FILL)
-EDITOR_STATE_UCHAR(fill_type, ATTRIBUTE_STATE_FILL_TYPE)
-EDITOR_STATE_UCHAR(aspect_pref, ATTRIBUTE_STATE_ASPECT_PREF)
-EDITOR_STATE_UCHAR(table_homogeneous, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS)
+EDITOR_STATE_UCHAR(image_border_fill, ATTRIBUTE_STATE_IMAGE_BORDER_FILL, true)
+EDITOR_STATE_UCHAR(fill_type, ATTRIBUTE_STATE_FILL_TYPE, false)
+EDITOR_STATE_UCHAR(aspect_pref, ATTRIBUTE_STATE_ASPECT_PREF, false)
+EDITOR_STATE_UCHAR(table_homogeneous, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS, false)
 
 EDITOR_STATE_INT_SAVE(container_padding_x, ATTRIBUTE_STATE_CONTAINER_PADING_X)
 EDITOR_STATE_INT_SAVE(container_padding_y, ATTRIBUTE_STATE_CONTAINER_PADING_Y)
