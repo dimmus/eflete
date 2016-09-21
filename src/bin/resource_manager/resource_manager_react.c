@@ -889,6 +889,9 @@ _editor_group_add_cb(void *data,
    group = _group_add(pro, group_name);
    _group_load(pro, group);
    _group_dependency_load(pro, group);
+
+   /* to send info that group was succesfully added and UI need to update */
+   evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_ADDED, group);
 }
 
 static void

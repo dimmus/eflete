@@ -495,9 +495,9 @@ _btn_add_group_cb(void *data __UNUSED__,
 static void
 _folder_del(const char *prefix)
 {
-   Eina_List *folders = NULL, *groups = NULL, *l;
+   Eina_List *folders = NULL, *groups = NULL;
    Eina_Stringshare *tmp, *msg;
-   Group2 *group, *alias;
+   Group2 *group;
 
    widget_tree_items_get(ap.project->RM.groups, prefix, &folders, &groups);
    EINA_LIST_FREE(folders, tmp)
@@ -507,19 +507,6 @@ _folder_del(const char *prefix)
 
    EINA_LIST_FREE(groups, group)
      {
-        if (group->main_group) continue;
-        EINA_LIST_FOREACH(group->aliases, l, alias)
-          {
-             if (!editor_group_del(ap.project->global_object, tmp, true))
-               {
-                  msg = eina_stringshare_printf(_("Can't delete alias layout \"%s\""),
-                                                alias->common.name);
-                  TODO("Check if it's correct to ignore error");
-                  popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
-                  eina_stringshare_del(msg);
-               }
-          }
-
         tmp = eina_stringshare_add(group->common.name);
         if (!editor_group_del(ap.project->global_object, tmp, true))
           {
@@ -614,6 +601,7 @@ _group_del_popup_close_cb(void *data,
    if (BTN_CANCEL == btn_res) return;
 
    tmp = eina_stringshare_add(group->common.name);
+
    if (!editor_group_del(ap.project->global_object, tmp, true))
      {
         msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->common.name);
@@ -621,7 +609,6 @@ _group_del_popup_close_cb(void *data,
         popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
         eina_stringshare_del(msg);
      }
-
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 

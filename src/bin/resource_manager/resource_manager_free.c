@@ -740,7 +740,7 @@ _resource_group_del(Project *pro, Group2 *group)
       every aliased group. */
    EINA_LIST_FOREACH(group->aliases, l, alias_group)
      {
-        _resource_group_del(pro, alias_group);
+        CRIT_ON_FAIL(editor_group_del(ap.project->global_object, alias_group->common.name, true));
      }
 
    EINA_LIST_FOREACH(group->common.used_in, l, res)
