@@ -708,16 +708,15 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
         if (!item)
           {
              item = elm_genlist_first_item_get(tab_edj.genlist);
-             do
+             while (item)
                {
                   node = elm_object_item_data_get(item);
                   if (!strcmp(node->name, "elm/"))
                     break;
                   item = elm_genlist_item_next_get(item);
                }
-             while (item);
           }
-        if (node->list)
+        if (node && node->list)
           {
              EINA_LIST_FOREACH(node->list, l1, sub)
              {
