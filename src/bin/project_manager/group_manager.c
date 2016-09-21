@@ -64,10 +64,7 @@ gm_group_used_groups_edj_get(Evas_Object *obj)
    EINA_LIST_FOREACH(parts, l1, part)
      {
         type = edje_edit_part_type_get(obj, part);
-        if ((EDJE_PART_TYPE_GROUP != type) ||
-            (EDJE_PART_TYPE_TEXTBLOCK != type) ||
-            (EDJE_PART_TYPE_BOX != type) ||
-            (EDJE_PART_TYPE_TABLE != type))
+        if ((EDJE_PART_TYPE_GROUP != type) && (EDJE_PART_TYPE_TEXTBLOCK != type) && (EDJE_PART_TYPE_BOX != type) && (EDJE_PART_TYPE_TABLE != type))
           continue;
         SOURCE_GET(edje_edit_part_source_get)
         SOURCE_GET(edje_edit_part_source2_get)
