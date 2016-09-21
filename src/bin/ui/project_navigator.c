@@ -544,7 +544,7 @@ _group_del(void *data __UNUSED__,
    arr = eina_str_split_full(group_name, "/", 0, &depth);
    for (i = 0; i < depth; i++)
      {
-        item  =_find_item(item, arr[i]);
+        item = _find_item(item, arr[i]);
         eina_strbuf_append_printf(buf, "%s", arr[i]);
         if (!item) break;
         if (i != depth - 1)
@@ -560,13 +560,16 @@ _group_del(void *data __UNUSED__,
           }
         if (!elm_genlist_item_expanded_get(item) &&
             NULL != eina_list_search_sorted_list(ap.project->RM.groups, (Eina_Compare_Cb)group_cmp, eina_strbuf_string_get(buf)))
-          break;
+          {
+             stack = eina_list_append(stack, item);
+             break;
+          }
         stack = eina_list_append(stack, item);
         item = eina_list_data_get(elm_genlist_item_subitems_get(item));
      }
    EINA_LIST_REVERSE_FOREACH(stack, l, item)
      {
-        if (0 == elm_genlist_item_subitems_count(item))
+        if (elm_genlist_item_subitems_count(item) == 0)
           elm_object_item_del(item);
      }
 
