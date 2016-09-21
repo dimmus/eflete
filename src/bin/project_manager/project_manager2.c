@@ -36,6 +36,10 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
+
+#define FLAGS ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED | \
+              ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED
+
 static Eet_Compression compess_level = EET_COMPRESSION_HI;
 
 struct _Project_Process_Data
@@ -428,7 +432,6 @@ _exe_error_handler(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
-
 static Eina_Bool
 _exporter_finish_handler(void *data,
                          int type __UNUSED__,
@@ -447,7 +450,6 @@ _exporter_finish_handler(void *data,
 static Eina_Bool
 _project_open_internal(Project_Process_Data *ppd)
 {
-   Ecore_Exe_Flags flags;
    char cmd[PATH_MAX];
    char *file_dir;
 
@@ -571,9 +573,7 @@ _project_open_internal(Project_Process_Data *ppd)
    snprintf(cmd, sizeof(cmd),
             "eflete_exporter --edj %s --path %s/develop", ppd->project->saved_edj, file_dir);
 
-   flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-           ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   ecore_exe_pipe_run(cmd, flags, NULL);
+   ecore_exe_pipe_run(cmd, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
@@ -645,7 +645,6 @@ _project_import_edj(Project_Process_Data *ppd)
    Eina_Strbuf *strbuf;
    char buf[PATH_MAX];
    unsigned int count;
-   Ecore_Exe_Flags flags;
 
    //Eina_Stringshare *msg = eina_stringshare_printf(_("Start import '%s' file as new project"), ptd->edj);
    snprintf(buf, sizeof(buf), "Start import '%s' file as new project", ppd->edj);
@@ -721,9 +720,7 @@ _project_import_edj(Project_Process_Data *ppd)
         ppd->edj = eina_stringshare_ref(edj_out);
         ppd->source_edj = eina_stringshare_ref(edj_in);
 
-        flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-                ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-        ecore_exe_pipe_run(eina_strbuf_string_get(strbuf), flags, NULL);
+        ecore_exe_pipe_run(eina_strbuf_string_get(strbuf), FLAGS, NULL);
         eina_strbuf_free(strbuf);
 
         ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
@@ -822,7 +819,6 @@ _project_import_edc(void *data)
 {
    Project_Process_Data *ppd = data;
    char buf[PATH_MAX];
-   Ecore_Exe_Flags flags;
 
    assert(ppd != NULL);
 
@@ -833,10 +829,7 @@ _project_import_edc(void *data)
    ppd->edj = eina_stringshare_printf("%s/out.edj", ppd->tmp_dirname);
    snprintf(buf, sizeof(buf),
             "edje_cc -v %s %s %s", ppd->edc, ppd->edj, ppd->build_options);
-   flags = ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-           ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-
-   ecore_exe_pipe_run(buf, flags, NULL);
+   ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_handler, ppd);
@@ -1029,4 +1022,162 @@ pm_project_meta_data_set(Project *project,
 
 #undef DATA_WRITE
    return res;
+}
+
+static Eina_Bool
+_group_export_finish_handler(void *data,
+                             int type __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Project_Process_Data *ppd = data;
+
+   ppd->result = PM_PROJECT_SUCCESS;
+   _end_send(ppd);
+   return ECORE_CALLBACK_DONE;
+}
+
+void
+pm_group_source_code_export(Project *project,
+                            Group *group,
+                            const char *path,
+                            PM_Project_Progress_Cb func_progress,
+                            PM_Project_End_Cb func_end,
+                            const void *data)
+{
+   Project_Process_Data *ppd;
+   char buf[PATH_MAX];
+
+   assert(project != NULL);
+   assert(group != NULL);
+   assert(path != NULL);
+
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+
+   snprintf(buf, sizeof(buf),
+            "eflete_exporter --edj %s --path %s -g %s -s", project->saved_edj, path, group->name);
+
+   ecore_exe_pipe_run(buf, FLAGS, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
+}
+
+void
+pm_project_source_code_export(Project *project,
+                              const char *path,
+                              PM_Project_Progress_Cb func_progress,
+                              PM_Project_End_Cb func_end,
+                              const void *data)
+{
+   Project_Process_Data *ppd;
+   char buf[PATH_MAX];
+
+   assert(project != NULL);
+   assert(path != NULL);
+
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+
+   snprintf(buf, sizeof(buf),
+            "eflete_exporter --edj %s --path %s -s", project->saved_edj, path);
+
+   ecore_exe_pipe_run(buf, FLAGS, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
+
+}
+
+static Eina_Bool
+_develop_export_finish_handler(void *data,
+                               int type __UNUSED__,
+                               void *event_info)
+{
+   Project_Process_Data *ppd = data;
+   Ecore_Exe_Event_Del *edje_pick_exit = (Ecore_Exe_Event_Del *)event_info;
+   char buf[PATH_MAX];
+
+   if (edje_pick_exit->exit_code != 0)
+     {
+        ppd->result = PM_PROJECT_ERROR;
+        _end_send(ppd);
+        return ECORE_CALLBACK_DONE;
+     }
+
+   if (ppd->tmp_dirname)
+     {
+        ecore_file_recursive_rm(ppd->path);
+        ecore_file_mv(ppd->tmp_dirname, ppd->path);
+        eina_tmpstr_del(ppd->tmp_dirname);
+        ppd->tmp_dirname = NULL;
+     }
+   snprintf(buf, sizeof(buf), _("Export to file '%s' successfull"), ppd->path);
+   if (ppd->func_progress) ppd->func_progress(NULL, buf);
+
+  ppd->result = PM_PROJECT_SUCCESS;
+  _end_send(ppd);
+
+  return ECORE_CALLBACK_DONE;
+}
+
+void
+pm_project_develop_export(Project *project,
+                          const char *path,
+                          Eina_List *groups,
+                          PM_Project_Progress_Cb func_progress,
+                          PM_Project_End_Cb func_end,
+                          const void *data)
+{
+   Project_Process_Data *ppd;
+   Eina_Strbuf *cmd;
+   Eina_List *l;
+   Group *group;
+
+   assert(project != NULL);
+   assert(path != NULL);
+   assert(groups != NULL);
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->path = eina_stringshare_add(path);
+   ppd->project = project;
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+
+   CRIT_ON_FAIL(editor_save_all(project->global_object));
+
+   cmd = eina_strbuf_new();
+   if (!ecore_file_exists(ppd->path))
+     eina_strbuf_append_printf(cmd, "edje_pick -o %s", path);
+   else
+     {
+        eina_file_mkstemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
+        eina_strbuf_append_printf(cmd, "edje_pick -o %s", ppd->tmp_dirname);
+        eina_strbuf_append_printf(cmd, " -a %s", path);
+     }
+   eina_strbuf_append_printf(cmd, " -i %s", project->dev);
+
+   EINA_LIST_FOREACH(groups, l, group)
+     eina_strbuf_append_printf(cmd, " -g %s", group->name);
+
+   DBG("Run command for export: %s", eina_strbuf_string_get(cmd));
+   ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
+
+   return;
 }

@@ -380,6 +380,7 @@ pm_project_source_code_export(Project *project,
  *
  * @param pro The opened project;
  * @param path Path to save the edj file.
+ * @param groups The groups list for export
  * @param func_progress The progress callback;
  * @param func_end The end callback, this callback be called on the end of
  *        Project progress;
@@ -390,6 +391,7 @@ pm_project_source_code_export(Project *project,
 void
 pm_project_develop_export(Project *pro,
                           const char *path,
+                          Eina_List *groups,
                           PM_Project_Progress_Cb func_progress,
                           PM_Project_End_Cb func_end,
                           const void *data) EINA_ARG_NONNULL(1, 2);
