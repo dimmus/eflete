@@ -200,7 +200,8 @@ _build_script_write(const char *path)
    eina_strbuf_append_printf(buf, "edje_cc -v generated.edc -id images/ -sd sounds/ -fd fonts/");
    fputs(eina_strbuf_string_get(buf), f);
    eina_strbuf_free(buf);
-   chmod(path, S_IRWXU|S_IRWXG|S_IROTH|S_IWOTH);
+   if (chmod(path, S_IRWXU|S_IRWXG|S_IROTH|S_IWOTH) < 0)
+     ERR("Bash script failed to change mode to execute");
 
    fclose(f);
    return true;
