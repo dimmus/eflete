@@ -242,5 +242,8 @@ cursor_type_get(Evas_Object *obj)
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
 
+   if (!cursor)
+     return CURSOR_UNKNOWN;
+
    return cursor->type;
 }
