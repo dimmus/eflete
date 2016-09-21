@@ -19,7 +19,6 @@
 
 #define _GNU_SOURCE
 #include "project_manager2.h"
-#include "resource_manager2.h"
 #include <fcntl.h>
 
 #ifndef _WIN32
@@ -72,7 +71,7 @@ struct _Project_Process_Data
    /** The temporary directory. Should be stored here for a correct clean temporary files. */
    Eina_Tmpstr *tmp_dirname;
    /** The group, which source should be exported into edc. */
-   Group *group;
+   Group2 *group;
    /** Temporary path, for deliver works path between pipes and threads */
    Eina_Stringshare *tmp_path;
 
@@ -1038,7 +1037,7 @@ _group_export_finish_handler(void *data,
 
 void
 pm_group_source_code_export(Project *project,
-                            Group *group,
+                            Group2 *group,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
@@ -1059,7 +1058,7 @@ pm_group_source_code_export(Project *project,
    ppd->result = PM_PROJECT_LAST;
 
    snprintf(buf, sizeof(buf),
-            "eflete_exporter --edj %s --path %s -g %s -s", project->saved_edj, path, group->name);
+            "eflete_exporter --edj %s --path %s -g %s -s", project->saved_edj, path, group->common.name);
 
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
@@ -1108,6 +1107,10 @@ _develop_export_finish_handler(void *data,
    Ecore_Exe_Event_Del *edje_pick_exit = (Ecore_Exe_Event_Del *)event_info;
    char buf[PATH_MAX];
 
+   ecore_event_handler_del(ppd->del_handler);
+   ecore_event_handler_del(ppd->error_handler);
+   ecore_event_handler_del(ppd->data_handler);
+
    if (edje_pick_exit->exit_code != 0)
      {
         ppd->result = PM_PROJECT_ERROR;
@@ -1142,7 +1145,7 @@ pm_project_develop_export(Project *project,
    Project_Process_Data *ppd;
    Eina_Strbuf *cmd;
    Eina_List *l;
-   Group *group;
+   Group2 *group;
 
    assert(project != NULL);
    assert(path != NULL);
@@ -1170,7 +1173,7 @@ pm_project_develop_export(Project *project,
    eina_strbuf_append_printf(cmd, " -i %s", project->dev);
 
    EINA_LIST_FOREACH(groups, l, group)
-     eina_strbuf_append_printf(cmd, " -g %s", group->name);
+     eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
 
    DBG("Run command for export: %s", eina_strbuf_string_get(cmd));
    ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
@@ -1180,4 +1183,85 @@ pm_project_develop_export(Project *project,
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
 
    return;
+}
+
+static Eina_Bool
+_release_export_build_finish_handler(void *data,
+                                     int type __UNUSED__,
+                                     void *event_info __UNUSED__)
+{
+   Project_Process_Data *ppd = data;
+
+   ppd->result = PM_PROJECT_SUCCESS;
+   _end_send(ppd);
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_release_export_finish_handler(void *data,
+                             int type __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Project_Process_Data *ppd = data;
+   Eina_Strbuf *buf;
+   char folder[PATH_MAX];
+
+   ecore_event_handler_del(ppd->del_handler);
+   ecore_event_handler_del(ppd->error_handler);
+   ecore_event_handler_del(ppd->data_handler);
+
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "edje_cc -v %s %s", ppd->edc, ppd->edj);
+   snprintf(folder, sizeof(folder), "%s/images", ppd->tmp_dirname);
+   if (ecore_file_exists(folder))
+     eina_strbuf_append_printf(buf, " -id %s", folder);
+   snprintf(folder, sizeof(folder), "%s/sounds", ppd->tmp_dirname);
+   if (ecore_file_exists(folder))
+     eina_strbuf_append_printf(buf, " -sd %s", folder);
+   snprintf(folder, sizeof(folder), "%s/fonts", ppd->tmp_dirname);
+   if (ecore_file_exists(folder))
+     eina_strbuf_append_printf(buf, " -fd %s", folder);
+   ecore_exe_pipe_run(eina_strbuf_string_get(buf), FLAGS, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_build_finish_handler, ppd);
+
+   eina_strbuf_free(buf);
+   return ECORE_CALLBACK_DONE;
+}
+
+void
+pm_project_release_export(Project *project,
+                          const char *path,
+                          PM_Project_Progress_Cb func_progress,
+                          PM_Project_End_Cb func_end,
+                          const void *data)
+{
+   Project_Process_Data *ppd;
+   char buf[PATH_MAX];
+
+   assert(project != NULL);
+   assert(path != NULL);
+
+   ppd = mem_calloc(1, sizeof(Project_Process_Data));
+   ppd->path = eina_stringshare_add(path);
+   ppd->project = project;
+   ppd->func_progress = func_progress;
+   ppd->func_end = func_end;
+   ppd->edj = eina_stringshare_add(path);
+   ppd->data = (void *)data;
+   ppd->result = PM_PROJECT_LAST;
+
+   CRIT_ON_FAIL(editor_save_all(project->global_object));
+
+   eina_file_mkdtemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
+   snprintf(buf, sizeof(buf),
+            "eflete_exporter --edj %s --path %s -s", ppd->project->saved_edj, ppd->tmp_dirname);
+   ppd->edc = eina_stringshare_printf("%s/generated.edc", ppd->tmp_dirname);
+   ecore_exe_pipe_run(buf, FLAGS, NULL);
+
+   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
+   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_finish_handler, ppd);
 }

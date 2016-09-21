@@ -35,6 +35,7 @@
 
 #include "eflete.h"
 #include "group_manager.h"
+#include "resource_manager2.h"
 
 /* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 5
@@ -348,7 +349,7 @@ pm_project_meta_data_set(Project *project,
  */
 void
 pm_group_source_code_export(Project *project,
-                            Group *group,
+                            Group2 *group,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
