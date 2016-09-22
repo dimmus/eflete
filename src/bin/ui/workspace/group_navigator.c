@@ -1244,8 +1244,8 @@ _popup_add_state_close_cb(void *data,
    if (pb != BTN_OK) return;
 
    Part_List *pl = data;
-   const char *name;
-   double val;
+   const char *name, *name_from;
+   double val, val_from;
    State2 *state_from = NULL;
    Eina_Stringshare *msg;
    Change *change;
@@ -1269,9 +1269,10 @@ _popup_add_state_close_cb(void *data,
      }
    else
      {
+        state_name_split(pl->popup.state_selected->data, &name_from, &val_from);
         state_from = (State2 *)resource_manager_v_find(pl->part->states,
-                                                       state_from->common.name,
-                                                       state_from->val);
+                                                       name_from,
+                                                       val_from);
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
                                       name, val, state_from->common.name, state_from->val);
         change = change_add(msg);
