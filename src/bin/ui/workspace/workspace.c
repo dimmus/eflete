@@ -26,7 +26,7 @@
 #include "history.h"
 #include "history_ui.h"
 #include "demo.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "change.h"
 #include "syntax_color.h"
 #include "shortcuts.h"

@@ -19,7 +19,7 @@
 
 #include "groupview.h"
 #include "groupview_private.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 #define PART_STATE_GET(obj, part) \
    const char *state; \

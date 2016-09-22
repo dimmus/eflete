@@ -19,7 +19,7 @@
 #include "demo_group.h"
 #include "main_window.h"
 #include "history.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 #define DEMO_GROUP_DATA "demo_group_data"
 

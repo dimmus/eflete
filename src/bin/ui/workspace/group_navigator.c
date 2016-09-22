@@ -23,7 +23,7 @@
 #include "group_navigator.h"
 #include "main_window.h"
 #include "history.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "change.h"
 #include "widget_macro.h"
 #include "validator.h"

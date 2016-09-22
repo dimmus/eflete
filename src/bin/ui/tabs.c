@@ -21,7 +21,7 @@
 #include "workspace.h"
 #include "tabs.h"
 #include "history.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "main_window.h"
 #include "change.h"
 
@@ -448,7 +448,7 @@ _editor_saved(void *data __UNUSED__,
    Eina_List *l;
    Tabs_Item *item;
 
-   pm_dev_file_reload(ap.project);
+   //pm_dev_file_reload(ap.project);
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
         if (!item->group) continue; /* skip home tab */

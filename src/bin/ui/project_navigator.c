@@ -23,7 +23,7 @@
 #include "project_navigator.h"
 #include "main_window.h"
 #include "validator.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "widget_list.h"
 
 typedef struct

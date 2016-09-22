@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 #include "tabs.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "project_navigator.h"
 
 static Eina_Bool

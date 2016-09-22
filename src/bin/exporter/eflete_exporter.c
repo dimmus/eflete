@@ -339,7 +339,8 @@ _group_source_code_export(const char *group)
    edje_edit_string_free(code);
    fclose(f);
 
-   return name;
+   snprintf(buf, sizeof(buf), "%s.edc", name);
+   return strdup(buf);
 }
 
 static void
@@ -373,7 +374,9 @@ _source_code_export(void *data __UNUSED__)
         EINA_LIST_FOREACH(groups, l, g)
           {
              fputs("#include \"", f);
-             fputs(_group_source_code_export(g), f);
+             char *name = _group_source_code_export(g);
+             fputs(name, f);
+             free(name);
              fputs("\"\n", f);
           }
      }

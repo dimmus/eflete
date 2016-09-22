@@ -6,7 +6,7 @@ src/bin/external/enventor_module.c
 src/bin/external/syntax_color.c
 src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
-src/bin/project_manager/project_manager.c
+src/bin/project_manager/project_manager2.c
 src/bin/ui/cursor.c
 src/bin/ui/colorclass_manager.c
 src/bin/ui/image_manager.c

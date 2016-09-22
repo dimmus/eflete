@@ -21,7 +21,7 @@
 #include "property_private.h"
 #include "sound_player.h"
 #include "main_window.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 #define SOUND_MASK(TYPE) (1u << TYPE)
 #define SOUND_SAMPLE SOUND_MASK(SOUND_TYPE_SAMPLE)

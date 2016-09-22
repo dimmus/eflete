@@ -29,8 +29,6 @@ EXTRA_DIST = \
 	logger/logger.h \
 	project_manager/group_manager.h \
 	project_manager/group_manager_resources.h \
-	project_manager/project_manager.h \
-	project_manager/project_manager_private.h \
 	project_manager/project_manager2.h \
 	project_manager/resource_manager.h \
 	resource_manager/resource_manager2.h \
@@ -70,12 +68,6 @@ libete_a_SOURCES = \
 ../../src/bin/common/validator.c \
 ../../src/bin/common/widget_list.c \
 ../../src/bin/project_manager/group_manager.c \
-../../src/bin/project_manager/project_manager.c \
-../../src/bin/project_manager/project_manager_open.c \
-../../src/bin/project_manager/project_manager_import_edj.c \
-../../src/bin/project_manager/project_manager_import_edc.c \
-../../src/bin/project_manager/project_manager_export_edc.c \
-../../src/bin/project_manager/project_manager_export_edj.c \
 ../../src/bin/project_manager/project_manager2.c \
 ../../src/bin/resource_manager/resource_manager2.c \
 ../../src/bin/resource_manager/resource_manager_load.c \

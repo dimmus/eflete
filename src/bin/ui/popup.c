@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 #include "widget_macro.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "config.h"
 #include "shortcuts.h"
 

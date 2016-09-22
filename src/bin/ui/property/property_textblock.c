@@ -19,7 +19,7 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
 #define DIRECTION_NUM 40

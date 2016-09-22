@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 #include "tabs.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "project_common.h"
 
 static Eina_Bool
@@ -36,7 +36,7 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_develop_export(ap.project, path, progress_print, progress_end, NULL);
+   pm_project_develop_export(ap.project, path, ap.project->groups, progress_print, progress_end, NULL);
    return true;
 }
 

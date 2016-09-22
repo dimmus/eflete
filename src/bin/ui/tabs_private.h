@@ -21,7 +21,7 @@
 #define TABS_PRIVATE
 
 #include "eflete.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 struct _Meta_Data_Controls
 {

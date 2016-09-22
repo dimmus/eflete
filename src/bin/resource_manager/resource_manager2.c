@@ -19,7 +19,7 @@
 
 #include "resource_manager2.h"
 #include "resource_manager_private.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 Resource2 *
 resource_manager_find(const Eina_List *list, Eina_Stringshare *name)

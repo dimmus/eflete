@@ -20,7 +20,7 @@
 #define SOUND_PLAYER_H
 
 #include "eflete.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "main_window.h"
 
 void

@@ -20,7 +20,7 @@
 #include "property.h"
 #include "property_private.h"
 #include "demo_group.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 #define DEMO_MASK(TYPE) (1u << TYPE)
 #define DEMO_SIGNAL     DEMO_MASK(EDJE_PART_TYPE_NONE) /* in case of SIGNAL things are different */

@@ -26,7 +26,7 @@
 #include "group_manager.h"
 #include "history.h"
 #include "change.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "validator.h"
 #include "shortcuts.h"
 #include "string_common.h"

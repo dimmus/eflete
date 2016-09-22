@@ -18,7 +18,7 @@
  */
 
 #include "main_window.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 
 typedef struct {
    Eina_Strbuf *buf, *buf_msg;

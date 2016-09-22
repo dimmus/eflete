@@ -18,7 +18,7 @@
  */
 
 #include "live_widget.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "live_elementary_widgets.h"
 
 Evas_Object *

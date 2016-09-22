@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #include "validator.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include <regex.h>
 
 struct _Resource_Name_Validator

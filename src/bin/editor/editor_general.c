@@ -19,7 +19,7 @@
 
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "diff.h"
 #include "change.h"
 

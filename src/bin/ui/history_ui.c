@@ -19,7 +19,7 @@
 
 #include "history_ui.h"
 #include "change.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "history.h"
 #include "widget_macro.h"
 #include "main_window.h"

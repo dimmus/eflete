@@ -21,7 +21,7 @@
 #define EFL_EO_API_SUPPORT
 
 #include "main_window.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "validator.h"
 #include "modal_window.h"
 

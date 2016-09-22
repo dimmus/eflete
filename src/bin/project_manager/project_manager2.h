@@ -34,7 +34,6 @@
  */
 
 #include "eflete.h"
-#include "group_manager.h"
 #include "resource_manager2.h"
 
 /* don't forget to update on major changes */

@@ -22,7 +22,7 @@
 
 #include "main_window.h"
 #include "validator.h"
-#include "project_manager.h"
+#include "project_manager2.h"
 #include "modal_window.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
