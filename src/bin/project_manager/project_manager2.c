@@ -201,7 +201,7 @@ _project_create(Project_Process_Data *ppd)
 
    pro = (Project *)mem_calloc(1, sizeof(Project));
    pro->version = PROJECT_FILE_VERSION;
-   pro->name = eina_stringshare_add(ppd->name);
+   pro->name = eina_stringshare_ref(ppd->name);
    pro->dev = eina_stringshare_printf("%s/%s.dev", buf, ppd->name);
    pro->saved_edj = eina_stringshare_printf("%s/%s.edj", buf, ppd->name);
    pro->develop_path = eina_stringshare_printf("%s/develop", buf);
