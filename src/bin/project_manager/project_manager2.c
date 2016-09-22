@@ -1265,3 +1265,9 @@ pm_project_release_export(Project *project,
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_finish_handler, ppd);
 }
+
+Eina_Bool
+pm_lock_check(const char *path)
+{
+   return _lock_try(path, false, NULL);
+}
