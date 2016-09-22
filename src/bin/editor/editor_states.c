@@ -62,6 +62,8 @@ editor_state_max_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    int min_value; \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE_STATE_MAX_##VAL_CAPS; \
  \
    assert(edit_object != NULL); \
@@ -114,6 +116,8 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    int max_value; \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE_STATE_MIN_##VAL_CAPS; \
  \
    assert(edit_object != NULL); \
@@ -164,6 +168,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -233,6 +239,8 @@ editor_state_map_rotation_x_set(Evas_Object *edit_object, Change *change, Eina_B
    Diff *diff;
    double o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_MAP_ROTATION_X;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -274,6 +282,8 @@ editor_state_map_rotation_y_set(Evas_Object *edit_object, Change *change, Eina_B
    Diff *diff;
    double o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_MAP_ROTATION_Y;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -315,6 +325,8 @@ editor_state_map_rotation_z_set(Evas_Object *edit_object, Change *change, Eina_B
    Diff *diff;
    double o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_MAP_ROTATION_Z;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -376,6 +388,8 @@ editor_state_image_border_left_set(Evas_Object *edit_object, Change *change, Ein
    Diff *diff;
    int o4, o5, o6, o7;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_IMAGE_BORDER_LEFT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -418,6 +432,8 @@ editor_state_image_border_right_set(Evas_Object *edit_object, Change *change, Ei
    Diff *diff;
    int o4, o5, o6, o7;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -460,6 +476,8 @@ editor_state_image_border_top_set(Evas_Object *edit_object, Change *change, Eina
    Diff *diff;
    int o4, o5, o6, o7;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_IMAGE_BORDER_TOP;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -502,6 +520,8 @@ editor_state_image_border_bottom_set(Evas_Object *edit_object, Change *change, E
    Diff *diff;
    int o4, o5, o6, o7;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -554,6 +574,8 @@ editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
@@ -602,6 +624,8 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);

@@ -231,6 +231,7 @@ typedef enum {
 
 typedef struct {
    RM_Attribute attribute;
+   Evas_Object *edit_object;
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
    Eina_Stringshare *item_name;

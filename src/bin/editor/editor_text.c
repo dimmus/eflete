@@ -35,6 +35,8 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_TEXT_SIZE;
 
    assert(edit_object != NULL);
@@ -92,6 +94,8 @@ editor_state_text_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_STATE_TEXT;
    assert(edit_object != NULL);
    assert(part_name != NULL);

@@ -106,7 +106,6 @@ _property_attribute_changed(void *data,
     **                                                                   **
     ** TODO:                                                             **
     ** > edje-edit to model, expand structures to save entire data       **
-    ** > expand editor (top blocks like image, sound, etc) not supported **
     ***********************************************************************
     ***********************************************************************/
    Resource2 *part, *state, *source, *old_source, *item, *program, *group_data;
@@ -115,7 +114,10 @@ _property_attribute_changed(void *data,
    Attribute editor_resource = (int)change->attribute;
    Project *pro = (Project *)data;
    Group2 *group = tabs_current_group_get();
-   if (!group) return;
+
+   /* do not update if change was called from resource_manager_free */
+   if ((!group) || (group->edit_object != change->edit_object))
+     return;
 
    switch ((int)change->attribute)
      {

@@ -24,6 +24,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -66,6 +68,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -108,6 +112,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -159,6 +165,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
    assert(state_name != NULL); \
@@ -212,6 +220,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    Diff *diff = NULL; \
    Eina_Stringshare *old_value = edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val); \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    send.part_name = eina_stringshare_add(part_name); \
    send.state_name = eina_stringshare_add(state_name); \
@@ -286,6 +296,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    Diff *diff; \
    int o4, o5, o6, o7; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -334,6 +346,8 @@ editor_state_## FUNC ##_## NUMBER ##_set(Evas_Object *edit_object, Change *chang
    Diff *diff; \
    int o4, o5, o6, o7; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE ##_## NUMBER; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -382,6 +396,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -424,6 +440,8 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -460,6 +478,8 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -496,6 +516,8 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(name != NULL); \
@@ -538,6 +560,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -578,6 +602,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -618,6 +644,8 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -658,6 +686,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -700,6 +730,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -742,6 +774,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(part_name != NULL); \
@@ -784,6 +818,8 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
@@ -820,6 +856,8 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    assert(edit_object != NULL); \
    assert(program != NULL); \
    Eina_Stringshare *old_value = edje_edit_program_## FUNC ##_get(edit_object, program); \

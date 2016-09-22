@@ -30,6 +30,8 @@ editor_part_text_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_TEXT_EFFECT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -67,6 +69,8 @@ editor_part_text_shadow_direction_set(Evas_Object *edit_object, Change *change, 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -104,6 +108,8 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_IGNORE_FLAGS;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -164,6 +170,8 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, 
    Diff *diff;
    Rename ren;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_NAME;
    send.old_value = eina_stringshare_add(name);
    send.value = eina_stringshare_add(new_val);
@@ -210,6 +218,8 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ITEM_ASPECT_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -270,6 +280,8 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -321,6 +333,8 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
    Diff *diff;
    int o3, o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -361,6 +375,8 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
    Diff *diff;
    int o3, o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -401,6 +417,8 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
    Diff *diff;
    int o3, o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_TOP;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -441,6 +459,8 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
    Diff *diff;
    int o3, o4, o5, o6;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -482,6 +502,8 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_SELECT_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -517,6 +539,8 @@ editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_ENTRY_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -552,6 +576,8 @@ editor_part_pointer_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_POINTER_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -587,6 +613,8 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PART_CURSOR_MODE;
    assert(edit_object != NULL);
    assert(part_name != NULL);

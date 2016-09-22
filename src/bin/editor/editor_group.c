@@ -130,6 +130,8 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    int min_value; \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = obj; \
+ \
    send.attribute = RM_ATTRIBUTE_GROUP_MAX_##VAL_CAPS; \
  \
    assert(obj != NULL); \
@@ -176,6 +178,8 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    int max_value; \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = obj; \
+ \
    send.attribute = RM_ATTRIBUTE_GROUP_MIN_##VAL_CAPS; \
  \
    assert(obj != NULL); \
@@ -219,6 +223,8 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_GROUP_NAME;
    assert(edit_object != NULL);
    assert(new_val != NULL);
@@ -253,6 +259,8 @@ editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_GROUP_DATA_VALUE;
    assert(edit_object != NULL);
    assert(item_name != NULL);
@@ -290,6 +298,8 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    Diff *diff;
    Rename ren;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(item_name != NULL);
    assert(new_val != NULL);

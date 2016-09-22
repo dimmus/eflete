@@ -52,6 +52,8 @@ editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Ein
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_TYPE;
 
    assert(edit_object != NULL);
@@ -93,6 +95,8 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
    Diff *diff;
    Edje_Tween_Mode mode;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT;
 
    assert(edit_object != NULL);
@@ -133,6 +137,8 @@ editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_CHANNEL;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -194,6 +200,8 @@ editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, E
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_FACTOR;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -256,6 +264,8 @@ editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change,
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -308,6 +318,8 @@ editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Ei
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_DECAY;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -360,6 +372,8 @@ editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, 
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -411,6 +425,8 @@ editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, E
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TRANSITION_SWINGS;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -463,6 +479,8 @@ editor_program_transition_bezier_## VAL ##_set(Evas_Object *edit_object, Change 
 { \
    Diff *diff; \
    Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
    send.attribute = RM_ATTRIBUTE; \
    assert(edit_object != NULL); \
    assert(program != NULL); \
@@ -523,6 +541,8 @@ editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bo
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_EMIT_SIGNAL;
    assert(edit_object != NULL);
    assert(program != NULL);
@@ -562,6 +582,8 @@ editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merg
    Diff *diff;
    Rename ren;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_NAME;
    assert(edit_object != NULL);
    assert(name != NULL);
@@ -603,6 +625,8 @@ editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool me
    assert(program_name != NULL);
    assert(target != NULL);
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
    send.program_name = eina_stringshare_add(program_name);
    send.value = eina_stringshare_add(target);
@@ -641,6 +665,8 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(program_name != NULL);
    send.attribute = RM_ATTRIBUTE_PROGRAM_TARGET;
@@ -681,6 +707,8 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(program_name != NULL);
    assert(after != NULL);
@@ -722,6 +750,8 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
 {
    Diff *diff;
    Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
    assert(edit_object != NULL);
    assert(program_name != NULL);
    send.attribute = RM_ATTRIBUTE_PROGRAM_AFTER;
