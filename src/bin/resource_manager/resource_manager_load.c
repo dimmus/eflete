@@ -85,27 +85,13 @@ _image_resources_load(Project *project)
    Image2 *res;
    Eina_List *images;
    Eina_Stringshare *resource_folder;
-   Eina_Stringshare *image_name, *source_file;
+   Eina_Stringshare *image_name;
    Eina_List *l;
-   Evas *e;
-   Evas_Object *im;
-   char *file_dir;
 
    assert(project != NULL);
 
    resource_folder = eina_stringshare_printf("%s/images", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export images", resource_folder);
-        eina_stringshare_del(resource_folder);
-        return false;
-     }
-
    images = edje_edit_images_list_get(project->global_object);
-
-   e = ecore_evas_get(project->ecore_evas);
    EINA_LIST_FOREACH(images, l, image_name)
      {
         /* for supporting old themes, which were compilled
@@ -117,27 +103,15 @@ _image_resources_load(Project *project)
         res->common.name = eina_stringshare_add(image_name);
         res->comp_type = edje_edit_image_compression_type_get(project->global_object,
                                                               res->common.name);
+        res->common.id = edje_edit_image_id_get(project->global_object, image_name);
+        res->is_used = false;
+
         if (res->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
           res->source = eina_stringshare_add(image_name);
         else
           res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
 
         project->RM.images = eina_list_append(project->RM.images, res);
-
-        if (!ecore_file_exists(res->source))
-          {
-             file_dir = ecore_file_dir_get(res->source);
-             ecore_file_mkpath(file_dir);
-             free(file_dir);
-             im = evas_object_image_add(e);
-             res->common.id = edje_edit_image_id_get(project->global_object, image_name);
-             res->is_used = false;
-             source_file = eina_stringshare_printf("edje/images/%i", res->common.id);
-             evas_object_image_file_set(im, project->dev, source_file);
-             evas_object_image_save(im, res->source, NULL, NULL);
-             evas_object_del(im);
-             eina_stringshare_del(source_file);
-          }
      }
 
    edje_edit_string_list_free(images);
@@ -153,21 +127,10 @@ _sound_resources_load(Project *project)
    Eina_Stringshare *resource_folder;
    Eina_Stringshare *sound_name, *sound_file;
    Eina_List *l;
-   Eina_Binbuf *sound_bin;
-   FILE *f;
-   char *file_dir;
 
    assert(project != NULL);
 
    resource_folder = eina_stringshare_printf("%s/sounds", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export sounds", resource_folder);
-        eina_stringshare_del(resource_folder);
-        return false;
-     }
 
    sounds = edje_edit_sound_samples_list_get(project->global_object);
    EINA_LIST_FOREACH(sounds, l, sound_name)
@@ -184,24 +147,6 @@ _sound_resources_load(Project *project)
 
         project->RM.sounds = eina_list_append(project->RM.sounds, res);
 
-        if (!ecore_file_exists(res->source))
-          {
-             file_dir = ecore_file_dir_get(res->source);
-             ecore_file_mkpath(file_dir);
-             free(file_dir);
-             sound_bin = edje_edit_sound_samplebuffer_get(project->global_object, sound_name);
-             if (!(f = fopen(res->source, "wb")))
-               {
-                  ERR("Could not open file: %s", res->source);
-                  sleep(2);
-                  continue;
-               }
-             if (fwrite(eina_binbuf_string_get(sound_bin),
-                        eina_binbuf_length_get(sound_bin), 1, f) != 1)
-               ERR("Could not write sound: %s", strerror(errno));
-             if (f) fclose(f);
-             eina_binbuf_free(sound_bin);
-          }
         edje_edit_string_free(sound_file);
      }
 
@@ -216,32 +161,19 @@ _font_resources_load(Project *project)
    Font2 *res;
    Eina_List *fonts;
    Eina_Stringshare *resource_folder;
-   Eet_File *ef;
    Eina_List *l;
    Eina_Stringshare *font_name, *font_file;
-   void *font;
-   FILE *f;
-   int size;
 
    Eina_Bool result = true;
 
    assert(project != NULL);
 
    resource_folder = eina_stringshare_printf("%s/fonts", project->develop_path);
-   ecore_file_recursive_rm(resource_folder);
 
    fonts = edje_edit_fonts_list_get(project->global_object);
 
-   ef = eet_open(project->dev, EET_FILE_MODE_READ);
    if (eina_list_count(fonts) == 0)
      {
-        res = NULL;
-        goto cleanup;
-     }
-
-   if (!ecore_file_mkpath(resource_folder))
-     {
-        ERR("Failed create path %s for export fonts", resource_folder);
         res = NULL;
         goto cleanup;
      }
@@ -256,28 +188,9 @@ _font_resources_load(Project *project)
         res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
 
         project->RM.fonts = eina_list_append(project->RM.fonts, res);
-
-        if (!ecore_file_exists(res->source))
-          {
-             edje_edit_string_free(font_file);
-             font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
-             font = eet_read(ef, font_file, &size);
-             if (!font) continue;
-             if (!(f = fopen(res->source, "wb")))
-               {
-                  ERR("Could not open file: %s", res->source);
-                  continue;
-               }
-             if (fwrite(font, size, 1, f) != 1)
-               ERR("Could not write font: %s", strerror(errno));
-             fclose(f);
-             free(font);
-             eina_stringshare_del(font_file);
-          }
      }
 
 cleanup:
-   eet_close(ef);
    edje_edit_string_list_free(fonts);
    eina_stringshare_del(resource_folder);
    return result;
