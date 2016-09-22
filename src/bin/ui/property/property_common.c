@@ -440,8 +440,8 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
          CRIT("Wrong control type");
+         app_shutdown();
          abort();
-         return NULL;
       /* do not add default: */
      }
 
