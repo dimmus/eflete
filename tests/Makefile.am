@@ -173,13 +173,6 @@ cursor_test_SOURCES = \
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
 
-live_widget_test_SOURCES = \
-../tests/test_live_widget/test_live_widget.c \
-../tests/test_live_widget/live_widget_create.c \
-../tests/test_live_widget/live_widget_del.c
-live_widget_test_CFLAGS = ${FLAGS}
-live_widget_test_LDADD = ${LD}
-
 coverage:
 	echo "<html><body>" > ../coverage.html
 	lcov --zerocounters --directory ../src
