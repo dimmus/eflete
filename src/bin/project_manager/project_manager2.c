@@ -72,8 +72,6 @@ struct _Project_Process_Data
    Eina_Tmpstr *tmp_dirname;
    /** The group, which source should be exported into edc. */
    Group2 *group;
-   /** Temporary path, for deliver works path between pipes and threads */
-   Eina_Stringshare *tmp_path;
 
    /** Handlers for monitoring events from exe pipes. */
    Ecore_Event_Handler *data_handler;
@@ -84,6 +82,8 @@ struct _Project_Process_Data
    Eet_Data_Descriptor *eed_project;
 };
 typedef struct _Project_Process_Data Project_Process_Data;
+
+
 
 static void
 _project_descriptor_init(Project_Process_Data *ppd)
@@ -110,6 +110,50 @@ _pm_project_descriptor_shutdown(Project_Process_Data *ppd)
 {
    eet_data_descriptor_free(ppd->eed_project);
    ppd->eed_project = NULL;
+}
+
+static void
+_ecore_event_handlers_del(Project_Process_Data *ppd)
+{
+   assert(ppd != NULL);
+
+   if (ppd->data_handler)
+     {
+        ecore_event_handler_del(ppd->data_handler);
+        ppd->data_handler = NULL;
+     }
+   if (ppd->error_handler)
+     {
+        ecore_event_handler_del(ppd->error_handler);
+        ppd->error_handler = NULL;
+     }
+   if (ppd->del_handler)
+     {
+        ecore_event_handler_del(ppd->del_handler);
+        ppd->del_handler = NULL;
+     }
+}
+
+static void
+_project_process_data_cleanup(Project_Process_Data *ppd)
+{
+   assert(ppd != NULL);
+
+   if (ppd->name) eina_stringshare_del(ppd->name);
+   if (ppd->path) eina_stringshare_del(ppd->path);
+   if (ppd->edj) eina_stringshare_del(ppd->edj);
+   if (ppd->edc) eina_stringshare_del(ppd->edc);
+   if (ppd->build_options) eina_stringshare_del(ppd->build_options);
+
+   if (ppd->tmp_dirname)
+     {
+        ecore_file_recursive_rm(ppd->tmp_dirname);
+        eina_tmpstr_del(ppd->tmp_dirname);
+     }
+   _ecore_event_handlers_del(ppd);
+   _pm_project_descriptor_shutdown(ppd);
+
+   free(ppd);
 }
 
 static void
@@ -309,17 +353,8 @@ _end_send(void *data)
    result = ppd->result;
    udata = ppd->data;
    project = ppd->project;
-   ecore_event_handler_del(ppd->del_handler);
-   ecore_event_handler_del(ppd->error_handler);
-   ecore_event_handler_del(ppd->data_handler);
 
-   if (ppd->tmp_dirname != NULL)
-     {
-        ecore_file_recursive_rm(ppd->tmp_dirname);
-        eina_tmpstr_del(ppd->tmp_dirname);
-     }
-
-   free(ppd);
+   _project_process_data_cleanup(ppd);
    func(udata, result, project);
 }
 
@@ -604,8 +639,7 @@ pm_project_open(const char *path,
 
    if (!_project_open_internal(ppd))
      {
-        eina_stringshare_del(ppd->path);
-        free(ppd);
+        _project_process_data_cleanup(ppd);
      }
 
    free(spath);
@@ -623,9 +657,7 @@ _edje_pick_finish_handler(void *data,
    eina_stringshare_del(ppd->path);
    ppd->path = eina_stringshare_ref(ppd->project->pro_path);
 
-   ecore_event_handler_del(ppd->del_handler);
-   ecore_event_handler_del(ppd->error_handler);
-   ecore_event_handler_del(ppd->data_handler);
+   _ecore_event_handlers_del(ppd);
 
    ecore_file_cp(ppd->edj, ppd->project->saved_edj);
    if (!_project_open_internal(ppd))
@@ -741,8 +773,7 @@ _project_import_edj(Project_Process_Data *ppd)
         _project_dummy_sample_add(ppd->project);
         if (!_project_open_internal(ppd))
           {
-             eina_stringshare_del(ppd->path);
-             free(ppd);
+             _project_process_data_cleanup(ppd);
              return;
           }
      }
@@ -803,10 +834,7 @@ _finish_from_edje_cc(void *data,
         snprintf(buf, sizeof(buf), "Data for importing prepare");
         if (ppd->func_progress) ppd->func_progress(NULL, buf);
      }
-
-   ecore_event_handler_del(ppd->del_handler);
-   ecore_event_handler_del(ppd->error_handler);
-   ecore_event_handler_del(ppd->data_handler);
+   _ecore_event_handlers_del(ppd);
 
    _project_import_edj(ppd);
 
@@ -1109,9 +1137,7 @@ _develop_export_finish_handler(void *data,
    Ecore_Exe_Event_Del *edje_pick_exit = (Ecore_Exe_Event_Del *)event_info;
    char buf[PATH_MAX];
 
-   ecore_event_handler_del(ppd->del_handler);
-   ecore_event_handler_del(ppd->error_handler);
-   ecore_event_handler_del(ppd->data_handler);
+   _ecore_event_handlers_del(ppd);
 
    if (edje_pick_exit->exit_code != 0)
      {
@@ -1208,9 +1234,7 @@ _release_export_finish_handler(void *data,
    Eina_Strbuf *buf;
    char folder[PATH_MAX];
 
-   ecore_event_handler_del(ppd->del_handler);
-   ecore_event_handler_del(ppd->error_handler);
-   ecore_event_handler_del(ppd->data_handler);
+   _ecore_event_handlers_del(ppd);
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "edje_cc -v %s %s", ppd->edc, ppd->edj);
