@@ -24,7 +24,7 @@
  * @{
  * @addtogroup history_change_add
  * @{
- * Alloc
+ * History
  * <TABLE>
  * @}
  */

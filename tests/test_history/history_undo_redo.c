@@ -24,7 +24,7 @@
  * @{
  * @addtogroup history_undo_redo
  * @{
- * Alloc
+ * History
  * <TABLE>
  * @}
  */

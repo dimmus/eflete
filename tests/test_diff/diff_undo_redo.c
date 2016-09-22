@@ -24,7 +24,7 @@
  * @{
  * @addtogroup diff_undo_redo
  * @{
- * Alloc
+ * Diff
  * <TABLE>
  * @}
  */

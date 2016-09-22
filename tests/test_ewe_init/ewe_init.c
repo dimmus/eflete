@@ -18,7 +18,7 @@
 #include "test_ewe_init.h"
 
 /**
- * @addtogroup ewe_test
+ * @addtogroup ewe_init_test
  * @{
  * @addtogroup ewe_init
  * @{
@@ -32,7 +32,7 @@
   * @{
   * <tr>
   * <td>ewe_init</td>
-  * <td>TEST_CASE_NAME</td>
+  * <td>ewe_init_test_p</td>
   * <td>
   * @procedure
   * @step 1 init ewe

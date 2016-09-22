@@ -24,7 +24,7 @@
  * @{
  * @addtogroup change_diff_add
  * @{
- * Alloc
+ * Change
  * <TABLE>
  * @}
  */
