@@ -204,7 +204,7 @@ Evas_Object *
 property_add(Evas_Object *parent, Property_Mode mode)
 {
    Property_Data *pd;
-   Eina_List *items;
+   Eina_List *items = NULL;
 
    assert(parent != NULL);
 
@@ -293,6 +293,10 @@ property_add(Evas_Object *parent, Property_Mode mode)
          property_demo_init(pd);
          items = property_demo_items_get();
          break;
+       default:
+         ERR("Unrecognized mode [%d] of property block. Appliction will be aborted", mode);
+         app_shutdown();
+         abort();
      }
    _items_add(pd->genlist, &items, NULL);
    GENLIST_FILTER_APPLY(pd->genlist);
