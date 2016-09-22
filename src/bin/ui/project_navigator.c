@@ -316,7 +316,7 @@ _group_add(void *data __UNUSED__,
         item = eina_list_data_get(elm_genlist_item_subitems_get(item));
      }
 
-   if (i != count - 1)
+   if ((i > 0) && (count > 0) && (i != count - 1))
      {
         prefix = widget_prefix_get(group->common.name, i, NULL);
         elm_genlist_item_sorted_insert(project_navigator.genlist,
