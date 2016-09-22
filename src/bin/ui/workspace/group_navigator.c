@@ -35,6 +35,7 @@ static Evas_Object *dummy_navi = NULL;
 typedef struct
 {
    int index;
+   int part_type;
    Eina_Stringshare *data;
 } Combobox_Item;
 
@@ -927,6 +928,10 @@ _popup_add_part_close_cb(void *data,
      }
    else
      {
+        /* if part add was clicked and only name was typed,
+           so there are no changes yet and part_type contain EDJE_PART_TYPE_NONE */
+        if (pl->popup.part_type == 0)
+          pl->popup.part_type = EDJE_PART_TYPE_RECTANGLE;
         name = elm_entry_entry_get(pl->popup.entry_name);
         msg = eina_stringshare_printf(_("added new part \"%s\""), name);
         change = change_add(msg);
