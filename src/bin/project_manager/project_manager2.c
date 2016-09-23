@@ -660,6 +660,10 @@ _edje_pick_finish_handler(void *data,
    _ecore_event_handlers_del(ppd);
 
    ecore_file_cp(ppd->edj, ppd->project->saved_edj);
+   _project_special_group_add(ppd->project);
+   _project_dummy_image_add(ppd->project);
+   _project_dummy_sample_add(ppd->project);
+
    if (!_project_open_internal(ppd))
      return ECORE_CALLBACK_CANCEL;
    else
