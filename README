@@ -26,6 +26,16 @@ To install program to specified directory use --prefix option on configure step:
 
    ./autogen.sh --prefix=/full/path/to/some/dir
 
+WARNING!
+If you install program to specified directory run you should update your HOME
+variable with path to installed program like this:
+
+   export PATH="$PATH:<prefix_path>/bin"
+
+or run program this way
+
+   PATH="$PATH:<prefix_path>/bin" <prefix_path>/bin/eflete
+
 Apllying themes:
 ----------------
 
