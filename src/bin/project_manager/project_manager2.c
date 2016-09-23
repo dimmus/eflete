@@ -608,7 +608,7 @@ _project_open_internal(Project_Process_Data *ppd)
 /******************************************************************************/
    file_dir = ecore_file_dir_get(ppd->path);
    snprintf(cmd, sizeof(cmd),
-            "eflete_exporter --edj %s --path %s/develop", ppd->project->saved_edj, file_dir);
+            EFLETE_BIN_PATH"eflete_exporter --edj %s --path %s/develop", ppd->project->saved_edj, file_dir);
 
    ecore_exe_pipe_run(cmd, FLAGS, NULL);
 
@@ -1095,7 +1095,7 @@ pm_group_source_code_export(Project *project,
    ppd->result = PM_PROJECT_LAST;
 
    snprintf(buf, sizeof(buf),
-            "eflete_exporter --edj %s --path %s -g %s -s", project->saved_edj, path, group->common.name);
+            EFLETE_BIN_PATH"eflete_exporter --edj %s --path %s -g %s -s", project->saved_edj, path, group->common.name);
 
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
@@ -1125,7 +1125,7 @@ pm_project_source_code_export(Project *project,
    ppd->result = PM_PROJECT_LAST;
 
    snprintf(buf, sizeof(buf),
-            "eflete_exporter --edj %s --path %s -s", project->saved_edj, path);
+            EFLETE_BIN_PATH"eflete_exporter --edj %s --path %s -s", project->saved_edj, path);
 
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
@@ -1290,7 +1290,7 @@ pm_project_release_export(Project *project,
 
    eina_file_mkdtemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
    snprintf(buf, sizeof(buf),
-            "eflete_exporter --edj %s --path %s -s", ppd->project->saved_edj, ppd->tmp_dirname);
+            EFLETE_BIN_PATH"eflete_exporter --edj %s --path %s -s", ppd->project->saved_edj, ppd->tmp_dirname);
    ppd->edc = eina_stringshare_printf("%s/generated.edc", ppd->tmp_dirname);
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
