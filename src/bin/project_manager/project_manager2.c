@@ -281,7 +281,10 @@ _project_dummy_image_add(Project *project)
 
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
    you_shall_not_pass_editor_signals(NULL);
-   CRIT_ON_FAIL(editor_image_add(obj, buf, false));
+   if (editor_image_add(obj, buf, false))
+     {
+        CRIT_ON_FAIL(editor_save(obj));
+     }
    you_shall_pass_editor_signals(NULL);
 
    ecore_evas_free(ecore_evas);
