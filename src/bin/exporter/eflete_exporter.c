@@ -124,7 +124,7 @@ _images_resources_export(void *data __UNUSED__)
      {
         if (!ecore_file_mkpath(buf))
           {
-             fprintf(stderr, "Failed create path %s for export images", buf);
+             fprintf(stderr, "ERROR: Failed create path %s for export images", buf);
              _terminate();
              return;
           }
@@ -144,7 +144,7 @@ _images_resources_export(void *data __UNUSED__)
                       "%s/"IMAGES"/%s\n", spath, name);
              if (!eina_file_copy(name, buf, EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, NULL, NULL))
                {
-                  fprintf(stderr, "Could not copy image '%s'\n", name);
+                  fprintf(stderr, "ERROR: Could not copy image '%s'\n", name);
                   _terminate();
                   return;
                }
@@ -154,7 +154,7 @@ _images_resources_export(void *data __UNUSED__)
              id = edje_edit_image_id_get(obj, name);
              if (id < 0)
                {
-                  fprintf(stderr, "Image have wrong id %i\n", id);
+                  fprintf(stderr, "ERROR: Image have wrong id %i\n", id);
                   _terminate();
                   return;
                }
@@ -169,7 +169,7 @@ _images_resources_export(void *data __UNUSED__)
 
              if (!evas_object_image_save(img, buf, NULL, NULL))
                {
-                  fprintf(stderr, "Image does not save, error: %s\n", evas_load_error_str(evas_object_image_load_error_get(img)));
+                  fprintf(stderr, "ERROR: Image does not save, error: %s\n", evas_load_error_str(evas_object_image_load_error_get(img)));
                   _terminate();
                   return;
                }
@@ -200,7 +200,7 @@ _sounds_resources_export(void *data __UNUSED__)
      {
         if (!ecore_file_mkpath(buf))
           {
-             fprintf(stderr, "Failed create path %s for export sounds", buf);
+             fprintf(stderr, "ERROR: Failed create path %s for export sounds", buf);
              _terminate();
              return;
           }
@@ -219,14 +219,14 @@ _sounds_resources_export(void *data __UNUSED__)
         sound_bin = edje_edit_sound_samplebuffer_get(obj, name);
         if (!(f = fopen(buf, "wb")))
           {
-             fprintf(stderr, "Could not export sound '%s'. File does not open.\n", sound_file);
+             fprintf(stderr, "ERROR: Could not export sound '%s'. File does not open.\n", sound_file);
              _terminate();
              return;
           }
         if (fwrite(eina_binbuf_string_get(sound_bin),
                    eina_binbuf_length_get(sound_bin), 1, f) != 1)
           {
-             fprintf(stderr, "Could not export sound '%s', Unable to write file.\n", sound_file);
+             fprintf(stderr, "ERROR: Could not export sound '%s', Unable to write file.\n", sound_file);
              _terminate();
              return;
           }
@@ -259,7 +259,7 @@ _fonts_resources_export(void *data __UNUSED__)
      {
         if (!ecore_file_mkpath(buf))
           {
-             fprintf(stderr, "Failed create path %s for export fonts.\n", buf);
+             fprintf(stderr, "ERROR: Failed create path %s for export fonts.\n", buf);
              _terminate();
              return;
           }
@@ -276,7 +276,7 @@ _fonts_resources_export(void *data __UNUSED__)
         font = eet_read(ef, buf, &size);
         if (!font)
           {
-             fprintf(stderr, "Unable to read font '%s' from '%s'.\n", buf, sedj);
+             fprintf(stderr, "ERROR: Unable to read font '%s' from '%s'.\n", buf, sedj);
              _terminate();
              goto exit;
           }
@@ -284,13 +284,13 @@ _fonts_resources_export(void *data __UNUSED__)
                 "%s/"FONTS"/%s", spath, font_file);
         if (!(f = fopen(buf, "wb")))
           {
-             fprintf(stderr, "Could not export font '%s'. File does not open.\n", font_file);
+             fprintf(stderr, "ERROR: Could not export font '%s'. File does not open.\n", font_file);
              _terminate();
              goto exit;
           }
         if (fwrite(font, size, 1, f) != 1)
           {
-             fprintf(stderr, "Could not export font '%s', Unable to write file.\n", font_file);
+             fprintf(stderr, "ERROR: Could not export font '%s', Unable to write file.\n", font_file);
              _terminate();
              goto exit;
           }
@@ -331,7 +331,7 @@ _group_source_code_export(const char *group)
    edje_error = edje_object_load_error_get(edje_obj);
    if (EDJE_LOAD_ERROR_NONE != edje_error)
      {
-        fprintf(stderr, "Edje object load error: %s\n", edje_load_error_str(edje_error));
+        fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
         return NULL;
      }
    code = edje_edit_source_generate(edje_obj);
@@ -357,7 +357,7 @@ _source_code_export(void *data __UNUSED__)
    f = fopen(buf, "w+");
    if (!f)
      {
-        fprintf(stderr, "Could not open file '%s'", buf);
+        fprintf(stderr, "ERROR: Could not open file '%s'", buf);
         _terminate();
         return;
      }
@@ -431,13 +431,13 @@ int main(int argc, char **argv)
    sedj = eina_file_path_sanitize(edj);
    if (!edj)
      {
-        fprintf(stderr, "Missing edj-file\n");
+        fprintf(stderr, "ERROR: Missing edj-file\n");
         ecore_getopt_help(stderr, &options);
         return EXIT_FAILURE;
      }
    if (!ecore_file_exists(sedj))
      {
-        fprintf(stderr, "File does not exist\n");
+        fprintf(stderr, "ERROR: File does not exist\n");
         ecore_getopt_help(stderr, &options);
         return EXIT_FAILURE;
      }
@@ -449,7 +449,7 @@ int main(int argc, char **argv)
    edje_error = edje_object_load_error_get(obj);
    if (EDJE_LOAD_ERROR_NONE != edje_error)
      {
-        fprintf(stderr, "Edje object load error: %s\n", edje_load_error_str(edje_error));
+        fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
         goto exit;
      }
 
@@ -471,7 +471,7 @@ int main(int argc, char **argv)
    edje_error = edje_object_load_error_get(edje_obj);
    if (EDJE_LOAD_ERROR_NONE != edje_error)
      {
-        fprintf(stderr, "Edje object load error: %s\n", edje_load_error_str(edje_error));
+        fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
         goto exit;
      }
 

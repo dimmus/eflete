@@ -459,12 +459,20 @@ _exe_output_handler(void *data,
 static Eina_Bool
 _exe_error_handler(void *data,
                    int type __UNUSED__,
-                   void *event_info __UNUSED__)
+                   void *event_info)
 {
+   int i;
+   Ecore_Exe_Event_Data *exe_err_msg = (Ecore_Exe_Event_Data *)event_info;
    Project_Process_Data *ppd = data;
 
-   ppd->result = PM_PROJECT_ERROR;
-   _end_send(ppd);
+   for (i = 0; exe_err_msg->lines[i].line != NULL; i++)
+     {
+        if (!strncmp(exe_err_msg->lines[i].line, "ERROR: ", sizeof("ERROR: ")))
+          {
+             ppd->result = PM_PROJECT_ERROR;
+             _end_send(ppd);
+          }
+     }
 
    return ECORE_CALLBACK_DONE;
 }
@@ -866,7 +874,7 @@ _project_import_edc(void *data)
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
 
    return;
@@ -1257,7 +1265,7 @@ _release_export_finish_handler(void *data,
    ecore_exe_pipe_run(eina_strbuf_string_get(buf), FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_output_handler, ppd);
+   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_build_finish_handler, ppd);
 
    eina_strbuf_free(buf);
