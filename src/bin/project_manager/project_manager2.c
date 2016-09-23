@@ -445,13 +445,13 @@ _exe_output_handler(void *data,
                     void *event_info)
 {
    int i;
-   Ecore_Exe_Event_Data *edje_cc_msg = (Ecore_Exe_Event_Data *)event_info;
+   Ecore_Exe_Event_Data *exe_out_msg = (Ecore_Exe_Event_Data *)event_info;
    Project_Process_Data *ppd = data;
 
-   if (!edje_cc_msg) return ECORE_CALLBACK_DONE;
+   if (!exe_out_msg) return ECORE_CALLBACK_DONE;
 
-   for (i = 0; edje_cc_msg->lines[i].line != NULL; i++)
-     ppd->func_progress(NULL, edje_cc_msg->lines[i].line);
+   for (i = 0; exe_out_msg->lines[i].line != NULL; i++)
+     ppd->func_progress(NULL, exe_out_msg->lines[i].line);
 
    return ECORE_CALLBACK_DONE;
 }
