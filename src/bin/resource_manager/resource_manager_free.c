@@ -514,7 +514,7 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                                  change,
                                                                  false,
                                                                  true,
-                                                                 part->common.name,
+                                                                 state->part->common.name,
                                                                  state->common.name,
                                                                  state->val,
                                                                  NULL));
@@ -522,7 +522,7 @@ _resource_part_del(Project *pro, Group2 *group, Part2 *part, Change *change)
                                                             change,
                                                             false,
                                                             true,
-                                                            part->common.name,
+                                                            state->part->common.name,
                                                             state->common.name,
                                                             state->val,
                                                             NULL));
