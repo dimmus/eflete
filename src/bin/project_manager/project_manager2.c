@@ -229,6 +229,7 @@ _project_create(Project_Process_Data *ppd)
      error = true;
 
    _pm_project_descriptor_shutdown(ppd);
+   eet_close(pro->ef);
    if (error)
      {
         ERR("Could't create a .pro file! ")
@@ -240,7 +241,6 @@ _project_create(Project_Process_Data *ppd)
         pro = NULL;
      }
 
-   eet_close(pro->ef);
    return pro;
 }
 
