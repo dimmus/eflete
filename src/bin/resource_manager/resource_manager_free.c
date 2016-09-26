@@ -734,6 +734,10 @@ _resource_group_del(Project *pro, Group2 *group)
 
    Eina_Bool is_opened = false;
 
+   /* If this group is alias, then delete it from aliased */
+   if (group->main_group)
+     group->main_group->aliases = eina_list_remove(group->main_group->aliases, group);
+
    /* IMPORTANT
       Since edje edit together with group deletion also delete all it's aliases
       it's important to update dependencies and recursively remove deps for
