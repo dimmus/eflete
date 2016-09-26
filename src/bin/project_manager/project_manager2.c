@@ -405,6 +405,7 @@ _lock_try(const char *path, Eina_Bool check, int *pro_fd)
    if ((lock.l_pid != 0) && ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK)))
      {
         ERR("Process %d has a write lock already!", lock.l_pid);
+        close(fd);
         return false;
      }
 
