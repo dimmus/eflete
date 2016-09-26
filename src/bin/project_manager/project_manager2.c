@@ -542,6 +542,9 @@ _project_open_internal(Project_Process_Data *ppd)
      {
         /* really this case is unlickly, but we need handle it */
         ERR("Project file already locked by another application");
+#ifdef _WIN32
+        CloseHandle(fd);
+#endif /*  */
         return false;
      }
 
