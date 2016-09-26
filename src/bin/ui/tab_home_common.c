@@ -55,13 +55,13 @@ void
 meta_controls_data_save(Meta_Data_Controls *meta)
 {
    if (meta == NULL) return;
-   pm_project_meta_data_set(ap.project,
-                            ap.project->name,
-                            elm_entry_entry_get(meta->version),
-                            elm_entry_entry_get(meta->authors),
-                            elm_entry_entry_get(meta->licenses),
-                            elm_entry_entry_get(meta->comment));
-
+   if (!pm_project_meta_data_set(ap.project,
+                                 ap.project->name,
+                                 elm_entry_entry_get(meta->version),
+                                 elm_entry_entry_get(meta->authors),
+                                 elm_entry_entry_get(meta->licenses),
+                                 elm_entry_entry_get(meta->comment)))
+     return;
 }
 
 void

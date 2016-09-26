@@ -45,14 +45,16 @@ _eflete_filter(const char *path,
 static Eina_Bool
 _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 {
+   Eina_Bool ret = true;
    Eina_Stringshare *path = data;
 
    assert(path != NULL);
 
-   pm_project_open(path, progress_print, _tabs_progress_end, NULL);
+   if (!pm_project_open(path, progress_print, _tabs_progress_end, NULL))
+     ret = false;
    eina_stringshare_del(path);
 
-   return true;
+   return ret;
 }
 
 static Eina_Bool

@@ -36,7 +36,9 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_develop_export(ap.project, path, ap.project->groups, progress_print, progress_end, NULL);
+   if (!pm_project_develop_export(ap.project, path, ap.project->groups,
+                                  progress_print, progress_end, NULL))
+     return false;
    return true;
 }
 
@@ -112,7 +114,8 @@ _export_release_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_release_export(ap.project, path, progress_print, progress_end, NULL);
+   if (!pm_project_release_export(ap.project, path, progress_print, progress_end, NULL))
+     return false;
    return true;
 }
 
@@ -190,11 +193,12 @@ _export_source_code_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_source_code_export(ap.project,
-                                 path,
-                                 progress_print,
-                                 progress_end,
-                                 NULL);
+   if (!pm_project_source_code_export(ap.project,
+                                      path,
+                                      progress_print,
+                                      progress_end,
+                                      NULL))
+     return false;
    return true;
 }
 
@@ -262,12 +266,13 @@ _export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_group_source_code_export(ap.project,
-                               tabs_current_group_get(),
-                               path,
-                               progress_print,
-                               progress_end,
-                               NULL);
+   if (!pm_group_source_code_export(ap.project,
+                                    tabs_current_group_get(),
+                                    path,
+                                    progress_print,
+                                    progress_end,
+                                    NULL))
+     return false;
    return true;
 }
 

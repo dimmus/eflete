@@ -202,16 +202,18 @@ typedef void
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
                       Eina_List *list,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3);
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3) __UNUSED_RESULT__;
 
 /**
  * Create a new project which base on the imported edc file.
@@ -230,18 +232,20 @@ pm_project_import_edj(const char *name,
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ *
  * @note Function will not check a edc file, and directories.
  *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
                       const char *import_options,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) __UNUSED_RESULT__;
 
 /**
  * Open Eflete project.
@@ -252,13 +256,15 @@ pm_project_import_edc(const char *name,
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_project_open(const char *path,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
-                const void *data);
+                const void *data) __UNUSED_RESULT__;
 
 /**
  * Save all changes in current project to the dev file.
@@ -269,13 +275,15 @@ pm_project_open(const char *path,
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE if project start save succesful, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
-                const void *data) EINA_ARG_NONNULL(1);
+                const void *data) EINA_ARG_NONNULL(1) __UNUSED_RESULT__;
 
 /**
  * Close the current project. Information about the project will be updated in
@@ -288,7 +296,7 @@ pm_project_save(Project *project,
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_close(Project *project) EINA_ARG_NONNULL(1);
+pm_project_close(Project *project) EINA_ARG_NONNULL(1) __UNUSED_RESULT__;
 
 /**
  * Get a meta data from Project.
@@ -332,7 +340,7 @@ pm_project_meta_data_set(Project *project,
                          const char *authors,
                          const char *version,
                          const char *license,
-                         const char *comment) EINA_ARG_NONNULL(1);
+                         const char *comment) EINA_ARG_NONNULL(1) __UNUSED_RESULT__;
 
 /**
  * Export the source code of Group (edje object) to file.
@@ -344,15 +352,17 @@ pm_project_meta_data_set(Project *project,
  * @param func_end The user func for handle the end of export;
  * @param data The user data;
  *
+ * @return EINA_TRUE if project start export succesful, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager.
  */
-void
+Eina_Bool
 pm_group_source_code_export(Project *project,
                             Group2 *group,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
-                            const void *data);
+                            const void *data) __UNUSED_RESULT__;
 
 /**
  * Export the source code of Project (for each style edje objects) to a directory
@@ -363,16 +373,16 @@ pm_group_source_code_export(Project *project,
  * @param pro The opened project;
  * @param dir_path directory path where source code would be exported;
  *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ * @return EINA_TRUE if project start export succesful, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager.
  */
-void
+Eina_Bool
 pm_project_source_code_export(Project *project,
                               const char *path,
                               PM_Project_Progress_Cb func_progress,
                               PM_Project_End_Cb func_end,
-                              const void *data);
+                              const void *data) __UNUSED_RESULT__;
 
 /**
  * Export the edj develop file from current project. The develop edj file
@@ -386,15 +396,17 @@ pm_project_source_code_export(Project *project,
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager.
  */
-void
+Eina_Bool
 pm_project_develop_export(Project *pro,
                           const char *path,
                           Eina_List *groups,
                           PM_Project_Progress_Cb func_progress,
                           PM_Project_End_Cb func_end,
-                          const void *data) EINA_ARG_NONNULL(1, 2);
+                          const void *data) EINA_ARG_NONNULL(1, 2) __UNUSED_RESULT__;
 
 /**
  * Export the edj release file from current project. The develop edj file
@@ -407,14 +419,16 @@ pm_project_develop_export(Project *pro,
  *        Project progress;
  * @param data The user data.
  *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
  * @ingroup ProjectManager.
  */
-void
+Eina_Bool
 pm_project_release_export(Project *pro,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
                           PM_Project_End_Cb func_end,
-                          const void *data) EINA_ARG_NONNULL(1, 2);
+                          const void *data) EINA_ARG_NONNULL(1, 2) __UNUSED__;
 
 
 /**

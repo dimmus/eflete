@@ -436,15 +436,17 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
-   pm_project_import_edj(elm_entry_entry_get(tab_edj.name),
-                         elm_entry_entry_get(tab_edj.path),
-                         elm_entry_entry_get(tab_edj.edj),
-                         tab_edj.widget_list,
-                         progress_print,
-                         _progress_end,
-                         &tab_edj.meta);
+   Eina_Bool ret = true;
+   if (!pm_project_import_edj(elm_entry_entry_get(tab_edj.name),
+                              elm_entry_entry_get(tab_edj.path),
+                              elm_entry_entry_get(tab_edj.edj),
+                              tab_edj.widget_list,
+                              progress_print,
+                              _progress_end,
+                              &tab_edj.meta))
+     ret = false;
 
-   return true;
+   return ret;
 }
 
 static Eina_Bool

@@ -448,6 +448,7 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
+   Eina_Bool ret = true;
    Eina_Tmpstr *tmp_dir;
    Eina_Strbuf *edc, *flags;
    Eina_Stringshare *edc_path;
@@ -461,6 +462,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    tab_new.tmp_dir_path = eina_stringshare_add(tmp_dir);
    eina_tmpstr_del(tmp_dir);
 
+   TODO("replace from eina_stringshare to char[]");
    edc_path = eina_stringshare_printf("%s/new_project_tmp.edc", tab_new.tmp_dir_path);
    edc = _edc_code_generate(tab_new.tmp_dir_path);
 
@@ -469,24 +471,29 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    if (!fp)
      {
         ERR("Failed to open file \"%s\"", edc_path);
-        return false;
+        ret = false;
+        goto exit;
      }
    fputs(eina_strbuf_string_get(edc), fp);
-   fclose(fp);
 
    flags = eina_strbuf_new();
    eina_strbuf_append_printf(flags, "-id \"%s/template/images\" -sd \"%s/template/sounds\" -v",
                              ap.path.edj_path, ap.path.edj_path);
 
-   pm_project_import_edc(elm_entry_entry_get(tab_new.name),
-                         elm_entry_entry_get(tab_new.path),
-                         edc_path,
-                         eina_strbuf_string_get(flags),
-                         progress_print,
-                         _progress_end,
-                         &tab_new.meta);
+   if (!pm_project_import_edc(elm_entry_entry_get(tab_new.name),
+                              elm_entry_entry_get(tab_new.path),
+                              edc_path,
+                              eina_strbuf_string_get(flags),
+                              progress_print,
+                              _progress_end,
+                              &tab_new.meta))
+     ret = false;
 
-   return true;
+   eina_strbuf_free(flags);
+exit:
+   eina_strbuf_free(edc);
+   fclose(fp);
+   return ret;
 }
 
 static Eina_Bool

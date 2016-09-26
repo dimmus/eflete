@@ -38,8 +38,10 @@ AC_MSG_RESULT($ac_cv___attribute__)
 if test "x${ac_cv___attribute__}" = "xyes" ; then
     AC_DEFINE([HAVE___ATTRIBUTE__], [1], [Define to 1 if your compiler has __attribute__])
     AC_DEFINE([__UNUSED__], [__attribute__((unused))], [Macro declaring a function argument to be unused])
+    AC_DEFINE([__UNUSED_RESULT__], [__attribute__((warn_unused_result))], [Macro declaring a function return value not used])
   else
     AC_DEFINE([__UNUSED__], [], [Macro declaring a function argument to be unused])
+    AC_DEFINE([__UNUSED_RESULT__], [], [Macro declaring a function return value not used])
 fi
 
 ])

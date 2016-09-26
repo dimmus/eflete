@@ -156,9 +156,10 @@ _project_process_data_cleanup(Project_Process_Data *ppd)
    free(ppd);
 }
 
-static void
+__UNUSED_RESULT__ static Eina_Bool
 _project_special_group_add(Project *project)
 {
+   Eina_Bool ret = true;
    Eina_List *groups;
    Evas_Object *obj;
    Ecore_Evas *ecore_evas;
@@ -171,11 +172,17 @@ _project_special_group_add(Project *project)
    edje_object_file_set(obj, project->saved_edj, eina_list_data_get(groups));
 
    you_shall_not_pass_editor_signals(NULL);
-   CRIT_ON_FAIL(editor_internal_group_add(obj));
+   if (!editor_internal_group_add(obj))
+     {
+        CRIT("Could not add Eflete spec group");
+        ret = false;
+     }
    you_shall_pass_editor_signals(NULL);
 
    ecore_evas_free(ecore_evas);
    edje_edit_string_list_free(groups);
+
+   return ret;
 }
 
 static Project *
@@ -237,9 +244,10 @@ _project_create(Project_Process_Data *ppd)
    return pro;
 }
 
-static void
+__UNUSED_RESULT__ static Eina_Bool
 _project_dummy_sample_add(Project *project)
 {
+   Eina_Bool ret = true;
    char buf[PATH_MAX];
    Eina_List *groups;
    Evas_Object *obj;
@@ -254,19 +262,28 @@ _project_dummy_sample_add(Project *project)
 
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_SAMPLE_NAME, ap.path.sound_path);
    you_shall_not_pass_editor_signals(NULL);
-   if (editor_sound_sample_add(obj, EFLETE_DUMMY_SAMPLE_NAME, buf, false))
+   if (!editor_sound_sample_add(obj, EFLETE_DUMMY_SAMPLE_NAME, buf, false))
      {
-        CRIT_ON_FAIL(editor_save(obj));
+        CRIT("Could not add Efelte dummy sample");
+        ret = false;
+     }
+   else if (!editor_save(obj))
+     {
+        CRIT("Unable to save Eflete dummy sample");
+        ret = false;
      }
    you_shall_pass_editor_signals(NULL);
 
    ecore_evas_free(ecore_evas);
    edje_edit_string_list_free(groups);
+
+   return ret;
 }
 
-static void
+__UNUSED_RESULT__ static Eina_Bool
 _project_dummy_image_add(Project *project)
 {
+   Eina_Bool ret = true;
    char buf[PATH_MAX];
    Eina_List *groups;
    Evas_Object *obj;
@@ -281,14 +298,22 @@ _project_dummy_image_add(Project *project)
 
    snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
    you_shall_not_pass_editor_signals(NULL);
-   if (editor_image_add(obj, buf, false))
+   if (!editor_image_add(obj, buf, false))
      {
-        CRIT_ON_FAIL(editor_save(obj));
+        CRIT("Could not add eflete dummy image");
+        ret = false;
+     }
+   else if (!editor_save(obj))
+     {
+        CRIT("Unable to save Eflete dummy image");
+        ret = false;
      }
    you_shall_pass_editor_signals(NULL);
 
    ecore_evas_free(ecore_evas);
    edje_edit_string_list_free(groups);
+
+   return ret;
 }
 
 static Eina_Bool
@@ -310,7 +335,7 @@ _project_edj_file_copy(Project_Process_Data *ppd)
    return result;
 }
 
-static void
+static Eina_Bool
 _copy_meta_data_to_pro(Project_Process_Data *ppd)
 {
    Eet_File *ef;
@@ -325,14 +350,16 @@ _copy_meta_data_to_pro(Project_Process_Data *ppd)
    comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
    eet_close(ef);
 
-   pm_project_meta_data_set(ppd->project, name, authors,
-                            version, license, comment);
+   if (!pm_project_meta_data_set(ppd->project, name, authors,
+                            version, license, comment))
+     return false;
 
    if (name) free(name);
    if (authors) free(authors);
    if (version) free(version);
    if (license) free(license);
    if (comment) free(comment);
+   return true;
 }
 
 static Eina_Bool
@@ -568,21 +595,24 @@ _project_open_internal(Project_Process_Data *ppd)
      {
         //message = eina_stringshare_add(_("Updating project files to version 3"));
         INFO("Updating project files to version 3");
-        _project_special_group_add(ppd->project);
+        if (!_project_special_group_add(ppd->project))
+          return false;
         ppd->project->version = 3;
      }
    if (ppd->project->version < 4) /* upgrade to version 4 */
      {
         //message = eina_stringshare_add(_("Updating project files to version 4"));
         INFO("Updating project files to version 4");
-        _project_dummy_image_add(ppd->project);
+        if (!_project_dummy_image_add(ppd->project))
+          return false;
         ppd->project->version = 4;
      }
    if (ppd->project->version < 5) /* upgrade to version 4 */
      {
         //message = eina_stringshare_add(_("Updating project files to version 5"));
         INFO("Updating project files to version 5");
-        _project_dummy_sample_add(ppd->project);
+        if (!_project_dummy_sample_add(ppd->project))
+          return false;
         ppd->project->version = 5;
      }
     TODO("Add crash recovery prompt here")
@@ -629,7 +659,7 @@ _project_open_internal(Project_Process_Data *ppd)
    return true;
 }
 
-void
+Eina_Bool
 pm_project_open(const char *path,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -637,6 +667,7 @@ pm_project_open(const char *path,
 {
    Project_Process_Data *ppd;
    char *spath;
+   Eina_Bool ret = true;
 
    assert(path != NULL);
 
@@ -651,9 +682,11 @@ pm_project_open(const char *path,
    if (!_project_open_internal(ppd))
      {
         _project_process_data_cleanup(ppd);
+        ret = false;
      }
 
    free(spath);
+   return ret;
 }
 
 static Eina_Bool
@@ -671,9 +704,10 @@ _edje_pick_finish_handler(void *data,
    _ecore_event_handlers_del(ppd);
 
    ecore_file_cp(ppd->edj, ppd->project->saved_edj);
-   _project_special_group_add(ppd->project);
-   _project_dummy_image_add(ppd->project);
-   _project_dummy_sample_add(ppd->project);
+   if (!_project_special_group_add(ppd->project) ||
+       !_project_dummy_image_add(ppd->project) ||
+       !_project_dummy_sample_add(ppd->project))
+     return ECORE_CALLBACK_CANCEL;
 
    if (!_project_open_internal(ppd))
      return ECORE_CALLBACK_CANCEL;
@@ -681,7 +715,7 @@ _edje_pick_finish_handler(void *data,
      return ECORE_CALLBACK_DONE;
 }
 
-void
+static Eina_Bool
 _project_import_edj(Project_Process_Data *ppd)
 {
    Eina_Stringshare *edj_in, *edj_out;
@@ -697,20 +731,20 @@ _project_import_edj(Project_Process_Data *ppd)
    if (ppd->func_progress) ppd->func_progress(NULL, buf);
    //eina_stringshare_del(msg);
 
-   /* Replace void with ptd */
    ppd->project = _project_create(ppd);
 
-   assert(ppd->project != NULL);
-
-   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
-   ppd->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", ppd->path, ppd->name, ppd->name);
+   if (!ppd->project)
+     {
+        CRIT("Could not create project");
+        return false;
+     }
 
    if (!_lock_try(ppd->project->pro_path, true, &ppd->project->pro_fd))
      {
         /* really this case is unlickly, but we need handle it */
         ppd->result = PM_PROJECT_LOCKED;
         _end_send(ppd);
-        return;
+        return false;
      }
 
    groups = edje_file_collection_list(ppd->edj);
@@ -732,26 +766,31 @@ _project_import_edj(Project_Process_Data *ppd)
         strbuf = eina_strbuf_new();
         eina_strbuf_append_printf(strbuf, "edje_pick -o %s -i %s", edj_out, edj_in);
 
+        obj = edje_edit_object_add(evas_object_evas_get(ap.win));
         EINA_LIST_FOREACH(ppd->widgets, l, group)
           {
-             if ((group[0] == 'c') && (group[1] == 'p') && (group[2] == '*') && (group[3] == '*') && (group[4] == '*'))
+             if ((group[0] == 'c') &&
+                 (group[1] == 'p') &&
+                 (group[2] == '*') &&
+                 (group[3] == '*') &&
+                 (group[4] == '*'))
                {
                   char **arr = eina_str_split(group, "***", 0);
                   you_shall_not_pass_editor_signals(NULL);
                   /* load any group for coping */
-                  if (!obj)
+                  if (!edje_object_file_set(obj, edj_in, arr[1]))
                     {
-                       obj = edje_edit_object_add(evas_object_evas_get(ap.win));
-                       if (!edje_object_file_set(obj, edj_in, arr[1]))
-                         {
-                            CRIT("Can't load object");
-                            abort();
-                         }
+                       CRIT("Can't load object");
+                       free(arr[0]);
+                       free(arr);
+                       return false;
                     }
                   if (!editor_group_copy(obj, arr[1], arr[2], false))
                     {
                        CRIT("Can not copy group %s, to %s", arr[1], arr[2]);
-                       abort();
+                       free(arr[0]);
+                       free(arr);
+                       return false;
                     }
                   you_shall_pass_editor_signals(NULL);
                   eina_strbuf_append_printf(strbuf, " -g %s", arr[2]);
@@ -761,6 +800,7 @@ _project_import_edj(Project_Process_Data *ppd)
              else
                eina_strbuf_append_printf(strbuf, " -g %s", group);
           }
+        evas_object_del(obj);
 
         eina_stringshare_del(ppd->edj);
         ppd->edj = eina_stringshare_ref(edj_out);
@@ -780,21 +820,22 @@ _project_import_edj(Project_Process_Data *ppd)
         eina_stringshare_del(ppd->path);
         ppd->path = eina_stringshare_ref(ppd->project->pro_path);
 
-        TODO("check result")
-        _project_edj_file_copy(ppd);
-        _copy_meta_data_to_pro(ppd);
-        _project_special_group_add(ppd->project);
-        _project_dummy_image_add(ppd->project);
-        _project_dummy_sample_add(ppd->project);
+        if (!_project_edj_file_copy(ppd) ||
+            !_copy_meta_data_to_pro(ppd) ||
+            !_project_special_group_add(ppd->project) ||
+            !_project_dummy_image_add(ppd->project) ||
+            !_project_dummy_sample_add(ppd->project))
+          return false;
         if (!_project_open_internal(ppd))
           {
              _project_process_data_cleanup(ppd);
-             return;
+             return false;
           }
      }
+   return true;
 }
 
-void
+Eina_Bool
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
@@ -803,6 +844,7 @@ pm_project_import_edj(const char *name,
                       PM_Project_End_Cb func_end ,
                       const void *data)
 {
+   Eina_Bool ret = true;
    Project_Process_Data *ppd;
 
    assert(name != NULL);
@@ -822,10 +864,16 @@ pm_project_import_edj(const char *name,
    ppd->edj = eina_stringshare_add(sedj);
    ppd->widgets = list;
 
-   _project_import_edj(ppd);
+   if (!_project_import_edj(ppd))
+     {
+        _project_process_data_cleanup(ppd);
+        ret = false;
+     }
 
    free(spath);
    free(sedj);
+
+   return ret;
 }
 
 static Eina_Bool
@@ -856,7 +904,7 @@ _finish_from_edje_cc(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
-void
+static Eina_Bool
 _project_import_edc(void *data)
 {
    Project_Process_Data *ppd = data;
@@ -877,10 +925,10 @@ _project_import_edc(void *data)
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
 
-   return;
+   return true;
 }
 
-void
+Eina_Bool
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
@@ -889,6 +937,7 @@ pm_project_import_edc(const char *name,
                       PM_Project_End_Cb func_end,
                       const void *data)
 {
+   Eina_Bool ret = true;
    Project_Process_Data *ppd;
 
    assert(name != NULL);
@@ -908,9 +957,15 @@ pm_project_import_edc(const char *name,
    ppd->edc = eina_stringshare_add(sedc);
    ppd->build_options = eina_stringshare_add(import_options);
 
-   _project_import_edc(ppd);
+   if (!_project_import_edc(ppd))
+     {
+        _project_process_data_cleanup(ppd);
+        ret = false;
+     }
    free(spath);
    free(sedc);
+
+   return ret;
 }
 
 Eina_Bool
@@ -978,7 +1033,7 @@ _copy_progress(void *data, unsigned long long done, unsigned long long total)
    return true;
 }
 
-void
+Eina_Bool
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -997,11 +1052,13 @@ pm_project_save(Project *project,
         ERR("Failed to save project.");
         ppd->result = PM_PROJECT_ERROR;
         _end_send(ppd);
-        return;
+        return false;
      }
-   //ecore_file_cp(ppd->project->dev, ppd->project->saved_edj);
-   eina_file_copy(ppd->project->dev, ppd->project->saved_edj,
-                  EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, _copy_progress, ppd);
+   if (!eina_file_copy(ppd->project->dev, ppd->project->saved_edj,
+                       EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, _copy_progress, ppd))
+     return false;
+
+   return true;
 }
 
 void
@@ -1080,7 +1137,7 @@ _group_export_finish_handler(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
-void
+Eina_Bool
 pm_group_source_code_export(Project *project,
                             Group2 *group,
                             const char *path,
@@ -1110,9 +1167,11 @@ pm_group_source_code_export(Project *project,
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
+
+   return true;
 }
 
-void
+Eina_Bool
 pm_project_source_code_export(Project *project,
                               const char *path,
                               PM_Project_Progress_Cb func_progress,
@@ -1140,6 +1199,8 @@ pm_project_source_code_export(Project *project,
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
+
+   return true;
 
 }
 
@@ -1177,7 +1238,7 @@ _develop_export_finish_handler(void *data,
   return ECORE_CALLBACK_DONE;
 }
 
-void
+Eina_Bool
 pm_project_develop_export(Project *project,
                           const char *path,
                           Eina_List *groups,
@@ -1225,7 +1286,7 @@ pm_project_develop_export(Project *project,
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
 
-   return;
+   return true;
 }
 
 static Eina_Bool
@@ -1272,7 +1333,7 @@ _release_export_finish_handler(void *data,
    return ECORE_CALLBACK_DONE;
 }
 
-void
+Eina_Bool
 pm_project_release_export(Project *project,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
@@ -1305,6 +1366,8 @@ pm_project_release_export(Project *project,
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_finish_handler, ppd);
+
+   return true;
 }
 
 Eina_Bool
