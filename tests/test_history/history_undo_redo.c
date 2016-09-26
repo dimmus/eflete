@@ -90,7 +90,7 @@ EFLETE_TEST (history_undo_redo_test_p)
    Diff *d1;
    eina_init();
    int sense = 42;
-   Group *group = mem_calloc(1, sizeof(Group));
+   Group2 *group = mem_calloc(1, sizeof(Group2));
    pseudo_object = group->edit_object = (Evas_Object *) &sense;
    change = change_add("test");
    History *history = history_add(group);

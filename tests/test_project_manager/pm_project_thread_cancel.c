@@ -73,7 +73,7 @@ EFLETE_TEST (pm_project_thread_cancel_test_p)
    res = EINA_FALSE;
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager_thread_cancel.edj",
                          NULL, NULL, _test_end_cb, NULL);
-   pm_project_thread_cancel();
+   //pm_project_thread_cancel();
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Project thread did't canceled!");

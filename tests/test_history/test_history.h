@@ -18,7 +18,7 @@
  */
 
 #include "group_manager.h"
-#include "resource_manager.h"
+#include "resource_manager2.h"
 #include "utc_common.h"
 #include "config.h"
 #include "history.h"
