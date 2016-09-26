@@ -663,7 +663,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
    return 0;
 }
 
-const char *
+char *
 color_apply(color_data *cd, const char *src, int length, char *from, char *to)
 {
    Eina_Bool inside_string = EINA_FALSE;
@@ -755,7 +755,7 @@ finished:
 
    macro_keys_free(cd);
 
-   return str;
+   return (str == NULL) ? NULL : strdup(str);
 }
 
 Eina_Bool

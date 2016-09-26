@@ -163,12 +163,12 @@ workspace_active_demo_mode_get(Evas_Object *obj)
    return false;
 }
 
-const char *
+char *
 _group_code_get(Workspace_Data *wd)
 {
    Eina_Stringshare *code;
    char *str;
-   const char *colored;
+   char *colored;
 
    code = edje_edit_source_generate(wd->group->edit_object);
    str = elm_entry_utf8_to_markup(code);
@@ -273,10 +273,13 @@ _code_reload(void *data,
 
    Workspace_Data *wd = data;
    Evas_Object *layout;
+   char *color_code = NULL;
 
    if (MODE_CODE != wd->mode) return;
-   elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
+   color_code = _group_code_get(wd);
+   elm_entry_entry_set(wd->code.obj, color_code);
    layout = elm_object_part_content_unset(wd->code.obj, "elm.swallow.overlay");
+   free(color_code);
    ecore_job_add(_object_delete_job, layout);
 }
 
@@ -1147,7 +1150,7 @@ _mode_cb(void *data,
    Evas_Object *content;
    Scroll_Area *area = NULL;
    const Container_Geom *geom;
-
+   char *color_code = NULL;
 #if !HAVE_TIZEN
    mode = elm_radio_value_get(obj);
 #else
@@ -1172,10 +1175,12 @@ _mode_cb(void *data,
    switch (wd->mode)
      {
       case MODE_CODE:
+         color_code =_group_code_get(wd);
          elm_panes_fixed_set(wd->panes_h, false);
          if (wd->code.size == -1) wd->code.size = 0.5;
          elm_panes_content_right_size_set(wd->panes_h, wd->code.size);
-         elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
+         elm_entry_entry_set(wd->code.obj, color_code);
+         free(color_code);
       case MODE_NORMAL:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
