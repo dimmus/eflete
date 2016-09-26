@@ -98,11 +98,11 @@ _project_descriptor_init(Project_Process_Data *ppd)
                                              "Project", sizeof(Project));
    ppd->eed_project = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "version", version, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "dev", dev, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "develop_path", develop_path, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC       (ppd->eed_project, Project, "release_options", release_options, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "version", version, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "dev", dev, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "develop_path", develop_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "release_options", release_options, EET_T_STRING);
 }
 
 void
