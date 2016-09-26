@@ -228,6 +228,7 @@ _sounds_resources_export(void *data __UNUSED__)
           {
              fprintf(stderr, "ERROR: Could not export sound '%s', Unable to write file.\n", sound_file);
              _terminate();
+             fclose(f);
              return;
           }
         if (f) fclose(f);
@@ -292,6 +293,7 @@ _fonts_resources_export(void *data __UNUSED__)
           {
              fprintf(stderr, "ERROR: Could not export font '%s', Unable to write file.\n", font_file);
              _terminate();
+             fclose(f);
              goto exit;
           }
         if (f) fclose(f);
@@ -332,6 +334,7 @@ _group_source_code_export(const char *group)
    if (EDJE_LOAD_ERROR_NONE != edje_error)
      {
         fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
+        fclose(f);
         return NULL;
      }
    code = edje_edit_source_generate(edje_obj);
