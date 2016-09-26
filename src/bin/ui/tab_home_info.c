@@ -75,7 +75,7 @@ _tab_project_update()
                   eina_list_count(ap.project->RM.images) - 1, /* dummy image should not be counted */
                   eina_list_count(ap.project->RM.sounds) + eina_list_count(ap.project->RM.tones) - 1,/* dummy sample should not be counted */
                   eina_list_count(ap.project->RM.fonts),
-                  authors, version, license, comment);
+                  version, authors, license, comment);
      }
 }
 
