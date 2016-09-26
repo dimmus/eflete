@@ -495,9 +495,9 @@ _btn_add_group_cb(void *data __UNUSED__,
 static Eina_Bool
 _folder_check(const char *prefix, Eina_Bool del)
 {
-   Eina_List *folders = NULL, *groups = NULL;
+   Eina_List *folders = NULL, *groups = NULL, *l = NULL;
    Eina_Stringshare *tmp;
-   Group2 *group;
+   Group2 *group, *alias_group;
    Eina_Bool del_inside = del;
 
    widget_tree_items_get(ap.project->RM.groups, prefix, &folders, &groups);
@@ -508,8 +508,20 @@ _folder_check(const char *prefix, Eina_Bool del)
 
    EINA_LIST_FREE(groups, group)
      {
+        /* if any of groups inside of deleting folder is opened return false */
         if (group->edit_object)
-          del_inside = false;
+          {
+             del_inside = false;
+          }
+        else
+          {
+             /* if group is not opened check it's aliases if it is opened */
+             EINA_LIST_FOREACH(group->aliases, l, alias_group)
+               {
+                  if (alias_group->edit_object)
+                    del_inside = false;
+               }
+          }
      }
 
    return del_inside;
@@ -642,9 +654,10 @@ _btn_del_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   Group2 *group;
+   Group2 *group, *alias_group;
    Evas_Object *popup;
    Elm_Object_Item *glit;
+   Eina_List *l;
 
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
@@ -679,6 +692,21 @@ _btn_del_group_cb(void *data __UNUSED__,
                          "close the layout tab before delete it."),
                        BTN_CANCEL, NULL, NULL);
              return;
+          }
+        else
+          {
+             /* if group is not opened check it's aliases if it is opened */
+             EINA_LIST_FOREACH(group->aliases, l, alias_group)
+               {
+                  if (alias_group->edit_object)
+                    {
+                       popup_add(_("Warning: Delete layout"),
+                                 _("One or few of the aliases of this group are opened."
+                                   "Please, close the alias tab/tabs before delete it."),
+                                 BTN_CANCEL, NULL, NULL);
+                       return;
+                    }
+               }
           }
         popup = popup_add(_("Confirm delete layout"),
                                     _("Are you sure you want to delete the selected layout?<br>"
