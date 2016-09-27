@@ -185,7 +185,7 @@ _del_tab(Tabs_Item *item)
    elm_object_item_del(item->toolbar_item);
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
-   if (item->group)
+   if (item->group && item->group->history)
      {
         history_del(item->group->history);
         item->group->history = NULL;

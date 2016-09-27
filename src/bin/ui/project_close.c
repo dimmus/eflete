@@ -195,13 +195,13 @@ project_close(void)
      }
 #endif
    project_to_close = ap.project;
+   tabs_clean();
    if (!pm_project_close(project_to_close))
      return false;
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
    project_navigator_project_unset();
-   tabs_clean();
 
    /* some code in close project callback checks ap.project for NULL, so we need to
       change it before closing project */
