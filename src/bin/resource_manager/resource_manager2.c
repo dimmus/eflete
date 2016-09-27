@@ -21,6 +21,55 @@
 #include "resource_manager_private.h"
 #include "project_manager2.h"
 
+/**
+ * This function is used for checking if there are circular dependencies.
+ * Algorythm is pretty simple. Let's assume that there are three groups with
+ * GROUP parts: 0, 1, 2.
+ * > Part in 0 has source set to 1
+ * > Part in 1 has source set to 2
+ * > User want to set source of part in group 2 (this is current group)
+ * into value 0, so that will make circular dependency.
+ *
+ * This is how it works. Every part has field source, which is link to Group it
+ * uses as source. All we need just get current group (group 2) and go through
+ * all used_in list (group 2 has list of those who uses it).
+ *
+ * If Resource, that uses it, is part with type GROUP and then
+ * > if found part is group's part and that group is what user trying to set,
+ * > return false
+ * otherwise
+ * > recursively call this function with newly found part and save return value.
+ **/
+Eina_Bool
+resource_manager_groups_circular_are(Part2 *current, Group2 *source)
+{
+   Eina_List *l;
+   Part2 *part;
+   Resource2 *res;
+   Group2 *group = current->group;
+
+   assert(current != NULL);
+   /* if NULL was set */
+   if (!source) return true;
+
+   EINA_LIST_FOREACH(group->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_PART)
+          {
+             part = (Part2 *)res;
+             if (part->type == EDJE_PART_TYPE_GROUP)
+               {
+                  if (part->group == source)
+                    return false;
+                  else if (!resource_manager_groups_circular_are(part, source))
+                    return false;
+               }
+          }
+     }
+
+   return true;
+}
+
 Resource2 *
 resource_manager_find(const Eina_List *list, Eina_Stringshare *name)
 {

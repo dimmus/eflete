@@ -3394,9 +3394,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    double double_val1 = 0.0;
    int r = -1, g = -1, b = -1, a = -1;
-   Eina_Stringshare *str_val1 = NULL;
+   Eina_Stringshare *str_val1 = NULL, *msg;
    Eina_Bool bool_val1 = false;;
    Combobox_Item *cb_item_combo = NULL;
+   Resource2 *res;
 
    Eina_List *deleted_tweens = NULL, *l;
    Eina_List *added_tweens = NULL;
@@ -3652,13 +3653,36 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+
       case ATTRIBUTE_PART_GROUP_SOURCE:
          assert(cb_item_combo != NULL);
          str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;
-         CRIT_ON_FAIL(editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         res = resource_manager_find(ap.project->RM.groups, str_val1);
+         if (!resource_manager_groups_circular_are((Part2 *)group_pd.group->current_selected, (Group2 *)res))
+           {
+              /* a small hack, while combogbox is not dismissed its in the
+               * shorcuts stack, but for call style manager we need push
+               * manager to stack before comobox, because on dismiss combobox,
+               * will pop top object, and it must be combobox */
+              shortcuts_object_check_pop(action->control);
+              msg = eina_stringshare_printf(_("Circular dependency alarm! "
+                                              "Selected group somehow related "
+                                              "to current group."));
+              popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
+              eina_stringshare_del(msg);
+              shortcuts_object_push(action->control);
+           }
+         else
+           {
+              CRIT_ON_FAIL(editor_part_group_source_set(EDIT_OBJ,
+                                                        CHANGE_NO_MERGE,
+                                                        PART_ARGS,
+                                                        str_val1));
+           }
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
          assert(cb_item_combo != NULL);
          str_val1 = (cb_item_combo->index != 0) ? eina_stringshare_add(cb_item_combo->data) : NULL;

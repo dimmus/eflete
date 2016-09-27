@@ -227,4 +227,7 @@ resource_group_edit_object_unload(Group2 *group);
 void
 resource_group_edit_object_reload(Project *pro, Group2 *group);
 
+Eina_Bool
+resource_manager_groups_circular_are(Part2 *current, Group2 *source);
+
 #endif /* RESOURCE_MANAGER2_H */
