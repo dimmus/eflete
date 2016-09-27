@@ -232,7 +232,6 @@ _project_create(Project_Process_Data *ppd)
      error = true;
 
    _pm_project_descriptor_shutdown(ppd);
-   eet_close(pro->ef);
    if (error)
      {
         ERR("Could't create a .pro file! ")
@@ -1133,19 +1132,21 @@ pm_project_meta_data_set(Project *project,
                          const char *comment)
 {
    int bytes, size;
-   Eina_Bool res;
+   Eina_Bool res = true;
 
    assert(project != NULL);
    assert(project->ef != NULL);
-
-   res = true;
 
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
         size = (strlen(DATA) + 1) * sizeof(char); \
         bytes = eet_write(project->ef, KEY, DATA, size, compess_level); \
-        if (bytes <= 0 ) res = false; \
+        if (bytes <= 0 && size > 0) \
+          { \
+             CRIT("Could not write data '"#DATA"' size %i write %i\n", size, bytes);   \
+             res = false; \
+          }\
      }
 
    DATA_WRITE(name,    PROJECT_KEY_NAME);
@@ -1154,7 +1155,6 @@ pm_project_meta_data_set(Project *project,
    DATA_WRITE(license, PROJECT_KEY_LICENSE);
    DATA_WRITE(comment, PROJECT_KEY_COMMENT);
 
-#undef DATA_WRITE
    return res;
 }
 
