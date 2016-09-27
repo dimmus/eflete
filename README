@@ -33,3 +33,9 @@ To apply created theme to elementary you should place exported .edj-file to
 elementary themes dir (default: /usr/local/share/elementary/themes). Note do not
 forget to add read permissions to copied file.
 After that theme will be available for selection from elementary_config.
+
+Bash autocompletion:
+----------------
+to enable bash autocompletion for eflete copy eflete_autocompletion.sh to your
+bash completion directory or add followig line to your .bashrc
+source /YOUR/PATH/eflete_autocompletion.sh
