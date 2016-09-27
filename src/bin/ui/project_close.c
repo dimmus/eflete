@@ -141,6 +141,7 @@ project_save(void)
      ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
 }
 
+#ifndef HAVE_TIZEN
 static void
 _popup_close_cb(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
@@ -168,17 +169,18 @@ _popup_close_cb(void *data __UNUSED__,
    else
      project_close();
 }
+#endif
 
 Eina_Bool
 project_close(void)
 {
    Project *project_to_close;
-   Evas_Object *popup;
-   Eina_Stringshare *title;
-
    assert(ap.project != NULL);
 
 #ifndef HAVE_TIZEN
+   Evas_Object *popup;
+   Eina_Stringshare *title;
+
    if (ap.project->changed)
      {
         title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
