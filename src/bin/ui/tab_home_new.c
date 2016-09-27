@@ -490,9 +490,9 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
      ret = false;
 
    eina_strbuf_free(flags);
+   fclose(fp);
 exit:
    eina_strbuf_free(edc);
-   fclose(fp);
    return ret;
 }
 
