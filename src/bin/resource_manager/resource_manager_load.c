@@ -387,7 +387,7 @@ _state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, dou
                                                part->common.name,
                                                state->common.name,
                                                state->val);
-        if (strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+        if (image_name && strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
           state->normal = eina_stringshare_add(image_name);
         edje_edit_string_free(image_name);
 
