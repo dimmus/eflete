@@ -217,6 +217,7 @@ _project_create(Project_Process_Data *ppd)
    pro->develop_path = eina_stringshare_printf("%s/develop", buf);
 
    snprintf(buf, sizeof(buf), "%s/%s/%s.pro", ppd->path, ppd->name, ppd->name);
+   pro->pro_path = eina_stringshare_add(buf);
    pro->ef = eet_open(buf, EET_FILE_MODE_READ_WRITE);
    DBG("Create a specific project file '%s': %s", buf, error ? "failed" : "success");
    pro->pro_fd = -1;
@@ -859,10 +860,7 @@ _project_import_edj(Project_Process_Data *ppd)
             !_project_dummy_sample_add(ppd->project))
           return false;
         if (!_project_open_internal(ppd))
-          {
-             _project_process_data_cleanup(ppd);
-             return false;
-          }
+          return false;
      }
    return true;
 }
