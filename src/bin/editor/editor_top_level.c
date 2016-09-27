@@ -31,7 +31,7 @@ editor_image_add(Evas_Object *obj, const char *name, Eina_Bool notify)
    assert(obj != NULL);
    assert(name != NULL);
 
-   if (edje_edit_image_add(obj, name))
+   if (!edje_edit_image_add(obj, name))
      return false;
 
    if (!editor_save(obj))
