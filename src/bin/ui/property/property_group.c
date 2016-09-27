@@ -404,6 +404,7 @@ _filter_cb(Property_Attribute *pa)
    assert(pa != NULL);
 
    if (!group_pd.group) return false;
+   if (group_pd.group->main_group != NULL) return false;
 
    switch (pa->type.group_item)
      {
