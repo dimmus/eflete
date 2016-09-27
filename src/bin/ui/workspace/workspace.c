@@ -141,6 +141,7 @@ struct _Workspace_Data
    Workspace_Mode mode;
    Group2 *group;
    double zoom_factor;
+   Eina_Bool highlight_resize : 1;
    Eina_Bool markers : 1;
 };
 
@@ -1022,6 +1023,8 @@ _menu_cb(void *data,
    Eina_Bool sa, sr;
 
    if (ev->button != 3) return;
+   if (wd->highlight_resize) return;
+
    elm_menu_move(wd->menu.obj, ev->canvas.x, ev->canvas.y);
 
    if (!evas_object_visible_get(wd->menu.obj))
@@ -1323,6 +1326,7 @@ _groupview_hl_part_drag_start(void *data,
    Workspace_Data *wd = data;
    Groupview_HL_Event *event = event_info;
 
+   wd->highlight_resize = true;
    change = change_add(NULL);
    if (MIDDLE != event->hl_type)
      {
@@ -1435,6 +1439,7 @@ _groupview_hl_part_drag_stop(void *data,
      }
    change = NULL;
    shortcuts_object_check_pop(obj);
+   wd->highlight_resize = false;
 }
 /******************************************************************************/
 
