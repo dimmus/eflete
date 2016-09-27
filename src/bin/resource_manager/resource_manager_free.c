@@ -59,6 +59,8 @@ _resource_image_free(Project *pro, Image2 *res)
 {
    pro->RM.images = eina_list_remove(pro->RM.images, res);
 
+   _resource_usage_dependency_cleanup((Resource2 *)res);
+
    eina_stringshare_del(res->common.name);
    eina_stringshare_del(res->source);
    eina_list_free(res->common.used_in);
@@ -141,6 +143,8 @@ _resource_tone_free(Project *pro, Tone2 *res)
 {
    pro->RM.tones = eina_list_remove(pro->RM.tones, res);
 
+   _resource_usage_dependency_cleanup((Resource2 *)res);
+
    eina_stringshare_del(res->common.name);
    eina_list_free(res->common.used_in);
    eina_list_free(res->common.uses___);
@@ -186,6 +190,8 @@ void
 _resource_sound_free(Project *pro, Sound2 *res)
 {
    pro->RM.sounds = eina_list_remove(pro->RM.sounds, res);
+
+   _resource_usage_dependency_cleanup((Resource2 *)res);
 
    eina_stringshare_del(res->common.name);
    eina_stringshare_del(res->source);
@@ -233,6 +239,8 @@ void
 _resource_colorclass_free(Project *pro, Colorclass2 *res)
 {
    pro->RM.colorclasses = eina_list_remove(pro->RM.colorclasses, res);
+
+   _resource_usage_dependency_cleanup((Resource2 *)res);
 
    eina_stringshare_del(res->common.name);
    eina_list_free(res->common.used_in);
@@ -301,6 +309,8 @@ _resource_style_free(Project *pro, Style2 *res)
 
    pro->RM.styles = eina_list_remove(pro->RM.styles, res);
 
+   _resource_usage_dependency_cleanup((Resource2 *)res);
+
    eina_stringshare_del(res->common.name);
    eina_list_free(res->common.used_in);
    eina_list_free(res->common.uses___);
@@ -349,6 +359,8 @@ _resource_image_set_free(Project *pro, Image_Set2 *res)
 {
    pro->RM.image_sets = eina_list_remove(pro->RM.image_sets, res);
 
+   _resource_usage_dependency_cleanup((Resource2 *)res);
+
    eina_stringshare_del(res->common.name);
    eina_list_free(res->common.used_in);
    eina_list_free(res->common.uses___);
@@ -359,6 +371,8 @@ void
 _resource_font_free(Project *pro, Font2 *res)
 {
    pro->RM.fonts = eina_list_remove(pro->RM.fonts, res);
+
+   _resource_usage_dependency_cleanup((Resource2 *)res);
 
    eina_stringshare_del(res->common.name);
    eina_stringshare_del(res->source);
@@ -371,6 +385,8 @@ void
 _resource_data_free(Project *pro, Global_Data2 *res)
 {
    pro->RM.global_data = eina_list_remove(pro->RM.global_data, res);
+
+   _resource_usage_dependency_cleanup((Resource2 *)res);
 
    eina_stringshare_del(res->common.name);
    eina_stringshare_del(res->source);
