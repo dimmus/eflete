@@ -284,11 +284,6 @@ _project_dummy_sample_add(Project *project)
         CRIT("Could not add Efelte dummy sample");
         ret = false;
      }
-   else if (!editor_save(obj))
-     {
-        CRIT("Unable to save Eflete dummy sample");
-        ret = false;
-     }
    you_shall_pass_editor_signals(NULL);
 
    ecore_evas_free(ecore_evas);
@@ -331,11 +326,6 @@ _project_dummy_image_add(Project *project)
    if (!editor_image_add(obj, buf, false))
      {
         CRIT("Could not add eflete dummy image");
-        ret = false;
-     }
-   else if (!editor_save(obj))
-     {
-        CRIT("Unable to save Eflete dummy image");
         ret = false;
      }
    you_shall_pass_editor_signals(NULL);
