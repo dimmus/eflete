@@ -672,7 +672,7 @@ _shortcut_add_part_cb(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_part_request(tabs.current_workspace);
 }
 
@@ -681,7 +681,7 @@ _shortcut_add_part_item_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_part_item_request(tabs.current_workspace);
 }
 
@@ -690,7 +690,7 @@ _shortcut_add_state_cb(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_state_request(tabs.current_workspace);
 }
 
@@ -699,7 +699,7 @@ _shortcut_add_program_cb(void *data __UNUSED__,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_program_request(tabs.current_workspace);
 }
 
@@ -708,7 +708,7 @@ _shortcut_add_data_item_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_group_data_request(tabs.current_workspace);
 }
 
@@ -717,7 +717,7 @@ _shortcut_del_cb(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_delete_request(tabs.current_workspace);
 }
 
@@ -726,7 +726,7 @@ _shortcut_state_next_cb(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_state_next_request(tabs.current_workspace);
 }
 
@@ -735,7 +735,7 @@ _shortcut_part_next_cb(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_next_request(tabs.current_workspace);
 }
 
@@ -744,7 +744,7 @@ _shortcut_part_prev_cb(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_prev_request(tabs.current_workspace);
 }
 
@@ -753,7 +753,7 @@ _shortcut_part_showhide_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_showhide_request(tabs.current_workspace);
 }
 
@@ -762,7 +762,7 @@ _shortcut_part_unselect_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_unselect_request(tabs.current_workspace);
 }
 
@@ -771,7 +771,7 @@ _shortcut_all_parts_showhide_cb(void *data __UNUSED__,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_all_parts_showhide_request(tabs.current_workspace);
 }
 
@@ -943,7 +943,7 @@ _shortcut_undo_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_history_undo(tabs.current_workspace);
 }
 
@@ -952,7 +952,7 @@ _shortcut_redo_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   if (tabs.current_workspace)
+   if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_history_redo(tabs.current_workspace);
 }
 
