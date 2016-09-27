@@ -624,11 +624,37 @@ _delayed_popup(void *data)
 static void
 _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 {
-   Eina_List *l, *l1, *cp_style_list;
+   Eina_List *l, *l1, *item_style_list, *cp_style_list, *cp_item_style_list;
    Node *node;
-   Eina_Stringshare *name, *name1, *sname, *style_name, *tmp;
+   Eina_Stringshare *name, *name1, *name2, *name3, *sname, *iname, *style_name, *item_style_name, *tmp;
    char cp_style[256];
    int len;
+#define GROUP_APPEND() \
+   do \
+     { \
+        item->check = selected; \
+        tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name); \
+     } while (0);
+
+#define GROUP_STYLE_COPY(LEN, COPY_STYLE) \
+   do \
+     { \
+        len = strlen(item->name) - (LEN); \
+        strncpy(cp_style, item->name, len - 1); \
+        cp_style[len - 1] = '\0'; \
+        tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, COPY_STYLE); \
+        tab_edj.widget_list = eina_list_append(tab_edj.widget_list, tmp); \
+     } while (0);
+
+#define GROUP_ITEM_STYLE_COPY(LEN, COPY_STYLE, COPY_ITEM_STYLE) \
+   do \
+     { \
+        len = strlen(item->name) - (LEN); \
+        strncpy(cp_style, item->name, len - 1); \
+        cp_style[len - 1] = '\0'; \
+        tmp = eina_stringshare_printf("cp***%s***%s/%s/%s", item->name, cp_style, COPY_ITEM_STYLE, COPY_STYLE); \
+        tab_edj.widget_list = eina_list_append(tab_edj.widget_list, tmp); \
+     } while (0);
 
    assert (item != NULL);
 
@@ -645,25 +671,58 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
           {
              EINA_LIST_FOREACH(styles, l, name)
                {
-                  style_name = option_style_name_get(name, &cp_style_list);
+                  style_name = option_style_name_get(name, &item_style_list, &cp_style_list);
                   sname = style_name_get(item->name);
-                  if (!strcmp(sname, style_name))
+                  iname = item_style_name_get(item->name, style_name);
+                  if (sname)
                     {
-                       if (!cp_style_list)
+                       if (!strcmp(sname, style_name))
                          {
-                            item->check = selected;
-                            tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
+                            if (!cp_style_list)
+                              GROUP_APPEND()
+                            else
+                              EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
+                         }
+                    }
+                  else if (iname)
+                    {
+                       if (item_style_list)
+                         {
+                            EINA_LIST_FOREACH(item_style_list, l1, name1)
+                              {
+                                 item_style_name = option_item_style_name_get(name1, &cp_item_style_list);
+                                 if (!strcmp(iname, item_style_name))
+                                   {
+                                      if (!cp_item_style_list)
+                                        {
+                                           if (!cp_style_list)
+                                             GROUP_APPEND()
+                                           else
+                                             EINA_LIST_FOREACH(cp_style_list, l1, name2)
+                                               GROUP_STYLE_COPY(strlen(style_name), name2)
+                                        }
+                                      else
+                                        {
+                                           EINA_LIST_FOREACH(cp_item_style_list, l1, name2)
+                                             {
+                                                if (!cp_style_list)
+                                                  GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, style_name, name2)
+                                                else
+                                                  EINA_LIST_FOREACH(cp_style_list, l1, name3)
+                                                    GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, name3, name2)
+                                             }
+                                        }
+                                   }
+                              }
                          }
                        else
                          {
-                            EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                              {
-                                 len = strlen(item->name) - strlen(sname);
-                                 strncpy(cp_style, item->name, len - 1);
-                                 cp_style[len - 1] = '\0';
-                                 tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, name1);
-                                 tab_edj.widget_list = eina_list_append(tab_edj.widget_list, tmp);
-                              }
+                            if (!cp_style_list)
+                              GROUP_APPEND()
+                            else
+                              EINA_LIST_FOREACH(cp_style_list, l1, name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
                          }
                     }
                   eina_stringshare_del(style_name);
@@ -673,8 +732,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
         else
           {
              /* if list of style empty need to select all available widget styles */
-             item->check = selected;
-             tab_edj.widget_list = eina_list_append(tab_edj.widget_list, item->name);
+             GROUP_APPEND()
           }
      }
 }

@@ -41,7 +41,6 @@ static const char *exception[] =
    "elm/colorselector/image/colorbar_1/",
    "elm/colorselector/image/colorbar_2/",
    "elm/colorselector/image/colorbar_3/",
-   "elm/gengrid/item/default/",
    "elm/entry/handler/start/",
    "elm/entry/handler/end/",
    "elm/entry/emoticon/wtf/",
@@ -120,7 +119,8 @@ style_name_get(const Eina_Stringshare *group_name)
           }
         class[i - first] = '\0';
 
-        if (!strcmp(widget, "genlist") && strcmp(class, "base")) return NULL;
+        if ((!strcmp(widget, "genlist") || !strcmp(widget, "gengrid")) &&
+            strcmp(class, "base")) return NULL;
 
         first = i + 1;
         for (i = first; i < len; i++)
@@ -128,6 +128,61 @@ style_name_get(const Eina_Stringshare *group_name)
              style[i - first] = group_name[i];
           }
         style[i - first] = '\0';
+     }
+
+   return eina_stringshare_add(style);
+}
+
+Eina_Stringshare *
+item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_name)
+{
+   int len = strlen(group_name);
+   int first, i;
+   Eina_List *l;
+   Eina_Stringshare *style_item;
+   char widget[32], class[32], style[256];
+   const char *str;
+
+   if (group_name[0] != 'e') return NULL;
+   if (group_name[1] != 'l') return NULL;
+   if (group_name[2] != 'm') return NULL;
+   if (group_name[3] != '/') return NULL;
+
+   for (i = 4; i < len; i++)
+     {
+        if (group_name[i] == '/') break;
+     }
+
+   first = 4;
+   for (i = first; i < len; i++)
+     {
+        if (group_name[i] == '/') break;
+        widget[i - first] = group_name[i];
+     }
+   widget[i - first] = '\0';
+
+   first = i + 1;
+   for (i = first; i < len; i++)
+     {
+        if (group_name[i] == '/') break;
+        class[i - first] = group_name[i];
+     }
+   class[i - first] = '\0';
+
+   if ((strcmp(widget, "genlist") && strcmp(widget, "gengrid")) ||
+       !strcmp(class, "base")) return NULL;
+
+   first = i + 1;
+   for (i = first; i < len; i++)
+     {
+        style[i - first] = group_name[i];
+     }
+   style[i - first] = '\0';
+
+   str = string_rstr(style, style_name);
+   if (str)
+     {
+        style[strlen(style) - strlen(str) - 1] = '\0';
      }
 
    return eina_stringshare_add(style);
@@ -188,7 +243,92 @@ option_widget_name_get(const char *str, Eina_List **style_list)
 }
 
 Eina_Stringshare *
-option_style_name_get(const char *str, Eina_List **cp_style_list)
+option_style_name_get(const char *str, Eina_List **item_style_list, Eina_List **cp_style_list)
+{
+   int len = strlen(str);
+   char style[32], cp_style[256], item_style[256];
+   Eina_List *list = NULL;
+   int i, first = 0;
+   Eina_Bool is_cp_style = EINA_FALSE;
+   Eina_Bool is_item_style = EINA_FALSE;
+
+   *item_style_list = NULL;
+   *cp_style_list = NULL;
+
+   for (i = 0; i < len; i++)
+     {
+        if (str[i] == '{')
+          {
+             is_item_style = EINA_TRUE;
+             style[i] = '\0';
+             first = i + 1;
+             continue;
+          }
+        else if (str[i] == '}')
+          break;
+
+        if (!is_item_style)
+          {
+             if (str[i] == '[')
+               {
+                  is_cp_style = EINA_TRUE;
+                  style[i] = '\0';
+                  first = i + 1;
+                  continue;
+               }
+             else if (str[i] == ']')
+               {
+                  cp_style[i - first] = '\0';
+                  *cp_style_list = eina_list_append(*cp_style_list, eina_stringshare_add(cp_style));
+                  if (i + 1 < len && str[i + 1] != '{') break;
+               }
+          }
+
+        if (!is_item_style)
+          {
+             if (!is_cp_style)
+               {
+                  style[i] = str[i];
+               }
+             else
+               {
+                  if (str[i] == ',')
+                    {
+                       cp_style[i - first] = '\0';
+                       *cp_style_list = eina_list_append(*cp_style_list, eina_stringshare_add(cp_style));
+                       first = i + 1;
+                       continue;
+                    }
+                  cp_style[i - first] = str[i];
+               }
+          }
+        else
+          {
+             if (str[i] == ',')
+               {
+                  item_style[i - first] = '\0';
+                  *item_style_list = eina_list_append(*item_style_list, eina_stringshare_add(item_style));
+                  first = i + 1;
+                  continue;
+               }
+               item_style[i - first] = str[i];
+          }
+     }
+
+   if (!is_item_style && !is_cp_style)
+     style[i] = '\0';
+
+   if (is_item_style)
+     {
+        item_style[i - first] = '\0';
+        *item_style_list = eina_list_append(*item_style_list, eina_stringshare_add(item_style));
+     }
+
+   return eina_stringshare_add(style);
+}
+
+Eina_Stringshare *
+option_item_style_name_get(const char *str, Eina_List **cp_style_list)
 {
    int len = strlen(str);
    char style[32], cp_style[256];

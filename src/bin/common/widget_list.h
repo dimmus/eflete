@@ -38,8 +38,10 @@ typedef struct _End_Item_Data End_Item_Data;
 
 Eina_Stringshare *widget_name_get(const Eina_Stringshare *group_name);
 Eina_Stringshare *style_name_get(const Eina_Stringshare *group_name);
+Eina_Stringshare *item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_name);
 Eina_Stringshare *option_widget_name_get(const char *str, Eina_List **style_list);
-Eina_Stringshare *option_style_name_get(const char *str, Eina_List **cp_style_list);
+Eina_Stringshare *option_style_name_get(const char *str, Eina_List **item_style_list, Eina_List **cp_style_list);
+Eina_Stringshare *option_item_style_name_get(const char *str, Eina_List **cp_style_list);
 Eina_List *widget_prefix_list_get(Eina_List *collections, const char *widget_name, const char *style_name);
 
 /*
