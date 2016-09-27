@@ -40,6 +40,8 @@ static Ecore_Job *sounds_job = NULL;
 static Ecore_Job *fonts_job = NULL;
 static Ecore_Job *source_job = NULL;
 
+static int exit_status = EXIT_SUCCESS;
+
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [OPTION]... FILE"
@@ -102,6 +104,7 @@ _terminate(void)
      ecore_file_recursive_rm(buf);
 
    ecore_job_del(source_job);
+   exit_status = EXIT_FAILURE;
    ecore_main_loop_quit();
 }
 
@@ -551,5 +554,5 @@ exit:
    ecore_shutdown();
    eina_shutdown();
 
-   return EXIT_SUCCESS;
+   return exit_status;
 }

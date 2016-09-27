@@ -531,12 +531,59 @@ _exporter_finish_handler(void *data,
 {
    Project_Process_Data *ppd = data;
    Project *project = (Project *) ppd->project;
+   Ecore_Exe_Event_Del *exporter_exit = (Ecore_Exe_Event_Del *)event_info;
+
+   if (exporter_exit->exit_code != 0)
+     {
+        ppd->result = PM_PROJECT_ERROR;
+        _end_send(ppd);
+        return ECORE_CALLBACK_DONE;
+     }
 
    resource_manager_init(project);
 
    ppd->result = PM_PROJECT_SUCCESS;
    _end_send(ppd);
    return ECORE_CALLBACK_DONE;
+}
+
+static void
+_project_close_internal(Project *project)
+{
+   if (project->global_object)
+     evas_object_del(project->global_object);
+
+   if (project->ecore_evas)
+     ecore_evas_free(project->ecore_evas);
+
+   if (project->mmap_file)
+     eina_file_close(project->mmap_file);
+
+   if (project->name)
+     eina_stringshare_del(project->name);
+
+   if (project->dev)
+     eina_stringshare_del(project->dev);
+   if (project->develop_path)
+     eina_stringshare_del(project->develop_path);
+   if (project->pro_path)
+     eina_stringshare_del(project->pro_path);
+
+
+#ifdef HAVE_ENVENTOR
+   if (enventor_object_project_unload(project))
+     free(project->enventor);
+#endif /* HAVE_ENVENTOR */
+
+   if (project->ef)
+     eet_close(project->ef);
+#ifdef _WIN32
+   if (project->pro_fd != INVALID_HANDLE_VALUE)
+     CloseHandle(project->pro_fd);
+#else
+   if (project->pro_fd != -1)
+     close(project->pro_fd);
+#endif
 }
 
 static Eina_Bool
@@ -564,8 +611,11 @@ _project_open_internal(Project_Process_Data *ppd)
         ERR("Project file already locked by another application");
 #ifdef _WIN32
         CloseHandle(fd);
-#endif /*  */
-        return false;
+#else
+        if (pro_fd != -1)
+          close(pro_fd);
+#endif
+         return false;
      }
 
    ef = eet_open(ppd->path, EET_FILE_MODE_READ_WRITE);
@@ -704,6 +754,7 @@ pm_project_open(const char *path,
 
    if (!_project_open_internal(ppd))
      {
+        _project_close_internal(ppd->project);
         _project_process_data_cleanup(ppd);
         ret = false;
      }
@@ -733,7 +784,10 @@ _edje_pick_finish_handler(void *data,
      return ECORE_CALLBACK_CANCEL;
 
    if (!_project_open_internal(ppd))
-     return ECORE_CALLBACK_CANCEL;
+     {
+        _project_close_internal(ppd->project);
+        return ECORE_CALLBACK_CANCEL;
+     }
    else
      return ECORE_CALLBACK_DONE;
 }
@@ -887,6 +941,8 @@ pm_project_import_edj(const char *name,
    if (!_project_import_edj(ppd))
      {
         _project_process_data_cleanup(ppd);
+        _project_close_internal(ppd->project);
+        ecore_file_recursive_rm(spath);
         ret = false;
      }
 
@@ -980,6 +1036,8 @@ pm_project_import_edc(const char *name,
    if (!_project_import_edc(ppd))
      {
         _project_process_data_cleanup(ppd);
+        _project_close_internal(ppd->project);
+        ecore_file_recursive_rm(spath);
         ret = false;
      }
    free(spath);
@@ -1008,30 +1066,9 @@ pm_project_close(Project *project)
             "%s/fonts", project->develop_path);
    ecore_file_recursive_rm(buf);
 
-   evas_object_del(project->global_object);
-   ecore_evas_free(project->ecore_evas);
-
-   eina_file_close(project->mmap_file);
    ecore_file_unlink(project->dev);
+   _project_close_internal(project);
 
-   eina_stringshare_del(project->name);
-   eina_stringshare_del(project->dev);
-   eina_stringshare_del(project->develop_path);
-   eina_stringshare_del(project->pro_path);
-
-#ifdef HAVE_ENVENTOR
-   if (enventor_object_project_unload(project))
-     free(project->enventor);
-#endif /* HAVE_ENVENTOR */
-
-   eet_close(project->ef);
-#ifdef _WIN32
-   if (project->pro_fd != INVALID_HANDLE_VALUE)
-     CloseHandle(project->pro_fd);
-#else
-   if (project->pro_fd != -1)
-     close(project->pro_fd);
-#endif
    resource_manager_shutdown(project);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CLOSED, NULL);
