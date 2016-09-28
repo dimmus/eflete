@@ -487,9 +487,11 @@ _import(void *data __UNUSED__,
        return;
 
    buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "%s/%s.pro",
+   eina_strbuf_append_printf(buf, "%s/%s/%s.pro",
                              elm_entry_entry_get(tab_edj.path),
+                             elm_entry_entry_get(tab_edj.name),
                              elm_entry_entry_get(tab_edj.name));
+
    if (!pm_lock_check(eina_strbuf_string_get(buf)))
      {
        popup_add(_("Import EDJ-file"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);

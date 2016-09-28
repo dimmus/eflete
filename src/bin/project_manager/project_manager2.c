@@ -20,6 +20,7 @@
 #define _GNU_SOURCE
 #include "project_manager2.h"
 #include <fcntl.h>
+#include <errno.h>
 
 #ifndef _WIN32
 #include <sys/wait.h>
@@ -414,13 +415,24 @@ _lock_try(const char *path, Eina_Bool check, int *pro_fd)
    struct flock lock, savelock;
 
    int fd = open(path, O_RDWR);
+   if (fd < 1)
+     {
+        ERR(" %s\n", strerror(errno));
+        return check;
+     }
+
    lock.l_type    = F_WRLCK;   /* Test for any lock on any part of file. */
    lock.l_whence  = SEEK_SET;
    lock.l_start   = 0;
    lock.l_len     = 0;
    lock.l_pid     = 0;
    savelock = lock;
-   fcntl(fd, F_GETLK, &lock);  /* Overwrites lock structure with preventors. */
+   if (fcntl(fd, F_GETLK, &lock) == -1)
+     {
+        ERR("Failed get lock status of file [%s] error message [%s].\n", path, strerror(errno));
+        close(fd);
+        return false;
+     }
    if ((lock.l_pid != 0) && ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK)))
      {
         ERR("Process %d has a write lock already!", lock.l_pid);
@@ -1431,5 +1443,7 @@ pm_project_release_export(Project *project,
 Eina_Bool
 pm_lock_check(const char *path)
 {
+   if (ecore_file_exists(path) == false)
+     return true;
    return _lock_try(path, false, NULL);
 }
