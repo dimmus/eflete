@@ -766,8 +766,9 @@ pm_project_open(const char *path,
 
    if (!_project_open_internal(ppd))
      {
-        _project_close_internal(ppd->project);
+        Project *project = ppd->project;
         _project_process_data_cleanup(ppd);
+        _project_close_internal(project);
         ret = false;
      }
 
@@ -952,8 +953,9 @@ pm_project_import_edj(const char *name,
 
    if (!_project_import_edj(ppd))
      {
+        Project *project = ppd->project;
         _project_process_data_cleanup(ppd);
-        _project_close_internal(ppd->project);
+        _project_close_internal(project);
         ecore_file_recursive_rm(spath);
         ret = false;
      }
@@ -1047,8 +1049,9 @@ pm_project_import_edc(const char *name,
 
    if (!_project_import_edc(ppd))
      {
+        Project *project = ppd->project;
         _project_process_data_cleanup(ppd);
-        _project_close_internal(ppd->project);
+        _project_close_internal(project);
         ecore_file_recursive_rm(spath);
         ret = false;
      }
