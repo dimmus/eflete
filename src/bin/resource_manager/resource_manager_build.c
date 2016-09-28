@@ -66,9 +66,9 @@ void
 _item_dependency_load(Project* pro, Group2 *group, Part2 *part, Part_Item2 *item)
 {
    Resource2 *used;
-   Eina_Stringshare *source = edje_edit_part_item_source_get(group->edit_object,
-                                                             part->common.name,
-                                                             item->common.name);
+   Eina_Stringshare *source = edje_edit_part_item_index_source_get(group->edit_object,
+                                                                   part->common.name,
+                                                                   item->common.id);
    item->source = eina_stringshare_add(source);
    used = resource_manager_find(pro->RM.groups, source);
    if (used)
