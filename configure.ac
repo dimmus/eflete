@@ -193,11 +193,14 @@ fi
 
 AC_SUBST(EFLETE_DEBUG_DEF)
 
+EFLETE_DEFINE=""
 #===============================================================================
 if test "x${prefix}" = "xNONE"; then
    LOCALE_DIR="${ac_default_prefix}/share/locale"
+   EFLETE_DEFINE+=" -DEFLETE_BIN_PATH=\\\"\\\" "
 else
    LOCALE_DIR="${prefix}/share/locale"
+   EFLETE_DEFINE+=" -DEFLETE_BIN_PATH=\\\"${prefix}/bin/\\\" "
 fi
 AC_SUBST(LOCALE_DIR)
 #===============================================================================
@@ -205,8 +208,7 @@ AC_SUBST(LOCALE_DIR)
 DEPS_EOLIAN_FLAGS=`${PKG_CONFIG} --variable=eolian_flags eo efl evas edje ecore elementary`
 AC_SUBST([DEPS_EOLIAN_FLAGS])
 
-EFLETE_DEFINE=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
-EFLETE_DEFINE+=" -DEFLETE_BIN_PATH=\\\"${prefix}/bin/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O
