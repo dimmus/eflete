@@ -330,6 +330,11 @@ EDITOR_PART_ITEM_USHORT(span_row, RM_ATTRIBUTE_PART_ITEM_SPAN_ROW, true);
 EDITOR_PART_ITEM_USHORT(position_col, RM_ATTRIBUTE_PART_ITEM_POSITION_COL, true);
 EDITOR_PART_ITEM_USHORT(position_row, RM_ATTRIBUTE_PART_ITEM_POSITION_ROW, true);
 
+EDITOR_PART_ITEM_INDEX_USHORT(span_col, RM_ATTRIBUTE_PART_ITEM_SPAN_COL, true);
+EDITOR_PART_ITEM_INDEX_USHORT(span_row, RM_ATTRIBUTE_PART_ITEM_SPAN_ROW, true);
+EDITOR_PART_ITEM_INDEX_USHORT(position_col, RM_ATTRIBUTE_PART_ITEM_POSITION_COL, true);
+EDITOR_PART_ITEM_INDEX_USHORT(position_row, RM_ATTRIBUTE_PART_ITEM_POSITION_ROW, true);
+
 Eina_Bool
 editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                             const char *part_name, const char *item_name, const char *new_val)

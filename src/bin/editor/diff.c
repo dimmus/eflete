@@ -68,6 +68,8 @@ typedef Eina_Bool (* function_type_string_uint_int) (Evas_Object *, Change*, Ein
                                                      const char *, unsigned int, int);
 typedef Eina_Bool (* function_type_string_string_ushort) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, unsigned short);
+typedef Eina_Bool (* function_type_string_uint_ushort) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
+                                                        const char *, unsigned int, unsigned short);
 typedef Eina_Bool (* function_type_string_string_string) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, const char *);
 typedef Eina_Bool (* function_type_string_string_int_int_int_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
@@ -167,6 +169,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_STRING_USHORT:
          return ((function_type_string_string_ushort)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssus.s1, fi->args.type_ssus.s2, fi->args.type_ssus.us3);
+      case FUNCTION_TYPE_STRING_UINT_USHORT:
+         return ((function_type_string_uint_ushort)fi->function)(obj, NULL, false, true,
+                  fi->args.type_suius.s1, fi->args.type_suius.ui2, fi->args.type_suius.us3);
       case FUNCTION_TYPE_STRING_STRING_STRING:
          return ((function_type_string_string_string)fi->function)(obj, NULL, false, true,
                   fi->args.type_sss.s1, fi->args.type_sss.s2, fi->args.type_sss.s3);
@@ -368,6 +373,10 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_ssus.s1);
          eina_stringshare_ref(new_diff->redo.args.type_ssus.s2);
          break;
+      case FUNCTION_TYPE_STRING_UINT_USHORT:
+         eina_stringshare_del(diff->redo.args.type_suius.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_suius.s1);
+         break;
       case FUNCTION_TYPE_STRING_STRING_STRING:
          eina_stringshare_del(diff->redo.args.type_sss.s1);
          eina_stringshare_del(diff->redo.args.type_sss.s2);
@@ -515,6 +524,9 @@ diff_free(Diff *diff)
       case FUNCTION_TYPE_STRING_STRING_USHORT:
          eina_stringshare_del(diff->redo.args.type_ssus.s1);
          eina_stringshare_del(diff->redo.args.type_ssus.s2);
+         break;
+      case FUNCTION_TYPE_STRING_UINT_USHORT:
+         eina_stringshare_del(diff->redo.args.type_suius.s1);
          break;
       case FUNCTION_TYPE_STRING_STRING_STRING:
          eina_stringshare_del(diff->redo.args.type_sss.s1);
