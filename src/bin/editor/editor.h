@@ -235,6 +235,7 @@ typedef struct {
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
    Eina_Stringshare *item_name;
+   unsigned int item_index;
    Eina_Stringshare *state_name;
    Eina_Stringshare *program_name;
    double state_value;
@@ -735,6 +736,9 @@ editor_part_item_index_position_row_set(Evas_Object *obj, Change *change, Eina_B
 Eina_Bool
 editor_part_item_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       const char * new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                  const char *part_name, unsigned int index, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       Edje_Aspect_Control new_val) EINA_WARN_UNUSED_RESULT;

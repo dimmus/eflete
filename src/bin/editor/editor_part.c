@@ -385,6 +385,54 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true;
 }
 
+Eina_Bool
+editor_part_item_index_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                  const char *part_name, unsigned int index, const char *new_val)
+{
+   Diff *diff;
+   Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   Eina_Stringshare *old_value = edje_edit_part_item_index_source_get(edit_object, part_name, index);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_SOURCE;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_index = index;
+   send.old_value = eina_stringshare_add(old_value);
+   send.value = eina_stringshare_add(new_val);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_UINT_STRING;
+        diff->redo.function = editor_part_item_source_set;
+        diff->redo.args.type_suis.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_suis.ui2 = index;
+        diff->redo.args.type_suis.s3 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_UINT_STRING;
+        diff->undo.function = editor_part_item_source_set;
+        diff->undo.args.type_suis.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_suis.ui2 = index;
+        diff->undo.args.type_suis.s3 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        CRIT_ON_FAIL(edje_edit_part_item_index_source_set(edit_object, part_name, index, new_val));
+        CRIT_ON_FAIL(editor_save(edit_object));
+        _editor_project_changed();
+        CRIT_ON_FAIL(editor_save(edit_object));
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+     }
+   eina_stringshare_del(part_name);
+   eina_stringshare_del(old_value);
+   eina_stringshare_del(new_val);
+   return true;
+}
+
 /* PADDINGS */
 
 Eina_Bool
