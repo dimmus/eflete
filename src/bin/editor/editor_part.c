@@ -253,6 +253,46 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
    return true;
 }
 
+Eina_Bool
+editor_part_item_index_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                       const char *part_name, unsigned int index, Edje_Aspect_Control new_val)
+{
+   Diff *diff;
+   Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_ASPECT_MODE;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   if (change)
+     {
+        Edje_Aspect_Control old_value = edje_edit_part_item_index_aspect_mode_get(edit_object, part_name, index);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_UINT_EDJEASPECTCONTROL;
+        diff->redo.function = editor_part_item_index_aspect_mode_set;
+        diff->redo.args.type_suieac.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_suieac.ui2 = index;
+        diff->redo.args.type_suieac.eac3 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_UINT_EDJEASPECTCONTROL;
+        diff->undo.function = editor_part_item_index_aspect_mode_set;
+        diff->undo.args.type_suieac.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_suieac.ui2 = index;
+        diff->undo.args.type_suieac.eac3 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        CRIT_ON_FAIL(edje_edit_part_item_index_aspect_mode_set(edit_object, part_name, index, new_val));
+        CRIT_ON_FAIL(editor_save(edit_object));
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+     }
+   return true;
+}
+
 EDITOR_PART_ITEM_DOUBLE(align_x, RM_ATTRIBUTE_PART_ITEM_ALIGN_X);
 EDITOR_PART_ITEM_DOUBLE(align_y, RM_ATTRIBUTE_PART_ITEM_ALIGN_Y);
 EDITOR_PART_ITEM_DOUBLE(weight_x, RM_ATTRIBUTE_PART_ITEM_WEIGHT_X);

@@ -42,6 +42,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_RENAME,
    FUNCTION_TYPE_STRING,
    FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL,
+   FUNCTION_TYPE_STRING_UINT_EDJEASPECTCONTROL,
    FUNCTION_TYPE_STRING_STRING_DOUBLE,
    FUNCTION_TYPE_STRING_STRING_INT,
    FUNCTION_TYPE_STRING_STRING_USHORT,
@@ -147,6 +148,11 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          Edje_Aspect_Control eac3;
       } type_sseac;
+      struct {
+         Eina_Stringshare *s1;
+         unsigned int ui2;
+         Edje_Aspect_Control eac3;
+      } type_suieac;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;

@@ -685,6 +685,9 @@ Eina_Bool
 editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       Edje_Aspect_Control new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
+editor_part_item_index_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, unsigned int index,
+      Edje_Aspect_Control new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
 editor_part_item_padding_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       int new_val1) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
