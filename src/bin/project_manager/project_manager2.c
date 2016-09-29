@@ -450,7 +450,12 @@ _lock_try(const char *path, Eina_Bool check, int *pro_fd)
    if (pro_fd)
      {
         savelock.l_pid = getpid();
-        fcntl(fd, F_SETLK, &savelock);
+        if (fcntl(fd, F_SETLK, &savelock) == -1)
+          {
+             ERR("Failed set lock status of file [%s] error message [%s].\n", path, strerror(errno));
+             close(fd);
+             return false;
+          }
         *pro_fd = fd;
         return true;
      }
