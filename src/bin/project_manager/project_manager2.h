@@ -144,6 +144,20 @@ enum _PM_Project_Result
    PM_PROJECT_CANCEL,
    PM_PROJECT_ERROR,
    PM_PROJECT_LOCKED,
+   PM_PROJECT_CREATE_PRO_FAILED,
+   PM_PROJECT_OPEN_PRO_FAILED,
+   PM_PROJECT_READ_PRO_FAILED,
+   PM_PROJECT_WRITE_PRO_FAILED,
+   PM_PROJECT_ADD_SPEC_GROUP_FAILED,
+   PM_PROJECT_ADD_SPEC_IMAGE_FAILED,
+   PM_PROJECT_ADD_SPEC_SAMPLE_FAILED,
+   PM_PROJECT_LOAD_INTERNAL_OBJ_FAILED,
+   PM_PROJECT_LOAD_GROUP_FAILED,
+   PM_PROJECT_COPY_GROUP_FAILED,
+   PM_PROJECT_COPY_FILE_FAILED,
+   PM_PROJECT_EXPORT_RESOURCE_FAILED,
+   PM_PROJECT_EXPORT_DEVELOP_EDJ_FAILED,
+   PM_PROJECT_BUILD_SOURCE_EDC_FAILED,
    PM_PROJECT_LAST
 };
 
@@ -202,11 +216,11 @@ typedef void
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
@@ -232,13 +246,13 @@ pm_project_import_edj(const char *name,
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @note Function will not check a edc file, and directories.
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
@@ -256,11 +270,11 @@ pm_project_import_edc(const char *name,
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE if project start open succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_open(const char *path,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -275,11 +289,11 @@ pm_project_open(const char *path,
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE if project start save succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -291,11 +305,11 @@ pm_project_save(Project *project,
  *
  * @param project The current opened project.
  *
- * @return EINA_TRUE if project save succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_close(Project *project) EINA_ARG_NONNULL(1) __UNUSED_RESULT__;
 
 /**
@@ -330,11 +344,11 @@ pm_project_meta_data_get(Project *project,
  * @param license A new project license,
  * @param comment A new project comment.
  *
- * @return EINA_TRUE data is set, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_meta_data_set(Project *project,
                          const char *name,
                          const char *authors,
@@ -352,11 +366,11 @@ pm_project_meta_data_set(Project *project,
  * @param func_end The user func for handle the end of export;
  * @param data The user data;
  *
- * @return EINA_TRUE if project start export succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
+PM_Project_Result
 pm_group_source_code_export(Project *project,
                             Group2 *group,
                             const char *path,
@@ -373,11 +387,11 @@ pm_group_source_code_export(Project *project,
  * @param pro The opened project;
  * @param dir_path directory path where source code would be exported;
  *
- * @return EINA_TRUE if project start export succesful, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
+PM_Project_Result
 pm_project_source_code_export(Project *project,
                               const char *path,
                               PM_Project_Progress_Cb func_progress,
@@ -396,11 +410,11 @@ pm_project_source_code_export(Project *project,
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
+PM_Project_Result
 pm_project_develop_export(Project *pro,
                           const char *path,
                           Eina_List *groups,
@@ -419,11 +433,11 @@ pm_project_develop_export(Project *pro,
  *        Project progress;
  * @param data The user data.
  *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
+PM_Project_Result
 pm_project_release_export(Project *pro,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
@@ -450,11 +464,11 @@ pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
  * @param edj The path to edj file contains a group
  * @param group The group name for import
  *
- * @return EINA_TRUE on success, otherwise EINA_FALSE
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_project_group_import(Project *project, const char *edj, const char *group);
 
 #endif /* PROJECT_MANAGER_H */
