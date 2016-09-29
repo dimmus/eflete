@@ -44,6 +44,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL,
    FUNCTION_TYPE_STRING_UINT_EDJEASPECTCONTROL,
    FUNCTION_TYPE_STRING_STRING_DOUBLE,
+   FUNCTION_TYPE_STRING_UINT_DOUBLE,
    FUNCTION_TYPE_STRING_STRING_INT,
    FUNCTION_TYPE_STRING_STRING_USHORT,
    FUNCTION_TYPE_STRING_STRING_STRING,
@@ -158,6 +159,11 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          double d3;
       } type_ssd;
+      struct {
+         Eina_Stringshare *s1;
+         unsigned int ui2;
+         double d3;
+      } type_suid;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
