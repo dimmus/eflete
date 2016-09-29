@@ -678,6 +678,47 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
    return true; \
 }
 
+#define EDITOR_PART_ITEM_INDEX_INT(FUNC, RM_ATTRIBUTE, SAVE) \
+Eina_Bool \
+editor_part_item_index_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply, \
+                                      const char *part_name, unsigned int index, int new_val) \
+{ \
+   Diff *diff; \
+   Editor_Attribute_Change send; \
+   send.edit_object = edit_object; \
+ \
+   send.attribute = RM_ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   if (change) \
+     { \
+        int old_value = edje_edit_part_item_index_## FUNC ##_get(edit_object, part_name, index); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_UINT_INT; \
+        diff->redo.function = editor_part_item_index_## FUNC ##_set; \
+        diff->redo.args.type_suii.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_suii.ui2 = index; \
+        diff->redo.args.type_suii.i3 = new_val; \
+        diff->undo.type = FUNCTION_TYPE_STRING_UINT_INT; \
+        diff->undo.function = editor_part_item_index_## FUNC ##_set; \
+        diff->undo.args.type_suii.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_suii.ui2 = index; \
+        diff->undo.args.type_suii.i3 = old_value; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (apply) \
+     { \
+       CRIT_ON_FAIL(edje_edit_part_item_index_## FUNC ##_set(edit_object, part_name, index, new_val)); \
+       if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
+       _editor_project_changed(); \
+     } \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
+   return true; \
+}
+
 #define EDITOR_PART_ITEM_USHORT(FUNC, RM_ATTRIBUTE, SAVE) \
 Eina_Bool \
 editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply, \
