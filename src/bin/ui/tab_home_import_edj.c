@@ -553,7 +553,7 @@ _tab_import_edj_del(void *data __UNUSED__,
 Evas_Object *
 _tab_import_edj_add(void)
 {
-   tab_edj.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   tab_edj.name_validator = elm_validator_regexp_new(FILE_NAME_REGEX, NULL);
 
    tab_edj.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tab_edj.layout, "layout", "tab_home", "import_edj");

@@ -479,7 +479,7 @@ _tab_import_edc_add(void)
    Evas_Object *sc, *item, *separ;
    Dir_Data *dir_data;
 
-   tab_edc.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   tab_edc.name_validator = elm_validator_regexp_new(FILE_NAME_REGEX, NULL);
 
    tab_edc.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tab_edc.layout, "layout", "tab_home", "import_edc");
