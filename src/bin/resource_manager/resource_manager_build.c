@@ -105,7 +105,8 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
                res = resource_manager_find(pro->RM.image_sets, state->normal);
              else
                res = resource_manager_find(pro->RM.images, state->normal);
-             _resource_usage_resource_add((Resource2 *)state, res);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
           }
 
         EINA_LIST_FOREACH(state->tweens, l2, res)
@@ -292,7 +293,8 @@ _group_dependency_load(Project *pro, Group2 *group)
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
         used = resource_manager_find(pro->RM.groups, main_group_name);
-        _resource_usage_resource_add((Resource2 *)group, used);
+        if (used)
+          _resource_usage_resource_add((Resource2 *)group, used);
 
         edje_edit_string_free(main_group_name);
 
@@ -349,7 +351,8 @@ _resource_dependency_load(Project *pro)
         EINA_LIST_FOREACH(set_images, l2, set_image_name)
           {
              used = resource_manager_find(pro->RM.images, set_image_name);
-             _resource_usage_resource_add(res, used);
+             if (used)
+               _resource_usage_resource_add(res, used);
           }
         edje_edit_string_list_free(set_images);
      }
