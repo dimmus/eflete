@@ -9,6 +9,7 @@
 #include <Edje_Edit.h>
 #include <Eet.h>
 #include "group_manager_resources.h"
+#include "project_manager2_data.h"
 #include "string_common.h"
 
 #ifdef HAVE_CONFIG_H
@@ -40,7 +41,7 @@ static Ecore_Job *sounds_job = NULL;
 static Ecore_Job *fonts_job = NULL;
 static Ecore_Job *source_job = NULL;
 
-static int exit_status = EXIT_SUCCESS;
+static PM_Project_Result exit_status = PM_PROJECT_SUCCESS;
 
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
@@ -81,7 +82,7 @@ _digist_get(int v)
 }
 
 static void
-_terminate(void)
+_terminate(PM_Project_Result error)
 {
    char buf[256];
 
@@ -104,7 +105,7 @@ _terminate(void)
      ecore_file_recursive_rm(buf);
 
    ecore_job_del(source_job);
-   exit_status = EXIT_FAILURE;
+   exit_status = error;
    ecore_main_loop_quit();
 }
 
@@ -128,7 +129,7 @@ _images_resources_export(void *data __UNUSED__)
         if (!ecore_file_mkpath(buf))
           {
              fprintf(stderr, "ERROR: Failed create path %s for export images", buf);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_CREATE_PATH_FAILED);
              return;
           }
      }
@@ -148,7 +149,7 @@ _images_resources_export(void *data __UNUSED__)
              if (!eina_file_copy(name, buf, EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, NULL, NULL))
                {
                   fprintf(stderr, "ERROR: Could not copy image '%s'\n", name);
-                  _terminate();
+                  _terminate(PM_PROJECT_EXPORT_COPY_FILE_FAILED);
                   return;
                }
           }
@@ -158,7 +159,7 @@ _images_resources_export(void *data __UNUSED__)
              if (id < 0)
                {
                   fprintf(stderr, "ERROR: Image have wrong id %i\n", id);
-                  _terminate();
+                  _terminate(PM_PROJECT_EXPORT_WRONG_IMAGE_ID);
                   return;
                }
              snprintf(buf, strlen("edje/images/") + (_digist_get(id) + 1) + 1,
@@ -173,7 +174,7 @@ _images_resources_export(void *data __UNUSED__)
              if (!evas_object_image_save(img, buf, NULL, NULL))
                {
                   fprintf(stderr, "ERROR: Image does not save, error: %s\n", evas_load_error_str(evas_object_image_load_error_get(img)));
-                  _terminate();
+                  _terminate(PM_PROJECT_EXPORT_SAVE_IMAGE_FAILED);
                   return;
                }
           }
@@ -204,7 +205,7 @@ _sounds_resources_export(void *data __UNUSED__)
         if (!ecore_file_mkpath(buf))
           {
              fprintf(stderr, "ERROR: Failed create path %s for export sounds", buf);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_CREATE_PATH_FAILED);
              return;
           }
      }
@@ -223,14 +224,14 @@ _sounds_resources_export(void *data __UNUSED__)
         if (!(f = fopen(buf, "wb")))
           {
              fprintf(stderr, "ERROR: Could not export sound '%s'. File does not open.\n", sound_file);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_SAVE_SAMPLE_FAILED);
              return;
           }
         if (fwrite(eina_binbuf_string_get(sound_bin),
                    eina_binbuf_length_get(sound_bin), 1, f) != 1)
           {
              fprintf(stderr, "ERROR: Could not export sound '%s', Unable to write file.\n", sound_file);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_SAVE_SAMPLE_FAILED);
              fclose(f);
              return;
           }
@@ -264,7 +265,7 @@ _fonts_resources_export(void *data __UNUSED__)
         if (!ecore_file_mkpath(buf))
           {
              fprintf(stderr, "ERROR: Failed create path %s for export fonts.\n", buf);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_CREATE_PATH_FAILED);
              return;
           }
      }
@@ -281,7 +282,7 @@ _fonts_resources_export(void *data __UNUSED__)
         if (!font)
           {
              fprintf(stderr, "ERROR: Unable to read font '%s' from '%s'.\n", buf, sedj);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_READ_EDJ_FONT_FAILED);
              goto exit;
           }
         snprintf(buf, strlen(spath) + strlen("/"FONTS"/") + strlen(font_file) + 1,
@@ -289,13 +290,13 @@ _fonts_resources_export(void *data __UNUSED__)
         if (!(f = fopen(buf, "wb")))
           {
              fprintf(stderr, "ERROR: Could not export font '%s'. File does not open.\n", font_file);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_SAVE_FONT_FAILED);
              goto exit;
           }
         if (fwrite(font, size, 1, f) != 1)
           {
              fprintf(stderr, "ERROR: Could not export font '%s', Unable to write file.\n", font_file);
-             _terminate();
+             _terminate(PM_PROJECT_EXPORT_SAVE_FONT_FAILED);
              fclose(f);
              goto exit;
           }
@@ -327,7 +328,7 @@ _group_source_code_export(const char *group)
    if (!f)
      {
         //ERR("Could't open file '%s'", eina_strbuf_string_get(buf));
-        _terminate();
+        _terminate(PM_PROJECT_EXPORT_CREATE_FILE_FAILED);
         return NULL;
      }
 
@@ -364,7 +365,7 @@ _source_code_export(void *data __UNUSED__)
    if (!f)
      {
         fprintf(stderr, "ERROR: Could not open file '%s'", buf);
-        _terminate();
+        _terminate(PM_PROJECT_EXPORT_CREATE_FILE_FAILED);
         return;
      }
 
@@ -506,11 +507,10 @@ int main(int argc, char **argv)
                   else
                     {
                        fprintf(stdout, "Group '%s' not found. Terminate\n", g);
-                       _terminate();
+                       _terminate(PM_PROJECT_EXPORT_CREATE_OBJECT_FAILED);
                        goto exit;
                     }
                }
-             //fprintf(stdout, "- %s\n", g);
              edje_object_file_set(edje_obj, sedj, g);
 
              if (!images)
