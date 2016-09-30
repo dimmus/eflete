@@ -453,6 +453,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    Eina_Strbuf *edc, *flags;
    Eina_Stringshare *edc_path;
    FILE *fp;
+   PM_Project_Result result;
 
    if (!eina_file_mkdtemp("eflete_project_XXXXXX", &tmp_dir))
      {
@@ -480,13 +481,14 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    eina_strbuf_append_printf(flags, "-id \"%s/template/images\" -sd \"%s/template/sounds\" -v",
                              ap.path.edj_path, ap.path.edj_path);
 
-   if (!pm_project_import_edc(elm_entry_entry_get(tab_new.name),
-                              elm_entry_entry_get(tab_new.path),
-                              edc_path,
-                              eina_strbuf_string_get(flags),
-                              progress_print,
-                              _progress_end,
-                              &tab_new.meta))
+   result = pm_project_import_edc(elm_entry_entry_get(tab_new.name),
+                                  elm_entry_entry_get(tab_new.path),
+                                  edc_path,
+                                  eina_strbuf_string_get(flags),
+                                  progress_print,
+                                  _progress_end,
+                                  &tab_new.meta);
+   if (PM_PROJECT_SUCCESS != result)
      ret = false;
 
    eina_strbuf_free(flags);

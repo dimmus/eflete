@@ -382,16 +382,18 @@ static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    Eina_Bool ret = true;
+   PM_Project_Result result;
    Eina_Strbuf *flags = _edje_cc_opt_build();
 
    eina_strbuf_reset(tab_edc.log);
-   if (!pm_project_import_edc(elm_entry_entry_get(tab_edc.name),
+   result = pm_project_import_edc(elm_entry_entry_get(tab_edc.name),
                               elm_entry_entry_get(tab_edc.path),
                               elm_entry_entry_get(tab_edc.edc),
                               eina_strbuf_string_get(flags),
                               _progress_print,
                               _progress_end,
-                              &tab_edc.meta))
+                              &tab_edc.meta);
+   if (PM_PROJECT_SUCCESS != result)
      ret = false;
 
    eina_strbuf_free(flags);

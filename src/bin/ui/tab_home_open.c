@@ -47,10 +47,12 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 {
    Eina_Bool ret = true;
    Eina_Stringshare *path = data;
+   PM_Project_Result result;
 
    assert(path != NULL);
 
-   if (!pm_project_open(path, progress_print, _tabs_progress_end, NULL))
+   result = pm_project_open(path, progress_print, _tabs_progress_end, NULL);
+   if (PM_PROJECT_SUCCESS != result)
      ret = false;
    eina_stringshare_del(path);
 
