@@ -533,7 +533,6 @@ _exe_error_handler(void *data,
      {
         if (!strncmp(exe_err_msg->lines[i].line, "ERROR: ", sizeof("ERROR: ")))
           {
-             last_error = PM_PROJECT_EXPORT_RESOURCE_FAILED;
              _end_send(ppd);
           }
      }
@@ -552,7 +551,7 @@ _exporter_finish_handler(void *data,
 
    if (exporter_exit->exit_code != 0)
      {
-        last_error = PM_PROJECT_EXPORT_RESOURCE_FAILED;
+        last_error = exporter_exit->exit_code;
         _end_send(ppd);
         return ECORE_CALLBACK_DONE;
      }

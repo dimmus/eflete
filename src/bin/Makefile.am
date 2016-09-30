@@ -30,6 +30,7 @@ EXTRA_DIST = \
 	project_manager/group_manager.h \
 	project_manager/group_manager_resources.h \
 	project_manager/project_manager2.h \
+	project_manager/project_manager2_data.h \
 	project_manager/resource_manager.h \
 	resource_manager/resource_manager2.h \
 	resource_manager/resource_manager_private.h \
