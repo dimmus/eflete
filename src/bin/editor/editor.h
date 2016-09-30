@@ -758,6 +758,18 @@ Eina_Bool
 editor_part_item_padding_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       int new_val1) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
+editor_part_item_index_padding_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, unsigned int index,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_padding_top_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, unsigned int index,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_padding_left_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, unsigned int index,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_padding_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, unsigned int index,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name,
       Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
