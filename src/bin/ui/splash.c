@@ -60,7 +60,13 @@ _on_setup(void *data __UNUSED__,
           const char *emission __UNUSED__,
           const char *source __UNUSED__)
 {
-   if (sdata.setup) sdata.setup(sdata.data, sdata.status);
+   if (sdata.setup)
+     if (!sdata.setup(sdata.data, sdata.status))
+       {
+          elm_layout_signal_emit(sdata.win, "end", "eflete");
+          return;
+       }
+   elm_layout_signal_emit(sdata.win, "start", "eflete");
 }
 
 Evas_Object *

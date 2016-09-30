@@ -792,7 +792,8 @@ group { name: "elm/win/inwin/splash";
    }
    programs {
       program { name: "load";
-         signal: "load";
+         signal: "start";
+         source: "eflete";
          action: STATE_SET "visible" 0.0;
          transition: LINEAR 0.3;
          target: "bg";
