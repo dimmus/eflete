@@ -39,6 +39,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_BOOL,
    FUNCTION_TYPE_STRING_INT,
    FUNCTION_TYPE_STRING_STRING,
+   FUNCTION_TYPE_STRING_UINT,
    FUNCTION_TYPE_STRING_STRING_RENAME,
    FUNCTION_TYPE_STRING,
    FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL,
@@ -50,6 +51,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_USHORT,
    FUNCTION_TYPE_STRING_UINT_USHORT,
    FUNCTION_TYPE_STRING_STRING_STRING,
+   FUNCTION_TYPE_STRING_UINT_UINT,
    FUNCTION_TYPE_STRING_UINT_STRING,
    FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT,
    FUNCTION_TYPE_STRING_EDJEEDITSELECTMODE,
@@ -146,6 +148,10 @@ struct _Function_Info {
       } type_ss;
       struct {
          Eina_Stringshare *s1;
+         unsigned int ui2;
+      } type_sui;
+      struct {
+         Eina_Stringshare *s1;
       } type_s;
       struct {
          Eina_Stringshare *s1;
@@ -192,6 +198,11 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          Eina_Stringshare *s3;
       } type_sss;
+      struct {
+         Eina_Stringshare *s1;
+         unsigned int ui2;
+         unsigned int ui3;
+      } type_suiui;
       struct {
          Eina_Stringshare *s1;
          unsigned int ui2;

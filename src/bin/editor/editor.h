@@ -236,6 +236,7 @@ typedef struct {
    Eina_Stringshare *part_name;
    Eina_Stringshare *item_name;
    unsigned int item_index;
+   unsigned int relative_item_index;
    Eina_Stringshare *state_name;
    Eina_Stringshare *program_name;
    double state_value;
@@ -620,11 +621,20 @@ Eina_Bool
 editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                          const char *part_name, const char *part_item, const char *relative_part_item) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
+editor_part_item_index_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                         const char *part_name, unsigned int index, unsigned int index_relative, Eina_Bool relative) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
 editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                        const char *part_name, const char *item_name, const char *source_group) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                         const char *part_name, const char *item_name, const char *source_group) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                      const char *part_name, const char *item_name) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                     const char *part_name, unsigned int index) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *item_name,
       int new_val) EINA_WARN_UNUSED_RESULT;
