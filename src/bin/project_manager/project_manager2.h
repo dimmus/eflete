@@ -37,28 +37,6 @@
 #include "project_manager2_data.h"
 
 /**
- * @enum _Build
- *
- * The build options.
- *
- * @ingroup ProjectManager
- */
-enum _Build
-{
-   /** all unsed data will be saved in the resulting file. */
-   BUILD_DEVELOP,
-   /** resulting file is optimizated, all unused data excluted from file */
-   BUILD_RELEASE,
-   BUILD_LAST
-};
-
-/**
- * @typedef Build
- * @ingroup ProjectManager
- */
-typedef enum _Build Build;
-
-/**
  * Create a new project which based on the imported edj file.
  *
  * @param name The name of new project;
