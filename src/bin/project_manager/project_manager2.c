@@ -521,26 +521,6 @@ _exe_output_handler(void *data,
 }
 
 static Eina_Bool
-_exe_error_handler(void *data,
-                   int type __UNUSED__,
-                   void *event_info)
-{
-   int i;
-   Ecore_Exe_Event_Data *exe_err_msg = (Ecore_Exe_Event_Data *)event_info;
-   Project_Process_Data *ppd = data;
-
-   for (i = 0; exe_err_msg->lines[i].line != NULL; i++)
-     {
-        if (!strncmp(exe_err_msg->lines[i].line, "ERROR: ", sizeof("ERROR: ")))
-          {
-             _end_send(ppd);
-          }
-     }
-
-   return ECORE_CALLBACK_DONE;
-}
-
-static Eina_Bool
 _exporter_finish_handler(void *data,
                          int type __UNUSED__,
                          void *event_info __UNUSED__)
@@ -754,7 +734,6 @@ _project_open_internal(Project_Process_Data *ppd)
    ecore_exe_pipe_run(cmd, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exporter_finish_handler, ppd);
 
    free(file_dir);
@@ -914,7 +893,6 @@ _project_import_edj(Project_Process_Data *ppd)
         eina_strbuf_free(strbuf);
 
         ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-        ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
         ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _edje_pick_finish_handler, ppd);
      }
    else
@@ -1028,7 +1006,6 @@ _project_import_edc(void *data)
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
 
    return last_error;
@@ -1252,7 +1229,6 @@ pm_group_source_code_export(Project *project,
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
 
    return last_error;
@@ -1283,7 +1259,6 @@ pm_project_source_code_export(Project *project,
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
 
    return last_error;
@@ -1368,7 +1343,6 @@ pm_project_develop_export(Project *project,
    ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
 
    return last_error;
@@ -1411,7 +1385,6 @@ _release_export_finish_handler(void *data,
    ecore_exe_pipe_run(eina_strbuf_string_get(buf), FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_build_finish_handler, ppd);
 
    eina_strbuf_free(buf);
@@ -1449,7 +1422,6 @@ pm_project_release_export(Project *project,
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->error_handler = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_error_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _release_export_finish_handler, ppd);
 
    return last_error;
