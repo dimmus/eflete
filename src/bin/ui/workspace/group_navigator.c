@@ -118,6 +118,24 @@ static const char *program_actions[] = {
    elm_object_style_set(BTN, STYLE); \
    elm_object_part_content_set(LAYOUT, SWALLOW, BTN);
 
+static char *
+_item_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *pr __UNUSED__)
+{
+   Eina_Strbuf *buf;
+   Resource2 *res = data;
+   char *result;
+
+   assert(res != NULL);
+
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "item [%d]", res->common.id);
+   result = strdup(eina_strbuf_string_get(buf));
+
+   eina_strbuf_free(buf);
+   return result;
+}
 
 static char *
 _resource_label_get(void *data,
@@ -2499,7 +2517,7 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";
-   pl->itc_item->func.text_get = _resource_label_get;
+   pl->itc_item->func.text_get = _item_label_get;
 
    pl->itc_item_caption = elm_genlist_item_class_new();
    pl->itc_item_caption->item_style = "items_caption";
