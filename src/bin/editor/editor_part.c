@@ -1102,8 +1102,6 @@ editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Boo
         Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
         CRIT_ON_FAIL(edje_edit_part_item_insert_after_index(edit_object, part_name, item_name, count - 1, source_group));
-        if (item_name)
-          CRIT_ON_FAIL(edje_edit_part_item_index_name_set(edit_object, part_name, count, item_name));
 
         if (type == EDJE_PART_TYPE_TABLE)
           {

@@ -467,6 +467,15 @@ _resource_part_item_free(Part2 *part, Part_Item2 *item)
 void
 _resource_part_item_del(Part2 *part, Part_Item2 *item)
 {
+   Eina_List *item_list, *l;
+   Part_Item2 *item_data;
+
+   item_list = eina_list_data_find_list(part->items, item);
+
+   EINA_LIST_FOREACH(item_list, l, item_data)
+     {
+        item_data->common.id--;
+     }
    /* item is not used anywhere at all */
    _resource_part_item_free(part, item);
 }
@@ -804,13 +813,13 @@ _resource_group_del(Project *pro, Group2 *group)
                                                   item->part->group,
                                                   evas_object_evas_get(ap.win));
                }
-             CRIT_ON_FAIL(editor_part_item_source_set(item->part->group->edit_object,
-                                                      NULL,
-                                                      false,
-                                                      true,
-                                                      item->part->common.name,
-                                                      item->common.name,
-                                                      EFLETE_INTERNAL_GROUP_NAME));
+             CRIT_ON_FAIL(editor_part_item_index_source_set(item->part->group->edit_object,
+                                                            NULL,
+                                                            false,
+                                                            true,
+                                                            item->part->common.name,
+                                                            item->common.id,
+                                                            EFLETE_INTERNAL_GROUP_NAME));
              if (is_opened)
                resource_group_edit_object_unload(item->part->group);
           }

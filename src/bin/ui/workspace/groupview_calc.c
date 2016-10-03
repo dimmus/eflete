@@ -224,21 +224,21 @@ _part_select(void *data,
 }
 
 static Evas_Object *
-_conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, const char *item_name)
+_conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, unsigned int index)
 {
    Evas_Object *cell_content;
    Eina_Stringshare *item_source;
    int min_w, min_h, max_w, max_h, w, h;
 
    cell_content = edje_object_add(evas_object_evas_get(sd->obj));
-   item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->common.name, item_name);
+   item_source = edje_edit_part_item_index_source_get(sd->group->edit_object, gp->part->common.name, index);
    edje_object_file_set(cell_content, ap.project->dev, item_source);
    eina_stringshare_del(item_source);
    /* hide this object, it need only for calculate cell size */
    evas_object_hide(cell_content);
 
-   min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, gp->part->common.name, item_name);
-   min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, gp->part->common.name, item_name);
+   min_w = edje_edit_part_item_index_min_w_get(sd->group->edit_object, gp->part->common.name, index);
+   min_h = edje_edit_part_item_index_min_h_get(sd->group->edit_object, gp->part->common.name, index);
 
    // Calculation according to box/table item implementation in efl 1.13 at edje_load.c
    if ((min_w <= 0) && (min_h <= 0))
@@ -252,8 +252,8 @@ _conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, const ch
    else
      evas_object_size_hint_min_set(cell_content, min_w, min_h);
 
-   max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->common.name, item_name);
-   max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->common.name, item_name);
+   max_w = edje_edit_part_item_index_max_w_get(sd->group->edit_object, gp->part->common.name, index);
+   max_h = edje_edit_part_item_index_max_h_get(sd->group->edit_object, gp->part->common.name, index);
    evas_object_size_hint_max_set(cell_content, max_w, max_h);
 
    return cell_content;
@@ -264,7 +264,7 @@ _part_table_items_add(Groupview_Smart_Data *sd, Groupview_Part *gp, Eina_List **
 {
    Evas_Object *cell, *cell_content;
    Eina_List *l;
-   Eina_Stringshare *item_name;
+   Part_Item2 *part_item;
    int i, j;
    unsigned char span_col, span_row;
    Groupview_Item *item;
@@ -289,16 +289,16 @@ _part_table_items_add(Groupview_Smart_Data *sd, Groupview_Part *gp, Eina_List **
              elm_layout_theme_set(cell, "layout", "groupview", "default");
              evas_object_show(cell);
              elm_object_signal_emit(cell, "border,part_item", "eflete");
-             EINA_LIST_FOREACH(items_draw[i][j], l, item_name)
+             EINA_LIST_FOREACH(items_draw[i][j], l, part_item)
                {
-                  span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->common.name, item_name);
-                  span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->common.name, item_name);
+                  span_col = edje_edit_part_item_index_span_col_get(sd->group->edit_object, gp->part->common.name, part_item->common.id);
+                  span_row = edje_edit_part_item_index_span_row_get(sd->group->edit_object, gp->part->common.name, part_item->common.id);
 
-                  cell_content = _conteiner_cell_sizer_add(sd, gp, item_name);
+                  cell_content = _conteiner_cell_sizer_add(sd, gp, part_item->common.id);
                   evas_object_table_pack(gp->container, cell_content, i, j, span_col, span_row);
 
                   item = mem_malloc(sizeof(Groupview_Item));
-                  item->name = eina_stringshare_add(item_name);
+                  item->name = eina_stringshare_add(part_item->common.name);
                   item->layout = cell;
                   gp->items = eina_list_append(gp->items, item);
                }
@@ -330,13 +330,13 @@ _part_table_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
      items_draw[i] = (Eina_List **)mem_calloc(1, sizeof(Eina_List *) * row);
    EINA_LIST_FOREACH(gp->part->items, l, item)
      {
-        col_pos = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->common.name, item->common.name);
-        row_pos = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->common.name, item->common.name);
-        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->common.name, item->common.name);
-        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->common.name, item->common.name);
+        col_pos = edje_edit_part_item_index_position_col_get(sd->group->edit_object, gp->part->common.name, item->common.id);
+        row_pos = edje_edit_part_item_index_position_row_get(sd->group->edit_object, gp->part->common.name, item->common.id);
+        span_c = edje_edit_part_item_index_span_col_get(sd->group->edit_object, gp->part->common.name, item->common.id);
+        span_r = edje_edit_part_item_index_span_row_get(sd->group->edit_object, gp->part->common.name, item->common.id);
 
         if (items_draw[col_pos][row_pos] == (Eina_List *)-1) items_draw[col_pos][row_pos] = NULL;
-        items_draw[col_pos][row_pos] = eina_list_append(items_draw[col_pos][row_pos], item->common.name);
+        items_draw[col_pos][row_pos] = eina_list_append(items_draw[col_pos][row_pos], item);
         for (i = col_pos; i < (col_pos + span_c); i++)
           {
              for (j = row_pos; j < (row_pos + span_r); j++)
@@ -428,8 +428,8 @@ _part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 
    EINA_LIST_FOREACH(gp->part->items, l, part_item)
      {
-        spread_w = edje_edit_part_item_spread_w_get(sd->group->edit_object, gp->part->common.name, part_item->common.name);
-        spread_h = edje_edit_part_item_spread_h_get(sd->group->edit_object, gp->part->common.name, part_item->common.name);
+        spread_w = edje_edit_part_item_index_spread_w_get(sd->group->edit_object, gp->part->common.name, part_item->common.id);
+        spread_h = edje_edit_part_item_index_spread_h_get(sd->group->edit_object, gp->part->common.name, part_item->common.id);
         for (i = 0; i < (spread_w * spread_h); i++)
           {
              cell = elm_layout_add(sd->parent);
@@ -438,7 +438,7 @@ _part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
              evas_object_show(cell);
              elm_object_signal_emit(cell, "border,part_item", "eflete");
 
-             cell_content = _conteiner_cell_sizer_add(sd, gp, part_item->common.name);
+             cell_content = _conteiner_cell_sizer_add(sd, gp, part_item->common.id);
              elm_object_content_set(cell, cell_content);
              evas_object_box_append(gp->container, cell);
              if (i == 0)

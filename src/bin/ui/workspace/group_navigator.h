@@ -79,7 +79,7 @@ void
 group_navigator_part_del(Evas_Object *obj, Part2 *part);
 
 void
-group_navigator_part_item_add(Evas_Object *obj, Part2 *part, Eina_Stringshare * item_name);
+group_navigator_part_item_add(Evas_Object *obj, Part2 *part, unsigned int index);
 
 void
 group_navigator_part_item_del(Evas_Object *obj, Part_Item2 *item);
@@ -96,7 +96,7 @@ group_navigator_part_restack(Evas_Object *obj, Part2 *part, Part2 *rel_part);
 void
 group_navigator_part_item_restack(Evas_Object *obj,
                                   Part2 *part,
-                                  Eina_Stringshare *part_item,
+                                  unsigned int index,
                                   Eina_Stringshare *relative_part_item);
 
 void

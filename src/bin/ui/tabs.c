@@ -587,7 +587,9 @@ _editor_part_item_added_cb(void *data __UNUSED__,
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_item_add(tabs.current_workspace, editor_item->part_name, editor_item->item_name);
+   workspace_part_item_add(tabs.current_workspace,
+                           editor_item->part_name,
+                           editor_item->item_index);
 }
 
 static void
@@ -601,7 +603,7 @@ _editor_part_item_deleted_cb(void *data __UNUSED__,
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_item_del(tabs.current_workspace, editor_item->part_name, editor_item->item_name);
+   workspace_part_item_del(tabs.current_workspace, editor_item->part_name, editor_item->item_index);
 }
 
 static void
@@ -663,7 +665,7 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
 
    workspace_part_item_restack(tabs.current_workspace,
                                editor_part_item_restack->part_name,
-                               editor_part_item_restack->part_item,
+                               editor_part_item_restack->item_index,
                                editor_part_item_restack->relative_part_item);
 }
 

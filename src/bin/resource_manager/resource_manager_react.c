@@ -793,7 +793,7 @@ _editor_part_item_deleted_cb(void *data __UNUSED__,
    const Editor_Item *editor_item = event_info;
    Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
-   Part_Item2 *item = (Part_Item2 *)resource_manager_find(part->items, editor_item->item_name);
+   Part_Item2 *item = (Part_Item2 *)resource_manager_id_find(part->items, editor_item->item_index);
 
    _resource_part_item_del(part, item);
 }
@@ -864,10 +864,10 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
    Part_Item2 *part_item, *relative_part_item;
    Part2 *part = (Part2 *)resource_manager_find(group->parts,
                                                 editor_part_item_restack->part_name);
-   part_item = (Part_Item2 *)resource_manager_find(part->items,
-                                                   editor_part_item_restack->part_item);
-   relative_part_item = (Part_Item2 *)resource_manager_find(part->items,
-                                                            editor_part_item_restack->relative_part_item);
+   part_item = (Part_Item2 *)resource_manager_id_find(part->items,
+                                                      editor_part_item_restack->item_index);
+   relative_part_item = (Part_Item2 *)resource_manager_id_find(part->items,
+                                                               editor_part_item_restack->relative_item_index);
 
    part->items = eina_list_remove(part->items, part_item);
 

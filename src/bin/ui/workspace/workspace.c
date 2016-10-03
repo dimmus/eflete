@@ -1790,12 +1790,11 @@ workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 void
 workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *part_name,
-                        Eina_Stringshare *item_name)
+                        unsigned int index)
 {
    Part2 *part;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
-   assert(item_name != NULL);
 
    part = (Part2 *)resource_manager_find(wd->group->parts, part_name);
 
@@ -1804,26 +1803,25 @@ workspace_part_item_add(Evas_Object *obj,
 
    group_navigator_select(wd->group_navi, (Resource2 *)part);
    groupview_hard_update(wd->normal.content);
-   group_navigator_part_item_add(wd->group_navi, part, item_name);
+   group_navigator_part_item_add(wd->group_navi, part, index);
 }
 
 void
 workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *part_name,
-                        Eina_Stringshare *item_name)
+                        unsigned int index)
 {
    Part2 *part;
    Part_Item2 *item;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
-   assert(item_name != NULL);
 
    part = (Part2 *)resource_manager_find(wd->group->parts, part_name);
 
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
 
-   item = (Part_Item2 *)resource_manager_find(part->items, item_name);
+   item = (Part_Item2 *)resource_manager_id_find(part->items, index);
 
    assert(item != NULL);
 
@@ -1910,17 +1908,16 @@ workspace_part_restack(Evas_Object *obj,
 void
 workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_name,
-                            Eina_Stringshare *part_item_name,
+                            unsigned int item_index,
                             Eina_Stringshare *relative_part_item_name)
 {
    Part2 *part;
    WS_DATA_GET(obj);
-   assert(part_item_name != NULL);
 
    part = (Part2 *)resource_manager_find(wd->group->parts, part_name);
 
    group_navigator_select(wd->group_navi, (Resource2 *)part);
-   group_navigator_part_item_restack(wd->group_navi, part, part_item_name, relative_part_item_name);
+   group_navigator_part_item_restack(wd->group_navi, part, item_index, relative_part_item_name);
    groupview_hard_update(wd->normal.content);
 }
 

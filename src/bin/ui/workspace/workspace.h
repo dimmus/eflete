@@ -119,14 +119,14 @@ workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name);
  *
  * @param obj The workspace object.
  * @param part_name name of part
- * @param item_name name of added part_item
+ * @param index index of added part_item
  *
  * @ingroup Workspace
  */
 void
 workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *part_name,
-                        Eina_Stringshare *item_name);
+                        unsigned int index);
 
 /**
  * Add new program to group_edit and group_navigator.
@@ -191,14 +191,14 @@ workspace_part_state_add(Evas_Object *obj,
  *
  * @param obj The workspace object.
  * @param part_name name of part
- * @param item_name name of deleted part_item
+ * @param index Index of part item that is deleted
  *
  * @ingroup Workspace
  */
 void
 workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *part_name,
-                        Eina_Stringshare *item_name);
+                        unsigned int index);
 
 /**
  * Add new part state to group_edit and group_navigator.
@@ -267,7 +267,7 @@ workspace_part_restack(Evas_Object *obj,
 void
 workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_name,
-                            Eina_Stringshare *part_item_name,
+                            unsigned int item_index,
                             Eina_Stringshare *relative_part_item_name);
 
 /**

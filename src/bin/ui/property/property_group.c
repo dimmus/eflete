@@ -266,6 +266,19 @@ _item_name_get(void)
    return NULL;
 }
 
+static inline unsigned int
+_item_id_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return 0;
+
+   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM)
+     return group_pd.group->current_selected->common.id;
+
+   return 0;
+}
+
 static inline const char *
 _data_name_get(void)
 {
@@ -295,7 +308,7 @@ _program_name_get(void)
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS _part_name_get()
 #define GROUP_DATA_ARGS _data_name_get()
-#define ITEM_ARGS PART_ARGS, _item_name_get()
+#define ITEM_ARGS PART_ARGS, _item_id_get()
 #define STATE_ARGS PART_ARGS, _state_name_get(), _state_val_get()
 #define STATE_SOURCE_ARGS str_val1, _state_name_get(), _state_val_get()
 #define PROGRAM_ARGS _program_name_get()
@@ -1974,105 +1987,105 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          return editor_state_table_homogeneous_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_ITEM_SOURCE:
          elm_genlist_clear(action->control);
-         str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
+         str_val1 = edje_edit_part_item_index_source_get(EDIT_OBJ, ITEM_ARGS);
          _groups_combobox_fill(action->control, str_val1, false);
          edje_edit_string_free(str_val1);
          return true;
       case ATTRIBUTE_PART_ITEM_MIN_W:
-         int_val1 = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_min_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_min_w_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_min_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MIN_H:
-         int_val1 = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_min_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_min_h_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_min_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MAX_W:
-         int_val1 = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_max_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_max_w_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_max_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_MAX_H:
-         int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_max_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_max_h_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_max_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PREFER_W:
-         int_val1 = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_prefer_w_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_prefer_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PREFER_H:
-         int_val1 = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_prefer_h_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_prefer_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
-         double_val1 = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         double_val1 = edje_edit_part_item_index_weight_x_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         return editor_part_item_weight_x_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_weight_x_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
-         double_val1 = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         double_val1 = edje_edit_part_item_index_weight_y_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         return editor_part_item_weight_y_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_weight_y_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
-         double_val1 = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         double_val1 = edje_edit_part_item_index_align_x_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         return editor_part_item_align_x_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_align_x_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
-         double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         double_val1 = edje_edit_part_item_index_align_y_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
-         return editor_part_item_align_y_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_align_y_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
-         elm_object_text_set(action->control, item_aspect_mode_strings[(int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]);
-         return editor_part_item_aspect_mode_default_is(EDIT_OBJ, ITEM_ARGS);
+         elm_object_text_set(action->control, item_aspect_mode_strings[(int) edje_edit_part_item_index_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]);
+         return editor_part_item_index_aspect_mode_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          elm_object_text_set(action->control, transition_type_strings[(int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS)]);
          GENLIST_FILTER_APPLY(pd->genlist);
          return editor_program_transition_type_default_is(EDIT_OBJ, PROGRAM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
-         int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_aspect_w_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_aspect_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
-         int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_aspect_h_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_aspect_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
-         int_val1 = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_spread_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_spread_w_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_spread_w_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
-         int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         int_val1 = edje_edit_part_item_index_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_spread_h_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_spread_h_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPAN_COL:
-         ushort_val1 = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         ushort_val1 = edje_edit_part_item_index_span_col_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         return editor_part_item_span_col_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_span_col_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_SPAN_ROW:
-         ushort_val1 = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         ushort_val1 = edje_edit_part_item_index_span_row_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         return editor_part_item_span_row_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_span_row_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
-         ushort_val1 = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         ushort_val1 = edje_edit_part_item_index_position_col_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         return editor_part_item_position_col_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_position_col_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
-         ushort_val1 = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         ushort_val1 = edje_edit_part_item_index_position_row_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, ushort_val1);
-         return editor_part_item_position_row_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_position_row_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_padding_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_padding_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
          elm_spinner_value_set(action->control, int_val1);
-         return editor_part_item_padding_default_is(EDIT_OBJ, ITEM_ARGS);
+         return editor_part_item_index_padding_default_is(EDIT_OBJ, ITEM_ARGS);
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
          elm_spinner_value_set(action->control, int_val1);
          /* updating two-item attribute: caption should be updated in first item */
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H]);
          return true;
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
          elm_spinner_value_set(action->control, int_val1);
          /* updating two-item attribute: caption should be updated in first item */
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H]);
@@ -3194,52 +3207,52 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS));
+         STR_VAL(str_val1, edje_edit_part_item_index_source_get(EDIT_OBJ, ITEM_ARGS));
          break;
       case ATTRIBUTE_PART_ITEM_MIN_W:
          group_pd.history.format = _("part item's min_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_min_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MIN_H:
          group_pd.history.format = _("part item's min_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_min_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MAX_W:
          group_pd.history.format = _("part item's max_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_max_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MAX_H:
          group_pd.history.format = _("part item's max_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_max_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PREFER_W:
          group_pd.history.format = _("part item's prefer_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PREFER_H:
          group_pd.history.format = _("part item's prefer_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
          group_pd.history.format = _("part item's weight_x changed from %.2f to %.2f");
-         VAL(double_val1) = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(double_val1) = edje_edit_part_item_index_weight_x_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
          group_pd.history.format = _("part item's weight_y changed from %.2f to %.2f");
-         VAL(double_val1) = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(double_val1) = edje_edit_part_item_index_weight_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
          group_pd.history.format = _("part item's align_x changed from %.2f to %.2f");
-         VAL(double_val1) = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(double_val1) = edje_edit_part_item_index_align_x_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
          group_pd.history.format = _("part item's align_y changed from %.2f to %.2f");
-         VAL(double_val1) = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(double_val1) = edje_edit_part_item_index_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
          group_pd.history.format = _("part item's aspect mode changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
-            item_aspect_mode_strings[edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]));
+            item_aspect_mode_strings[edje_edit_part_item_index_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]));
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          group_pd.history.format = _("program's transition type changed from \"%s\" to \"%s\"");
@@ -3248,54 +3261,54 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
          group_pd.history.format = _("part item's aspect_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
          group_pd.history.format = _("part item's aspect_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
          group_pd.history.format = _("part item's spread by rows changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_spread_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
          group_pd.history.format = _("part item's spread by columns changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(int_val1) = edje_edit_part_item_index_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPAN_COL:
          group_pd.history.format = _("part item's span by columns changed from %hu to %hu");
-         VAL(ushort_val1) = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(ushort_val1) = edje_edit_part_item_index_span_col_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPAN_ROW:
          group_pd.history.format = _("part item's span by rows changed from %hu to %hu");
-         VAL(ushort_val1) = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(ushort_val1) = edje_edit_part_item_index_span_row_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
          group_pd.history.format = _("part item's column position changed from %hu to %hu");
-         VAL(ushort_val1) = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(ushort_val1) = edje_edit_part_item_index_position_col_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
          group_pd.history.format = _("part item's row position changed from %hu to %hu");
-         VAL(ushort_val1) = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         VAL(ushort_val1) = edje_edit_part_item_index_position_row_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
          group_pd.history.format = _("part item's left padding changed from %d to %d");
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
          VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
          group_pd.history.format = _("part item's right padding changed from %d to %d");
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
          VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
          group_pd.history.format = _("part item's top padding changed from %d to %d");
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
          VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          group_pd.history.format = _("part item's bottom padding changed from %d to %d");
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
          VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
@@ -4224,54 +4237,54 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SOURCE:
          assert(cb_item_combo != NULL);
          str_val1 = eina_stringshare_add(cb_item_combo->data);
-         CRIT_ON_FAIL(editor_part_item_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
+         CRIT_ON_FAIL(editor_part_item_index_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_ITEM_MIN_W:
-         CRIT_ON_FAIL(editor_part_item_min_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_min_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_min_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MIN_H:
-         CRIT_ON_FAIL(editor_part_item_min_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_min_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_min_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MAX_W:
-         CRIT_ON_FAIL(editor_part_item_max_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_max_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_max_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_MAX_H:
-         CRIT_ON_FAIL(editor_part_item_max_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_max_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_max_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PREFER_W:
-         CRIT_ON_FAIL(editor_part_item_prefer_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_prefer_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PREFER_H:
-         CRIT_ON_FAIL(editor_part_item_prefer_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_prefer_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
-         CRIT_ON_FAIL(editor_part_item_weight_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.double_val1 = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_weight_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_index_weight_x_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
-         CRIT_ON_FAIL(editor_part_item_weight_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.double_val1 = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_weight_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_index_weight_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
-         CRIT_ON_FAIL(editor_part_item_align_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.double_val1 = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_align_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_index_align_x_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
-         CRIT_ON_FAIL(editor_part_item_align_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_align_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_index_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
          assert(cb_item_combo != NULL);
          str_val1 = eina_stringshare_add(cb_item_combo->data);
-         CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item_combo->index));
+         CRIT_ON_FAIL(editor_part_item_index_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item_combo->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -4283,52 +4296,52 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
-         CRIT_ON_FAIL(editor_part_item_aspect_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_aspect_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
-         CRIT_ON_FAIL(editor_part_item_aspect_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_aspect_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
-         CRIT_ON_FAIL(editor_part_item_spread_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_spread_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_spread_w_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
-         CRIT_ON_FAIL(editor_part_item_spread_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         group_pd.history.new.int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_spread_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_index_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPAN_COL:
-         CRIT_ON_FAIL(editor_part_item_span_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
-         group_pd.history.new.ushort_val1 = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_span_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_index_span_col_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_SPAN_ROW:
-         CRIT_ON_FAIL(editor_part_item_span_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
-         group_pd.history.new.ushort_val1 = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_span_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_index_span_row_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
-         CRIT_ON_FAIL(editor_part_item_position_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
-         group_pd.history.new.ushort_val1 = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_position_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_index_position_col_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
-         CRIT_ON_FAIL(editor_part_item_position_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
-         group_pd.history.new.ushort_val1 = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         CRIT_ON_FAIL(editor_part_item_index_position_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_index_position_row_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
-         CRIT_ON_FAIL(editor_part_item_padding_top_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &group_pd.history.new.int_val1, NULL);
+         CRIT_ON_FAIL(editor_part_item_index_padding_top_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &group_pd.history.new.int_val1, NULL);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
-         CRIT_ON_FAIL(editor_part_item_padding_bottom_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
+         CRIT_ON_FAIL(editor_part_item_index_padding_bottom_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
-         CRIT_ON_FAIL(editor_part_item_padding_left_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &group_pd.history.new.int_val1, NULL, NULL, NULL);
+         CRIT_ON_FAIL(editor_part_item_index_padding_left_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, &group_pd.history.new.int_val1, NULL, NULL, NULL);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
-         CRIT_ON_FAIL(editor_part_item_padding_right_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
-         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
+         CRIT_ON_FAIL(editor_part_item_index_padding_right_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_index_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
          assert(cb_item_combo != NULL);
