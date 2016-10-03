@@ -303,4 +303,16 @@ pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
 PM_Project_Result
 pm_project_group_import(Project *project, const char *edj, const char *group);
 
+/**
+ * Get the string description by given result.
+ *
+ * @param result The result of which requires string.
+ *
+ * @return The string description
+ *
+ * @ingroup ProjectManager
+ */
+const char *
+pm_project_result_string_get(PM_Project_Result result);
+
 #endif /* PROJECT_MANAGER_H */

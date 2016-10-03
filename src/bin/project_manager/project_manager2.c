@@ -1434,3 +1434,64 @@ pm_lock_check(const char *path)
      return true;
    return _lock_try(path, false, NULL);
 }
+
+const char *
+pm_project_result_string_get(PM_Project_Result result)
+{
+   switch (result)
+     {
+      case PM_PROJECT_SUCCESS:
+         return "Project job is succes";
+      case PM_PROJECT_CANCEL:
+         return "User cancel project job";
+      case PM_PROJECT_LOCKED:
+         return "Given pro file is locked";
+      case PM_PROJECT_CREATE_PRO_FAILED:
+         return "Could not to create new pro file";
+      case PM_PROJECT_OPEN_PRO_FAILED:
+         return "Could not to open given pro file";
+      case PM_PROJECT_READ_PRO_FAILED:
+         return "Could not read given pro file";
+      case PM_PROJECT_WRITE_PRO_FAILED:
+         return "Could not write given pro file";
+      case PM_PROJECT_ADD_SPEC_GROUP_FAILED:
+         return "Could not add special group to given project";
+      case PM_PROJECT_ADD_SPEC_IMAGE_FAILED:
+         return "Could not add special image to given project";
+      case PM_PROJECT_ADD_SPEC_SAMPLE_FAILED:
+         return "Could not add special sample to given project";
+      case PM_PROJECT_LOAD_INTERNAL_OBJ_FAILED:
+         return "Could not load internal object";
+      case PM_PROJECT_LOAD_GROUP_FAILED:
+         return "Could not load group to object";
+      case PM_PROJECT_COPY_GROUP_FAILED:
+         return "Could not copy group";
+      case PM_PROJECT_COPY_FILE_FAILED:
+         return "Could not copy file";
+      case  PM_PROJECT_EXPORT_CREATE_PATH_FAILED:
+         return "Could not create a path";
+      case  PM_PROJECT_EXPORT_COPY_FILE_FAILED:
+         return "Could not copy file";
+      case  PM_PROJECT_EXPORT_SAVE_IMAGE_FAILED:
+         return "Could not save image";
+      case  PM_PROJECT_EXPORT_WRONG_IMAGE_ID:
+         return "Image have wrong id";
+      case  PM_PROJECT_EXPORT_CREATE_FILE_FAILED:
+         return "Could not create a file";
+      case  PM_PROJECT_EXPORT_SAVE_SAMPLE_FAILED:
+         return "Could not save sample sound";
+      case  PM_PROJECT_EXPORT_READ_EDJ_FONT_FAILED:
+         return "Could not read given edj file";
+      case  PM_PROJECT_EXPORT_SAVE_FONT_FAILED:
+         return "Could not save font";
+      case  PM_PROJECT_EXPORT_CREATE_OBJECT_FAILED:
+         return "Could not create a object";
+      case  PM_PROJECT_EXPORT_DEVELOP_EDJ_FAILED:
+         return "Could not save develop edj file";
+      case  PM_PROJECT_BUILD_SOURCE_EDC_FAILED:
+         return "Could not build edj file from edc";
+      case PM_PROJECT_LAST:
+      default:
+         return "Unknown error";
+     }
+}
