@@ -369,8 +369,8 @@ _image_del_cb(void *data __UNUSED__,
         if (!res->common.used_in)
           {
              ecore_file_unlink(res->source);
-             elm_object_item_del(grid_item);
              CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
+             elm_object_item_del(grid_item);
           }
         else
           elm_gengrid_item_selected_set(grid_item, false);
