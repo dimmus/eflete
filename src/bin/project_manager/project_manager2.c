@@ -238,6 +238,7 @@ _project_create(Project_Process_Data *ppd)
    if (!eet_data_write(pro->ef, ppd->eed_project, PROJECT_FILE_KEY, pro, compess_level))
      last_error = PM_PROJECT_WRITE_PRO_FAILED;
 
+   eet_sync(pro->ef);
    _pm_project_descriptor_shutdown(ppd);
 
 exit:
