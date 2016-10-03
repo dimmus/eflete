@@ -381,20 +381,25 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
+   char buf[PATH_MAX];
    Eina_Bool ret = true;
    PM_Project_Result result;
    Eina_Strbuf *flags = _edje_cc_opt_build();
 
    eina_strbuf_reset(tab_edc.log);
    result = pm_project_import_edc(elm_entry_entry_get(tab_edc.name),
-                              elm_entry_entry_get(tab_edc.path),
-                              elm_entry_entry_get(tab_edc.edc),
-                              eina_strbuf_string_get(flags),
-                              _progress_print,
-                              _progress_end,
-                              &tab_edc.meta);
+                                  elm_entry_entry_get(tab_edc.path),
+                                  elm_entry_entry_get(tab_edc.edc),
+                                  eina_strbuf_string_get(flags),
+                                  _progress_print,
+                                  _progress_end,
+                                  &tab_edc.meta);
    if (PM_PROJECT_SUCCESS != result)
-     ret = false;
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Import edc"), NULL, BTN_CANCEL, NULL, NULL);
+        ret = false;
+     }
 
    eina_strbuf_free(flags);
    return ret;

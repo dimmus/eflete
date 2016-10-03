@@ -438,6 +438,8 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    Eina_Bool ret = true;
    PM_Project_Result result;
+   char buf[PATH_MAX];
+
    result = pm_project_import_edj(elm_entry_entry_get(tab_edj.name),
                                   elm_entry_entry_get(tab_edj.path),
                                   elm_entry_entry_get(tab_edj.edj),
@@ -446,7 +448,11 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                                   _progress_end,
                                   &tab_edj.meta);
    if (PM_PROJECT_SUCCESS != result)
-     ret = false;
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Import edj"), NULL, BTN_CANCEL, NULL, NULL);
+        ret = false;
+     }
 
    return ret;
 }

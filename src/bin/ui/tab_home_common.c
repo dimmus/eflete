@@ -54,14 +54,22 @@ meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)
 void
 meta_controls_data_save(Meta_Data_Controls *meta)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
+
    if (meta == NULL) return;
-   if (!pm_project_meta_data_set(ap.project,
-                                 ap.project->name,
-                                 elm_entry_entry_get(meta->version),
-                                 elm_entry_entry_get(meta->authors),
-                                 elm_entry_entry_get(meta->licenses),
-                                 elm_entry_entry_get(meta->comment)))
-     return;
+   result = pm_project_meta_data_set(ap.project,
+                                     ap.project->name,
+                                     elm_entry_entry_get(meta->version),
+                                     elm_entry_entry_get(meta->authors),
+                                     elm_entry_entry_get(meta->licenses),
+                                     elm_entry_entry_get(meta->comment));
+
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Meta data save"), NULL, BTN_CANCEL, NULL, NULL);
+     }
 }
 
 void

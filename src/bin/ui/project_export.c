@@ -32,13 +32,20 @@ _export_teardown(void *data, Splash_Status status __UNUSED__)
 static Eina_Bool
 _export_develop_setup(void *data, Splash_Status status __UNUSED__)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
    const char *path  = (const char *)data;
 
    assert(path != NULL);
 
-   if (!pm_project_develop_export(ap.project, path, ap.project->groups,
-                                  progress_print, progress_end, NULL))
+   result = pm_project_develop_export(ap.project, path, ap.project->groups,
+                                  progress_print, progress_end, NULL);
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Export develop edj"), NULL, BTN_CANCEL, NULL, NULL);
      return false;
+     }
    return true;
 }
 
@@ -110,12 +117,20 @@ project_export_develop(void)
 static Eina_Bool
 _export_release_setup(void *data, Splash_Status status __UNUSED__)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
    const char *path  = (const char *)data;
 
    assert(path != NULL);
 
-   if (!pm_project_release_export(ap.project, path, progress_print, progress_end, NULL))
-     return false;
+   result = pm_project_release_export(ap.project, path,
+                                      progress_print, progress_end, NULL);
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Export release edj"), NULL, BTN_CANCEL, NULL, NULL);
+        return false;
+     }
    return true;
 }
 
@@ -189,16 +204,23 @@ project_export_release(void)
 static Eina_Bool
 _export_source_code_setup(void *data, Splash_Status status __UNUSED__)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
    Eina_Stringshare *path = (Eina_Stringshare *)data;
 
    assert(path != NULL);
 
-   if (!pm_project_source_code_export(ap.project,
-                                      path,
-                                      progress_print,
-                                      progress_end,
-                                      NULL))
-     return false;
+   result = pm_project_source_code_export(ap.project,
+                                          path,
+                                          progress_print,
+                                          progress_end,
+                                          NULL);
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Export surce code"), NULL, BTN_CANCEL, NULL, NULL);
+        return false;
+     }
    return true;
 }
 

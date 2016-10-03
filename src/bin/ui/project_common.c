@@ -115,23 +115,9 @@ progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 void
 progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
 {
+   char buf[PATH_MAX];
    switch (result)
      {
-      case PM_PROJECT_ERROR:
-        {
-           ERR( _("Can't open project."));
-           break;
-        }
-      case PM_PROJECT_CANCEL:
-        {
-           ERR(_("Project opening canceled."));
-           break;
-        }
-      case PM_PROJECT_LOCKED:
-        {
-           ERR(_("Given project file is locked."));
-           break;
-        }
       case PM_PROJECT_SUCCESS:
         {
            INFO(_("Project '%s' is opened."), ap.project->name);
@@ -139,10 +125,36 @@ progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project _
            STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
            break;
         }
+      case PM_PROJECT_CANCEL:
+      case PM_PROJECT_ERROR:
+      case PM_PROJECT_LOCKED:
+      case PM_PROJECT_CREATE_PRO_FAILED:
+      case PM_PROJECT_OPEN_PRO_FAILED:
+      case PM_PROJECT_READ_PRO_FAILED:
+      case PM_PROJECT_WRITE_PRO_FAILED:
+      case PM_PROJECT_ADD_SPEC_GROUP_FAILED:
+      case PM_PROJECT_ADD_SPEC_IMAGE_FAILED:
+      case PM_PROJECT_ADD_SPEC_SAMPLE_FAILED:
+      case PM_PROJECT_LOAD_INTERNAL_OBJ_FAILED:
+      case PM_PROJECT_LOAD_GROUP_FAILED:
+      case PM_PROJECT_COPY_GROUP_FAILED:
+      case PM_PROJECT_COPY_FILE_FAILED:
+      case PM_PROJECT_EXPORT_CREATE_PATH_FAILED:
+      case PM_PROJECT_EXPORT_COPY_FILE_FAILED:
+      case PM_PROJECT_EXPORT_SAVE_IMAGE_FAILED:
+      case PM_PROJECT_EXPORT_WRONG_IMAGE_ID:
+      case PM_PROJECT_EXPORT_CREATE_FILE_FAILED:
+      case PM_PROJECT_EXPORT_SAVE_SAMPLE_FAILED:
+      case PM_PROJECT_EXPORT_READ_EDJ_FONT_FAILED:
+      case PM_PROJECT_EXPORT_SAVE_FONT_FAILED:
+      case PM_PROJECT_EXPORT_CREATE_OBJECT_FAILED:
+      case PM_PROJECT_EXPORT_DEVELOP_EDJ_FAILED:
+      case PM_PROJECT_BUILD_SOURCE_EDC_FAILED:
+      case PM_PROJECT_LAST:
       default:
         {
-           ERR("Wrong result");
-           abort();
+           snprintf(buf, sizeof(buf), "Warning! %s", pm_project_result_string_get(result));
+           popup_add(_("Project progress"), buf, BTN_CANCEL, NULL, NULL);
         }
      }
 TODO("Don't forgot about Enventor")

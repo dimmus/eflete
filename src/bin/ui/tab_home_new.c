@@ -454,6 +454,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    Eina_Stringshare *edc_path;
    FILE *fp;
    PM_Project_Result result;
+   char buf[PATH_MAX];
 
    if (!eina_file_mkdtemp("eflete_project_XXXXXX", &tmp_dir))
      {
@@ -489,7 +490,11 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                                   _progress_end,
                                   &tab_new.meta);
    if (PM_PROJECT_SUCCESS != result)
-     ret = false;
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Import edc"), NULL, BTN_CANCEL, NULL, NULL);
+        ret = false;
+     }
 
    eina_strbuf_free(flags);
    fclose(fp);

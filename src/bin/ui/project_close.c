@@ -81,6 +81,8 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project 
 static Eina_Bool
 _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
 
 #ifdef HAVE_ENVENTOR
    if (ap.enventor_mode)
@@ -96,11 +98,16 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
    else
      {
 #endif /* HAVE_ENVENTOR */
-        if (!pm_project_save(ap.project,
-                             _progress_print,
-                             _progress_end,
-                             data))
-          return false;
+        result = pm_project_save(ap.project,
+                                 _progress_print,
+                                 _progress_end,
+                                 data);
+        if (PM_PROJECT_SUCCESS != result)
+          {
+             snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+             popup_add(_("Project save"), NULL, BTN_CANCEL, NULL, NULL);
+             return false;
+          }
 #ifdef HAVE_ENVENTOR
      }
 #endif /* HAVE_ENVENTOR */
@@ -174,6 +181,8 @@ _popup_close_cb(void *data __UNUSED__,
 Eina_Bool
 project_close(void)
 {
+   char buf[PATH_MAX];
+   PM_Project_Result result;
    Project *project_to_close;
    assert(ap.project != NULL);
 
@@ -196,8 +205,13 @@ project_close(void)
 #endif
    project_to_close = ap.project;
    tabs_clean();
-   if (!pm_project_close(project_to_close))
-     return false;
+   result = pm_project_close(project_to_close);
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Project close"), NULL, BTN_CANCEL, NULL, NULL);
+        return false;
+     }
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
