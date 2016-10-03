@@ -32,6 +32,9 @@ Eina_Bool
 editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name, const char *item_name);
 Eina_Bool
+editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
 editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name);
 Eina_Bool
@@ -499,6 +502,118 @@ editor_part_item_padding_left_reset(Evas_Object *edit_object, Change *change, Ei
 Eina_Bool
 editor_part_item_padding_right_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name, const char *item_name);
+
+/* item index */
+Eina_Bool
+editor_part_item_index_aspect_mode_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_aspect_mode_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_aspect_h_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_aspect_h_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_aspect_w_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_aspect_w_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_max_h_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_max_h_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_max_w_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_max_w_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_min_h_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_min_h_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_min_w_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_min_w_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_prefer_h_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_prefer_h_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_prefer_w_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_prefer_w_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_spread_h_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_spread_h_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_spread_w_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_spread_w_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_span_col_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_span_col_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_span_row_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_span_row_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_position_col_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_position_col_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_position_row_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_position_row_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_align_x_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_align_x_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_align_y_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_align_y_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_weight_x_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_weight_x_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_weight_y_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_weight_y_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_padding_default_is(Evas_Object *edit_object, const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_padding_top_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_padding_bottom_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_padding_left_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+Eina_Bool
+editor_part_item_index_padding_right_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, unsigned int index);
+
 
 Eina_Bool
 editor_part_text_effect_default_is(Evas_Object *edit_object, const char *part_name);

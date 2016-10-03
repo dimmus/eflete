@@ -971,6 +971,55 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply
 }
 
 Eina_Bool
+editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+                             const char *part_name, unsigned int index)
+{
+   Eina_Bool res = true;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   assert((type == EDJE_PART_TYPE_TABLE) || (type == EDJE_PART_TYPE_BOX));
+
+   you_shall_not_pass_editor_signals(change);
+
+   if (type == EDJE_PART_TYPE_TABLE)
+     {
+        res = res && editor_part_item_index_span_col_reset(edit_object, change, apply, part_name, index);
+        res = res && editor_part_item_index_span_row_reset(edit_object, change, apply, part_name, index);
+        res = res && editor_part_item_index_position_col_reset(edit_object, change, apply, part_name, index);
+        res = res && editor_part_item_index_position_row_reset(edit_object, change, apply, part_name, index);
+        res = res && editor_part_item_index_spread_h_reset(edit_object, change, apply, part_name, index);
+        res = res && editor_part_item_index_spread_w_reset(edit_object, change, apply, part_name, index);
+     }
+
+   res = res && editor_part_item_index_aspect_mode_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_aspect_h_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_aspect_w_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_max_h_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_max_w_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_min_h_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_min_w_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_prefer_h_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_prefer_w_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_align_x_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_align_y_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_weight_x_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_weight_y_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_padding_top_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_padding_bottom_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_padding_left_reset(edit_object, change, apply, part_name, index);
+   res = res && editor_part_item_index_padding_right_reset(edit_object, change, apply, part_name, index);
+   if (!_part_item_restacking)
+     res = res && editor_part_item_index_restack(edit_object, change, false, apply, part_name, index, index, false);
+
+   you_shall_pass_editor_signals(change);
+
+   return res;
+}
+
+Eina_Bool
 editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
                         const char *part_name, const char *item_name, const char *source_group)
 {
@@ -1154,8 +1203,8 @@ editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool m
    if (change)
      {
         source_group = edje_edit_part_item_index_source_get(edit_object, part_name, index);
-//        if (!editor_part_item_index_reset(edit_object, change, apply, part_name, index))
-//          return false;
+        if (!editor_part_item_index_reset(edit_object, change, apply, part_name, index))
+          return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_UINT;
         diff->redo.function = editor_part_item_index_del;
