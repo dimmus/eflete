@@ -108,6 +108,16 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
              popup_add(_("Project save"), NULL, BTN_CANCEL, NULL, NULL);
              return false;
           }
+        else
+          {
+             /* HOTFIX: now save - it's only file copy, and if file is small spash
+              * animation start after file copy and animation will player in loop.
+              * For avoid this situation I was add this hack.
+              *
+              * Need to update it, and rewrite correctly.
+              */
+             return false;
+          }
 #ifdef HAVE_ENVENTOR
      }
 #endif /* HAVE_ENVENTOR */
