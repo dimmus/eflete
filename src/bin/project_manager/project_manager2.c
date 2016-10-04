@@ -159,7 +159,6 @@ _project_process_data_cleanup(Project_Process_Data *ppd)
 __UNUSED_RESULT__ static PM_Project_Result
 _project_special_group_add(Project *project)
 {
-   Eina_Bool ret = true;
    Eina_List *groups;
    Evas_Object *obj;
    Ecore_Evas *ecore_evas;
@@ -186,7 +185,7 @@ _project_special_group_add(Project *project)
    ecore_evas_free(ecore_evas);
    edje_edit_string_list_free(groups);
 
-   return ret;
+   return last_error;
 }
 
 static Project *
@@ -612,7 +611,8 @@ _project_open_internal(Project_Process_Data *ppd)
         if (pro_fd != -1)
           close(pro_fd);
 #endif
-        return PM_PROJECT_LOCKED;
+        last_error = PM_PROJECT_LOCKED;
+        return last_error;
      }
 
    ef = eet_open(ppd->path, EET_FILE_MODE_READ_WRITE);
