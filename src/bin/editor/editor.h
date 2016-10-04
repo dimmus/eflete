@@ -618,8 +618,11 @@ Eina_Bool
 editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                     const char *part_name, const char *relative_part) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_item_index_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
-                         const char *part_name, unsigned int index, unsigned int index_relative, Eina_Bool relative) EINA_WARN_UNUSED_RESULT;
+editor_part_item_index_restack_above(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                     const char *part_name, unsigned int index) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_index_restack_below(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                     const char *part_name, unsigned int index) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                         const char *part_name, const char *item_name, const char *source_group) EINA_WARN_UNUSED_RESULT;

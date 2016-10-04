@@ -491,10 +491,8 @@ typedef struct {
 
 typedef struct {
    const char *part_name;
-   const char *part_item;
-   const char *relative_part_item;
    unsigned int item_index;
-   unsigned int relative_item_index;
+   Eina_Bool item_move_up;
 } Editor_Part_Item_Restack;
 /**
  * emited when part item is restacked.

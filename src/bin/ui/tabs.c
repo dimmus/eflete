@@ -666,7 +666,7 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
    workspace_part_item_restack(tabs.current_workspace,
                                editor_part_item_restack->part_name,
                                editor_part_item_restack->item_index,
-                               editor_part_item_restack->relative_part_item);
+                               editor_part_item_restack->item_move_up);
 }
 
 static void

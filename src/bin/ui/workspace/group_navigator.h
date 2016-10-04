@@ -97,7 +97,7 @@ void
 group_navigator_part_item_restack(Evas_Object *obj,
                                   Part2 *part,
                                   unsigned int index,
-                                  Eina_Stringshare *relative_part_item);
+                                  Eina_Bool move_up);
 
 void
 group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);

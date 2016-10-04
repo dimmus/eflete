@@ -864,19 +864,31 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
    Part_Item2 *part_item, *relative_part_item;
    Part2 *part = (Part2 *)resource_manager_find(group->parts,
                                                 editor_part_item_restack->part_name);
+
    part_item = (Part_Item2 *)resource_manager_id_find(part->items,
                                                       editor_part_item_restack->item_index);
-   relative_part_item = (Part_Item2 *)resource_manager_id_find(part->items,
-                                                               editor_part_item_restack->relative_item_index);
-
-   part->items = eina_list_remove(part->items, part_item);
-
-   if (relative_part_item)
-     part->items = eina_list_prepend_relative(part->items,
-                                              part_item,
-                                              relative_part_item);
+   if (editor_part_item_restack->item_move_up)
+     {
+        relative_part_item = (Part_Item2 *)resource_manager_id_find(part->items,
+                                                                    editor_part_item_restack->item_index - 1);
+        part->items = eina_list_remove(part->items, part_item);
+        part->items = eina_list_prepend_relative(part->items,
+                                                 part_item,
+                                                 relative_part_item);
+        relative_part_item->common.id++;
+        part_item->common.id--;
+     }
    else
-     part->items = eina_list_append(part->items, part_item);
+     {
+        relative_part_item = (Part_Item2 *)resource_manager_id_find(part->items,
+                                                                    editor_part_item_restack->item_index + 1);
+        part->items = eina_list_remove(part->items, part_item);
+        part->items = eina_list_append_relative(part->items,
+                                                part_item,
+                                                relative_part_item);
+        relative_part_item->common.id--;
+        part_item->common.id++;
+     }
 }
 
 static void

@@ -268,7 +268,7 @@ void
 workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_name,
                             unsigned int item_index,
-                            Eina_Stringshare *relative_part_item_name);
+                            Eina_Bool move_up);
 
 /**
  * Set zoom factor for view zoommed style in groupspace.

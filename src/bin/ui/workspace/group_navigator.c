@@ -131,6 +131,8 @@ _item_label_get(void *data,
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "item [%d]", res->common.id);
+   if (res->common.name)
+     eina_strbuf_append_printf(buf, " - %s", res->common.name);
    result = strdup(eina_strbuf_string_get(buf));
 
    eina_strbuf_free(buf);
@@ -2286,12 +2288,10 @@ group_navigator_part_restack(Evas_Object *obj, Part2 *part, Part2 *rel_part)
 static void
 _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
 {
-   Eina_Stringshare *part_item_name, *rel_part_item_name = NULL;
    Elm_Object_Item *rel_glit;
    Eina_Stringshare *msg;
    Change *change;
    Part_Item2 *part_item, *rel_part_item;
-   Eina_Bool flag;
 
    assert(pl != NULL);
    assert(pl->part != NULL);
@@ -2315,61 +2315,71 @@ _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    part_item = elm_object_item_data_get(glit);
    rel_part_item = elm_object_item_data_get(rel_glit);
 
-   part_item_name = eina_stringshare_ref(part_item->common.name);
-   if (rel_part_item)
-     rel_part_item_name = eina_stringshare_ref(rel_part_item->common.name);
-
-   if (rel_part_item_name)
+   if (move_up)
      {
-        flag = true;
-        msg = eina_stringshare_printf(_("part item \"%s\" placed below part item \"%s\" in the stack"), part_item_name, rel_part_item_name);
+        if (rel_part_item)
+          msg = eina_stringshare_printf(_("part item \"%s\" restacked BELOW \"%s\""),
+                                        part_item->common.name,
+                                        rel_part_item->common.name);
+        else
+          msg = eina_stringshare_printf(_("part item \"%s\" restacked BELOW"),
+                                        part_item->common.name);
+        change = change_add(msg);
+        CRIT_ON_FAIL(editor_part_item_index_restack_below(pl->group->edit_object, change, false, true,
+                                                          pl->part->common.name,
+                                                          part_item->common.id));
      }
    else
      {
-        flag = false;
-        msg = eina_stringshare_printf(_("part item \"%s\" restacked to the top of the stack"), part_item_name);
+        if (rel_part_item)
+          msg = eina_stringshare_printf(_("part item \"%s\" restacked ABOVE \"%s\""),
+                                        part_item->common.name,
+                                        rel_part_item->common.name);
+        else
+          msg = eina_stringshare_printf(_("part item \"%s\" restacked ABOVE"),
+                                        part_item->common.name);
+        change = change_add(msg);
+        CRIT_ON_FAIL(editor_part_item_index_restack_above(pl->group->edit_object, change, false, true,
+                                                          pl->part->common.name,
+                                                          part_item->common.id));
      }
-   change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_item_index_restack(pl->group->edit_object, change, false, true,
-                                               pl->part->common.name,
-                                               part_item->common.id,
-                                               rel_part_item->common.id,
-                                               flag));
+
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
-   eina_stringshare_del(part_item_name);
-   eina_stringshare_del(rel_part_item_name);
 }
 
 void
 group_navigator_part_item_restack(Evas_Object *obj,
                                   Part2 *part,
                                   unsigned int item_index,
-                                  Eina_Stringshare *relative_part_item __UNUSED__)
+                                  Eina_Bool move_up __UNUSED__)
 {
    Elm_Object_Item *part_glit;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit, *items_glit;
-   const Eina_List *l;
+   const Eina_List *l, *subitems;
    Part_Item2 *part_item;
 
    assert(pl != NULL);
    assert(part != NULL);
 
-   glit = _part_item_find(pl, part);
-   assert(glit != NULL);
-
    part_glit = _part_item_find(pl, part);
-
    assert(part_glit != NULL);
 
-   part_item = (Part_Item2 *)resource_manager_id_find(part->items, item_index);
+   if (move_up)
+     part_item = (Part_Item2 *)resource_manager_id_find(part->items, item_index - 1);
+   else
+     part_item = (Part_Item2 *)resource_manager_id_find(part->items, item_index + 1);
+
    elm_genlist_item_expanded_set(part_glit, true);
-   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(part_glit)));
+
+   subitems = elm_genlist_item_subitems_get(part_glit);
+   items_glit = eina_list_data_get(eina_list_last(subitems));
    elm_genlist_item_expanded_set(items_glit, false);
    elm_genlist_item_expanded_set(items_glit, true);
 
-   EINA_LIST_FOREACH(elm_genlist_item_subitems_get(items_glit), l, glit)
+   subitems = elm_genlist_item_subitems_get(items_glit);
+   EINA_LIST_FOREACH(subitems, l, glit)
      {
         if (elm_object_item_data_get(glit) == part_item)
           {

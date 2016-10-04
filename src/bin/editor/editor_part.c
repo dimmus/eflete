@@ -637,7 +637,6 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true;
 }
 
-static Eina_Bool _part_item_restacking;
 Eina_Bool
 editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
                              const char *part_name, unsigned int index)
@@ -679,8 +678,6 @@ editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool
    res = res && editor_part_item_index_padding_bottom_reset(edit_object, change, apply, part_name, index);
    res = res && editor_part_item_index_padding_left_reset(edit_object, change, apply, part_name, index);
    res = res && editor_part_item_index_padding_right_reset(edit_object, change, apply, part_name, index);
-   if (!_part_item_restacking)
-     res = res && editor_part_item_index_restack(edit_object, change, false, apply, part_name, index, index, false);
 
    you_shall_pass_editor_signals(change);
 
@@ -1134,85 +1131,85 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, E
 }
 
 Eina_Bool
-editor_part_item_index_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
-                               const char *part_name, unsigned int index, unsigned int index_relative, Eina_Bool relative)
+editor_part_item_index_restack_above(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                     const char *part_name, unsigned int index)
 {
    Diff *diff;
    Editor_Part_Item_Restack event_info;
-   Change *virtual_change;
-   Eina_Bool res;
-   unsigned int count, i;
 
    assert(edit_object != NULL);
    assert(part_name != NULL);
 
-   count = edje_edit_part_items_count_get(edit_object, part_name);
-
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_UINT_UINT;
-        diff->redo.function = editor_part_item_index_restack;
-        diff->redo.args.type_suiui.s1 = eina_stringshare_add(part_name);
-        diff->redo.args.type_suiui.ui2 = index;
-        diff->redo.args.type_suiui.ui3 = index_relative;
-        diff->undo.type = FUNCTION_TYPE_STRING_UINT_UINT;
-        diff->undo.function = editor_part_item_index_restack;
-        diff->undo.args.type_suiui.s1 = eina_stringshare_add(part_name);
-        diff->undo.args.type_suiui.ui2 = index;
-        diff->undo.args.type_suiui.ui3 = index_relative;
+        diff->redo.type = FUNCTION_TYPE_STRING_UINT;
+        diff->redo.function = editor_part_item_index_restack_above;
+        diff->redo.args.type_sui.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sui.ui2 = index;
+        diff->undo.type = FUNCTION_TYPE_STRING_UINT;
+        diff->undo.function = editor_part_item_index_restack_below;
+        diff->undo.args.type_sui.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sui.ui2 = index + 1;
         if (merge)
           change_diff_merge_add(change, diff);
         else
           change_diff_add(change, diff);
      }
 
-   virtual_change = change_add(NULL);
-   you_shall_not_pass_editor_signals(NULL);
-
-   _part_item_restacking = true;
-   if (relative)
+   if (apply)
      {
-        if (index + 1 != index_relative)
+        CRIT_ON_FAIL(edje_edit_part_item_move_above_index(edit_object, part_name, index));
+        if (!_editor_signals_blocked)
           {
-             for(i = count - 1; i > index_relative; i--)
-               {
-                  if (i == index) continue;
-
-                  res = editor_part_item_index_del(edit_object, virtual_change, false, apply, part_name, i);
-                  assert(res);
-
-                  if (i == index_relative) break;
-               }
-             res = editor_part_item_index_del(edit_object, virtual_change, false, apply, part_name, index);
-             assert(res);
-             res = change_undo(edit_object, virtual_change);
-             assert(res);
+             event_info.part_name = eina_stringshare_add(part_name);
+             event_info.item_index = index;
+             event_info.item_move_up = false;
+             evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, &event_info);
+             eina_stringshare_del(event_info.part_name);
           }
      }
-   else
+   return true;
+}
+
+Eina_Bool
+editor_part_item_index_restack_below(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                     const char *part_name, unsigned int index)
+{
+   Diff *diff;
+   Editor_Part_Item_Restack event_info;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   if (change)
      {
-        if (index + 2 < count)
-          {
-             res = editor_part_item_index_del(edit_object, virtual_change, false, apply, part_name, index);
-             assert(res);
-             res = change_undo(edit_object, virtual_change);
-             assert(res);
-          }
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_UINT;
+        diff->redo.function = editor_part_item_index_restack_below;
+        diff->redo.args.type_sui.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sui.ui2 = index;
+        diff->undo.type = FUNCTION_TYPE_STRING_UINT;
+        diff->undo.function = editor_part_item_index_restack_above;
+        diff->undo.args.type_sui.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sui.ui2 = index - 1;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
      }
 
-   _part_item_restacking = false;
-   you_shall_pass_editor_signals(NULL);
-   change_free(virtual_change);
-
-   _editor_project_changed();
-   if (!_editor_signals_blocked)
+   if (apply)
      {
-        event_info.part_name = eina_stringshare_add(part_name);
-        event_info.item_index = index;
-        event_info.relative_item_index = index_relative;
-        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, &event_info);
-        eina_stringshare_del(event_info.part_name);
+        CRIT_ON_FAIL(edje_edit_part_item_move_below_index(edit_object, part_name, index));
+        if (!_editor_signals_blocked)
+          {
+             event_info.part_name = eina_stringshare_add(part_name);
+             event_info.item_index = index;
+             event_info.item_move_up = true;
+             evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, &event_info);
+             eina_stringshare_del(event_info.part_name);
+          }
      }
    return true;
 }

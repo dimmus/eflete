@@ -1909,7 +1909,7 @@ void
 workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_name,
                             unsigned int item_index,
-                            Eina_Stringshare *relative_part_item_name)
+                            Eina_Bool move_up)
 {
    Part2 *part;
    WS_DATA_GET(obj);
@@ -1917,7 +1917,7 @@ workspace_part_item_restack(Evas_Object *obj,
    part = (Part2 *)resource_manager_find(wd->group->parts, part_name);
 
    group_navigator_select(wd->group_navi, (Resource2 *)part);
-   group_navigator_part_item_restack(wd->group_navi, part, item_index, relative_part_item_name);
+   group_navigator_part_item_restack(wd->group_navi, part, item_index, move_up);
    groupview_hard_update(wd->normal.content);
 }
 
