@@ -138,8 +138,6 @@ item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_
 {
    int len = strlen(group_name);
    int first, i;
-   Eina_List *l;
-   Eina_Stringshare *style_item;
    char widget[32], class[32], style[256];
    const char *str;
 
@@ -247,7 +245,6 @@ option_style_name_get(const char *str, Eina_List **item_style_list, Eina_List **
 {
    int len = strlen(str);
    char style[32], cp_style[256], item_style[256];
-   Eina_List *list = NULL;
    int i, first = 0;
    Eina_Bool is_cp_style = EINA_FALSE;
    Eina_Bool is_item_style = EINA_FALSE;
