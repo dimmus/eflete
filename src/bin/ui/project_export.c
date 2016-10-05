@@ -285,16 +285,23 @@ static Eina_Bool
 _export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
 {
    Eina_Stringshare *path = (Eina_Stringshare *)data;
+   PM_Project_Result result;
+   char buf[BUFF_MAX];
 
    assert(path != NULL);
 
-   if (!pm_group_source_code_export(ap.project,
+   result = pm_group_source_code_export(ap.project,
                                     tabs_current_group_get(),
                                     path,
                                     progress_print,
                                     progress_end,
-                                    NULL))
+                                    NULL);
+   if (PM_PROJECT_SUCCESS != result)
+     {
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Export source edc"), NULL, BTN_CANCEL, NULL, NULL);
      return false;
+     }
    return true;
 }
 
