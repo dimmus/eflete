@@ -51,6 +51,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_USHORT,
    FUNCTION_TYPE_STRING_UINT_USHORT,
    FUNCTION_TYPE_STRING_STRING_STRING,
+   FUNCTION_TYPE_STRING_STRING_STRING_UINT,
    FUNCTION_TYPE_STRING_UINT_UINT,
    FUNCTION_TYPE_STRING_UINT_STRING,
    FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT,
@@ -198,6 +199,12 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          Eina_Stringshare *s3;
       } type_sss;
+      struct {
+         Eina_Stringshare *s1;
+         Eina_Stringshare *s2;
+         Eina_Stringshare *s3;
+         unsigned int ui4;
+      } type_sssui;
       struct {
          Eina_Stringshare *s1;
          unsigned int ui2;

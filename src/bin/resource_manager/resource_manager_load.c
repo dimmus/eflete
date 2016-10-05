@@ -412,7 +412,8 @@ _state_add(Project *pro, Group2 *group, Part2 *part, const char *state_name, dou
 Part_Item2 *
 _part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
 {
-   Part_Item2 *item;
+   Eina_List *l, *item_list;
+   Part_Item2 *item, *item_data;
 
    item = mem_calloc(1, sizeof(Part_Item2));
    item->common.id = i;
@@ -423,7 +424,21 @@ _part_item_add(Part2 *part, Eina_Stringshare *item_name, unsigned int i)
         edje_edit_string_free(item_name);
      }
    item->part = part;
-   part->items = eina_list_append(part->items, item);
+
+   if (i != eina_list_count(part->items))
+     {
+        l = eina_list_nth_list(part->items, i);
+        part->items = eina_list_prepend_relative_list(part->items, item, l);
+        item_list = eina_list_data_find_list(part->items, item);
+        EINA_LIST_FOREACH(eina_list_next(item_list), l, item_data)
+          {
+             item_data->common.id++;
+          }
+     }
+   else
+     {
+        part->items = eina_list_append(part->items, item);
+     }
 
    return item;
 }

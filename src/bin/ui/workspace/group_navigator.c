@@ -886,7 +886,7 @@ _item_validate(void *data,
 
    EINA_LIST_FOREACH(pl->part->items, l, item)
      {
-       if (!strcmp(item->common.name, name))
+       if (item->common.name && !strcmp(item->common.name, name))
          goto item_data_invalidated;
      }
 
@@ -1455,8 +1455,14 @@ _popup_add_item_close_cb(void *data,
 
    msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, pl->part->common.name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_item_index_append(pl->group->edit_object, change, false, true, pl->part->common.name, name, pl->popup.item_selected->data));
-
+   CRIT_ON_FAIL(editor_part_item_index_append(pl->group->edit_object,
+                                              change,
+                                              false,
+                                              true,
+                                              pl->part->common.name,
+                                              name,
+                                              pl->popup.item_selected->data,
+                                              eina_list_count(pl->part->items)));
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
 }
@@ -2149,6 +2155,11 @@ group_navigator_part_item_del(Evas_Object *obj, Part_Item2 *item)
         it = elm_object_item_data_get(item_glit);
      }
    assert(item_glit != NULL);
+   while (eina_list_next(part_items))
+     {
+        part_items = eina_list_next(part_items);
+        elm_genlist_item_update(eina_list_data_get(part_items));
+     }
 
    to_select = elm_genlist_item_next_get(item_glit);
 

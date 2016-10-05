@@ -776,10 +776,9 @@ _editor_part_item_added_cb(void *data,
    Project *pro = (Project *)data;
    Group2 *group = tabs_current_group_get();
    Part2 *part = (Part2 *)resource_manager_find(group->parts, editor_item->part_name);
-   unsigned int count = eina_list_count(part->items);
 
    /* we can use _item_dependency_load here, but let's avoid using edje edit */
-   item = _part_item_add(part, editor_item->item_name, count);
+   item = _part_item_add(part, editor_item->item_name, editor_item->item_index);
    used = resource_manager_find(pro->RM.groups, editor_item->source);
    if (used)
      _resource_usage_resource_add((Resource2 *)item, used);

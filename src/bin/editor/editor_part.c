@@ -686,28 +686,28 @@ editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool
 
 Eina_Bool
 editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
-                              const char *part_name, const char *item_name, const char *source_group)
+                              const char *part_name, const char *item_name, const char *source_group, unsigned int index)
 {
    Diff *diff;
    Editor_Item event_info;
-   int count;
+   unsigned int count;
 
    assert(edit_object != NULL);
 
    count = edje_edit_part_items_count_get(edit_object, part_name);
-
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING_UINT;
         diff->redo.function = editor_part_item_index_append;
-        diff->redo.args.type_sss.s1 = eina_stringshare_add(part_name);
-        diff->redo.args.type_sss.s2 = eina_stringshare_add(item_name);
-        diff->redo.args.type_sss.s3 = eina_stringshare_add(source_group);
+        diff->redo.args.type_sssui.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sssui.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_sssui.s3 = eina_stringshare_add(source_group);
+        diff->redo.args.type_sssui.ui4 = index;
         diff->undo.type = FUNCTION_TYPE_STRING_UINT;
         diff->undo.function = editor_part_item_index_del;
         diff->undo.args.type_sui.s1 = eina_stringshare_add(part_name);
-        diff->undo.args.type_sui.ui2 = count;
+        diff->undo.args.type_sui.ui2 = index;
 
         change_diff_add(change, diff);
      }
@@ -715,13 +715,16 @@ editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Boo
      {
         Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
-        CRIT_ON_FAIL(edje_edit_part_item_insert_after_index(edit_object, part_name, item_name, count - 1, source_group));
+        if (index != count)
+          CRIT_ON_FAIL(edje_edit_part_item_insert_before_index(edit_object, part_name, item_name, index, source_group));
+        else
+          CRIT_ON_FAIL(edje_edit_part_item_insert_after_index(edit_object, part_name, item_name, index, source_group));
 
         if (type == EDJE_PART_TYPE_TABLE)
           {
              /* fixing incorrect default item position */
-             CRIT_ON_FAIL(edje_edit_part_item_index_position_row_set(edit_object, part_name, count, 0));
-             CRIT_ON_FAIL(edje_edit_part_item_index_position_col_set(edit_object, part_name, count, 0));
+             CRIT_ON_FAIL(edje_edit_part_item_index_position_row_set(edit_object, part_name, index, 0));
+             CRIT_ON_FAIL(edje_edit_part_item_index_position_col_set(edit_object, part_name, index, 0));
           }
 
         CRIT_ON_FAIL(editor_save(edit_object));
@@ -730,6 +733,7 @@ editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Boo
         event_info.part_name = eina_stringshare_add(part_name);
         event_info.item_name = eina_stringshare_add(item_name);
         event_info.source = eina_stringshare_add(source_group);
+        event_info.item_index = index;
         if (!_editor_signals_blocked)
           evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
         eina_stringshare_del(event_info.part_name);
@@ -772,11 +776,12 @@ editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool m
         diff->redo.function = editor_part_item_index_del;
         diff->redo.args.type_sui.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_sui.ui2 = index;
-        diff->undo.type = FUNCTION_TYPE_STRING_UINT_STRING;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_STRING_UINT;
         diff->undo.function = editor_part_item_index_append;
-        diff->undo.args.type_sss.s1 = eina_stringshare_add(part_name);
-        diff->undo.args.type_sss.s2 = eina_stringshare_add(item_name);
-        diff->undo.args.type_sss.s3 = eina_stringshare_add(source_group);
+        diff->undo.args.type_sssui.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sssui.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_sssui.s3 = eina_stringshare_add(source_group);
+        diff->undo.args.type_sssui.ui4 = index;
 
         change_diff_add(change, diff);
      }
