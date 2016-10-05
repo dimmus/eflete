@@ -2299,42 +2299,20 @@ group_navigator_part_restack(Evas_Object *obj, Part2 *part, Part2 *rel_part)
 static void
 _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
 {
-   Elm_Object_Item *rel_glit;
    Eina_Stringshare *msg;
    Change *change;
-   Part_Item2 *part_item, *rel_part_item;
+   Part_Item2 *part_item;
 
    assert(pl != NULL);
    assert(pl->part != NULL);
    assert(glit != NULL);
 
-   if (move_up)
-     {
-        rel_glit = elm_genlist_item_prev_get(glit);
-        assert(rel_glit != NULL); /* we shouldn't move up first item */
-        assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_item);
-     }
-   else
-     {
-        rel_glit = elm_genlist_item_next_get(glit);
-        assert(rel_glit != NULL); /* we shouldn't move down last item */
-        rel_glit = elm_genlist_item_next_get(rel_glit);
-        if (elm_genlist_item_item_class_get(rel_glit) != pl->itc_item)
-          rel_glit = NULL;
-     }
-
    part_item = elm_object_item_data_get(glit);
-   rel_part_item = elm_object_item_data_get(rel_glit);
 
    if (move_up)
      {
-        if (rel_part_item)
-          msg = eina_stringshare_printf(_("part item \"%s\" restacked BELOW \"%s\""),
-                                        part_item->common.name,
-                                        rel_part_item->common.name);
-        else
-          msg = eina_stringshare_printf(_("part item \"%s\" restacked BELOW"),
-                                        part_item->common.name);
+        msg = eina_stringshare_printf(_("part item \"%s\" restacked BELOW"),
+                                      part_item->common.name);
         change = change_add(msg);
         CRIT_ON_FAIL(editor_part_item_index_restack_below(pl->group->edit_object, change, false, true,
                                                           pl->part->common.name,
@@ -2342,13 +2320,8 @@ _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
      }
    else
      {
-        if (rel_part_item)
-          msg = eina_stringshare_printf(_("part item \"%s\" restacked ABOVE \"%s\""),
-                                        part_item->common.name,
-                                        rel_part_item->common.name);
-        else
-          msg = eina_stringshare_printf(_("part item \"%s\" restacked ABOVE"),
-                                        part_item->common.name);
+        msg = eina_stringshare_printf(_("part item \"%s\" restacked ABOVE"),
+                                      part_item->common.name);
         change = change_add(msg);
         CRIT_ON_FAIL(editor_part_item_index_restack_above(pl->group->edit_object, change, false, true,
                                                           pl->part->common.name,
