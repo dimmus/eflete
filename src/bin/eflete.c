@@ -31,6 +31,7 @@ Eina_Bool
 app_init()
 {
    Eina_Stringshare *conf_path;
+   char buf[PATH_MAX];
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALE_DIR);
@@ -80,11 +81,38 @@ app_init()
      }
    elm_app_info_set(NULL, "eflete", NULL);
 
-   ap.path.theme_edj = eina_stringshare_printf("%s/themes/default/eflete_elm.edj", elm_app_data_dir_get());
-   ap.path.layout_edj = eina_stringshare_printf("%s/layouts/eflete.edj", elm_app_data_dir_get());
+#define PATH_CHECK(LOCALE, CURRENT, DIR_PATH, MESSAGE) \
+   snprintf(buf, sizeof(buf), "%s/%s", DIR_PATH, LOCALE); \
+   if (!ecore_file_exists(buf)) \
+     { \
+         snprintf(buf, sizeof(buf), "%s/%s", COMPILE_PATH, CURRENT); \
+         if (!ecore_file_exists(buf)) \
+           { \
+              CRIT(MESSAGE" '%s'", buf); \
+              return false; \
+           } \
+     }
+
+   PATH_CHECK("themes/default/eflete_elm.edj", "data/eflete_elm.edj",
+              elm_app_data_dir_get(), "Default theme is missing");
+   ap.path.theme_edj = eina_stringshare_add(buf);
+
+   PATH_CHECK("themes/default/ewe.edj", "data/ewe.edj",
+              elm_app_data_dir_get(), "Ewe theme is missing");
+   ap.path.ewe_edj = eina_stringshare_add(buf);
+
+   PATH_CHECK("layouts/eflete.edj", "data/eflete.edj",
+              elm_app_data_dir_get(), "Default layouts is missing");
+   ap.path.layout_edj = eina_stringshare_add(buf);
+
+   PATH_CHECK("eflete_exporter", "src/bin/eflete_exporter",
+              elm_app_bin_dir_get(), "Eflete_exporter is missing");
+   ap.path.exporter = eina_stringshare_add(buf);
+
    ap.path.edj_path = eina_stringshare_printf("%s/themes/default/", elm_app_data_dir_get());
    ap.path.image_path = eina_stringshare_printf("%s/images/", elm_app_data_dir_get());
    ap.path.sound_path = eina_stringshare_printf("%s/sounds/", elm_app_data_dir_get());
+
 
    ap.theme = elm_theme_new();
 
