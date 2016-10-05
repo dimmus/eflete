@@ -233,8 +233,6 @@ elm_main(int argc, char **argv)
    if (!app_init()) return -1;
 
 #ifdef HAVE_ENVENTOR
-   elm_app_compile_data_dir_set(EFLETE_EDJ_PATH);
-   elm_app_info_set(NULL, EFLETE_EDJ_PATH, NULL);
    enventor_init(argc, argv);
 #endif
 
