@@ -73,7 +73,7 @@ endif
 colorsdir = $(datadir)/eflete/themes/default/color
 colors_DATA = color.eet
 
-ewedir = $(datadir)/ewe/themes
+ewedir = $(datadir)/eflete/themes/default
 ewe_DATA = ewe.edj
 
 if WANT_TIZEN

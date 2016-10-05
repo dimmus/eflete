@@ -130,6 +130,7 @@ struct _App_Data
    } block;
    struct {
       Eina_Stringshare *theme_edj;
+      Eina_Stringshare *ewe_edj;
       Eina_Stringshare *layout_edj;
       Eina_Stringshare *edj_path;
       Eina_Stringshare *image_path;

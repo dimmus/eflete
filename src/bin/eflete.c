@@ -94,6 +94,7 @@ app_init()
    char *theme = escape_colons(ap.path.theme_edj);
 #endif
    elm_theme_set(ap.theme, theme);
+   elm_theme_extension_add(ap.theme, ap.path.ewe_edj);
    free(theme);
 
    elm_need_ethumb();
