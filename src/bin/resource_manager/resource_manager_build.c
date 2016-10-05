@@ -293,8 +293,13 @@ _group_dependency_load(Project *pro, Group2 *group)
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->common.name);
         used = resource_manager_find(pro->RM.groups, main_group_name);
-        if (used)
-          _resource_usage_resource_add((Resource2 *)group, used);
+        if (!used)
+          {
+             ERR("Aliased group should be already loaded into project by this time. Something wrong is happened");
+             abort();
+          }
+
+        _resource_usage_resource_add((Resource2 *)group, used);
 
         edje_edit_string_free(main_group_name);
 
