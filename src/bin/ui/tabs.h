@@ -136,4 +136,14 @@ tabs_current_workspace_get(void);
 Group2 *
 tabs_current_group_get(void);
 
+/**
+ * Get the open groups list.
+ *
+ * @return The list with groups.
+ *
+ * @ingroup Tabs
+ */
+Eina_List *
+tabs_open_groups_get(void);
+
 #endif /* TABS_H */
