@@ -29,26 +29,7 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_checked_fixture(tcase, NULL, teardown);
-
-   tcase_add_test(tcase, pm_project_import_edj_test_p);
-   tcase_add_test(tcase, pm_project_import_edj_test_p1);
-   tcase_add_test(tcase, pm_project_import_edj_test_p2);
-
-   tcase_add_test(tcase, pm_project_import_edc_test_p1);
-   tcase_add_test(tcase, pm_project_import_edc_test_p2);
-   tcase_add_test(tcase, pm_project_import_edc_test_p3);
-
-   tcase_add_test(tcase, pm_project_thread_cancel_test_p);
-
-   tcase_add_test(tcase, pm_project_open_test_p);
-
-   tcase_add_test(tcase, pm_project_save_test_p);
-
-   tcase_add_test(tcase, pm_project_close_test_p);
-
-   tcase_add_test(tcase, pm_project_meta_data_set_test_p);
-
-   tcase_add_test(tcase, pm_project_meta_data_get_test_p);
+   tcase_add_test(tcase, project_manager_functional);
 
    suite_add_tcase(suite, tcase);
    return suite;
