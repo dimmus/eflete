@@ -66,12 +66,16 @@ _after_export_dev_check(void *data)
 
 static Eina_Bool
 _export_dev(void *data __UNUSED__,
-            Evas_Object *obj, /* this is fileselector from popup */
+            Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
             void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
    Eina_Strbuf *buf;
    const char *path = (const char *)eina_list_data_get(selected);
+   char **arr;
+   char *name = NULL;
+   int i;
+   char pp[BUFF_MAX];
 
    assert(selected != NULL);
 
@@ -88,11 +92,17 @@ _export_dev(void *data __UNUSED__,
    eina_strbuf_append_printf(buf,
                              _("<font_size=16>A project file '%s' already exist."
                                "Do you want to replace it?</font_size>"), path);
-   exist_permission_check(elm_fileselector_path_get(obj),
-                          elm_fileselector_current_name_get(obj),
+   arr = eina_str_split(path, "/", 0);
+   for(i = 0; arr[i] != NULL; i++)
+     name = arr[i];
+   strncpy(pp, path, strlen(path) - strlen(name));
+   exist_permission_check(pp,
+                          name,
                           _("Export to develop edj-file"),
-                          eina_strbuf_string_get(buf), EINA_TRUE,
+                          eina_strbuf_string_get(buf), EINA_TRUE, /* check this true on upstream I have doubts about that */
                           _after_export_dev_check, (void *)eina_stringshare_add(path));
+   free(arr[0]);
+   free(arr);
    eina_strbuf_free(buf);
 
    return false;
