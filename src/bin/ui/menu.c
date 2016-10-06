@@ -108,14 +108,7 @@ _menu_cb(void *data __UNUSED__,
          tabs_home_tab_add(TAB_HOME_IMPORT_EDC);
          break;
       case MENU_FILE_SAVE:
-#if HAVE_TIZEN
-         if (ap.path.export_edj)
-           project_export_develop();
-         if (ap.path.export_edc.path && ap.path.export_edc.folder && ap.path.export_edc.file)
-           project_export_edc_project();
-#else
          project_save();
-#endif
          break;
       case MENU_FILE_EXPORT_EDC_GROUP:
          project_export_edc_group();

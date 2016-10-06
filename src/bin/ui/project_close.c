@@ -22,6 +22,7 @@
 #include "project_manager2.h"
 #include "project_navigator.h"
 
+#ifndef HAVE_TIZEN
 static Eina_Bool
 _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
@@ -58,22 +59,6 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project 
         }
      }
 
-#ifdef HAVE_ENVENTOR
-   if (ap.enventor_mode)
-     {
-        wm_widgets_list_objects_load(ap.project->widgets,
-                                     evas_object_evas_get(ap.win),
-                                     ap.project->mmap_file);
-        wm_layouts_list_objects_load(ap.project->layouts,
-                                     evas_object_evas_get(ap.win),
-                                     ap.project->mmap_file);
-        wm_styles_build_alias(ap.project->widgets,
-                              ap.project->layouts);
-        enventor_object_focus_set(ap.enventor, true);
-        //pm_save_to_dev(ap.project, ap.project->current_style, true);
-     }
-#endif /* HAVE_ENVENTOR */
-
    splash_del(ap.splash);
    ap.splash = NULL;
 }
@@ -84,43 +69,26 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
    char buf[PATH_MAX];
    PM_Project_Result result;
 
-#ifdef HAVE_ENVENTOR
-   if (ap.enventor_mode)
+   result = pm_project_save(ap.project,
+                            _progress_print,
+                            _progress_end,
+                            data);
+   if (PM_PROJECT_SUCCESS != result)
      {
-        enventor_object_file_version_update(ap.enventor, ap.project, "110");
-
-        pm_project_enventor_save(ap.project,
-                                 _progress_print,
-                                 _progress_end,
-                                 data);
-        pm_save_to_dev(ap.project, ap.project->current_style, true);
+        snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+        popup_add(_("Project save"), NULL, BTN_CANCEL, NULL, NULL);
+        return false;
      }
    else
      {
-#endif /* HAVE_ENVENTOR */
-        result = pm_project_save(ap.project,
-                                 _progress_print,
-                                 _progress_end,
-                                 data);
-        if (PM_PROJECT_SUCCESS != result)
-          {
-             snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
-             popup_add(_("Project save"), NULL, BTN_CANCEL, NULL, NULL);
-             return false;
-          }
-        else
-          {
-             /* HOTFIX: now save - it's only file copy, and if file is small spash
-              * animation start after file copy and animation will player in loop.
-              * For avoid this situation I was add this hack.
-              *
-              * Need to update it, and rewrite correctly.
-              */
-             return false;
-          }
-#ifdef HAVE_ENVENTOR
+        /* HOTFIX: now save - it's only file copy, and if file is small spash
+         * animation start after file copy and animation will player in loop.
+         * For avoid this situation I was add this hack.
+         *
+         * Need to update it, and rewrite correctly.
+         */
+        return false;
      }
-#endif /* HAVE_ENVENTOR */
 
    return true;
 }
@@ -136,26 +104,28 @@ _teardown_save_splash(void *data __UNUSED__, Splash_Status status)
 
    return true;
 }
+#endif /* HAVE_TIZEN */
 
 void
 project_save(void)
 {
    assert(ap.project != NULL);
 
-#ifdef HAVE_ENVENTOR
-   if (!ap.enventor_mode)
-#endif /* HAVE_ENVENTOR */
-     if (!ap.project->changed) return;
+   if (!ap.project->changed) return;
    if (ap.splash) return;
 
+#ifndef HAVE_TIZEN
    ap.splash = splash_add(ap.win, _setup_save_splash, _teardown_save_splash, NULL, NULL);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
+#else
+   if (ap.path.export_edj)
+     project_export_develop();
+   if (ap.path.export_edc.path && ap.path.export_edc.folder && ap.path.export_edc.file)
+     project_export_edc_project();
+#endif /* HAVE_TIZEN */
 
-#ifdef HAVE_ENVENTOR
-   if (!ap.enventor_mode)
-#endif /* HAVE_ENVENTOR */
-     ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
+   ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
 }
 
 #ifndef HAVE_TIZEN
