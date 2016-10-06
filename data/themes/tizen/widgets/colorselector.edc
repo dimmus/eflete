@@ -1,6 +1,22 @@
 
 group { name: "elm/layout/popup/colorselector";
+   images.image: "POP UP/popup_shadow.png" COMP;
    parts {
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "POP UP/popup_shadow.png";
+            image.border: 20 20 20 20;
+            rel1 {
+               offset: -7 -7;
+               to: "border";
+            }
+            rel2 {
+               offset: 9 9;
+               to: "border";
+            }
+         }
+      }
       part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
