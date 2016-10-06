@@ -197,10 +197,8 @@ EFLETE_DEFINE=""
 #===============================================================================
 if test "x${prefix}" = "xNONE"; then
    LOCALE_DIR="${ac_default_prefix}/share/locale"
-   EFLETE_DEFINE+=" -DEFLETE_BIN_PATH=\\\"\\\" "
 else
    LOCALE_DIR="${prefix}/share/locale"
-   EFLETE_DEFINE+=" -DEFLETE_BIN_PATH=\\\"${prefix}/bin/\\\" "
 fi
 AC_SUBST(LOCALE_DIR)
 #===============================================================================
