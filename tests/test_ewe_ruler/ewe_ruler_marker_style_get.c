@@ -55,7 +55,7 @@
 EFLETE_TEST(ewe_ruler_marker_style_get_test_p)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
@@ -63,7 +63,7 @@ EFLETE_TEST(ewe_ruler_marker_style_get_test_p)
    ck_assert_str_eq(ewe_ruler_marker_style_get(ruler, marker), "default");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -92,11 +92,11 @@ END_TEST
 EFLETE_TEST(ewe_ruler_marker_style_get_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
 
    ck_assert_msg(ewe_ruler_marker_style_get(NULL, NULL) == NULL, "Getted style from NULL ruler object");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 

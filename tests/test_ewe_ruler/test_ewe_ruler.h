@@ -17,8 +17,7 @@
  */
 
 #include "utc_common.h"
-#include "Ewe.h"
-#include "logger.h"
+#include "eflete.h"
 
 /**
  * @defgroup ewe_test

@@ -53,14 +53,14 @@
 EFLETE_TEST(ewe_ruler_step_get_test_p)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
 
    ck_assert_msg(ewe_ruler_step_get(ruler, NULL) == 50, "Cannot get default step of the ruler");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -89,11 +89,11 @@ END_TEST
 EFLETE_TEST(ewe_ruler_step_get_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
 
    ck_assert_msg(ewe_ruler_step_get(NULL, NULL) == 0, "Getted step of the NULL ruler object");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 

@@ -74,11 +74,6 @@ app_init()
 
    if (!config_init()) return false;
 
-   if (!ewe_init(0, 0))
-     {
-        CRIT("Can't initialize the Ewe library");
-        return false;
-     }
    elm_app_info_set(NULL, "eflete", NULL);
 
 #define PATH_CHECK(LOCALE, CURRENT, DIR_PATH, MESSAGE) \
@@ -162,7 +157,6 @@ app_shutdown()
    ecore_shutdown();
    edje_shutdown();
    logger_shutdown();
-   ewe_shutdown();
 
    return true;
 }

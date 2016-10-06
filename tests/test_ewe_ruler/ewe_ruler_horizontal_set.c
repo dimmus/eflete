@@ -54,7 +54,7 @@
 EFLETE_TEST(ewe_ruler_horizontal_set_test_p1)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
 
@@ -62,7 +62,7 @@ EFLETE_TEST(ewe_ruler_horizontal_set_test_p1)
                  "Resetted default value");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -93,7 +93,7 @@ END_TEST
 EFLETE_TEST(ewe_ruler_horizontal_set_test_p2)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Eina_Bool get_horizontal;
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
@@ -105,7 +105,7 @@ EFLETE_TEST(ewe_ruler_horizontal_set_test_p2)
                  "Getted and setted value are not equal");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -134,12 +134,12 @@ END_TEST
 EFLETE_TEST(ewe_ruler_horizontal_set_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
 
    ck_assert_msg(ewe_ruler_horizontal_set(NULL, EINA_FALSE) == EINA_FALSE,
                  "Setted horizontal orientation to the NULL ruler object");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 /**

@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
-ewe_init_test \
 ewe_ruler_test \
 eflete_test \
 alloc_test \
@@ -46,14 +45,6 @@ LD = $(top_builddir)/src/bin/libete.a \
 ${top_builddir}/src/lib/libewe.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@
-
-
-
-ewe_init_test_SOURCES = \
-../tests/test_ewe_init/test_ewe_init.c \
-../tests/test_ewe_init/ewe_init.c
-ewe_init_test_CFLAGS = ${FLAGS}
-ewe_init_test_LDADD = ${LD}
 
 ewe_ruler_test_SOURCES = \
 ../tests/test_ewe_ruler/test_ewe_ruler.c \
@@ -200,7 +191,6 @@ EXTRA_DIST = \
 	tests_report_generator.py \
 	test_common.h \
 	utc_common.h \
-	test_ewe_init/test_ewe_init.h \
 	test_ewe_ruler/test_ewe_ruler.h \
 	test_eflete/test_eflete.h \
 	test_alloc/test_alloc.h \

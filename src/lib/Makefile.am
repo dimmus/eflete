@@ -26,7 +26,6 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libewe.a
 
 libewe_a_SOURCES = \
-ewe_main.c \
 ewe_ruler.c
 
 BUILT_SOURCES = \
@@ -36,7 +35,6 @@ ewe_ruler.eo.h
 EXTRA_DIST = ewe_ruler.eo \
 ewe_widget_ruler.h \
 ewe_private.h \
-ewe_main.h \
 ewe_ruler.h \
 ewe_ruler_legacy.h \
 ewe_ruler_eo.h \

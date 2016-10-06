@@ -55,7 +55,7 @@
 EFLETE_TEST(ewe_ruler_marker_relative_get_test_p)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
@@ -63,7 +63,7 @@ EFLETE_TEST(ewe_ruler_marker_relative_get_test_p)
    ck_assert_msg(ewe_ruler_marker_relative_get(ruler, marker, NULL) == 0, "Wrong default rel position value returned");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -98,7 +98,7 @@ END_TEST
 EFLETE_TEST(ewe_ruler_marker_relative_get_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
@@ -107,7 +107,7 @@ EFLETE_TEST(ewe_ruler_marker_relative_get_test_n)
    ck_assert_msg(ewe_ruler_marker_relative_get(ruler, NULL, NULL) == 0, "Getted rel position for NULL marker");
    ck_assert_msg(ewe_ruler_marker_relative_get(NULL, NULL, NULL) == 0, "Getted rel position from NULL ruler object for NULL marker");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 

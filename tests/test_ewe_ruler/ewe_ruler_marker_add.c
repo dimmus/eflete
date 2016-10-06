@@ -55,7 +55,7 @@
 EFLETE_TEST(ewe_ruler_marker_add_test_p)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *ruler, *parent;
    Ewe_Ruler_Marker *result;
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
@@ -65,7 +65,7 @@ EFLETE_TEST(ewe_ruler_marker_add_test_p)
    ck_assert_msg(result != NULL, "Marker not returned");
 
    evas_object_del(parent);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -94,13 +94,13 @@ END_TEST
 EFLETE_TEST(ewe_ruler_marker_add_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Ewe_Ruler_Marker *result;
 
    result = ewe_ruler_marker_add(NULL, NULL);
    ck_assert_msg(result == NULL, "Not NULL returned");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 

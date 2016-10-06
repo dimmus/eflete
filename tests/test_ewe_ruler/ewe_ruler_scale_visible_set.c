@@ -58,7 +58,7 @@
 EFLETE_TEST(ewe_ruler_scale_visible_set_test_p)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Scale *scale = ewe_ruler_scale_add(ruler, NULL);
@@ -69,7 +69,7 @@ EFLETE_TEST(ewe_ruler_scale_visible_set_test_p)
    ck_assert_msg(ewe_ruler_scale_visible_get(ruler, scale) == EINA_TRUE, "Value not setted");
 
    evas_object_del(win);
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
@@ -98,11 +98,11 @@ END_TEST
 EFLETE_TEST(ewe_ruler_scale_visible_set_test_n)
 {
    logger_init();
-   ewe_init(0, 0);
+   app_init();
 
    ck_assert_msg(ewe_ruler_scale_visible_set(NULL, NULL, EINA_FALSE) == EINA_FALSE, "Setted visibility from NULL ruler object");
 
-   ewe_shutdown();
+   app_shutdown();
 }
 END_TEST
 
