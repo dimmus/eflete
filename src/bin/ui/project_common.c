@@ -22,9 +22,9 @@
 
 typedef struct {
    Eina_Strbuf *buf, *buf_msg;
-   const char *name;
+   char *name;
    const char *title;
-   const char *path;
+   char *path;
    Ecore_Cb func;
    const void *data;
 } Permission_Check_Data;
@@ -52,6 +52,7 @@ _exist_permission_popup_close_cb(void *data, Evas_Object *obj __UNUSED__, void *
 
 end:
    eina_strbuf_free(pcd->buf);
+   free(pcd->name);
    free(pcd);
 }
 
@@ -64,14 +65,15 @@ exist_permission_check(const char *path, const char *name,
    Evas_Object *popup;
    Eina_Strbuf *buf_msg;
    Permission_Check_Data *pcd = mem_calloc(1, sizeof(Permission_Check_Data));
+   Eina_Bool ret = true;
 
    assert(path != NULL);
    assert(name != NULL);
    assert(title != NULL);
 
-   pcd->name = name;
+   pcd->name = strdup(name);
    pcd->title = title;
-   pcd->path = path;
+   pcd->path = strdup(path);
    pcd->func = func;
    pcd->data = data;
    /* we alwayes imported and exported project to folder by given path, means
@@ -83,8 +85,8 @@ exist_permission_check(const char *path, const char *name,
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to write '%s'"), path);
         popup_add(title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
-        free(pcd);
-        return false;
+        ret = false;
+        goto exit;
      }
    pcd->buf = eina_strbuf_new();
    eina_strbuf_append_printf(pcd->buf, "%s/%s", path, name);
@@ -93,16 +95,24 @@ exist_permission_check(const char *path, const char *name,
         if (pcd->func)
           pcd->func((void *)pcd->data);
         eina_strbuf_free(pcd->buf);
-        free(pcd);
-        return true;
+        goto exit;
      }
    if (!append)
-     popup = popup_add(title, msg, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
-   else
-     popup = popup_add(title, msg, BTN_APPEND | BTN_REPLACE | BTN_CANCEL, NULL, NULL);
-   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _exist_permission_popup_close_cb, pcd);
+     {
+        popup = popup_add(title, msg, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
+        evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _exist_permission_popup_close_cb, pcd);
+        return ret;
+     }
+   else if (pcd->func)
+     {
+        pcd->func((void *)pcd->data);
+     }
 
-   return true;
+exit:
+   free(pcd->name);
+   free(pcd->path);
+   free(pcd);
+   return ret;
 }
 
 Eina_Bool

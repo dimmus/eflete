@@ -35,11 +35,16 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
    char buf[PATH_MAX];
    PM_Project_Result result;
    const char *path  = (const char *)data;
+   Eina_List *groups = NULL;
 
    assert(path != NULL);
 
-   result = pm_project_develop_export(ap.project, path, ap.project->groups,
+#ifdef HAVE_TIZEN
+   groups = tabs_open_groups_get();
+#endif /* HAVE_TIZEN */
+   result = pm_project_develop_export(ap.project, path, groups,
                                   progress_print, progress_end, NULL);
+   eina_list_free(groups);
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));

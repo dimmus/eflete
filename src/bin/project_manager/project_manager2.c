@@ -529,6 +529,8 @@ _exporter_finish_handler(void *data,
    Project *project = (Project *) ppd->project;
    Ecore_Exe_Event_Del *exporter_exit = (Ecore_Exe_Event_Del *)event_info;
 
+   _ecore_event_handlers_del(ppd);
+
    if (exporter_exit->exit_code != 0)
      {
         last_error = exporter_exit->exit_code;
@@ -1314,7 +1316,6 @@ pm_project_develop_export(Project *project,
 
    assert(project != NULL);
    assert(path != NULL);
-   assert(groups != NULL);
 
    last_error = PM_PROJECT_SUCCESS;
    ppd = mem_calloc(1, sizeof(Project_Process_Data));
@@ -1326,25 +1327,33 @@ pm_project_develop_export(Project *project,
 
    CRIT_ON_FAIL(editor_save_all(project->global_object));
 
-   cmd = eina_strbuf_new();
-   if (!ecore_file_exists(ppd->path))
-     eina_strbuf_append_printf(cmd, "edje_pick -o %s", path);
-   else
+   if (groups)
      {
-        eina_file_mkstemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
-        eina_strbuf_append_printf(cmd, "edje_pick -o %s", ppd->tmp_dirname);
-        eina_strbuf_append_printf(cmd, " -a %s", path);
+        cmd = eina_strbuf_new();
+        if (!ecore_file_exists(ppd->path))
+          eina_strbuf_append_printf(cmd, "edje_pick -o %s", path);
+        else
+          {
+             eina_file_mkstemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
+             eina_strbuf_append_printf(cmd, "edje_pick -o %s", ppd->tmp_dirname);
+             eina_strbuf_append_printf(cmd, " -a %s", path);
+          }
+        eina_strbuf_append_printf(cmd, " -i %s", project->dev);
+
+        EINA_LIST_FOREACH(groups, l, group)
+           eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
+
+        DBG("Run command for export: %s", eina_strbuf_string_get(cmd));
+        ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
+
+        ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
+        ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
      }
-   eina_strbuf_append_printf(cmd, " -i %s", project->dev);
+   else
+     eina_file_copy(ppd->project->dev, path,
+                            EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                            _copy_progress, ppd);
 
-   EINA_LIST_FOREACH(groups, l, group)
-     eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
-
-   DBG("Run command for export: %s", eina_strbuf_string_get(cmd));
-   ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
-
-   ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
-   ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _develop_export_finish_handler, ppd);
 
    return last_error;
 }
