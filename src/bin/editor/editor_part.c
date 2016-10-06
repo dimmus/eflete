@@ -864,9 +864,12 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
    edje_edit_string_list_free(states);
 
    /* removing part items */
-   items_count = edje_edit_part_items_count_get(edit_object, part_name);
-   for (i = 0; i < items_count; i++)
-      res = res && editor_part_item_index_del(edit_object, change, false, apply, part_name, i);
+   if ((type == EDJE_PART_TYPE_BOX) || (type == EDJE_PART_TYPE_TABLE))
+     {
+        items_count = edje_edit_part_items_count_get(edit_object, part_name);
+        for (i = 0; i < items_count; i++)
+          res = res && editor_part_item_index_del(edit_object, change, false, apply, part_name, i);
+     }
 
    you_shall_pass_editor_signals(change);
 
