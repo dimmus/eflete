@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
-ewe_ruler_test \
 eflete_test \
 alloc_test \
 diff_test \
@@ -46,40 +45,40 @@ ${top_builddir}/src/lib/libewe.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@
 
-ewe_ruler_test_SOURCES = \
-../tests/test_ewe_ruler/test_ewe_ruler.c \
-../tests/test_ewe_ruler/ewe_ruler_add.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_add.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_del.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_visible_get.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_visible_set.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_get.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_set.c \
-../tests/test_ewe_ruler/ewe_ruler_horizontal_get.c \
-../tests/test_ewe_ruler/ewe_ruler_horizontal_set.c \
-../tests/test_ewe_ruler/ewe_ruler_step_set.c \
-../tests/test_ewe_ruler/ewe_ruler_step_get.c \
-../tests/test_ewe_ruler/ewe_ruler_value_step_set.c \
-../tests/test_ewe_ruler/ewe_ruler_value_step_get.c \
-../tests/test_ewe_ruler/ewe_ruler_zero_offset_set.c \
-../tests/test_ewe_ruler/ewe_ruler_zero_offset_get.c \
-../tests/test_ewe_ruler/ewe_ruler_format_get.c \
-../tests/test_ewe_ruler/ewe_ruler_format_set.c \
-../tests/test_ewe_ruler/ewe_ruler_style_get.c \
-../tests/test_ewe_ruler/ewe_ruler_style_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_style_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_style_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_absolute_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_absolute_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_relative_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_relative_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_visible_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_visible_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_add.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_del.c
-
-ewe_ruler_test_CFLAGS = ${FLAGS}
-ewe_ruler_test_LDADD = ${LD}
+#ewe_ruler_test_SOURCES = \
+#../tests/test_ewe_ruler/test_ewe_ruler.c \
+#../tests/test_ewe_ruler/ewe_ruler_add.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_add.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_del.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_visible_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_visible_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_horizontal_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_horizontal_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_step_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_step_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_value_step_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_value_step_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_zero_offset_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_zero_offset_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_format_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_format_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_style_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_style_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_style_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_style_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_absolute_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_absolute_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_relative_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_relative_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_visible_get.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_visible_set.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_add.c \
+#../tests/test_ewe_ruler/ewe_ruler_marker_del.c
+#
+#ewe_ruler_test_CFLAGS = ${FLAGS}
+#ewe_ruler_test_LDADD = ${LD}
 
 eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \
