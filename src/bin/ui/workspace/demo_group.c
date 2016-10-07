@@ -581,6 +581,9 @@ demo_group_del(Evas_Object *demo)
         free(demo_sig);
      }
 
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, _program_add, pl);
+
    free(pl);
 }
 
