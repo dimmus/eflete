@@ -29,21 +29,32 @@ typedef struct {
    const void *data;
 } Permission_Check_Data;
 
+static void _permision_popup_job(void *data)
+{
+   Permission_Check_Data *pcd = data;
+   Eina_Strbuf *buf_msg;
+
+   buf_msg = eina_strbuf_new();
+   eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), pcd->name, pcd->path);
+   popup_add(pcd->title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
+
+   eina_strbuf_free(buf_msg);
+   eina_strbuf_free(pcd->buf);
+   free(pcd->name);
+   free(pcd);
+}
+
 static void
 _exist_permission_popup_close_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
    Permission_Check_Data *pcd = data;
-   Eina_Strbuf *buf_msg;
 
    if (btn_res == BTN_CANCEL) goto end;
    if (!ecore_file_can_write(eina_strbuf_string_get(pcd->buf)))
      {
-        buf_msg = eina_strbuf_new();
-        eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), pcd->name, pcd->path);
-        popup_add(pcd->title, eina_strbuf_string_get(buf_msg), BTN_OK, NULL, NULL);
-        eina_strbuf_free(buf_msg);
-        goto end;
+        ecore_job_add(_permision_popup_job, pcd);
+        return;
      }
    if (btn_res == BTN_REPLACE)
      ecore_file_recursive_rm(eina_strbuf_string_get(pcd->buf));
