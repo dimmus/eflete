@@ -1609,7 +1609,7 @@ _afters_get(Property_Attribute *pa __UNUSED__)
    EINA_LIST_FOREACH(afters, l, name)
      {
         new_pa = mem_calloc(1, sizeof(Property_Attribute));
-        if (!name)
+        if (i == 0)
           new_pa->name = eina_stringshare_add("add new after");
         new_pa->del_cb = _del_cb;
         new_pa->data = (void *)eina_stringshare_add(name);
@@ -1709,7 +1709,7 @@ _targets_get(Property_Attribute *pa __UNUSED__)
    EINA_LIST_FOREACH(targets, l, name)
      {
         new_pa = mem_calloc(1, sizeof(Property_Attribute));
-        if (!name)
+        if (i == 0)
           new_pa->name = eina_stringshare_add("add new target");
         new_pa->del_cb = _del_cb;
         new_pa->data = (void *)eina_stringshare_add(name);
