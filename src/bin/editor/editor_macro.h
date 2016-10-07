@@ -882,8 +882,11 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
      { \
        CRIT_ON_FAIL(edje_edit_program_## REAL_FUNC ##_set(edit_object, program, new_val)); \
        _editor_project_changed(); \
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
-       evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program); \
+       if (!_editor_signals_blocked) \
+         { \
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send); \
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program); \
+         } \
      } \
    eina_stringshare_del(send.program_name); \
    eina_stringshare_del(send.old_value); \

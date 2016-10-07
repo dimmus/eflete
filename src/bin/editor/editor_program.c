@@ -569,8 +569,11 @@ editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bo
        if (!edje_edit_program_emit_source_get(edit_object, program))
          CRIT_ON_FAIL(edje_edit_program_state2_set(edit_object, program, ""));
        _editor_project_changed();
-       if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
-       evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program);
+       if (!_editor_signals_blocked)
+         {
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program);
+         }
      }
    return true;
 }
