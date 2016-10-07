@@ -370,10 +370,10 @@ _image_del_cb(void *data __UNUSED__,
           {
              ecore_file_unlink(res->source);
              CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
+             /* Unselect and remove image from property */
+             elm_gengrid_item_selected_set(grid_item, false);
              elm_object_item_del(grid_item);
           }
-        else
-          elm_gengrid_item_selected_set(grid_item, false);
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
