@@ -96,6 +96,8 @@ _export_dev(void *data __UNUSED__,
    for(i = 0; arr[i] != NULL; i++)
      name = arr[i];
    strncpy(pp, path, strlen(path) - strlen(name));
+   if (ap.path.export_edj)
+     ecore_file_mkpath(pp);
    exist_permission_check(pp,
                           name,
                           _("Export to develop edj-file"),
