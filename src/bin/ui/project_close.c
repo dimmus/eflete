@@ -121,7 +121,7 @@ project_save(void)
 #else
    if (ap.path.export_edj)
      project_export_develop();
-   if (ap.path.export_edc.path && ap.path.export_edc.folder && ap.path.export_edc.file)
+   if (ap.path.export_edc)
      project_export_edc_project();
 #endif /* HAVE_TIZEN */
 

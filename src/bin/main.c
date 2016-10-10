@@ -182,28 +182,6 @@ _new_project(void *data __UNUSED__)
    tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
 }
 
-static void
-_export_edc_path_set(char *edc)
-{
-   char tmp[256];
-   int len = 0, rlen = 0;
-
-   strcpy(tmp, edc);
-   len = strlen(tmp);
-   rlen = strlen(strrchr(tmp, '/'));
-   if (!rlen) return;
-   ap.path.export_edc.file = eina_stringshare_add(tmp + (len - rlen + 1));
-   tmp[len - rlen] = '\0';
-
-   len = strlen(tmp);
-   rlen = strlen(strrchr(tmp, '/'));
-   if (!rlen) return;
-   ap.path.export_edc.folder = eina_stringshare_add(tmp + (len - rlen + 1));
-   tmp[len - rlen] = '\0';
-
-   ap.path.export_edc.path = eina_stringshare_add(tmp);
-}
-
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
@@ -361,8 +339,7 @@ elm_main(int argc, char **argv)
 
 run:
         ap.path.export_edj = export_edj;
-        if (export_edc)
-          _export_edc_path_set(export_edc);
+        ap.path.export_edc = export_edc;
         evas_object_show(ap.win);
         elm_run();
 #ifdef HAVE_ENVENTOR

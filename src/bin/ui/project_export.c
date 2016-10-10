@@ -227,11 +227,12 @@ _export_source_code_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   result = pm_project_source_code_export(ap.project,
-                                          path,
-                                          progress_print,
-                                          progress_end,
-                                          NULL);
+   result = pm_group_source_code_export(ap.project,
+                                        tabs_open_groups_get(),
+                                        path,
+                                        progress_print,
+                                        progress_end,
+                                        NULL);
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
@@ -247,7 +248,7 @@ _after_export_source_code_check(void *data)
    ap.splash = splash_add(ap.win, _export_source_code_setup, _export_teardown, NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   if (!ap.path.export_edc.path)
+   if (!ap.path.export_edc)
      popup_fileselector_helper_dismiss();
 }
 
@@ -257,28 +258,27 @@ _export_source_code(void *data __UNUSED__,
                     void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
-   Eina_Stringshare *path, *folder;
+   Eina_Stringshare *path;
    Eina_Strbuf *buf;
+   Eina_Stringshare *pp;
 
    assert(selected != NULL);
 
    path = eina_stringshare_add((const char *)eina_list_data_get(selected));
    buf = eina_strbuf_new();
-   if (!ap.path.export_edc.folder)
-     folder = ap.project->name;
-   else
-     folder = ap.path.export_edc.folder;
 
    eina_strbuf_append_printf(buf,
-                             _("<font_size=16>A project file '%s/%s' already exist."
+                             _("<font_size=16>A project folder '%s' already exist."
                                "Do you want to replace it?</font_size>"),
-                             path,
-                             folder);
-   exist_permission_check(path,
-                          folder,
+                             path);
+   pp = eina_stringshare_printf("%s/%s", path, ap.project->name);
+
+   ecore_file_mkpath(pp);
+   exist_permission_check(pp,
+                          ap.project->name,
                           _("Export to develop edj-file"),
                           eina_strbuf_string_get(buf), EINA_FALSE,
-                          _after_export_source_code_check, (void *)path);
+                          _after_export_source_code_check, (void *)pp);
    eina_strbuf_free(buf);
 
    return false;
@@ -287,12 +287,12 @@ _export_source_code(void *data __UNUSED__,
 void
 project_export_edc_project(void)
 {
-   if (!ap.path.export_edc.path)
+   if (!ap.path.export_edc)
      popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
    else
      {
         Eina_List *l = NULL;
-        l = eina_list_append(l, ap.path.export_edc.path);
+        l = eina_list_append(l, ap.path.export_edc);
         _export_source_code(NULL, NULL, l);
         eina_list_free(l);
      }

@@ -136,12 +136,8 @@ struct _App_Data
       Eina_Stringshare *image_path;
       Eina_Stringshare *sound_path;
       Eina_Stringshare *export_edj;
+      Eina_Stringshare *export_edc;
       Eina_Stringshare *exporter;
-      struct {
-         Eina_Stringshare *path;
-         Eina_Stringshare *folder;
-         Eina_Stringshare *file;
-      } export_edc;
    } path;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
