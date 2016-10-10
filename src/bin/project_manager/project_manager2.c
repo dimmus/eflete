@@ -1207,17 +1207,19 @@ _group_export_finish_handler(void *data,
 
 PM_Project_Result
 pm_group_source_code_export(Project *project,
-                            Group2 *group,
+                            Eina_List *groups,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
                             const void *data)
 {
    Project_Process_Data *ppd;
-   char buf[PATH_MAX];
+   Group2 *group;
+   Eina_Strbuf *cmd;
+   Eina_List *l;
 
    assert(project != NULL);
-   assert(group != NULL);
+   assert(groups != NULL);
    assert(path != NULL);
 
    last_error = PM_PROJECT_SUCCESS;
@@ -1226,14 +1228,18 @@ pm_group_source_code_export(Project *project,
    ppd->func_end = func_end;
    ppd->data = (void *)data;
 
-   snprintf(buf, sizeof(buf),
-            "%s --edj %s --path %s -g %s -s", ap.path.exporter, project->saved_edj, path, group->common.name);
+   cmd = eina_strbuf_new();
+   eina_strbuf_append_printf(cmd, "%s --edj %s --path %s -s", ap.path.exporter, project->saved_edj, path);
 
-   ecore_exe_pipe_run(buf, FLAGS, NULL);
+   EINA_LIST_FOREACH(groups, l, group)
+      eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
+
+   ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _group_export_finish_handler, ppd);
 
+   eina_strbuf_free(cmd);
    return last_error;
 }
 

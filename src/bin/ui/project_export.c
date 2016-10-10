@@ -304,15 +304,18 @@ _export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
    Eina_Stringshare *path = (Eina_Stringshare *)data;
    PM_Project_Result result;
    char buf[BUFF_MAX];
+   Eina_List *groups = NULL;
 
    assert(path != NULL);
 
+   groups = eina_list_append(groups, tabs_current_group_get());
    result = pm_group_source_code_export(ap.project,
-                                    tabs_current_group_get(),
+                                    groups,
                                     path,
                                     progress_print,
                                     progress_end,
                                     NULL);
+   eina_list_free(groups);
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));

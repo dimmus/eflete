@@ -192,7 +192,7 @@ pm_project_meta_data_set(Project *project,
  * Export the source code of Group (edje object) to file.
  *
  * @param pro The opened project;
- * @param group The group to save the source code;
+ * @param groups The list of groups to save the source code;
  * @param path The path for export source code;
  * @param func_progress The user func for print export progress;
  * @param func_end The user func for handle the end of export;
@@ -204,7 +204,7 @@ pm_project_meta_data_set(Project *project,
  */
 PM_Project_Result
 pm_group_source_code_export(Project *project,
-                            Group2 *group,
+                            Eina_List *groups,
                             const char *path,
                             PM_Project_Progress_Cb func_progress,
                             PM_Project_End_Cb func_end,
