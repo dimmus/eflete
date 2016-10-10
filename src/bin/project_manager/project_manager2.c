@@ -1229,7 +1229,7 @@ pm_group_source_code_export(Project *project,
    ppd->data = (void *)data;
 
    cmd = eina_strbuf_new();
-   eina_strbuf_append_printf(cmd, "%s --edj %s --path %s -s", ap.path.exporter, project->saved_edj, path);
+   eina_strbuf_append_printf(cmd, "%s --edj %s --path %s -s -u", ap.path.exporter, project->saved_edj, path);
 
    EINA_LIST_FOREACH(groups, l, group)
       eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
