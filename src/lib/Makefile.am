@@ -16,7 +16,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DLOCALE_DIR=\"@LOCALE_DIR@\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DEWE_THEME=\"${datadir}/$(PACKAGE)/themes/ewe.edj\" \
+-DEWE_THEME=\"${datadir}/$(PACKAGE)/themes/default/ewe.edj\" \
 -DEFL_EO_API_SUPPORT \
 -DEFL_BETA_API_SUPPORT \
 -DELM_INTERNAL_API_ARGESFSDFEFC \
