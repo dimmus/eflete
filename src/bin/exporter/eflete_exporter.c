@@ -103,6 +103,42 @@ _edc_header_get(void)
    return strdup(buf);
 }
 
+static Eina_Bool
+_build_script_write(void)
+{
+   FILE *f;
+   Eina_Strbuf *buf;
+   char p[512];
+
+   snprintf(p, sizeof(p), "%s/build.sh", path);
+   f = fopen(p, "w");
+   if (!f)
+     {
+        ERR("Could't open file '%s'", path);
+        return false;
+     }
+   if (chmod(p, S_IRWXU | S_IRWXG | S_IROTH | S_IWOTH) < 0)
+     ERR("Bash script failed to change mode to execute");
+
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "#!/bin/sh\n");
+   eina_strbuf_append_printf(buf, "edje_cc -v generated.edc");
+   snprintf(p, sizeof(p), "%s/"IMAGES"/", path);
+   if (ecore_file_exists(p))
+     eina_strbuf_append_printf(buf, " -id "IMAGES"/");
+   snprintf(p, sizeof(p), "%s/"SOUNDS"/", path);
+   if (ecore_file_exists(p))
+     eina_strbuf_append_printf(buf, " -sd "SOUNDS"/");
+   snprintf(p, sizeof(p), "%s/"FONTS"/", path);
+   if (ecore_file_exists(p))
+     eina_strbuf_append_printf(buf, " -fd "FONTS"/");
+   fputs(eina_strbuf_string_get(buf), f);
+   eina_strbuf_free(buf);
+
+   fclose(f);
+   return true;
+}
+
 static void
 _terminate(PM_Project_Result error)
 {
@@ -430,6 +466,7 @@ _source_code_export(void *data __UNUSED__)
           }
      }
    fclose(f);
+   _build_script_write();
 }
 
 static void
