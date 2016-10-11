@@ -1017,7 +1017,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
          /* because ellipsis SIGSEV on a lot of values sadly... */
          elm_spinner_min_max_set(action->control, 0, 100);
-         elm_spinner_step_set(action->control, 50);
+         elm_spinner_step_set(action->control, 1);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
          _fill_combobox_with_enum(action->control, font_glow_list);
