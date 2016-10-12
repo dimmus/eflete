@@ -191,6 +191,8 @@ _edj_changed_cb(void *data __UNUSED__,
      }
    edje_file_collection_list_free(collections);
 
+   elm_genlist_clear(tab_edj.genlist);
+
    widget_tree_items_get(groups_list, "", &folders, &groups);
    EINA_LIST_FREE(folders, prefix)
      {
