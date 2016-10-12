@@ -209,15 +209,18 @@ _edj_changed_cb(void *data __UNUSED__,
      }
    EINA_LIST_FREE(groups, group)
      {
-        node = mem_calloc(1, sizeof(Node));
-        node->name = eina_stringshare_ref(group->common.name);
-        elm_genlist_item_append(tab_edj.genlist,
-                                itc,
-                                node,
-                                NULL,
-                                ELM_GENLIST_ITEM_NONE,
-                                NULL,
-                                NULL);
+        if (strcmp(group->common.name, EFLETE_INTERNAL_GROUP_NAME))
+          {
+             node = mem_calloc(1, sizeof(Node));
+             node->name = eina_stringshare_ref(group->common.name);
+             elm_genlist_item_append(tab_edj.genlist,
+                                     itc,
+                                     node,
+                                     NULL,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
+          }
      }
    edje_file_cache_flush();
    EINA_LIST_FREE(groups_list, group)
