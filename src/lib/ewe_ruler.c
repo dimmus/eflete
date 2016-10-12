@@ -824,10 +824,12 @@ _ewe_ruler_efl_canvas_group_group_del(Eo *obj,
    evas_object_del(sd->bg);
 }
 
-EOLIAN static void
-_ewe_ruler_efl_canvas_group_group_show(Eo* obj EINA_UNUSED, Ewe_Ruler_Smart_Data *sd)
+static void
+_ewe_ruler_show(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 {
    if (sd->ruler_visible) return;
+   efl_gfx_visible_set(efl_super(obj, MY_CLASS), EINA_TRUE);
+
    Ewe_Ruler_Scale *scale;
    Ewe_Ruler_Marker *marker;
    Eina_List *ls, *l;
@@ -859,11 +861,12 @@ _ewe_ruler_efl_canvas_group_group_show(Eo* obj EINA_UNUSED, Ewe_Ruler_Smart_Data
        }
 }
 
-EOLIAN static void
-_ewe_ruler_efl_canvas_group_group_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
+static void
+_ewe_ruler_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 {
    if (!sd->ruler_visible) return;
-   efl_canvas_group_hide(efl_super(obj, MY_CLASS));
+   efl_gfx_visible_set(efl_super(obj, MY_CLASS), EINA_FALSE);
+
    Ewe_Ruler_Scale *scale;
    Ewe_Ruler_Marker *marker;
    Eina_List *ls, *l;
@@ -886,13 +889,27 @@ _ewe_ruler_efl_canvas_group_group_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 }
 
 EOLIAN static void
-_ewe_ruler_efl_canvas_group_group_move(Eo *obj,
-                                  Ewe_Ruler_Smart_Data *sd,
-                                  Evas_Coord x,
-                                  Evas_Coord y)
+_ewe_ruler_efl_gfx_visible_set(Eo *obj, Ewe_Ruler_Smart_Data *sd, Eina_Bool vis)
 {
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_VISIBLE, 0, vis))
+     return;
 
-   efl_canvas_group_move(efl_super(obj, MY_CLASS), x, y);
+   if (vis)
+     _ewe_ruler_show(obj, sd);
+   else
+     _ewe_ruler_hide(obj, sd);
+}
+
+EOLIAN static void
+_ewe_ruler_efl_gfx_position_set(Eo *obj,
+                                Ewe_Ruler_Smart_Data *sd,
+                                Evas_Coord x,
+                                Evas_Coord y)
+{
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_MOVE, 0, x, y))
+     return;
+
+   efl_gfx_position_set(efl_super(obj, MY_CLASS), x, y);
 
    evas_object_move(sd->clip, x, y);
    evas_object_move(sd->bg, x, y);
@@ -904,22 +921,25 @@ _ewe_ruler_efl_canvas_group_group_move(Eo *obj,
 }
 
 EOLIAN static void
-_ewe_ruler_efl_canvas_group_group_resize(Eo *obj,
-                                    Ewe_Ruler_Smart_Data *sd,
-                                    Evas_Coord w,
-                                    Evas_Coord h)
+_ewe_ruler_efl_gfx_size_set(Eo *obj,
+                            Ewe_Ruler_Smart_Data *sd,
+                            Evas_Coord w,
+                            Evas_Coord h)
 {
    if ((w == sd->geometry.width) && (h == sd->geometry.height)) return;
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_RESIZE, 0, w, h))
+     return;
 
    sd->size_changed = EINA_TRUE;
    sd->geometry.width = w;
    sd->geometry.height = h;
 
-   efl_canvas_group_resize(efl_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
 
    evas_object_smart_changed(obj);
+
+   efl_gfx_size_set(efl_super(obj, MY_CLASS), w, h);
 }
 
 EOLIAN static void
