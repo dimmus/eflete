@@ -1216,10 +1216,9 @@ pm_group_source_code_export(Project *project,
    Project_Process_Data *ppd;
    Group2 *group;
    Eina_Strbuf *cmd;
-   Eina_List *l;
+   Eina_List *g, *l;
 
    assert(project != NULL);
-   assert(groups != NULL);
    assert(path != NULL);
 
    last_error = PM_PROJECT_SUCCESS;
@@ -1231,7 +1230,8 @@ pm_group_source_code_export(Project *project,
    cmd = eina_strbuf_new();
    eina_strbuf_append_printf(cmd, "%s --edj %s --path %s -s -u", ap.path.exporter, project->saved_edj, path);
 
-   EINA_LIST_FOREACH(groups, l, group)
+   g = groups ? groups : project->groups;
+   EINA_LIST_FOREACH(g, l, group)
       eina_strbuf_append_printf(cmd, " -g %s", group->common.name);
 
    ecore_exe_pipe_run(eina_strbuf_string_get(cmd), FLAGS, NULL);
