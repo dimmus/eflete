@@ -51,6 +51,17 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
         popup_add(_("Export develop edj"), NULL, BTN_CANCEL, NULL, NULL);
      return false;
      }
+   else
+     {
+        /* HOTFIX: export develop edj file is only file copy, and if file is
+         * small spash animation start after file copy and animation will player
+         * n loop. For avoid this situation I was add this hack.
+         *
+         * Need to update it, and rewrite correctly.
+         */
+        return false;
+     }
+
    return true;
 }
 
