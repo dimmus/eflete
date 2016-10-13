@@ -122,7 +122,7 @@ project_save(void)
    if (ap.path.export_edj)
      project_export_develop();
    if (ap.path.export_edc)
-     project_export_edc_project();
+     project_export_edc_project(tabs_open_groups_get());
 #endif /* HAVE_TIZEN */
 
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);

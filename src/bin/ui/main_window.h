@@ -456,10 +456,12 @@ export_replace_request(Evas_Object *parent, const char *msg);
 /**
  * Export project as edc.
  *
+ * @param The groups list for export
+ *
  * @ingroup Window
  */
 void
-project_export_edc_project(void);
+project_export_edc_project(Eina_List *groups);
 
 
 /**

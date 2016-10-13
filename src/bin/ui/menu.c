@@ -114,7 +114,7 @@ _menu_cb(void *data __UNUSED__,
          project_export_edc_group();
          break;
       case MENU_FILE_EXPORT_EDC_PROJECT:
-         project_export_edc_project();
+         project_export_edc_project(ap.project->groups);
          break;
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
