@@ -170,6 +170,7 @@ progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project _
       case PM_PROJECT_EXPORT_SAVE_FONT_FAILED:
       case PM_PROJECT_EXPORT_CREATE_OBJECT_FAILED:
       case PM_PROJECT_EXPORT_DEVELOP_EDJ_FAILED:
+      case PM_PROJECT_EXPORT_RELEASE_EDJ_FAILED:
       case PM_PROJECT_BUILD_SOURCE_EDC_FAILED:
       case PM_PROJECT_LAST:
       default:

@@ -1371,7 +1371,10 @@ _release_export_build_finish_handler(void *data,
 {
    Project_Process_Data *ppd = data;
 
-   last_error = PM_PROJECT_SUCCESS;
+   if (!ecore_file_exists(ppd->edj))
+     last_error = PM_PROJECT_EXPORT_RELEASE_EDJ_FAILED;
+   else
+     last_error = PM_PROJECT_SUCCESS;
    _end_send(ppd);
    return ECORE_CALLBACK_DONE;
 }
@@ -1504,6 +1507,8 @@ pm_project_result_string_get(PM_Project_Result result)
          return "Could not create a object";
       case  PM_PROJECT_EXPORT_DEVELOP_EDJ_FAILED:
          return "Could not save develop edj file";
+      case  PM_PROJECT_EXPORT_RELEASE_EDJ_FAILED:
+         return "Could not save release edj file";
       case  PM_PROJECT_BUILD_SOURCE_EDC_FAILED:
          return "Could not build edj file from edc";
       case PM_PROJECT_LAST:
