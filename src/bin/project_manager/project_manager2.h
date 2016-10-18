@@ -315,4 +315,14 @@ pm_project_group_import(Project *project, const char *edj, const char *group);
 const char *
 pm_project_result_string_get(PM_Project_Result result);
 
+/**
+ * Reload project dev file.
+ *
+ * @param project The project which need to reload
+ *
+ * @ingroup ProjectManager
+ */
+void
+pm_project_file_reload(Project *project);
+
 #endif /* PROJECT_MANAGER_H */

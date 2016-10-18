@@ -1516,3 +1516,11 @@ pm_project_result_string_get(PM_Project_Result result)
          return "Unknown error";
      }
 }
+
+void
+pm_project_file_reload(Project *project)
+{
+   eina_file_close(project->mmap_file);
+   project->mmap_file = eina_file_open(project->dev, false);
+   edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
+}
