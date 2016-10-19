@@ -60,6 +60,7 @@ _on_setup(void *data __UNUSED__,
           const char *emission __UNUSED__,
           const char *source __UNUSED__)
 {
+   elm_object_focus_set(elm_object_focused_object_get(ap.win), false);
    if (sdata.setup)
      if (!sdata.setup(sdata.data, sdata.status))
        {
