@@ -263,6 +263,8 @@ elm_main(int argc, char **argv)
 
              r = eina_list_data_get(config->recents);
              file = r->path;
+             if (!pm_lock_check(file))
+               goto exit;
              ecore_job_add(_open_project, NULL);
              goto run;
           }
@@ -272,6 +274,8 @@ elm_main(int argc, char **argv)
                _ERR_EXIT(_("File '%s' doesn't exists."), file);
              if (ecore_file_is_dir(file))
                _ERR_EXIT(_("'%s' is a directory."), file);
+             if (!pm_lock_check(file))
+               goto exit;
 
              if (eina_str_has_suffix(file, ".pro"))
                {
@@ -342,6 +346,7 @@ run:
         ap.path.export_edc = export_edc;
         evas_object_show(ap.win);
         elm_run();
+exit:
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();
 #endif
