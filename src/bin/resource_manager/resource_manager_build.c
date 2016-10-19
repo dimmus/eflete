@@ -126,9 +126,11 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
      {
         /* Colorclass can be specified but not defined in edc.
            If colorclass don't exist yet adding it */
+        you_shall_not_pass_editor_signals(NULL);
         CRIT_ON_FAIL(editor_color_class_add(group->edit_object,
                                             color_class,
                                             false));
+        you_shall_pass_editor_signals(NULL);
         res_colorclass = mem_calloc(1, sizeof(Colorclass2));
         res_colorclass->common.type = RESOURCE2_TYPE_COLORCLASS;
         res_colorclass->common.name = eina_stringshare_add(color_class);
