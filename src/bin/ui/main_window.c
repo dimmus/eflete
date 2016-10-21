@@ -240,7 +240,7 @@ about_window_add(void)
 
 #endif
 
-#if !HAVE_TIZEN
+#if 0
 
 static Evas_Object *
 _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
@@ -438,7 +438,7 @@ shortcuts_window_add(void)
 {
    Evas_Object *content = elm_box_add(ap.win);
 
-   evas_object_size_hint_min_set(content, 420, 460);
+   evas_object_size_hint_min_set(content, 400, 460);
 
    popup_add(_("Help: shortcuts"), NULL, BTN_OK, _shortcuts_window_content_get, content);
    return NULL;

@@ -2034,6 +2034,17 @@ group { name: "elm/layout/property/tween";
       }
    }
 }
+group { name: "elm/layout/shortcuts/default";
+   parts {
+     part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 400 420;
+         }
+      }
+   }
+}
+
 
 #include "layouts/manager.edc"
 #include "layouts/colorclass_manager.edc"
