@@ -441,6 +441,8 @@ _filter_cb(Property_Attribute *pa)
            return !!(pa->filter_data.part_types & PART_MASK(((Part2 *)group_pd.group->current_selected)->type));
          else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
            return !!(pa->filter_data.part_types & PART_MASK(((State2 *)group_pd.group->current_selected)->part->type));
+         else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_ITEM)
+           return !!(pa->filter_data.part_types & PART_MASK(((Part_Item2 *)group_pd.group->current_selected)->part->type));
          else if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM)
            return !!(pa->filter_data.action_types & ACTION_MASK(((Program2 *)group_pd.group->current_selected)->type));
          else
