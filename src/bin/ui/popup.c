@@ -72,7 +72,8 @@ typedef struct {
                   *save,
                   *dont_save,
                   *replace,
-                  *append;
+                  *append,
+                  *reset;
    } button;
 } Popup_Data;
 
@@ -152,6 +153,7 @@ popup_add(const char *title,
    pd->button.replace   = _button_add(pd, &bt_num, _("Replace"),    popup_btns & BTN_REPLACE);
    pd->button.dont_save = _button_add(pd, &bt_num, _("Don't save"), popup_btns & BTN_DONT_SAVE);
    pd->button.cancel    = _button_add(pd, &bt_num, _("Cancel"),     popup_btns & BTN_CANCEL);
+   pd->button.reset    = _button_add(pd, &bt_num, _("Reset"),     popup_btns & BTN_RESET);
 
    if (msg)
      elm_object_text_set(pd->popup, msg);
@@ -199,6 +201,9 @@ popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabl
          break;
       case BTN_CANCEL:
          elm_object_disabled_set(pd->button.cancel, disabled);
+         break;
+      case BTN_RESET:
+         elm_object_disabled_set(pd->button.reset, disabled);
          break;
       default:
          ERR("Unknown button.");
