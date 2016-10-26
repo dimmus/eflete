@@ -2291,15 +2291,84 @@ group { name: "elm/layout/about/default";
 
 group { name: "elm/layout/shortcuts/default";
    parts {
-     part { name: "elm.swallow.content";
+      part { name: "elm.swallow.content";
          type: SWALLOW;
-         description { state: "default" 0.0;
-            min: 420 420;
-            max: 420 420;
+         description { state: "default" 0.00;
+            min: 400 420;
+         }
+      }
+      part { name: "rect";
+         type: RECT;
+         description { state: "default" 0.00;
+            visible: 0;
+            min: 400 420;
+            color: 255 255 255 125;
+            color_class: "button";
+         }
+         description { state: "visible" 0.00;
+            inherit: "default" 0.00;
+            visible: 1;
+         }
+         description { state: "wrong" 0.00;
+            inherit: "visible" 0.00;
+            color_class: "select_light";
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.00;
+            visible: 0;
+            color_class: "button_text";
+            text {
+               font: FN_B;
+               size: 13;
+            }
+         }
+         description { state: "visible" 0.00;
+            inherit: "default" 0.00;
+            visible: 1;
+         }
+         description { state: "wrong" 0.00;
+            inherit: "visible" 0.00;
+            color: 255 255 255 255;
          }
       }
    }
+   programs {
+      program { name: "hover,show";
+         signal: "hover,show";
+         source: "eflete";
+         action: STATE_SET "visible" 0.00;
+         target: "rect";
+         target: "elm.text";
+      }
+      program { name: "hover,hide";
+         signal: "hover,hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.00000;
+         target: "rect";
+         target: "elm.text";
+      }
+      program { name: "hover_wrong";
+         signal: "hover,wrong";
+         source: "eflete";
+         action: STATE_SET "wrong" 0.00;
+         transition: DECELERATE_FACTOR 1.20000 0.60000;
+         target: "elm.text";
+         target: "rect";
+      }
+      program { name: "hover_click";
+         signal: "mouse,up,*";
+         source: "rect";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.20000;
+         target: "elm.text";
+         target: "rect";
+      }
+   }
 }
+
 
 #include "layouts/manager.edc"
 #include "layouts/colorclass_manager.edc"
