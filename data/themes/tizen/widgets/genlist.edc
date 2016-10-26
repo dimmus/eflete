@@ -78,42 +78,6 @@ group { name: "elm/genlist/item/group_index/default";
     }
 }
 
-group { name: "elm/genlist/item/shortcuts/default";
-   data {
-      item: "texts" "elm.text";
-      item: "treesize " "0";
-      item: "contents" "";
-      item: "stacking" "above";
-      item: "selectraise" "off";
-   }
-   parts {
-      part { name: "elm.swallow.pad";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1.offset: 20 0;
-            rel2.relative: 0.0 1.0;
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         description {state: "default" 0.0;
-            color: 88 88 88 255;
-            text {
-               font: FN;
-               size: 13;
-               min: 1 1;
-               max: 1 1;
-               align: 0 0.5;
-               ellipsis: -1;
-            }
-            align: 0 0.5;
-            rel1.offset: 30 0;
-         }
-      }
-   }
-}
 group { name: "elm/genlist/item/empty/default";
    data {
       item: "texts" "";
@@ -3302,6 +3266,216 @@ group { name: "elm/genlist/base/manager";
          description { state: "default" 0.0;
            color: 255 255 255 255;
          }
+      }
+   }
+}
+group { name: "elm/genlist/item/shortcuts/default";
+   data {
+      item: "texts" "combination.text description.text";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.icon change.button reset.button";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.00;
+            color: 0 0 0 0;
+            rel2.offset: -1 -2;
+         }
+         description { state: "selected" 0.00;
+            inherit: "default" 0.00;
+            color: 255 255 255 0;
+         }
+         description { state: "reorder" 0.00;
+            inherit: "selected" 0.00;
+         }
+      }
+      part { name: "separator";
+         type: RECT;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            min: 0 1;
+            max: -1 1;
+            color: 68 68 68 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            fixed: 1 0;
+            rel2.relative: 0.00 1.00;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            min: 14 14;
+            max: 14 14;
+            aspect: 1.00 1.00;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 6 3;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -1 -4;
+            }
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "combination.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            min: 0 26;
+            color: 88 88 88 255;
+            text {
+               font: FN;
+               size: 13;
+               min: 1 0;
+               max: 1 0;
+               align: 0.00 0.50;
+               ellipsis: -1.00;
+            }
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 6 0;
+               to_x: "elm.swallow.icon";
+            }
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -7 -1;
+               to_x: "change.button";
+            }
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+            max: 55 -1;
+            text {
+               min: 0 0;
+               max: 0 0;
+               ellipsis: 0.00;
+            }
+         }
+      }
+      part { name: "description.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            min: 0 26;
+            max: 200 -1;
+            color: 88 88 88 255;
+            text {
+               font: FN;
+               size: 13;
+               min: 1 0;
+               max: 1 0;
+               align: 0.00 0.50;
+               ellipsis: -1.00;
+            }
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 6 0;
+               to_x: "combination.text";
+            }
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -7 -1;
+               to_x: "change.button";
+            }
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+            max: 55 -1;
+            text.min: 0 0;
+            rel1.to_x: "elm.swallow.icon";
+         }
+      }
+      part { name: "change.button";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.00;
+            align: 1.00 0.50;
+            fixed: 1 0;
+            aspect: 1.00 1.00;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 0 3;
+            }
+            rel2.offset: -7 -4;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.00;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "reorder";
+         signal: "elm,state,reorder,enable";
+         source: "elm";
+         action: STATE_SET "reorder" 0.00;
+         target: "bg";
+      }
+      program { name: "unreorder";
+         signal: "elm,state,reorder,disable";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+         after: "selected";
+      }
+      program { name: "item_hide";
+         signal: "elm,state,contract_flip";
+         source: "elm";
+         action: STATE_SET "hide" 0.00;
+         target: "separator";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.pad";
+         target: "combination.text";
+         target: "change.button";
+         target: "disclip";
       }
    }
 }
