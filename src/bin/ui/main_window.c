@@ -159,17 +159,17 @@ ui_main_window_add(void)
    ap.property.demo = property_add(ap.win, PROPERTY_MODE_DEMO);
    elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
 
-   ap.menu = ui_menu_add();
-
-   #ifdef HAVE_ENVENTOR
-     ap.enventor= enventor_object_init(ap.win);
-   #endif /* HAVE_ENVENTOR */
-
    if (!shortcuts_init())
      {
         CRIT("Can't initialize the shortcut module");
         return false;
      }
+
+   ap.menu = ui_menu_add();
+
+   #ifdef HAVE_ENVENTOR
+     ap.enventor= enventor_object_init(ap.win);
+   #endif /* HAVE_ENVENTOR */
 
    elm_config_window_auto_focus_enable_set(false);
    return true;
@@ -311,60 +311,163 @@ shortcuts_window_add(void)
    return NULL;
 }
 #else
+
+typedef struct {
+     const char *combination;
+     const char *description;
+     Shortcut_Type type;
+} Shortcut_Data;
+
+static void
+_shortcut_change_request(void *data,
+                         Evas *e __UNUSED__,
+                         Evas_Object *obj,
+                         void *event)
+{
+   Evas_Event_Key_Up *ev = (Evas_Event_Key_Up *)event;
+   Shortcut_Data *sc = (Shortcut_Data *)data;
+   Eina_Bool result = false;
+
+   result = shortcuts_shortcut_new_set(sc->type, ev);
+   if (result)
+     {
+       elm_layout_signal_emit(obj, "hover,hide", "eflete");
+     }
+   else
+     {
+        elm_layout_text_set(obj, "elm.text", _("Sequence already binded."));
+        elm_layout_signal_emit(obj, "hover,wrong", "eflete");
+     }
+   Evas_Object *genlist = elm_layout_content_get(obj, "elm.swallow.content");
+   elm_genlist_realized_items_update(genlist);
+   evas_object_event_callback_del(obj, EVAS_CALLBACK_KEY_UP, _shortcut_change_request);
+   shortcuts_disabled_set(false);
+}
+
+static void
+_change_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Shortcut_Data *sc = (Shortcut_Data *)data;
+   Evas_Object *layout =  evas_object_data_get(obj, "layout");
+
+   shortcuts_disabled_set(true);
+   elm_layout_signal_emit(layout, "hover,show", "eflete");
+   elm_layout_text_set(layout, "elm.text", _("Please press key sequence"));
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_KEY_UP, _shortcut_change_request, sc);
+
+}
+
+static void
+_reset_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Popup_Button btn_res = (Popup_Button) event_info;
+   if (btn_res == BTN_RESET)
+     {
+       shortcuts_shortcut_reset();
+     }
+}
+
 static char *
 _label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
 {
-   return strdup((char *)data);
+   if (!pr) return strdup(" ");
+   if (!strcmp(pr, "combination.text"))
+     {
+        Shortcut_Data *sc = (Shortcut_Data *)data;
+        const char *text = shortcuts_shortcut_combination_get(sc->type);
+        return  text != NULL ? strdup(text) : strdup("NONE");
+     }
+   else if (!strcmp(pr, "description.text"))
+     {
+        Shortcut_Data *sc = (Shortcut_Data *)data;
+        return strdup(sc->description);
+        return  sc->description != NULL ? strdup(sc->description) : strdup("NONE");
+     }
+   else if (!strcmp(pr, "elm.text"))
+     {
+        return  data != NULL ? strdup((char *)data) : strdup(" ");
+     }
+   return strdup(" ");
 }
+
+static Evas_Object *
+_content_get(void *data __UNUSED__, Evas_Object *obj, const char *pr __UNUSED__)
+{
+   if (!pr) return NULL;
+
+   if (!strcmp(pr, "change.button"))
+     {
+        Evas_Object *change_button = elm_button_add(obj);
+        Evas_Object *layout = efl_parent_get(obj);
+        evas_object_data_set(change_button, "layout", layout);
+        elm_object_style_set(change_button, "edit");
+        evas_object_smart_callback_add(change_button, "clicked", _change_shortcut, data);
+        return change_button;
+     }
+   return NULL;
+}
+
+static const Shortcut_Data global_hotkeys[] = {
+       {NULL, "Show shortcuts list", SHORTCUT_TYPE_HELP},
+       {NULL, "Normal mode",         SHORTCUT_TYPE_MODE_NORMAL},
+       {NULL, "Code mode",           SHORTCUT_TYPE_MODE_CODE},
+       {NULL, "Demo mode",           SHORTCUT_TYPE_MODE_DEMO},
+       {NULL, "Open image manager",  SHORTCUT_TYPE_TAB_IMAGE_MANAGER},
+       {NULL, "Open sound manager",  SHORTCUT_TYPE_TAB_SOUND_MANAGER},
+       {NULL, "Open style manager",  SHORTCUT_TYPE_TAB_STYLE_MANAGER},
+       {NULL, "Open colorclass manager", SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER},
+       {NULL, "Quit",                SHORTCUT_TYPE_QUIT},
+       {NULL, NULL,  SHORTCUT_TYPE_NONE}
+};
+static const Shortcut_Data workspace_hotkeys[] = {
+       {NULL, "Save",         SHORTCUT_TYPE_SAVE},
+       {NULL, "Undo",         SHORTCUT_TYPE_UNDO},
+       {NULL, "Redo",         SHORTCUT_TYPE_REDO},
+       {NULL, "Add new group",SHORTCUT_TYPE_ADD_GROUP},
+       {NULL, "Add new part", SHORTCUT_TYPE_ADD_PART},
+       {NULL, "Add new state",SHORTCUT_TYPE_ADD_STATE},
+       {NULL, "Add new item", SHORTCUT_TYPE_ADD_ITEM},
+       {NULL, "Add new program", SHORTCUT_TYPE_ADD_PROGRAM},
+       {NULL, "Add new data item",SHORTCUT_TYPE_ADD_DATA_ITEM},
+       {NULL, "Delete selected part/state/item/etc",SHORTCUT_TYPE_DEL},
+       {NULL, "Select next state of active part", SHORTCUT_TYPE_STATE_NEXT},
+       {NULL, "Select prev part",SHORTCUT_TYPE_PART_PREV},
+       {NULL, "Select next part", SHORTCUT_TYPE_PART_NEXT},
+       {NULL, "Unselect", SHORTCUT_TYPE_CANCEL},
+       {NULL, "Show/hide object area", SHORTCUT_TYPE_OBJECT_AREA},
+       {NULL, "Zoom in", SHORTCUT_TYPE_ZOOM_IN},
+       {NULL, "Zoom out", SHORTCUT_TYPE_ZOOM_OUT},
+       {NULL, "Set zoom to 100%", SHORTCUT_TYPE_ZOOM_RESET},
+       {NULL, NULL,  SHORTCUT_TYPE_NONE}
+};
+
+static const Shortcut_Data tabs_hotkeys[] = {
+       {NULL,"Close tab",          SHORTCUT_TYPE_TAB_CLOSE},
+       {NULL,"Switch to tab 1 ",   SHORTCUT_TYPE_TAB_NUM1 },
+       {NULL,"Switch to tab 2 ",   SHORTCUT_TYPE_TAB_NUM2 },
+       {NULL,"Switch to tab 3 ",   SHORTCUT_TYPE_TAB_NUM3 },
+       {NULL,"Switch to tab 4 ",   SHORTCUT_TYPE_TAB_NUM4 },
+       {NULL,"Switch to tab 5 ",   SHORTCUT_TYPE_TAB_NUM5 },
+       {NULL,"Switch to tab 6 ",   SHORTCUT_TYPE_TAB_NUM6 },
+       {NULL,"Switch to tab 7 ",   SHORTCUT_TYPE_TAB_NUM7 },
+       {NULL,"Switch to tab 8 ",   SHORTCUT_TYPE_TAB_NUM8 },
+       {NULL,"Switch to tab 9 ",   SHORTCUT_TYPE_TAB_NUM9 },
+       {NULL,"Switch to tab 10",   SHORTCUT_TYPE_TAB_NUM10},
+       {NULL,"Switch to next tab", SHORTCUT_TYPE_TAB_NEXT},
+       {NULL,"Switch to prev tab", SHORTCUT_TYPE_TAB_PREV},
+       {NULL, NULL,  SHORTCUT_TYPE_NONE}
+};
+
+static const Shortcut_Data popup_hotkeys[] = {
+       {NULL,"Ok",          SHORTCUT_TYPE_DONE},
+       {NULL,"Cancel",      SHORTCUT_TYPE_CANCEL },
+       {NULL, NULL,  SHORTCUT_TYPE_NONE}
+};
+
 static Evas_Object *
 _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *box = data;
-   static const char *global_hotkeys[] = {
-                       "F1 - show shortcuts list (this dialog)",
-                       "F2 - normal mode",
-                       "F3 - code mode",
-                       "F4 - demo mode",
-                       "F7 - open image manager",
-                       "F8 - open sound manager",
-                       "F9 - open style manager",
-                       "F10 - open colorclass manager",
-                       "ctrl + q - quit",
-                       NULL};
-   static const char *workspace_hotkeys[] = {
-                       "ctrl + s - save",
-                       "ctrl + z - undo",
-                       "ctrl + y - redo",
-                       "ctrl + n - add new group",
-                       "q - add new part",
-                       "w - add new state",
-                       "e - add new item",
-                       "r - add new program",
-                       "t - add new data item",
-                       "del - delete selected part/state/item/etc",
-                       "s - select next state of active part",
-                       "z - select prev part",
-                       "x - select next part",
-                       "ESC - unselect",
-                       "o - show/hide object area",
-                       "ctrl + wheel_up/KP_ADD - zoom in",
-                       "ctrl + wheel_down/KP_SUB - zoom out",
-                       "KP_DIV - set zoom to 100%",
-                       NULL};
-   static const char *tabs_hotkeys[] = {
-                       "ctrl + w - close tab",
-                       "ctrl + num - switch to tab 1-10",
-                       "tab/ctrl + pg_down - switch to next tab",
-                       "shift + tab / ctrl + pg_up - switch to prev tab",
-                       NULL};
-
-   static const char *popup_hotkeys[] = {
-                       "Enter - OK",
-                       "ESC - cancel",
-                        NULL};
-
-
-
    Evas_Object *genlist = elm_genlist_add(ap.win);
    Elm_Genlist_Item_Class *group_itc = elm_genlist_item_class_new();
    group_itc->item_style = "group_index";
@@ -373,53 +476,53 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Ob
    Elm_Genlist_Item_Class *shortcut_itc = elm_genlist_item_class_new();
    shortcut_itc->item_style = "shortcuts";
    shortcut_itc->func.text_get = _label_get;
+   shortcut_itc->func.content_get = _content_get;
 
    Elm_Genlist_Item_Class *empty_itc = elm_genlist_item_class_new();
    empty_itc->item_style = "empty";
 
    int i = 0;
    Elm_Object_Item *global_group = elm_genlist_item_append(genlist, group_itc, strdup("Global"),
-                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
-   for (i = 0; global_hotkeys[i] != NULL; i++)
+                                                           NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; global_hotkeys[i].type != SHORTCUT_TYPE_NONE; i++)
      {
-       elm_genlist_item_append(genlist, shortcut_itc, global_hotkeys[i],
-                               global_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_append(genlist, shortcut_itc, &global_hotkeys[i],
+                                global_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
    elm_genlist_item_append(genlist, empty_itc, NULL,
                            global_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
    Elm_Object_Item *workspace_group = elm_genlist_item_append(genlist, group_itc, strdup("Workspace"),
-                                                        NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
-   for (i = 0; workspace_hotkeys[i] != NULL; i++)
+                                                              NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; workspace_hotkeys[i].type != SHORTCUT_TYPE_NONE; i++)
      {
-       elm_genlist_item_append(genlist, shortcut_itc, workspace_hotkeys[i],
-                               workspace_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_append(genlist, shortcut_itc, &workspace_hotkeys[i],
+                                workspace_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
    elm_genlist_item_append(genlist, empty_itc, NULL,
                            workspace_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 
    Elm_Object_Item *tabs_group = elm_genlist_item_append(genlist, group_itc, strdup("Tabs"),
-                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
-   for (i = 0; tabs_hotkeys[i] != NULL; i++)
+                                                         NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; tabs_hotkeys[i].type != SHORTCUT_TYPE_NONE; i++)
      {
-       elm_genlist_item_append(genlist, shortcut_itc, tabs_hotkeys[i],
-                               tabs_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_append(genlist, shortcut_itc, &tabs_hotkeys[i],
+                                tabs_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
    elm_genlist_item_append(genlist, empty_itc, NULL,
                            tabs_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 
    Elm_Object_Item *popup_group = elm_genlist_item_append(genlist, group_itc, strdup("Popup"),
-                                                   NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
-   for (i = 0; popup_hotkeys[i] != NULL; i++)
+                                                          NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   for (i = 0; popup_hotkeys[i].type != SHORTCUT_TYPE_NONE; i++)
      {
-       elm_genlist_item_append(genlist, shortcut_itc, popup_hotkeys[i],
-                               popup_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_append(genlist, shortcut_itc, &popup_hotkeys[i],
+                                popup_group, ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
    elm_genlist_item_append(genlist, empty_itc, NULL,
                            popup_group , ELM_GENLIST_ITEM_NONE, NULL, NULL);
-
 
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -437,10 +540,12 @@ Evas_Object *
 shortcuts_window_add(void)
 {
    Evas_Object *content = elm_box_add(ap.win);
+   Evas_Object *popup = NULL;
 
    evas_object_size_hint_min_set(content, 400, 460);
 
-   popup_add(_("Help: shortcuts"), NULL, BTN_OK, _shortcuts_window_content_get, content);
+   popup = popup_add(_("Help: shortcuts"), NULL,  BTN_OK | BTN_RESET, _shortcuts_window_content_get, content);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _reset_shortcut, NULL);
    return NULL;
 }
 #endif
