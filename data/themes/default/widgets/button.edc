@@ -1102,6 +1102,33 @@ group { name: "elm/button/base/plus";
    }
 }
 
+group { name: "elm/button/base/edit";
+   inherit: "elm/button/base/plus";
+   images.image: "icon_edit.png" COMP;
+   parts {
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            max: 14 14;
+            color_class: "main";
+            image.normal: "icon_edit.png";
+         }
+         description { state: "clicked" 0.00;
+            inherit: "default" 0.00;
+            color_class: "select";
+         }
+         description { state: "hilighted" 0.00;
+            inherit: "default" 0.00;
+            color_class: "select_light";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            color_class: "main_disabled";
+         }
+      }
+   }
+}
+
 group { name: "elm/button/base/minus";
    alias: "elm/button/base/minus_managers";
    inherit: "elm/button/base/plus";
