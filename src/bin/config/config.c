@@ -159,17 +159,9 @@ config_recent_add(const char *name, const char *path)
 static void
 _profile_free(void)
 {
-   Shortcuts *sc;
-
    free((char *)profile->general.projects_folder);
    free((char *)profile->workspace.bg_image);
    free((char *)profile->liveview.bg_image);
-
-   EINA_LIST_FREE(profile->shortcuts, sc)
-     {
-        eina_stringshare_del(sc->description);
-        free(sc);
-     }
 
    free(profile);
    profile = NULL;
@@ -260,19 +252,22 @@ config_init(void)
       (edd_profile, Profile, "colors",                            colors, edd_color);
 
    /* shortcuts */
-   eet_eina_stream_data_descriptor_class_set(&eddkc, sizeof(eddkc), "Shortcuts", sizeof(Shortcuts));
+   eet_eina_stream_data_descriptor_class_set(&eddkc, sizeof(eddkc), "Shortcut", sizeof(Shortcut));
    edd_keys = eet_data_descriptor_stream_new(&eddkc);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_keys, Shortcuts, "keyname",       keyname, EET_T_STRING);
+     (edd_keys, Shortcut, "keyname",       keyname, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_keys, Shortcuts, "keycode",       keycode, EET_T_INT);
+     (edd_keys, Shortcut, "keycode",       keycode, EET_T_UINT);
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_keys, Shortcuts, "modifiers",     modifiers, EET_T_INT);
+     (edd_keys, Shortcut, "modifiers",     modifiers, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_keys, Shortcuts, "description",   description, EET_T_STRING);
+     (edd_keys, Shortcut, "combination",   combination, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_keys, Shortcuts, "holdable",      holdable, EET_T_UCHAR);
+      (edd_keys, Shortcut, "type_press", type_press, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+      (edd_keys, Shortcut, "type_unpress", type_unpress, EET_T_UINT);
+
 
    EET_DATA_DESCRIPTOR_ADD_LIST
      (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
@@ -320,38 +315,6 @@ config_shutdown(void)
    return true;
 }
 
-static Eina_List *
-_default_shortcuts_get()
-{
-   Eina_List *shortcuts = NULL;
-   Shortcuts *shortcut;
-
-#define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr, Holdable)              \
-   shortcut = mem_calloc(1, sizeof(Shortcuts));                              \
-   shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
-   shortcut->keycode = Keycode;                                              \
-   shortcut->modifiers = Modifiers;                                          \
-   shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
-   shortcut->holdable = Holdable;                                            \
-   shortcuts = eina_list_append(shortcuts, shortcut);
-
-   /* Ctrl- */
-   /*
-   ADD_SHORTCUT("s", 39, CTRL, "save", false);
-   ADD_SHORTCUT("w", 25, CTRL, "close", false);
-   ADD_SHORTCUT("q", 24, CTRL, "quit", false);
-   ADD_SHORTCUT("z", 52, CTRL, "undo", false);
-   ADD_SHORTCUT("y", 29, CTRL, "redo", false);
-
-   ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
-   ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
-    */
-   /* Holdable keys. */
-   ADD_SHORTCUT("Ctrl_L", 37, 0, "object_area.show", true);
-
-#undef ADD_SHORTCUT
-   return shortcuts;
-}
 
 static void
 _profile_update(Profile *prof)
@@ -369,8 +332,6 @@ _profile_update(Profile *prof)
        (!ecore_file_exists(prof->general.projects_folder)))
      prof->general.projects_folder = getenv("HOME");
 
-   if (!prof->shortcuts)
-     prof->shortcuts                         = _default_shortcuts_get();
 }
 
 static Profile *
@@ -464,7 +425,6 @@ config_load(void)
 
    _update_recents(config);
 
-   shortcuts_profile_load(profile_get());
 #ifdef HAVE_ENVENTOR
    enventor_object_profile_load(ap.enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
@@ -578,7 +538,7 @@ profile_save(const char *name)
         return false;
      }
 
-   path = _profile_path_get(name); 
+   path = _profile_path_get(name);
    tmp = eina_stringshare_printf("%s%s", path, ".tmp");
 
    ef = eet_open(tmp, EET_FILE_MODE_WRITE);

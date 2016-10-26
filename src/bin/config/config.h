@@ -166,30 +166,6 @@ struct _Profile
 };
 
 /**
- * @struct _Shortcuts
- *
- * Contains all information about current shortcut.
- *
- * @ingroup Config
- */
-struct _Shortcuts
-{
-   const char       *keyname; /**< key name of the shortcut (important to have
-                                   for showing in prefference/settings). */
-   unsigned int      keycode; /**< for multilanguage purpose. Keycode of clicked
-                                   keyboard button. */
-   unsigned int      modifiers; /**< Pressed modifiers. (SHIFT is 1, CTRL is 2,
-                                     ALT is 4). For example, if modifiers = 5,
-                                     then ALT and SHIFT are pressed at same
-                                     time. */
-   const char       *description; /**< description of the shortcut. According to
-                                       description there is a function will be
-                                       called after using shortcut. */
-   Eina_Bool        holdable; /**< Shows if shortcut function working only when
-                                  key is being holded. */
-};
-
-/**
  * Initialisation config module.
  *
  * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
