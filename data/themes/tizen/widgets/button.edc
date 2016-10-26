@@ -1389,6 +1389,34 @@ group { name: "elm/button/base/plus";
    }
 }
 
+group { name: "elm/button/base/edit";
+   inherit: "elm/button/base/plus";
+   images.image: "Group contents navigator/edit_icon_nor.png" COMP;
+   images.image: "Group contents navigator/edit_icon_mv.png" COMP;
+   images.image: "Group contents navigator/edit_icon_sel.png" COMP;
+   images.image: "Group contents navigator/edit_icon_dim.png" COMP;
+   parts {
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            max: 14 14;
+            image.normal: "Group contents navigator/edit_icon_nor.png";
+         }
+         description { state: "clicked" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Group contents navigator/edit_icon_sel.png";
+         }
+         description { state: "hilighted" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Group contents navigator/edit_icon_mv.png";
+         }
+         description { state: "disabled" 0.00;
+            inherit: "default" 0.00;
+            image.normal: "Group contents navigator/edit_icon_dim.png";
+         }
+      }
+   }
+}
 group { name: "elm/button/base/minus";
    images {
       image: "Group contents navigator/delete_icon_nor.png" COMP;
