@@ -46,10 +46,13 @@
 #include "eflete.h"
 
 #define MOD_NONE 0
-#define MOD_SHIFT 1
-#define MOD_CTRL 2
-#define MOD_ALT 4
-#define MOD_SUPER  8
+#define MOD_SHIFT   (1 << 0)
+#define MOD_CTRL    (1 << 1)
+#define MOD_ALT     (1 << 2)
+#define MOD_META    (1 << 3)
+#define MOD_HYPER   (1 << 4)
+#define MOD_SUPER   (1 << 5)
+#define MOD_CAPS    (1 << 6)
 
 typedef enum {
    SHORTCUT_TYPE_NONE,
@@ -103,6 +106,17 @@ typedef enum {
 
    SHORTCUT_TYPE_LAST,
 } Shortcut_Type;
+
+struct _Shortcut
+{
+   unsigned int          keycode;
+   unsigned int          modifiers;
+   Shortcut_Type         type_press;
+   Shortcut_Type         type_unpress;
+   char                  *keyname;
+   char                  *combination;
+};
+typedef struct _Shortcut Shortcut;
 
 /**
  * Setting shortcuts from user's profile.
@@ -178,4 +192,46 @@ shortcuts_object_check_pop(Evas_Object *obj);
 void
 shortcuts_shortcut_send(Shortcut_Type type);
 
+/**
+ * Change combination for choosen Shortcut type.
+ *
+ * @param type Type of shortcut that should be cahnged.
+ * @param ev Ecore_Event_Key_Up structure, that describe combination.
+ *
+ * @return true in case of success change shortcut for action type. Or false
+ * in case if combination already attached to another action.
+ */
+Eina_Bool
+shortcuts_shortcut_new_set(Shortcut_Type type, Evas_Event_Key_Up *ev);
+
+/**
+ * Reset shortcut combination to default for choosen type action.
+ *
+ * @param type Type of shortcut that should be cahnged.
+ *
+ */
+void
+shortcuts_shortcut_reset();
+
+/**
+ * Get text interpretation of shortcut combination.
+ *
+ * For example: for combination of Ctrl and 'h' keys will be
+ * returned string "Ctrl + h"
+ *
+ * @param type Type of shortcut that should be cahnged.
+ *
+ * @return String that contain shortcut combination.
+ */
+const char *
+shortcuts_shortcut_combination_get(Shortcut_Type type);
+
+/**
+ * Disable recation on input shortcuts.
+ *
+ * @param disabled If true - shortcuts module will avoid any reaction.
+ *
+ */
+void
+shortcuts_disabled_set(Eina_Bool disabled);
 #endif /* SHORTCUTS_H */

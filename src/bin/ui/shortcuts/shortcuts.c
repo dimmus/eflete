@@ -18,7 +18,7 @@
  */
 
 #include "shortcuts.h"
-
+#include "config.h"
 static Eina_List *handlers_stack = NULL;
 
 static inline unsigned int
@@ -98,16 +98,6 @@ _keycode_convert(unsigned int keycode)
    return keycode;
 }
 
-struct _Shortcut
-{
-   unsigned int          keycode;
-   unsigned int          modifiers;
-   Shortcut_Type         type_press;
-   Shortcut_Type         type_unpress;
-   char                  *keyname;
-};
-typedef struct _Shortcut Shortcut;
-
 struct _Shortcut_Module
 {
    Ecore_Event_Handler *shortcuts_wheel_handler; /**< handler for catching mouse wheel\
@@ -120,6 +110,7 @@ struct _Shortcut_Module
    Eina_List *shortcuts;      /**< list of user's shortcuts */
    Eina_List *held_shortcuts; /**< list of functions that is being held */
    unsigned int last_modifiers;
+   Eina_Bool disabled;  /**< If shortcuts disabled - there are no reaction to input > */
 };
 
 static int
@@ -130,10 +121,6 @@ _shortcut_cmp(Shortcut *s1, Shortcut *s2)
         if (s1->keyname && s2->keyname)
           {
              return strcmp(s1->keyname, s2->keyname);
-          }
-        else
-          {
-             return -1;
           }
      }
    return s1->modifiers - s2->modifiers;
@@ -230,6 +217,9 @@ _mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev = event;
 
+   if (ap.shortcuts->disabled)
+     return ECORE_CALLBACK_PASS_ON;
+
    if ((ev->modifiers & 255) != MOD_CTRL)
      return ECORE_CALLBACK_PASS_ON;
 
@@ -247,6 +237,9 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
    const char *obj_name;
+
+   if (ap.shortcuts->disabled)
+     return ECORE_CALLBACK_PASS_ON;
 
    /*
     *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
@@ -326,6 +319,8 @@ _key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
    Shortcut sc, *shortcut;
    unsigned int unpressed_modifiers;
    Eina_List *l, *l_n;
+   if (ap.shortcuts->disabled)
+     return ECORE_CALLBACK_PASS_ON;
 
    /*
     *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
@@ -393,6 +388,30 @@ _win_unfocused_cb(void *data __UNUSED__,
       _shortcut_handle(shortcut->type_unpress);
 }
 
+static char *
+_combination_string_get(Shortcut *sc)
+{
+   Eina_Strbuf *buf = eina_strbuf_new();
+   char *result = NULL;
+   if (sc->modifiers & MOD_CTRL)
+     eina_strbuf_append_length(buf, "Ctrl + ", strlen("Ctrl + "));
+   if (sc->modifiers & MOD_ALT)
+     eina_strbuf_append_length(buf, "Alt + ", strlen("Alt + "));
+   if (sc->modifiers & MOD_SHIFT)
+     eina_strbuf_append_length(buf, "Shift + ", strlen("Shift + "));
+   if (sc->modifiers & MOD_SUPER)
+     eina_strbuf_append_length(buf, "Super + ", strlen("Super + "));
+   if (sc->modifiers & MOD_META)
+     eina_strbuf_append_length(buf, "Meta + ", strlen("Meta + "));
+   if (sc->modifiers & MOD_HYPER)
+     eina_strbuf_append_length(buf, "Hyper + ", strlen("Hyper + "));
+   if (sc->modifiers & MOD_CAPS)
+     eina_strbuf_append_length(buf, "Caps Lock + ", strlen("Caps Lock + "));
+   eina_strbuf_append_length(buf, sc->keyname, strlen(sc->keyname));
+   result = eina_strbuf_string_steal(buf);
+   eina_strbuf_free(buf);
+   return result;
+}
 static void
 _add_shortcut(Shortcut_Type type_press,
               Shortcut_Type type_unpress,
@@ -409,7 +428,7 @@ _add_shortcut(Shortcut_Type type_press,
    sc->keycode = keycode;
    sc->keyname = keyname;
    sc->modifiers = modifiers;
-
+   sc->combination = _combination_string_get(sc);
    ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts,
                                                        (Eina_Compare_Cb)_shortcut_cmp, sc);
 }
@@ -550,8 +569,13 @@ shortcuts_init(void)
                                                                       NULL);
    evas_object_smart_callback_add(ap.win, signals.elm.win.unfocused, _win_unfocused_cb, NULL);
 
-   _default_shortcuts_add();
+   ap.shortcuts->shortcuts = ((Profile *)profile_get())->shortcuts;
 
+   if (!ap.shortcuts->shortcuts)
+     {
+        _default_shortcuts_add();
+        ((Profile *)profile_get())->shortcuts = ap.shortcuts->shortcuts;
+     }
    return true;
 }
 
@@ -596,4 +620,284 @@ void
 shortcuts_shortcut_send(Shortcut_Type type)
 {
    _shortcut_handle(type);
+}
+
+
+
+Eina_Bool
+shortcuts_shortcut_new_set(Shortcut_Type type, Evas_Event_Key_Up *ev)
+{
+   Shortcut sc, *shortcut;
+   int ctrl, alt, shift, win, meta;
+
+   ctrl = evas_key_modifier_is_set(ev->modifiers, "Control");
+   alt = evas_key_modifier_is_set(ev->modifiers, "Alt");
+   shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
+   win = evas_key_modifier_is_set(ev->modifiers, "Super");
+   meta = evas_key_modifier_is_set(ev->modifiers, "Meta") ||
+          evas_key_modifier_is_set(ev->modifiers, "AltGr") ||
+          evas_key_modifier_is_set(ev->modifiers, "ISO_Level3_Shift");
+
+   sc.modifiers = 0;
+   if (ctrl) {sc.modifiers |= MOD_CTRL; }
+   if (alt)  {sc.modifiers |= MOD_ALT;  }
+   if (shift){sc.modifiers |= MOD_SHIFT;}
+   if (win)  {sc.modifiers |= MOD_SUPER;}
+   if (meta) {sc.modifiers |= MOD_META; }
+
+   sc.keycode = _keycode_convert(ev->keycode);
+   sc.keyname = (char *)ev->keyname;
+   sc.type_press = type;
+   sc.type_unpress = SHORTCUT_TYPE_NONE;
+
+   Eina_List *l=NULL, *ln = NULL;
+   /* check if shortcut combination already uses */
+   shortcut = eina_list_search_sorted(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
+   if (shortcut) return false;
+
+   EINA_LIST_FOREACH_SAFE(ap.shortcuts->shortcuts, l, ln, shortcut)
+     {
+        if (sc.type_press == shortcut->type_press)
+          {
+             ap.shortcuts->shortcuts = eina_list_remove_list(ap.shortcuts->shortcuts, l);
+             break;
+          }
+        shortcut = NULL;
+     }
+
+   if (shortcut)
+     {
+        shortcut->modifiers = sc.modifiers;
+        shortcut->keycode = sc.keycode;
+        shortcut->keyname = sc.keyname;
+        shortcut->combination = _combination_string_get(shortcut);
+        ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts,
+                                                          (Eina_Compare_Cb) _shortcut_cmp, shortcut);
+     }
+   else return false;
+
+   return true;
+}
+
+const char *
+shortcuts_shortcut_combination_get(Shortcut_Type type)
+{
+   Eina_List *l, *l_n = NULL;
+   Shortcut *shortcut = NULL;
+   EINA_LIST_FOREACH_SAFE(ap.shortcuts->shortcuts, l, l_n, shortcut)
+     {
+        if (shortcut->type_press ==  type)
+          {
+             break;
+          }
+     }
+   if (shortcut == NULL) return NULL;
+
+   return shortcut->combination;
+}
+
+void
+shortcuts_disabled_set(Eina_Bool disabled)
+{
+   ap.shortcuts->disabled = disabled;
+}
+
+void
+shortcuts_shortcut_reset()
+{
+   assert(ap.shortcuts != NULL);
+   Eina_List *l = NULL, *ln = NULL;
+   Shortcut *shortcut = NULL;
+   Eina_List *default_shortcuts = NULL;
+
+   EINA_LIST_FOREACH_SAFE(ap.shortcuts->shortcuts, l, ln, shortcut)
+     {
+        ap.shortcuts->shortcuts = eina_list_remove_list(ap.shortcuts->shortcuts, l);
+        switch (shortcut->type_press)
+          {
+           case SHORTCUT_TYPE_QUIT:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keycode = 24;
+              shortcut->keyname =  "q";
+              break;
+           case SHORTCUT_TYPE_UNDO:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keycode = 52;
+              shortcut->keyname =  "z";
+              break;
+           case SHORTCUT_TYPE_REDO:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "y";
+              break;
+           case SHORTCUT_TYPE_SAVE:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "s";
+              break;
+           case SHORTCUT_TYPE_ADD_GROUP:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "n";
+              break;
+           case SHORTCUT_TYPE_ADD_PART:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "q";
+              break;
+           case SHORTCUT_TYPE_ADD_STATE:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "w";
+              break;
+           case SHORTCUT_TYPE_ADD_ITEM:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "e";
+              break;
+           case SHORTCUT_TYPE_ADD_PROGRAM:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "r";
+              break;
+           case SHORTCUT_TYPE_ADD_DATA_ITEM:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "t";
+              break;
+           case SHORTCUT_TYPE_DEL:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "Delete";
+              break;
+           case SHORTCUT_TYPE_STATE_NEXT:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "s";
+              break;
+           case SHORTCUT_TYPE_PART_NEXT:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "x";
+              break;
+           case SHORTCUT_TYPE_PART_PREV:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "z";
+              break;
+           case SHORTCUT_TYPE_PART_SHOWHIDE:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "h";
+              break;
+           case SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE:
+              shortcut->modifiers =  MOD_SHIFT;
+              shortcut->keyname =  "h";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM1:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "1";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM2:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "2";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM3:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "3";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM4:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "4";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM5:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "5";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM6:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "6";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM7:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "7";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM8:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "8";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM9:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "9";
+              break;
+           case SHORTCUT_TYPE_TAB_NUM10:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "0";
+              break;
+           case SHORTCUT_TYPE_TAB_NEXT:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "Tab";
+              break;
+           case SHORTCUT_TYPE_TAB_PREV:
+              shortcut->modifiers =  MOD_CTRL | MOD_SHIFT;
+              shortcut->keyname =  "Tab";
+              break;
+           case SHORTCUT_TYPE_TAB_CLOSE:
+              shortcut->modifiers =  MOD_CTRL;
+              shortcut->keyname =  "w";
+              break;
+           case SHORTCUT_TYPE_HELP:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F1";
+              break;
+           case SHORTCUT_TYPE_MODE_NORMAL:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F2";
+              break;
+           case SHORTCUT_TYPE_MODE_CODE:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F3";
+              break;
+           case SHORTCUT_TYPE_MODE_DEMO:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F4";
+              break;
+           case SHORTCUT_TYPE_TAB_IMAGE_MANAGER:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F7";
+              break;
+           case SHORTCUT_TYPE_TAB_SOUND_MANAGER:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F8";
+              break;
+           case SHORTCUT_TYPE_TAB_STYLE_MANAGER:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F9";
+              break;
+           case SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F10";
+              break;
+           case SHORTCUT_TYPE_ZOOM_IN:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "KP_Add";
+              break;
+           case SHORTCUT_TYPE_ZOOM_OUT:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "KP_Subtract";
+              break;
+           case SHORTCUT_TYPE_ZOOM_RESET:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "KP_Divide";
+              break;
+           case SHORTCUT_TYPE_OBJECT_AREA:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "o";
+              break;
+           case SHORTCUT_TYPE_CANCEL:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "Escape";
+              break;
+           case SHORTCUT_TYPE_DONE:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "Return";
+              break;
+           default:
+              continue;
+          }
+
+        shortcut->combination = _combination_string_get(shortcut);
+        default_shortcuts = eina_list_sorted_insert(default_shortcuts,
+                                                    (Eina_Compare_Cb)_shortcut_cmp, shortcut);
+     }
+   ap.shortcuts->shortcuts = default_shortcuts;
+   ((Profile *)profile_get())->shortcuts = ap.shortcuts->shortcuts;
+   return;
 }
