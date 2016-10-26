@@ -174,6 +174,7 @@ libete_a_SOURCES = \
 eflete_SOURCES  = ../../src/bin/main.c
 
 eflete_CPPFLAGS = \
+-I$(top_builddir)/src/lib \
 -I${top_srcdir}/src/lib \
 -I${top_srcdir}/src/bin/alloc \
 -I${top_srcdir}/src/bin/editor \
