@@ -340,6 +340,9 @@ _update_style()
    TODO("Implement or think about next params in a comment below")
    /* "font_fallback" "font_source" "font_style" "lang" "outline_color"
       "linegap" "linerelgap" "item" "linefill" */
+   if (strcmp(tpd.current_style.st_tag, "DEFAULT"))
+     eina_strbuf_append(tag, " + ");
+
    _print_string(&tag, " font=", tpd.font);
 
    _print_data_string(&tag, " font_size=", tpd.font_size);
