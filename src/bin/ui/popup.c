@@ -149,11 +149,10 @@ popup_add(const char *title,
    int bt_num = 0;
    pd->button.ok        = _button_add(pd, &bt_num, _("Ok"),         popup_btns & BTN_OK);
    pd->button.save      = _button_add(pd, &bt_num, _("Save"),       popup_btns & BTN_SAVE);
-   pd->button.append    = _button_add(pd, &bt_num, _("Append"),     popup_btns & BTN_APPEND);
    pd->button.replace   = _button_add(pd, &bt_num, _("Replace"),    popup_btns & BTN_REPLACE);
    pd->button.dont_save = _button_add(pd, &bt_num, _("Don't save"), popup_btns & BTN_DONT_SAVE);
    pd->button.cancel    = _button_add(pd, &bt_num, _("Cancel"),     popup_btns & BTN_CANCEL);
-   pd->button.reset    = _button_add(pd, &bt_num, _("Reset"),     popup_btns & BTN_RESET);
+   pd->button.reset     = _button_add(pd, &bt_num, _("Reset"),      popup_btns & BTN_RESET);
 
    if (msg)
      elm_object_text_set(pd->popup, msg);
@@ -189,9 +188,6 @@ popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabl
          break;
       case BTN_SAVE:
          elm_object_disabled_set(pd->button.save, disabled);
-         break;
-      case BTN_APPEND:
-         elm_object_disabled_set(pd->button.append, disabled);
          break;
       case BTN_REPLACE:
          elm_object_disabled_set(pd->button.replace, disabled);
