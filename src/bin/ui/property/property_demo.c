@@ -49,16 +49,32 @@ typedef struct _Property_Demo_Update_Info Property_Demo_Update_Info;
 
 static const char *program_actions[] = {
      "NONE",
-     "STATE SET",
-     "SIGNAL EMIT",
-     "DRAG VALUE SET",
-     "DRAG VALUE STEP",
-     "DRAG VALUE PAGE",
-     "PLAY SAMPLE",
-     "PLAY TONE",
-     "ACTION STOP",
-     NULL
+     "STATE_SET",
+     "ACTION_STOP",
+     "SIGNAL_EMIT",
+     "DRAG_VAL_SET",
+     "DRAG_VAL_STEP",
+     "DRAG_VAL_PAGE",
+     "SCRIPT",
+     "FOCUS_SET",
+     "[NOT SUPPORTED] RESERVED00",
+     "FOCUS_OBJECT",
+     "[NOT SUPPORTED] PARAM_COPY",
+     "[NOT SUPPORTED] PARAM_SET",
+     "SOUND_SAMPLE",
+     "SOUND_TONE",
+     "[NOT SUPPORTED] PHYSICS_IMPULSE",
+     "[NOT SUPPORTED] PHYSICS_TORQUE_IMPULSE",
+     "[NOT SUPPORTED] PHYSICS_FORCE",
+     "[NOT SUPPORTED] PHYSICS_TORQUE",
+     "[NOT SUPPORTED] PHYSICS_FORCES_CLEAR",
+     "[NOT SUPPORTED] PHYSICS_VEL_SET",
+     "[NOT SUPPORTED] PHYSICS_ANG_VEL_SET",
+     "[NOT SUPPORTED] PHYSICS_STOP",
+     "[NOT SUPPORTED] PHYSICS_ROT_SET",
+     "[NOT SUPPORTED] VIBRATION_SAMPLE"
 };
+
 
 static const char *swallow_content_type[] = {
      "None",
