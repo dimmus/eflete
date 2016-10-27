@@ -21,8 +21,8 @@
 #include "tabs.h"
 #include "project_manager2.h"
 #include "project_navigator.h"
+#include "project_common.h"
 
-#ifndef HAVE_TIZEN
 static Eina_Bool
 _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
@@ -32,35 +32,64 @@ _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 }
 
 static void
-_progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
+_progress_export_edj_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
 {
+   char buf[BUFF_MAX];
 
-   switch (result)
+   if (ap.path.export_edc)
      {
-      case PM_PROJECT_ERROR:
-        {
-           ERR(_("Error: project not saved."));
-           break;
-        }
-      case PM_PROJECT_CANCEL:
-        {
-           INFO(_("Saving canceled."));
-           break;
-        }
-      case PM_PROJECT_SUCCESS:
-        {
-           ap.project->changed = false;
-           break;
-        }
-      default:
-        {
-           ERR("Wrong result");
-           abort();
-        }
+        Eina_List *groups = tabs_open_groups_get();
+        result = pm_group_source_code_export(ap.project, groups, ap.path.export_edc,
+                                             _progress_print, progress_end, NULL);
+        eina_list_free(groups);
+        if (PM_PROJECT_SUCCESS != result)
+          {
+             snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+             popup_add(_("Export source code"), NULL, BTN_CANCEL, NULL, NULL);
+          }
+        return;
      }
+   progress_end(NULL, result, NULL);
+}
 
-   splash_del(ap.splash);
-   ap.splash = NULL;
+static void
+_progress_save_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
+{
+   char buf[BUFF_MAX];
+
+   if (PM_PROJECT_SUCCESS == result)
+     {
+        ap.project->changed = false;
+        if (ap.path.export_edj)
+          {
+             Eina_List *groups = tabs_open_groups_get();
+             result = pm_project_develop_export(ap.project, ap.path.export_edj, groups,
+                                                _progress_print, _progress_export_edj_end, NULL);
+             eina_list_free(groups);
+             if (PM_PROJECT_SUCCESS != result)
+               {
+                  snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+                  popup_add(_("Export develop edj"), NULL, BTN_CANCEL, NULL, NULL);
+               }
+            return;
+          }
+
+        if (ap.path.export_edc)
+          {
+             Eina_List *groups = tabs_open_groups_get();
+             result = pm_group_source_code_export(ap.project, groups, ap.path.export_edc,
+                                                  _progress_print, progress_end, NULL);
+             eina_list_free(groups);
+             if (PM_PROJECT_SUCCESS != result)
+               {
+                  snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
+                  popup_add(_("Export source code"), NULL, BTN_CANCEL, NULL, NULL);
+                  return;
+               }
+          }
+        return;
+     }
+   progress_end(NULL, result, NULL);
 }
 
 static Eina_Bool
@@ -71,7 +100,7 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 
    result = pm_project_save(ap.project,
                             _progress_print,
-                            _progress_end,
+                            _progress_save_end,
                             data);
    if (PM_PROJECT_SUCCESS != result)
      {
@@ -104,7 +133,6 @@ _teardown_save_splash(void *data __UNUSED__, Splash_Status status)
 
    return true;
 }
-#endif /* HAVE_TIZEN */
 
 void
 project_save(void)
@@ -114,16 +142,9 @@ project_save(void)
    if (!ap.project->changed) return;
    if (ap.splash) return;
 
-#ifndef HAVE_TIZEN
    ap.splash = splash_add(ap.win, _setup_save_splash, _teardown_save_splash, NULL, NULL);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-#else
-   if (ap.path.export_edj)
-     project_export_develop();
-   if (ap.path.export_edc)
-     project_export_edc_project(tabs_open_groups_get());
-#endif /* HAVE_TIZEN */
 
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
 }

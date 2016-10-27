@@ -340,10 +340,32 @@ elm_main(int argc, char **argv)
              else if (widgets)
                _ERR_EXIT(_("widgets can be added only to new project."));
           }
+        if (export_edj)
+          {
+             if (!eina_str_has_suffix(file, ".edj"))
+               _ERR_EXIT(_("--export-edj value have not extension '.edj'. Wrong value."));
+          }
 
 run:
-        ap.path.export_edj = export_edj;
-        ap.path.export_edc = export_edc;
+        if (export_edj)
+          {
+             int i;
+             char *name = NULL;
+             char buf[BUFF_MAX];
+
+             char **arr = eina_str_split(export_edj, "/", 0);
+             for(i = 0; arr[i] != NULL; i++)
+               name = arr[i];
+             strncpy(buf, export_edj, strlen(export_edj) - strlen(name));
+             ecore_file_mkpath(buf);
+
+             ap.path.export_edj = eina_stringshare_add(export_edj);
+          }
+        if (export_edc)
+          {
+             ecore_file_mkpath(export_edc);
+             ap.path.export_edc = eina_stringshare_add(export_edc);
+          }
         evas_object_show(ap.win);
         elm_run();
 exit:

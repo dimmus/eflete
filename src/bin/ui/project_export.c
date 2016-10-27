@@ -42,16 +42,11 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
    char buf[PATH_MAX];
    PM_Project_Result result;
    const char *path  = (const char *)data;
-   Eina_List *groups = NULL;
 
    assert(path != NULL);
 
-#ifdef HAVE_TIZEN
-   groups = tabs_open_groups_get();
-#endif /* HAVE_TIZEN */
-   result = pm_project_develop_export(ap.project, path, groups,
+   result = pm_project_develop_export(ap.project, path, NULL,
                                   progress_print, progress_end, NULL);
-   eina_list_free(groups);
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
@@ -78,8 +73,6 @@ _after_export_dev_check(void *data)
    ap.splash = splash_add(ap.win, _export_develop_setup, _export_teardown, NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   if (!ap.path.export_edj)
-     popup_fileselector_helper_dismiss();
 }
 
 static Eina_Bool
@@ -114,8 +107,7 @@ _export_dev(void *data __UNUSED__,
    for(i = 0; arr[i] != NULL; i++)
      name = arr[i];
    strncpy(pp, path, strlen(path) - strlen(name));
-   if (ap.path.export_edj)
-     ecore_file_mkpath(pp);
+   ecore_file_mkpath(pp);
    exist_permission_check(pp,
                           name,
                           _("Export to develop edj-file"),
@@ -133,15 +125,7 @@ project_export_develop(void)
 {
    Eina_Strbuf *buf;
 
-   if (!ap.path.export_edj)
-     popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
-   else
-     {
-        Eina_List *l = NULL;
-        l = eina_list_append(l, ap.path.export_edj);
-        _export_dev(NULL, NULL, l);
-        eina_list_free(l);
-     }
+   popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s-develop.edj", ap.project->name);
@@ -176,8 +160,6 @@ _after_export_release_check(void *data)
                            NULL, data);
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   if (!ap.path.export_edj)
-     popup_fileselector_helper_dismiss();
 }
 
 static Eina_Bool
@@ -220,15 +202,7 @@ project_export_release(void)
 {
    Eina_Strbuf *buf;
 
-   if (!ap.path.export_edj)
-     popup_fileselector_edj_helper("Export to release edj-file", NULL, NULL, _export_release, NULL, false, true);
-   else
-     {
-        Eina_List *l = NULL;
-        l = eina_list_append(l, ap.path.export_edj);
-        _export_dev(NULL, NULL, l);
-        eina_list_free(l);
-     }
+   popup_fileselector_edj_helper("Export to release edj-file", NULL, NULL, _export_release, NULL, false, true);
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s-release.edj", ap.project->name);
@@ -252,7 +226,7 @@ _export_source_code_setup(void *data, Splash_Status status __UNUSED__)
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
-        popup_add(_("Export surce code"), NULL, BTN_CANCEL, NULL, NULL);
+        popup_add(_("Export source code"), NULL, BTN_CANCEL, NULL, NULL);
         return false;
      }
    return true;
@@ -305,15 +279,7 @@ _export_source_code(void *data,
 void
 project_export_edc_project(Eina_List *groups)
 {
-   if (!ap.path.export_edc)
-     popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, groups, false, false);
-   else
-     {
-        Eina_List *l = NULL;
-        l = eina_list_append(l, ap.path.export_edc);
-        _export_source_code(groups, NULL, l);
-        eina_list_free(l);
-     }
+   popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, groups, false, false);
 }
 
 static Eina_Bool
