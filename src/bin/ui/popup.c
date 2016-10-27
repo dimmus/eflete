@@ -111,11 +111,12 @@ _button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
 
    assert(pd != NULL);
    assert(btn_pos != NULL);
-   assert(*btn_pos < 3); /* maximum buttons count */
    assert(text != NULL);
 
    if (pb == BTN_NONE)
      return NULL;
+
+   assert(*btn_pos < 3); /* maximum buttons count */
 
    BUTTON_ADD(pd->popup, btn, text);
    evas_object_data_set(btn, POPUP_DATA, pd);
