@@ -338,12 +338,18 @@ _on_group_changed(void *data,
 
    assert(pd != NULL);
 
-   resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
-   resource_name_validator_list_set(group_pd.group_data_name_validator, &group_pd.group->data_items, true);
-   resource_name_validator_resource_set(group_pd.part_name_validator, group_pd.group->current_selected);
-   resource_name_validator_resource_set(group_pd.group_data_name_validator, group_pd.group->current_selected);
+   /* in case if no group selected then its clean up and no groups are selected */
+   if (event_info)
+     {
+        resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
+        resource_name_validator_list_set(group_pd.group_data_name_validator, &group_pd.group->data_items, true);
+        resource_name_validator_resource_set(group_pd.part_name_validator, group_pd.group->current_selected);
+        resource_name_validator_resource_set(group_pd.group_data_name_validator, group_pd.group->current_selected);
+     }
 
    GENLIST_FILTER_APPLY(pd->genlist);
+
+   if (!event_info) return;
 
    if (!group_pd.group->current_selected) /* group_only */
      {
