@@ -270,19 +270,11 @@ object_generate(Demo_Part *part, Evas_Object *object)
               content = elm_scroller_add(object);
               elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
                                       ELM_SCROLLER_POLICY_ON);
-              table = elm_table_add(content);
-              for (j = 0; j < ELEMENTS_MID_COUNT; j++)
-                {
-                   for (i = 0; i < ELEMENTS_MID_COUNT; i++)
-                     {
-                        bt = elm_button_add(table);
-                        elm_object_text_set(bt, _("User Text"));
-                        elm_table_pack(table, bt, i, j, 1, 1);
-                        evas_object_show(bt);
-                     }
-                }
-              elm_object_content_set(content, table);
-              evas_object_show(table);
+              bt = evas_object_rectangle_add(object);
+              evas_object_size_hint_min_set(bt, ELEMENT_BIG_SIZE, ELEMENT_BIG_SIZE);
+              evas_object_color_set(bt, 0, 0, 0, 0);
+              elm_object_content_set(content, bt);
+              evas_object_show(bt);
               break;
            case WIDGET_TOOLBAR:
               content = elm_toolbar_add(object);

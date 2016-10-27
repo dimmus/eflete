@@ -44,6 +44,7 @@
 #define ELEMENTS_SMALL_COUNT 5
 #define ELEMENTS_MID_COUNT   25
 #define ELEMENTS_BIG_COUNT   50
+#define ELEMENT_BIG_SIZE     2000
 
 typedef void (* Swallow_Clean_Func)(const char *, Evas_Object *);
 
