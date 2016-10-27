@@ -1260,7 +1260,7 @@ tabs_current_tab_close(void)
    Tabs_Item *item;
 
    item = elm_object_item_data_get(tabs.selected);
-   _tab_close(item, NULL, NULL, NULL);
+   _tab_close(item, item->toolbar_item, NULL, NULL);
 }
 
 void
