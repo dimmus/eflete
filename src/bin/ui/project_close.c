@@ -175,12 +175,12 @@ _popup_close_cb(void *data __UNUSED__,
    if (ap.exit_in_progress)
      ui_main_window_del();
    else
-     project_close();
+     project_close(NULL, NULL);
 }
 #endif
 
 Eina_Bool
-project_close(void)
+project_close(Evas_Smart_Cb func, void *data)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -200,6 +200,7 @@ project_close(void)
                           NULL,
                           NULL);
         evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _popup_close_cb, NULL);
+        evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, func, data);
         eina_stringshare_del(title);
         return false;
      }
@@ -216,6 +217,7 @@ project_close(void)
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+   ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
    project_navigator_project_unset();
 
    /* some code in close project callback checks ap.project for NULL, so we need to

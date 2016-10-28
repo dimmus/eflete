@@ -535,16 +535,16 @@ _after_on_create_check(void *data __UNUSED__)
    evas_object_show(ap.splash);
    elm_check_state_set(tab_new.ch_all, false);
 }
+
 static void
-_on_create(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_after_popup_close(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    Eina_Strbuf *buf;
+   Popup_Button pbtn = (Popup_Button) event_info;
 
-   if (ap.project)
-     if (!project_close())
-       return;
+   if (BTN_CANCEL == pbtn) return;
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf,
@@ -561,6 +561,18 @@ _on_create(void *data __UNUSED__,
                                _("New project"), eina_strbuf_string_get(buf), EINA_FALSE,
                                _after_on_create_check, NULL);
    eina_strbuf_free(buf);
+}
+
+static void
+_on_create(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   if (ap.project)
+     if (!project_close(_after_popup_close, NULL))
+       return;
+
+   _after_popup_close(NULL, NULL, (void *)BTN_OK);
 }
 
 static void

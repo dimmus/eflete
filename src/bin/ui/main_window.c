@@ -54,13 +54,14 @@ _help(void *data __UNUSED__,
    shortcuts_window_add();
 }
 
-Eina_Bool
-ui_main_window_del(void)
+static void
+_after_popup_close(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
-   ap.exit_in_progress = true;
-   if (ap.project)
-     if (!project_close())
-       return false;
+   Popup_Button pbtn = (Popup_Button) event_info;
+
+   if (BTN_CANCEL == pbtn) return;
 
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(false);
@@ -74,7 +75,17 @@ ui_main_window_del(void)
    evas_object_del(ap.property.group);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    elm_exit();
+}
 
+Eina_Bool
+ui_main_window_del(void)
+{
+   ap.exit_in_progress = true;
+   if (ap.project)
+     if (!project_close(_after_popup_close, NULL))
+       return false;
+
+   _after_popup_close(NULL, NULL, (void *)BTN_OK);
    return true;
 }
 

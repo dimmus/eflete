@@ -81,7 +81,6 @@ static void
 _popup_del_job(void *data)
 {
    Popup_Data *pd= data;
-   shortcuts_object_check_pop(pd->popup);
    evas_object_del(pd->popup);
    free(pd);
 }
@@ -97,6 +96,7 @@ _popup_btn_cb(void *data,
    assert(pd->popup != NULL);
 
    ecore_job_add(_popup_del_job, pd);
+   shortcuts_object_check_pop(pd->popup);
    evas_object_smart_callback_call(pd->popup, POPUP_CLOSE_CB, data);
    /* menu clould be deleted in POPUP_CLOSE_CB in exit confirmation popup */
    if (ap.menu)

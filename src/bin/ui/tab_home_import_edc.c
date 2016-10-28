@@ -433,15 +433,14 @@ _after_import_check(void *data __UNUSED__)
 }
 
 static void
-_import(void *data __UNUSED__,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+_after_popup_close(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    Eina_Strbuf *buf;
+   Popup_Button pbtn = (Popup_Button) event_info;
 
-   if (ap.project)
-     if (!project_close())
-       return;
+   if (BTN_CANCEL == pbtn) return;
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s/%s.pro",
@@ -469,6 +468,18 @@ _import(void *data __UNUSED__,
                                _("Import edc-file"), eina_strbuf_string_get(buf), EINA_FALSE,
                                _after_import_check, NULL);
    eina_strbuf_free(buf);
+}
+
+static void
+_import(void *data __UNUSED__,
+        Evas_Object *obj __UNUSED__,
+        void *event_info __UNUSED__)
+{
+   if (ap.project)
+     if (!project_close(_after_popup_close, NULL))
+       return;
+
+   _after_popup_close(NULL, NULL, (void *)BTN_OK);
 }
 
 void

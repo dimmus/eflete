@@ -316,12 +316,16 @@ project_save(void);
  * This function will ask user what to do with opened project
  * (if it is changed).
  *
+ * @param func The Evas_Smart_Cb will be call on popup close. Popup_button is a
+ * event info for this callback
+ * @param data The user data for callback
+ *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup Window
  */
 Eina_Bool
-project_close(void);
+project_close(Evas_Smart_Cb func, void *data);
 
 /**
  * Create and show popup with given title and content. Only one - Evas_Object or

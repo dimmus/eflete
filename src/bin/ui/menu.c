@@ -124,11 +124,7 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
-              if (!project_close()) break;
-              //tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
-              ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
-              ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-              ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
+              if (!project_close(NULL, NULL)) break;
            }
          break;
       case MENU_FILE_EXIT:

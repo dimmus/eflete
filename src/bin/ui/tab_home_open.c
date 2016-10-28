@@ -77,16 +77,14 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
    return true;
 }
 
+
 static void
-_open_done(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_open_after_popup_close(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
 {
    const char *selected;
 
-   if (ap.project)
-     if (!project_close())
-       return;
    selected = elm_fileselector_selected_get(tab.fs);
    if ((!selected) || !eina_str_has_suffix(selected, ".pro")) return;
 
@@ -103,6 +101,18 @@ _open_done(void *data __UNUSED__,
                           (void *)eina_stringshare_add(selected));
    elm_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
+}
+
+static void
+_open_done(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   if (ap.project)
+     if (!project_close(_open_after_popup_close, NULL))
+       return;
+
+   _open_after_popup_close(NULL, NULL, (void *)BTN_OK);
 }
 
 static void
@@ -187,15 +197,14 @@ _tab_open_project_add(void)
 }
 
 static void
-_open_recent(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_recent_after_popup_close(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
 {
    Recent *r = (Recent *)data;
+   Popup_Button pbtn = (Popup_Button) event_info;
 
-   if (ap.project)
-     if (!project_close())
-       return;
+   if (BTN_CANCEL == pbtn) return;
 
    if (!pm_lock_check(r->path))
      {
@@ -210,6 +219,19 @@ _open_recent(void *data,
                           (void *)eina_stringshare_add(r->path));
    elm_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
+}
+
+static void
+_open_recent(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+
+   if (ap.project)
+     if (!project_close(_recent_after_popup_close, data))
+       return;
+
+   _recent_after_popup_close(data, NULL, (void *)BTN_OK);
 }
 
 void
