@@ -342,7 +342,7 @@ elm_main(int argc, char **argv)
           }
         if (export_edj)
           {
-             if (!eina_str_has_suffix(file, ".edj"))
+             if (!eina_str_has_suffix(export_edj, ".edj"))
                _ERR_EXIT(_("--export-edj value have not extension '.edj'. Wrong value."));
           }
 
