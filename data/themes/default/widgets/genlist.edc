@@ -64,7 +64,6 @@ group { name: "elm/genlist/item/default/default";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -88,7 +87,6 @@ group { name: "elm/genlist/item/default/default";
       }
       part { name: "elm.text";
          type: TEXT;
-         repeat_events: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -115,7 +113,6 @@ group { name: "elm/genlist/item/default/default";
       }
       part { name: "elm.swallow.end";
          type: SWALLOW;
-         repeat_events: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
@@ -132,13 +129,6 @@ group { name: "elm/genlist/item/default/default";
          description { state: "hide" 0.0;
             inherit: "default";
             visible: 0;
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
          }
       }
    }
@@ -177,7 +167,6 @@ group { name: "elm/genlist/item/default/default";
          target: "elm.swallow.pad";
          target: "elm.text";
          target: "elm.swallow.end";
-         target: "disclip";
       }
    }
 }
