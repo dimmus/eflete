@@ -569,7 +569,8 @@ _images_filter(const char *path,
    Eina_Bool res;
    const char *image_formats[] = { "png", "jpg", "jpeg", "jfif", "xpm", "tif",
                                    "tiff", "gif", "pbm", "pgm", "ppm", "pnm",
-                                   "bmp", "wbmp", "webp", "psd", "tga", NULL};
+                                   "bmp", "wbmp", "webp", "psd", "tga", "svg",
+                                   NULL};
    if (dir) return true;
    i = 0;
    while(image_formats[i])
