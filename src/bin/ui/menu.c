@@ -345,8 +345,23 @@ ui_menu_add(void)
 Eina_Bool
 ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
 {
-   assert(menu != NULL);
    assert((mid > MENU_NULL) && (mid < MENU_ITEMS_COUNT));
+   /* TODO
+    * I will comment this assert because after rework popup from sync we change
+    * the popup workflow, and now posible situation when popup is closed but
+    * after him we do same job. As example - project is changed, user try close
+    * Eflete. Popup about close project is shown with question what to do with
+    * unsaved changes. User chose save/unsave and started ecore_exe or file copy
+    * with splash. As its async jobs, after popup close main window is marked
+    * for del and all data is clear. But when a splash is finished menu treid to
+    * enable, but menu is NULL... Because all data is freed.
+    *
+    * So for now I'm make menu check not so agressive.
+    * Realy need to think how to make popups and splash for avoid simular
+    * situations.
+    * assert(menu != NULL);
+    */
+   if (menu == NULL) return false;
 
    elm_object_item_disabled_set(menu->items[mid], flag);
 
@@ -356,8 +371,8 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
 Eina_Bool
 ui_menu_items_list_disable_set(Menu *menu, int *list, Eina_Bool flag)
 {
-   assert(menu != NULL);
    assert(list != NULL);
+   if (menu == NULL) return false;
 
    Eina_Bool result = true;
    int i = 0;
