@@ -61,13 +61,13 @@ _on_setup(void *data __UNUSED__,
           const char *source __UNUSED__)
 {
    elm_object_focus_set(elm_object_focused_object_get(ap.win), false);
+   elm_layout_signal_emit(sdata.win, "start", "eflete");
    if (sdata.setup)
      if (!sdata.setup(sdata.data, sdata.status))
        {
           elm_layout_signal_emit(sdata.win, "end", "eflete");
           return;
        }
-   elm_layout_signal_emit(sdata.win, "start", "eflete");
 }
 
 Evas_Object *
