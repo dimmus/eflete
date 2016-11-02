@@ -399,7 +399,7 @@ _group_source_code_export(const char *group)
         fclose(f);
         return NULL;
      }
-   code = edje_edit_source_generate(edje_obj);
+   code = edje_edit_object_source_generate(edje_obj);
    fputs(_edc_header_get(), f);
    fputs(code, f);
    edje_edit_string_free(code);
@@ -416,7 +416,8 @@ _source_code_export(void *data __UNUSED__)
    FILE *f;
    Eina_List *l;
    const char *g;
-   Eina_List *files;
+   Eina_Stringshare *source_code;
+   Eina_List *files, *color_classes;
 
    fprintf(stdout, "Generate source code");
    snprintf(buf, strlen(spath) + strlen("/"GEN_FILE_NAME) + 1,
@@ -440,6 +441,22 @@ _source_code_export(void *data __UNUSED__)
      }
    else
      {
+        color_classes = edje_edit_color_classes_list_get(obj);
+        source_code = edje_edit_color_classes_source_generate(obj, color_classes);
+        if (color_classes)
+          {
+             fputs(source_code, f);
+             fputs("\n", f);
+             eina_stringshare_del(source_code);
+          }
+        fputs("collections {\n", f);
+        source_code = edje_edit_data_source_generate(obj);
+        if (source_code)
+          {
+             fputs(source_code, f);
+             fputs("\n", f);
+             eina_stringshare_del(source_code);
+          }
         EINA_LIST_FOREACH(groups, l, g)
           {
              char *name = _group_source_code_export(g);
@@ -464,6 +481,7 @@ _source_code_export(void *data __UNUSED__)
                     }
                }
           }
+        fputs("}\n", f);
      }
    fclose(f);
    _build_script_write();
