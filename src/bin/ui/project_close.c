@@ -86,8 +86,8 @@ _progress_save_end(void *data __UNUSED__, PM_Project_Result result, Project *pro
                   popup_add(_("Export source code"), NULL, BTN_CANCEL, NULL, NULL);
                   return;
                }
+             return;
           }
-        return;
      }
    progress_end(NULL, result, NULL);
 }
