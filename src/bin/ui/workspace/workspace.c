@@ -720,8 +720,7 @@ _group_part_selected_get(const Group2 *group)
 static void
 _markers_calculate(Workspace_Data *wd)
 {
-   const Groupview_Geom *part_geom = NULL;
-   Evas_Coord x, y;
+   Evas_Coord x, y, x1,y1,w1,h1;
    Scroll_Area *area;
    Eina_Stringshare *to;
    const Part2 *part;
@@ -730,7 +729,8 @@ _markers_calculate(Workspace_Data *wd)
    area = _scroll_area_get(wd);
    assert(area != NULL);
 
-   if (((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) || !wd->markers) goto hide_all;
+   if (((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) || !wd->markers)
+     goto hide_all;
 
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
@@ -742,18 +742,19 @@ _markers_calculate(Workspace_Data *wd)
    ewe_ruler_marker_visible_set (RULER, MARKER, true);
 
    part = _group_part_selected_get(wd->group);
-   part_geom = groupview_part_selected_geom_get(area->content);
-   if (part_geom)
+
+   if (part)
      {
+        groupview_primitive_selected_geom_get(area->content, &x1, &y1, &w1, &h1);
         buf = eina_strbuf_new();
-        eina_strbuf_append_printf(buf, _("Part '%s' width: %d"), part->common.name, part_geom->w);
+        eina_strbuf_append_printf(buf, _("Part '%s' width: %d"), part->common.name, w1);
         MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_part,
-                        part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+                        x1 - x, w1, eina_strbuf_string_get(buf));
 
         eina_strbuf_reset(buf);
-        eina_strbuf_append_printf(buf, _("Part '%s' heigth: %d"), part->common.name, part_geom->h);
+        eina_strbuf_append_printf(buf, _("Part '%s' heigth: %d"), part->common.name, h1);
         MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_part,
-                        part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+                        y1 - y, h1, eina_strbuf_string_get(buf));
         eina_strbuf_free(buf);
      }
    else
@@ -763,58 +764,57 @@ _markers_calculate(Workspace_Data *wd)
 
    if (groupview_part_object_area_visible_get(area->content))
      {
-        part_geom = groupview_part_selected_object_area_geom_get(area->content);
-        if (!part_geom) return;
+        groupview_primitive_area_selected_geom_get(area->content, &x1, &y1, &w1, &h1);
 
         buf = eina_strbuf_new();
-        eina_strbuf_append_printf(buf, _("Part '%s' object area width: %d"), part->common.name, part_geom->w);
+        eina_strbuf_append_printf(buf, _("Part '%s' object area width: %d"), part->common.name, w1);
         MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_obj_area,
-                        part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+                        x1 - x, w1, eina_strbuf_string_get(buf));
 
         eina_strbuf_reset(buf);
-        eina_strbuf_append_printf(buf, _("Part '%s' object area heigth: %d"), part->common.name, part_geom->h);
+        eina_strbuf_append_printf(buf, _("Part '%s' object area heigth: %d"), part->common.name, h1);
         MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_obj_area,
-                        part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+                        y1 - y, h1, eina_strbuf_string_get(buf));
 
         to = edje_edit_state_rel1_to_x_get(wd->group->edit_object, part->common.name,
                                            part->current_state->common.name, part->current_state->val);
         if (to)
           {
-             part_geom = groupview_part_geom_get(area->content, to);
+             groupview_primitive_geom_get(area->content, to, &x1, &y1, &w1, &h1);
              eina_strbuf_reset(buf);
              eina_strbuf_append_printf(buf, _("Part '%s'"), to);
              MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_rel1,
-                             part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+                             x1 - x, w1, eina_strbuf_string_get(buf));
           }
         to = edje_edit_state_rel2_to_x_get(wd->group->edit_object, part->common.name,
                                            part->current_state->common.name, part->current_state->val);
         if (to)
           {
-             part_geom = groupview_part_geom_get(area->content, to);
+             groupview_primitive_geom_get(area->content, to, &x1, &y1, &w1, &h1);
              eina_strbuf_reset(buf);
              eina_strbuf_append_printf(buf, _("Part '%s'"), to);
              MARKER_GEOM_SET(area->ruler_h.obj, area->ruler_h.mr_rel2,
-                             part_geom->x - x, part_geom->w, eina_strbuf_string_get(buf));
+                             x1 - x, w1, eina_strbuf_string_get(buf));
           }
         to = edje_edit_state_rel1_to_y_get(wd->group->edit_object, part->common.name,
                                            part->current_state->common.name, part->current_state->val);
         if (to)
           {
-             part_geom = groupview_part_geom_get(area->content, to);
+             groupview_primitive_geom_get(area->content, to, &x1, &y1, &w1, &h1);
              eina_strbuf_reset(buf);
              eina_strbuf_append_printf(buf, _("Part '%s'"), to);
              MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_rel1,
-                             part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+                             y1 - y, h1, eina_strbuf_string_get(buf));
           }
         to = edje_edit_state_rel2_to_y_get(wd->group->edit_object, part->common.name,
                                            part->current_state->common.name, part->current_state->val);
         if (to)
           {
-             part_geom = groupview_part_geom_get(area->content, to);
+             groupview_primitive_geom_get(area->content, to, &x1, &y1, &w1, &h1);
              eina_strbuf_reset(buf);
              eina_strbuf_append_printf(buf, _("Part '%s'"), to);
              MARKER_GEOM_SET(area->ruler_v.obj, area->ruler_v.mr_rel2,
-                             part_geom->y - y, part_geom->h, eina_strbuf_string_get(buf));
+                             y1 - y, h1, eina_strbuf_string_get(buf));
           }
         eina_strbuf_free(buf);
         return;

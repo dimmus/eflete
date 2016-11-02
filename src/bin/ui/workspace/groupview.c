@@ -345,6 +345,19 @@ groupview_part_geom_get(Evas_Object *obj, const char *part)
    return geom;
 }
 
+void
+groupview_primitive_geom_get(Evas_Object *obj, const char *part, Evas_Coord *x1, Evas_Coord *y1, Evas_Coord *w1, Evas_Coord *h1)
+{
+   Groupview_Part *gp;
+
+   GROUPVIEW_DATA_GET(obj, sd)
+
+   gp = _parts_list_find(sd->parts, part);
+   if (!gp) return;
+
+   evas_object_geometry_get(gp->draw, x1, y1, w1, h1);
+}
+
 const Groupview_Geom *
 groupview_part_selected_geom_get(Evas_Object *obj)
 {
@@ -355,6 +368,14 @@ groupview_part_selected_geom_get(Evas_Object *obj)
    if (sd->selected) geom = &sd->selected->geom;
 
    return geom;
+}
+
+void
+groupview_primitive_selected_geom_get(Evas_Object *obj, Evas_Coord *x1, Evas_Coord *y1, Evas_Coord *w1, Evas_Coord *h1)
+{
+   GROUPVIEW_DATA_GET(obj, sd)
+
+   evas_object_geometry_get(sd->selected->draw, x1, y1, w1, h1);
 }
 
 Eina_Bool
@@ -418,6 +439,14 @@ groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
      }
    else evas_object_hide(sd->object_area);
    highlight_handler_align_visible_set(sd->highlight, visible);
+}
+
+void
+groupview_primitive_area_selected_geom_get(Evas_Object *obj, Evas_Coord *x1, Evas_Coord *y1, Evas_Coord *w1, Evas_Coord *h1)
+{
+   GROUPVIEW_DATA_GET(obj, sd)
+
+   evas_object_geometry_get(sd->object_area, x1, y1, w1, h1);
 }
 
 Eina_Bool

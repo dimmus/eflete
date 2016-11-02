@@ -48,6 +48,7 @@
 #include "highlight.h"
 #include "resource_manager2.h"
 
+TODO("Check if this structure is really important and required for workspace/groupedit modules")
 struct _Geom{
    int x, y, w, h;
 };
@@ -133,15 +134,35 @@ groupview_hard_update(Evas_Object *obj);
 /**
  * Get the geomentry.
  *
- * @paramaram obj The groupview object,
- * @paramaram part The part name.
+ * @param obj The groupview object,
+ * @param part The part name.
  *
- * @returneturn The Groupview_Geom, or NULL if any part is notselected
+ * @return The Groupview_Geom, or NULL if any part is notselected
  *
  * @ingroup Groupview
  */
 const Groupview_Geom *
 groupview_part_geom_get(Evas_Object *obj, const char *part);
+
+/**
+ * Get the geomentry of the primitive of given part.
+ *
+ * @param obj The groupview object,
+ * @param part The part name.
+ * @param x Variable to store geometry value x (position).
+ * @param y Variable to store geometry value y (position).
+ * @param w Variable to store geometry value w (width).
+ * @param h Variable to store geometry value h (height).
+ *
+ * @ingroup Groupview
+ */
+void
+groupview_primitive_geom_get(Evas_Object *obj,
+                             const char *part,
+                             Evas_Coord *x,
+                             Evas_Coord *y,
+                             Evas_Coord *w,
+                             Evas_Coord *h);
 
 /**
  * Get the selected part geomentry.
@@ -154,6 +175,24 @@ groupview_part_geom_get(Evas_Object *obj, const char *part);
  */
 const Groupview_Geom *
 groupview_part_selected_geom_get(Evas_Object *obj);
+
+/**
+ * Get the geomentry of the primitive of selected part.
+ *
+ * @param obj The groupview object,
+ * @param x Variable to store geometry value x (position).
+ * @param y Variable to store geometry value y (position).
+ * @param w Variable to store geometry value w (width).
+ * @param h Variable to store geometry value h (height).
+ *
+ * @ingroup Groupview
+ */
+void
+groupview_primitive_selected_geom_get(Evas_Object *obj,
+                                      Evas_Coord *x,
+                                      Evas_Coord *y,
+                                      Evas_Coord *w,
+                                      Evas_Coord *h);
 
 /**
  * Add to groupview a new part. The function add part to edje edit object and
@@ -193,6 +232,24 @@ groupview_part_del(Evas_Object *obj, Part2 *part);
  */
 const Groupview_Geom *
 groupview_part_selected_object_area_geom_get(Evas_Object *obj);
+
+/**
+ * Get the geomentry of the object area of currently selected part.
+ *
+ * @param obj The groupview object,
+ * @param x Variable to store geometry value x (position).
+ * @param y Variable to store geometry value y (position).
+ * @param w Variable to store geometry value w (width).
+ * @param h Variable to store geometry value h (height).
+ *
+ * @ingroup Groupview
+ */
+void
+groupview_primitive_area_selected_geom_get(Evas_Object *obj,
+                                           Evas_Coord *x1,
+                                           Evas_Coord *y1,
+                                           Evas_Coord *w1,
+                                           Evas_Coord *h1);
 /**
  * Set the object area visibility.
  *
