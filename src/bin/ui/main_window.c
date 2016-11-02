@@ -409,7 +409,7 @@ _content_get(void *data __UNUSED__, Evas_Object *obj, const char *pr __UNUSED__)
    if (!strcmp(pr, "change.button"))
      {
         Evas_Object *change_button = elm_button_add(obj);
-        Evas_Object *layout = efl_parent_get(obj);
+        Evas_Object *layout = elm_object_parent_widget_get(obj);
         evas_object_data_set(change_button, "layout", layout);
         elm_object_style_set(change_button, "edit");
         evas_object_smart_callback_add(change_button, "clicked", _change_shortcut, data);
