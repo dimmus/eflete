@@ -446,17 +446,15 @@ _source_code_export(void *data __UNUSED__)
         if (color_classes)
           {
              fputs(source_code, f);
-             fputs("\n", f);
              eina_stringshare_del(source_code);
           }
-        fputs("collections {\n", f);
         source_code = edje_edit_data_source_generate(obj);
         if (source_code)
           {
              fputs(source_code, f);
-             fputs("\n", f);
              eina_stringshare_del(source_code);
           }
+        fputs("collections {\n", f);
         EINA_LIST_FOREACH(groups, l, g)
           {
              char *name = _group_source_code_export(g);
