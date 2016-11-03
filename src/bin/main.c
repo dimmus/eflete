@@ -351,7 +351,7 @@ run:
           {
              int i;
              char *name = NULL;
-             char buf[BUFF_MAX];
+             char buf[BUFF_MAX] = { 0 };
 
              char **arr = eina_str_split(export_edj, "/", 0);
              for(i = 0; arr[i] != NULL; i++)
