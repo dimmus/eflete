@@ -698,16 +698,10 @@ _project_open_internal(Project_Process_Data *ppd)
           }
         ppd->project->version = 5;
      }
-   TODO("Add crash recovery prompt here");
 
-   TODO("replace this if statment to md5 check");
-   if (!edje_file_group_exists(ppd->project->saved_edj, EFLETE_INTERNAL_GROUP_NAME))
-     {
-        CRIT("Missing internal group '"EFLETE_INTERNAL_GROUP_NAME" in file %s\n",
-             ppd->project->saved_edj);
-        last_error = PM_PROJECT_ERROR;
-        return last_error;
-     }
+   TODO("Add crash recovery prompt here");
+   TODO("Add project integrity check here");
+
    _project_dev_file_create(ppd->project);
    ppd->project->mmap_file = eina_file_open(ppd->project->dev, false);
 
