@@ -349,16 +349,9 @@ elm_main(int argc, char **argv)
 run:
         if (export_edj)
           {
-             int i;
-             char *name = NULL;
-             char buf[BUFF_MAX] = { 0 };
-
-             char **arr = eina_str_split(export_edj, "/", 0);
-             for(i = 0; arr[i] != NULL; i++)
-               name = arr[i];
-             strncpy(buf, export_edj, strlen(export_edj) - strlen(name));
-             ecore_file_mkpath(buf);
-
+             char *dir = ecore_file_dir_get(export_edj);
+             ecore_file_mkpath(dir);
+             free(dir);
              ap.path.export_edj = eina_stringshare_add(export_edj);
           }
         if (export_edc)
