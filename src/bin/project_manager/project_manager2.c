@@ -592,7 +592,7 @@ _project_open_internal(Project_Process_Data *ppd)
 #ifdef _WIN32
    HANDLE pro_fd = NULL;
 #else
-   int pro_fd;
+   int pro_fd = -1;
 #endif
 
    Eet_File *ef;
