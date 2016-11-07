@@ -93,7 +93,8 @@ Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg, *project_navigator, *tabs;
+   Evas_Object *bg, *project_navigator, *tabs, *icon;
+   Eina_Stringshare *icon_path;
 
    config = config_get();
 
@@ -101,6 +102,13 @@ ui_main_window_add(void)
    ap.win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
 
    assert(ap.win != NULL);
+
+   icon = evas_object_image_add(evas_object_evas_get(ap.win));
+   icon_path = eina_stringshare_printf("%seflete.svg", ap.path.image_path);
+   evas_object_image_file_set(icon, icon_path, NULL);
+   eina_stringshare_del(icon_path);
+   elm_win_icon_object_set(ap.win, icon);
+   evas_object_show(icon);
 
    evas_object_resize(ap.win, config->window.w, config->window.h);
    evas_object_move(ap.win, config->window.x, config->window.y);
