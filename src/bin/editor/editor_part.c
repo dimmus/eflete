@@ -756,6 +756,7 @@ editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool m
    item_name = edje_edit_part_item_index_name_get(edit_object, part_name, index);
 
    event_info.part_name = eina_stringshare_add(part_name);
+   event_info.item_name = eina_stringshare_add(item_name);
    event_info.item_index = index;
    if (!_editor_signals_blocked)
      {
