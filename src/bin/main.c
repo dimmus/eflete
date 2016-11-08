@@ -63,8 +63,8 @@ static const Ecore_Getopt options = {
    {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path to project directory")),
-      ECORE_GETOPT_STORE_STR(0, "export-edj", N_("Export edj file path")),
-      ECORE_GETOPT_STORE_STR(0, "export-edc", N_("Export edc file path. This should include the path, folder and edc file name.(PATH/FOLDER/FILE)")),
+      ECORE_GETOPT_STORE_STR(0, "export-edj", N_("Export edj file path. The path should contain the edj file name. The edj file will be write by this path on every save. If file missed will be created, if file exist, changed groups will be add.")),
+      ECORE_GETOPT_STORE_STR(0, "export-edc", N_("Export edc file path. It should be path folder. On every save will generate source code of changed groups. If folder is missed it will be created, if folder exist new source code will be add.")),
       ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
