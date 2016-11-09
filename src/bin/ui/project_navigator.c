@@ -277,22 +277,33 @@ _items_compare(const void *data1, const void *data2)
    const char *str2;
    const Elm_Object_Item *it1 = data1;
    const Elm_Object_Item *it2 = data2;
+   const Elm_Genlist_Item_Class *it1_class;
+   const Elm_Genlist_Item_Class *it2_class;
 
-   /* add group */
-   if (elm_genlist_item_item_class_get(it1) == project_navigator.itc_group)
+   it1_class = elm_genlist_item_item_class_get(it1);
+   it2_class = elm_genlist_item_item_class_get(it2);
+
+   if ((it1_class == project_navigator.itc_group) &&
+       (it2_class == project_navigator.itc_folder))
      {
-        if (elm_genlist_item_item_class_get(it2) != project_navigator.itc_folder)
-          str2 = ((Group2 *)elm_object_item_data_get(it2))->common.name;
-        else return 1;
-        str1 = ((Group2 *)elm_object_item_data_get(it1))->common.name;
+        return 1;
      }
-   else /* add folder */
+   else if ((it1_class == project_navigator.itc_folder) &&
+            (it2_class == project_navigator.itc_group))
      {
-        if (elm_genlist_item_item_class_get(it2) == project_navigator.itc_group)
-          str2 = elm_object_item_data_get(it2);
-        else return -1;
-        str1 = elm_object_item_data_get(it1);
+        return -1;
      }
+
+   if (it1_class == project_navigator.itc_group)
+     str1 = ((Group2 *)elm_object_item_data_get(it1))->common.name;
+   else
+     str1 = elm_object_item_data_get(it1);
+
+   if (it2_class == project_navigator.itc_group)
+     str2 = ((Group2 *)elm_object_item_data_get(it2))->common.name;
+   else
+     str2 = elm_object_item_data_get(it2);
+
    return strcmp(str1, str2);
 }
 
