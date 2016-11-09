@@ -223,6 +223,13 @@ _images_resources_export(void *data __UNUSED__)
              snprintf(buf, strlen("edje/images/") + (_digist_get(id) + 1) + 1,
                      "edje/images/%i", id);
              evas_object_image_file_set(img, sedj, buf);
+             if (EVAS_LOAD_ERROR_NONE != evas_object_image_load_error_get(img))
+               {
+                  fprintf(stderr, "ERROR: Unable to load image '%s': %s\n", buf, evas_load_error_str(evas_object_image_load_error_get(img)));
+                  _terminate(PM_PROJECT_EXPORT_SAVE_IMAGE_FAILED);
+                  return;
+               }
+
              snprintf(buf, strlen(spath) + strlen("/"IMAGES"/") + strlen(name) + 1,
                       "%s/"IMAGES"/%s", spath, name);
              file_dir = ecore_file_dir_get(buf);
@@ -231,7 +238,7 @@ _images_resources_export(void *data __UNUSED__)
 
              if (!evas_object_image_save(img, buf, NULL, NULL))
                {
-                  fprintf(stderr, "ERROR: Image does not save, error: %s\n", evas_load_error_str(evas_object_image_load_error_get(img)));
+                  fprintf(stderr, "ERROR: Unable to save image '%s'\n", name);
                   _terminate(PM_PROJECT_EXPORT_SAVE_IMAGE_FAILED);
                   return;
                }
