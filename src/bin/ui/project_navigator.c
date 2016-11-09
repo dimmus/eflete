@@ -40,6 +40,7 @@ typedef struct
    Evas_Object *btn_del;
    Elm_Genlist_Item_Class *itc_group;
    Elm_Genlist_Item_Class *itc_folder;
+   Elm_Object_Item *item_top;
 } Project_Navigator;
 
 typedef struct
@@ -196,7 +197,11 @@ _expanded_cb(void *data __UNUSED__,
    Elm_Object_Item *glit = event_info;
    Eina_Stringshare *prefix = elm_object_item_data_get(glit);
 
-   widget_tree_items_get(ap.project->RM.groups, prefix, &folders, &groups);
+   if (glit == project_navigator.item_top)
+     widget_tree_items_get(ap.project->RM.groups, "", &folders, &groups);
+   else
+     widget_tree_items_get(ap.project->RM.groups, prefix, &folders, &groups);
+
    EINA_LIST_FREE(folders, prefix)
      {
         elm_genlist_item_append(project_navigator.genlist,
@@ -299,34 +304,38 @@ _group_add(void *data __UNUSED__,
    Group2 *group;
    Elm_Object_Item *item, *parent = NULL;
    char **arr;
-   unsigned int count, i;
+   unsigned int count, i = 0;
    Eina_Stringshare *prefix;
 
    group = (Group2 *)event_info;
    item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group->common.name, "/", 0, &count);
 
-   for (i = 0; i < count; i++)
+   if (count > 1)
      {
-        parent = elm_genlist_item_parent_get(item);
-        item = _find_item(item, arr[i]);
-        if (!item) break;
-        if (elm_genlist_item_item_class_get(item) != project_navigator.itc_folder) break;
-        if (!elm_genlist_item_expanded_get(item)) goto exit;
-        item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+        for (i = 0; i < count; i++)
+          {
+             parent = elm_genlist_item_parent_get(item);
+             item = _find_item(item, arr[i]);
+             if (!item) break;
+             if (elm_genlist_item_item_class_get(item) != project_navigator.itc_folder) break;
+             if (!elm_genlist_item_expanded_get(item)) goto exit;
+             item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+          }
      }
+   if (!parent) parent = project_navigator.item_top;
 
-   if ((i > 0) && (count > 0) && (i != count - 1))
+   if ((count > 1) && (i != count - 1))
      {
         prefix = widget_prefix_get(group->common.name, i, NULL);
-        elm_genlist_item_sorted_insert(project_navigator.genlist,
-                                       project_navigator.itc_folder,
-                                       prefix,
-                                       parent,
-                                       ELM_GENLIST_ITEM_TREE,
-                                       _items_compare,
-                                       NULL,
-                                       NULL);
+        item = elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                              project_navigator.itc_folder,
+                                              prefix,
+                                              parent,
+                                              ELM_GENLIST_ITEM_TREE,
+                                              _items_compare,
+                                              NULL,
+                                              NULL);
      }
    else
      elm_genlist_item_sorted_insert(project_navigator.genlist,
@@ -841,12 +850,22 @@ project_navigator_project_set(void)
    elm_object_text_set(project_navigator.layout, ap.project->name);
    widget_tree_items_get(ap.project->RM.groups, "", &folders, &groups);
 
+   project_navigator.item_top = elm_genlist_item_append(project_navigator.genlist,
+                                                        project_navigator.itc_folder,
+                                                        eina_stringshare_add("Groups"),
+                                                        NULL,
+                                                        ELM_GENLIST_ITEM_TREE,
+                                                        NULL,
+                                                        NULL);
+   elm_genlist_item_expanded_set(project_navigator.item_top, true);
+
+
    EINA_LIST_FREE(folders, prefix)
      {
         elm_genlist_item_append(project_navigator.genlist,
                                 project_navigator.itc_folder,
                                 prefix,
-                                NULL,
+                                project_navigator.item_top,
                                 ELM_GENLIST_ITEM_TREE,
                                 NULL,
                                 NULL);
@@ -856,7 +875,7 @@ project_navigator_project_set(void)
         elm_genlist_item_append(project_navigator.genlist,
                                 project_navigator.itc_group,
                                 group,
-                                NULL,
+                                project_navigator.item_top,
                                 ELM_GENLIST_ITEM_NONE,
                                 NULL,
                                 NULL);
