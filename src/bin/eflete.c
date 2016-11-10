@@ -21,7 +21,11 @@
 #include "main_window.h"
 #include "shortcuts.h"
 #include "config.h"
+
+#define EXT ""
 #ifdef _WIN32
+#undef EXT
+#define EXT ".exe"
 #include "win32.h"
 #endif
 
@@ -74,7 +78,7 @@ app_init()
 
    if (!config_init()) return false;
 
-   elm_app_info_set(NULL, "eflete", NULL);
+   elm_app_info_set(app_init, "eflete", "layouts/eflete.edj");
 
 #define PATH_CHECK(LOCALE, CURRENT, DIR_PATH, MESSAGE) \
    snprintf(buf, sizeof(buf), "%s/%s", DIR_PATH, LOCALE); \
@@ -100,7 +104,7 @@ app_init()
               elm_app_data_dir_get(), "Default layouts is missing");
    ap.path.layout_edj = eina_stringshare_add(buf);
 
-   PATH_CHECK("eflete_exporter", "src/bin/eflete_exporter",
+   PATH_CHECK("eflete_exporter"EXT, "src/bin/eflete_exporter"EXT,
               elm_app_bin_dir_get(), "Eflete_exporter is missing");
    ap.path.exporter = eina_stringshare_add(buf);
 
