@@ -104,7 +104,11 @@ ui_main_window_add(void)
    assert(ap.win != NULL);
 
    icon = evas_object_image_add(evas_object_evas_get(ap.win));
+#ifdef _WIN32
+   icon_path = eina_stringshare_printf("%seflete.ico", ap.path.image_path);
+#else
    icon_path = eina_stringshare_printf("%seflete.svg", ap.path.image_path);
+#endif
    evas_object_image_file_set(icon, icon_path, NULL);
    eina_stringshare_del(icon_path);
    elm_win_icon_object_set(ap.win, icon);

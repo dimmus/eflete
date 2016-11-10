@@ -42,7 +42,7 @@ aimagesdir = $(datadir)/eflete/images
 if WANT_TIZEN
 aimages_DATA = \
 	${srcdir}/images/*.png \
-	${srcdir}/themes/tizen/images/General/cd_icon.png \
+	${srcdir}/images/eflete.ico \
 	${srcdir}/images/toolbar_icons/*.png
 else
 aimages_DATA = \
