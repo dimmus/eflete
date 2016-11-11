@@ -855,8 +855,6 @@ void
 project_navigator_project_set(void)
 {
    Eina_List *folders = NULL, *groups = NULL;
-   Eina_Stringshare *prefix;
-   Group2 *group;
 
    elm_object_text_set(project_navigator.layout, ap.project->name);
    widget_tree_items_get(ap.project->RM.groups, "", &folders, &groups);
@@ -869,29 +867,6 @@ project_navigator_project_set(void)
                                                         NULL,
                                                         NULL);
    elm_genlist_item_expanded_set(project_navigator.item_top, true);
-
-
-   EINA_LIST_FREE(folders, prefix)
-     {
-        elm_genlist_item_append(project_navigator.genlist,
-                                project_navigator.itc_folder,
-                                prefix,
-                                project_navigator.item_top,
-                                ELM_GENLIST_ITEM_TREE,
-                                NULL,
-                                NULL);
-     }
-   EINA_LIST_FREE(groups, group)
-     {
-        elm_genlist_item_append(project_navigator.genlist,
-                                project_navigator.itc_group,
-                                group,
-                                project_navigator.item_top,
-                                ELM_GENLIST_ITEM_NONE,
-                                NULL,
-                                NULL);
-     }
-
    elm_object_disabled_set(project_navigator.layout, false);
 }
 
