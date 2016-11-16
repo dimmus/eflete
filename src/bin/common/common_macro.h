@@ -79,7 +79,7 @@ if (!(CALL)) \
 { \
    char date[100]; \
    long long tm = ecore_file_mod_time(ap.project->dev); \
-   strftime(date, 100, _("Last saved: %d %b %Y %R"), localtime((const time_t *)&tm)); \
+   strftime(date, 100, _("Last saved: %d %b %Y %H:%M"), localtime((const time_t *)&tm)); \
    elm_layout_text_set(ap.win_layout, "eflete.project.time", date); \
 }
 
