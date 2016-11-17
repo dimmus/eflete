@@ -237,7 +237,7 @@ _project_create(Project_Process_Data *ppd)
    if (!eet_data_write(pro->ef, ppd->eed_project, PROJECT_FILE_KEY, pro, compess_level))
      last_error = PM_PROJECT_WRITE_PRO_FAILED;
 
-   eet_sync(pro->ef);
+   eet_close(pro->ef);
    _pm_project_descriptor_shutdown(ppd);
 
 exit:
@@ -1161,16 +1161,17 @@ pm_project_meta_data_set(Project *project,
                          const char *comment)
 {
    int bytes, size;
+   Eet_File *ef;
 
    assert(project != NULL);
-   assert(project->ef != NULL);
 
    last_error = PM_PROJECT_SUCCESS;
+   ef = eet_open(project->pro_path, EET_FILE_MODE_READ_WRITE);
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
         size = (strlen(DATA) + 1) * sizeof(char); \
-        bytes = eet_write(project->ef, KEY, DATA, size, compess_level); \
+        bytes = eet_write(ef, KEY, DATA, size, compess_level); \
         if (bytes <= 0 && size > 0) \
           { \
              CRIT("Could not write data '"#DATA"' size %i write %i\n", size, bytes);   \
@@ -1183,6 +1184,7 @@ pm_project_meta_data_set(Project *project,
    DATA_WRITE(version, PROJECT_KEY_FILE_VERSION);
    DATA_WRITE(license, PROJECT_KEY_LICENSE);
    DATA_WRITE(comment, PROJECT_KEY_COMMENT);
+   eet_close(ef);
 
    return last_error;
 }
