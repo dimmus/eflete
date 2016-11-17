@@ -722,11 +722,14 @@ _unselect_part(Part_List *pl)
 
 static void
 _unselected_cb(void *data,
-               Evas_Object *o __UNUSED__,
+               Evas_Object *o,
                void *event_info __UNUSED__)
 {
    Part_List *pl = data;
    assert(pl != NULL);
+
+   /* focusing genlist to trigger unfocus callbacks in property */
+   elm_object_focus_set(o, true);
 
    _unselect_internal(pl);
 
