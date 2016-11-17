@@ -346,8 +346,8 @@ _update_style()
    _print_string(&tag, " font=", tpd.font);
 
    _print_data_string(&tag, " font_size=", tpd.font_size);
-   _print_data_string(&tag, " font_weight=", tpd.font_style_weight);
-   _print_data_string(&tag, " font_width=", tpd.font_style_width);
+   _print_string(&tag, " font_weight=", font_weight_list[tpd.font_style_weight]);
+   _print_string(&tag, " font_width=", font_width_list[tpd.font_style_width]);
 
    _print_color_string(&tag, " color=", tpd.color.r, tpd.color.g, tpd.color.b, tpd.color.a);
    _print_color_string(&tag, " underline_color=", tpd.underone_color.r, tpd.underone_color.g, tpd.underone_color.b, tpd.underone_color.a);
@@ -398,6 +398,7 @@ _update_style()
 
    CRIT_ON_FAIL(editor_style_tag_value_set(ap.project->global_object, tpd.current_style.st_name,
                                            tpd.current_style.st_tag, eina_strbuf_string_get(tag)));
+printf("STRING: [%s] \n", eina_strbuf_string_get(tag));
    eina_stringshare_del(tpd.current_style.stvalue);
    tpd.current_style.stvalue = eina_stringshare_add(eina_strbuf_string_get(tag));
    eina_strbuf_free(tag);
