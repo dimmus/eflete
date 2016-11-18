@@ -34,7 +34,7 @@ editor_image_add(Evas_Object *obj, const char *name, Eina_Bool notify)
    if (!edje_edit_image_add(obj, name))
      return false;
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -50,7 +50,7 @@ editor_image_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_image_del(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -67,7 +67,7 @@ editor_color_class_add(Evas_Object *obj, const char *name, Eina_Bool notify)
    if (!edje_edit_color_class_add(obj, name))
      return false;
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -83,7 +83,7 @@ editor_color_class_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_color_class_del(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -104,7 +104,7 @@ editor_color_class_description_set(Evas_Object *obj, const char *name, const cha
 
    CRIT_ON_FAIL(edje_edit_color_class_description_set(obj, name, description));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      {
         eina_stringshare_del(send.color_class_name);
         eina_stringshare_del(send.color_class_description);
@@ -140,7 +140,7 @@ editor_color_class_colors_set(Evas_Object *obj, const char *name,
                                                  r2, g2, b2, a2,
                                                  r3, g3, b3, a3));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      {
         eina_stringshare_del(send.color_class_name);
         return false; /* i hope it will never happen */
@@ -161,7 +161,7 @@ editor_sound_sample_add(Evas_Object *obj, const char *name, const char *source, 
    if (!edje_edit_sound_sample_add(obj, name, source))
      return false;
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -177,7 +177,7 @@ editor_sound_sample_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_sound_sample_del(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -193,7 +193,7 @@ editor_sound_tone_add(Evas_Object *obj, const char *name, int frq, Eina_Bool not
 
    CRIT_ON_FAIL(edje_edit_sound_tone_add(obj, name, frq));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -209,7 +209,7 @@ editor_sound_tone_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_sound_tone_del(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -225,7 +225,7 @@ editor_style_add(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_style_add(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -241,7 +241,7 @@ editor_style_del(Evas_Object *obj, const char *name, Eina_Bool notify)
 
    CRIT_ON_FAIL(edje_edit_style_del(obj, name));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    if (notify)
@@ -261,7 +261,7 @@ editor_style_tag_add(Evas_Object *obj, const char *name, const char *tag)
    send.tag_name = eina_stringshare_add(tag);
    send.style_name = eina_stringshare_add(name);
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      {
         eina_stringshare_del(send.style_name);
         eina_stringshare_del(send.tag_name);
@@ -287,7 +287,7 @@ editor_style_tag_del(Evas_Object *obj, const char *name, const char *tag)
    send.tag_name = eina_stringshare_add(tag);
    send.style_name = eina_stringshare_add(name);
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      {
         eina_stringshare_del(send.style_name);
         eina_stringshare_del(send.tag_name);
@@ -310,7 +310,7 @@ editor_style_tag_value_set(Evas_Object *obj, const char *name, const char *tag, 
 
    CRIT_ON_FAIL(edje_edit_style_tag_value_set(obj, name, tag, value));
 
-   if (!editor_save(obj))
+   if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
    _editor_project_changed();
    return true;
