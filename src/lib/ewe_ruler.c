@@ -101,7 +101,7 @@ _add_dashes(Ewe_Ruler_Smart_Data *sd)
              for (; new_dashes_count > 0; new_dashes_count--)
                {
                   object = edje_object_add(canvas);
-                  edje_object_file_set(object, EWE_THEME, scale->full_style);
+                  edje_object_file_set(object, sd->theme_file, scale->full_style);
                   scale->dashes = eina_list_append(scale->dashes, object);
                   if (sd->horizontal)
                     evas_object_size_hint_min_set(object, scale->mark_step, sd->geometry.height);
@@ -221,13 +221,13 @@ _ewe_ruler_horizontal_set(Eo *obj,
 
    if (sd->horizontal)
      {
-        elm_layout_file_set(sd->bg, EWE_THEME, "ewe/ruler/horizontal_background/default");
+        elm_layout_file_set(sd->bg, sd->theme_file, "ewe/ruler/horizontal_background/default");
         dashes = DASHES;
         markers = MARKER;
      }
    else
      {
-        elm_layout_file_set(sd->bg, EWE_THEME, "ewe/ruler/vertical_background/default");
+        elm_layout_file_set(sd->bg, sd->theme_file, "ewe/ruler/vertical_background/default");
         dashes = DASHES_VER;
         markers = MARKER_VER;
      }
@@ -245,7 +245,7 @@ _ewe_ruler_horizontal_set(Eo *obj,
      {
         eina_strbuf_reset(buf);
         eina_strbuf_append_printf(buf, "%s/%s", markers, marker->style);
-        elm_layout_file_set(marker->obj, EWE_THEME, eina_strbuf_string_get(buf));
+        elm_layout_file_set(marker->obj, sd->theme_file, eina_strbuf_string_get(buf));
      }
 
    eina_strbuf_free(buf);
@@ -545,7 +545,7 @@ _ewe_ruler_marker_add(Eo *obj,
 
    ret->obj = elm_layout_add(obj);
    evas_object_clip_set(ret->obj, sd->clip);
-   elm_layout_file_set(ret->obj, EWE_THEME, eina_strbuf_string_get(buf));
+   elm_layout_file_set(ret->obj, sd->theme_file, eina_strbuf_string_get(buf));
    evas_object_smart_member_add(ret->obj, obj);
 
    if (sd->horizontal)
@@ -760,7 +760,7 @@ _ewe_ruler_marker_style_set(Eo *obj,
      eina_strbuf_append_printf(buf, MARKER"/%s", style);
    else
      eina_strbuf_append_printf(buf, MARKER_VER"/%s", style);
-   elm_layout_file_set(marker->obj, EWE_THEME, eina_strbuf_string_get(buf));
+   elm_layout_file_set(marker->obj, sd->theme_file, eina_strbuf_string_get(buf));
 
    eina_strbuf_free(buf);
    evas_object_smart_changed(obj);
@@ -781,14 +781,32 @@ _ewe_ruler_marker_style_get(Eo *obj EINA_UNUSED,
 EOLIAN static void
 _ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
+   const char *data_dir = NULL;
+   Eina_Strbuf *theme_path = NULL;
+
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
+
+   data_dir = elm_app_data_dir_get();
+   if (data_dir)
+     {
+        theme_path = eina_strbuf_new();
+        eina_strbuf_append_printf(theme_path,
+                           "%s"EINA_PATH_SEP_S"themes"EINA_PATH_SEP_S"default"EINA_PATH_SEP_S"ewe.edj",
+                           data_dir);
+        sd->theme_file = eina_strbuf_string_steal(theme_path);
+        eina_strbuf_free(theme_path);
+     }
+   else
+     {
+        sd->theme_file = strdup(EWE_THEME);
+     }
 
    sd->obj = obj;
    sd->clip = evas_object_rectangle_add(evas_object_evas_get(obj));
    evas_object_smart_member_add(sd->clip, obj);
    sd->bg = elm_layout_add(obj);
-   elm_layout_file_set(sd->bg, EWE_THEME, "ewe/ruler/horizontal_background/default");
+   elm_layout_file_set(sd->bg, sd->theme_file, "ewe/ruler/horizontal_background/default");
    evas_object_smart_member_add(sd->bg, obj);
 
    sd->horizontal = EINA_TRUE;
@@ -822,6 +840,8 @@ _ewe_ruler_efl_canvas_group_group_del(Eo *obj,
 
    evas_object_smart_member_del(sd->bg);
    evas_object_del(sd->bg);
+
+   free(sd->theme_file);
 }
 
 static void
@@ -1009,7 +1029,7 @@ _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 
    if (sd->horizontal)
      {
-        elm_layout_file_set(sd->bg, EWE_THEME, "ewe/ruler/horizontal_background/default");
+        elm_layout_file_set(sd->bg, sd->theme_file, "ewe/ruler/horizontal_background/default");
         EINA_LIST_FOREACH(sd->scales, ls, scale)
           {
              eina_stringshare_del(scale->full_style);
@@ -1020,7 +1040,7 @@ _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
      }
    else
      {
-        elm_layout_file_set(sd->bg, EWE_THEME, "ewe/ruler/vertical_background/default");
+        elm_layout_file_set(sd->bg, sd->theme_file, "ewe/ruler/vertical_background/default");
         EINA_LIST_FOREACH(sd->scales, ls, scale)
           {
              eina_stringshare_del(scale->full_style);
@@ -1051,6 +1071,7 @@ _ewe_ruler_efl_object_constructor(Eo *obj, Ewe_Ruler_Smart_Data *sd)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    sd->obj = obj;
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
+
    return obj;
 }
 

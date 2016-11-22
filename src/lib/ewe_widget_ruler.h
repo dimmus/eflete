@@ -7,6 +7,7 @@ typedef struct _Ewe_Ruler_Smart_Data Ewe_Ruler_Smart_Data;
 struct _Ewe_Ruler_Smart_Data
 {
    Eo                *obj;
+   char              *theme_file;
    Evas_Object       *clip;
    Evas_Object       *bg;
    Eina_List         *scales;
