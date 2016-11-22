@@ -339,14 +339,14 @@ _group_add(void *data __UNUSED__,
    if ((count > 1) && (i != count - 1))
      {
         prefix = widget_prefix_get(group->common.name, i, NULL);
-        item = elm_genlist_item_sorted_insert(project_navigator.genlist,
-                                              project_navigator.itc_folder,
-                                              prefix,
-                                              parent,
-                                              ELM_GENLIST_ITEM_TREE,
-                                              _items_compare,
-                                              NULL,
-                                              NULL);
+        elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                       project_navigator.itc_folder,
+                                       prefix,
+                                       parent,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       _items_compare,
+                                       NULL,
+                                       NULL);
      }
    else
      elm_genlist_item_sorted_insert(project_navigator.genlist,
