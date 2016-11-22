@@ -362,6 +362,14 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          itc->func.content_get = _combobox_cc_content_get;
          itc->func.del = _combobox_cc_item_del;
          evas_object_data_set(content, "COMMON_ITC", itc);
+
+         itc = elm_genlist_item_class_new();
+         itc->item_style = "manager";
+         itc->func.text_get = _combobox_text_get;
+         itc->func.content_get = NULL;
+         itc->func.del = _combobox_cc_item_del;
+         evas_object_data_set(content, "MANAGER_ITC", itc);
+
          elm_object_style_set(content, "color_class");
          evas_object_smart_callback_add(content, signals.elm.combobox.item_pressed, _combobox_item_pressed_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.combobox.expanded, _combobox_expanded_cb, pa);

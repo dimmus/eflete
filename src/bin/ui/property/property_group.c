@@ -1463,13 +1463,14 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
 {
    Eina_List *cclist, *l;
    Eina_Stringshare *color_class;
-   Elm_Genlist_Item_Class *itc;
+   Elm_Genlist_Item_Class *itc, *manager_itc;
    unsigned int i = 0;
    Combobox_Cc_Item *combobox_item;
 
    assert(combo != NULL);
 
    itc = evas_object_data_get(combo, "COMMON_ITC");
+   manager_itc = evas_object_data_get(combo, "MANAGER_ITC");
    _color_class_select(combo, selected);
 
    cclist = edje_edit_color_classes_list_get(EDIT_OBJ);
@@ -1483,7 +1484,7 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
    combobox_item = mem_calloc(1, sizeof(Combobox_Cc_Item));
    combobox_item->index = i++;
    combobox_item->data = eina_stringshare_add(_("< Color class manager >"));
-   elm_genlist_item_append(combo, itc,
+   elm_genlist_item_append(combo, manager_itc,
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
 

@@ -1561,6 +1561,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
 }
 
 group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
+   alias: "elm/genlist/item_compress/manager/combobox_vertical/color_class";
    alias: "elm/genlist/item_compress/default/combobox_vertical/zoom";
    data {
       item: "texts" "elm.text";
