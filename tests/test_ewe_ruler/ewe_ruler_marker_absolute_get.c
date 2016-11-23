@@ -55,6 +55,7 @@
 EFLETE_TEST(ewe_ruler_marker_absolute_get_test_p)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
@@ -64,6 +65,7 @@ EFLETE_TEST(ewe_ruler_marker_absolute_get_test_p)
 
    evas_object_del(win);
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
@@ -98,6 +100,7 @@ END_TEST
 EFLETE_TEST(ewe_ruler_marker_absolute_get_test_n)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
@@ -108,6 +111,7 @@ EFLETE_TEST(ewe_ruler_marker_absolute_get_test_n)
    ck_assert_msg(ewe_ruler_marker_absolute_get(NULL, NULL) == 0, "Getted abs position from NULL ruler object for NULL marker");
 
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 

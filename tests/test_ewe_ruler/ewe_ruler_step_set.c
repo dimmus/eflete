@@ -55,6 +55,7 @@
 EFLETE_TEST(ewe_ruler_step_set_test_p)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
    unsigned int step;
    Evas_Object *win = elm_win_util_standard_add("test", "test");
@@ -68,6 +69,7 @@ EFLETE_TEST(ewe_ruler_step_set_test_p)
 
    evas_object_del(win);
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
@@ -96,11 +98,13 @@ END_TEST
 EFLETE_TEST(ewe_ruler_step_set_test_n)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
 
    ck_assert_msg(ewe_ruler_step_set(NULL, NULL, 100) == EINA_FALSE, "Setted step to the NULL ruler object");
 
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 

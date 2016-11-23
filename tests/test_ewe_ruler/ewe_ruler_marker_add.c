@@ -55,6 +55,7 @@
 EFLETE_TEST(ewe_ruler_marker_add_test_p)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
    Evas_Object *ruler, *parent;
    Ewe_Ruler_Marker *result;
@@ -66,6 +67,7 @@ EFLETE_TEST(ewe_ruler_marker_add_test_p)
 
    evas_object_del(parent);
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
@@ -94,6 +96,7 @@ END_TEST
 EFLETE_TEST(ewe_ruler_marker_add_test_n)
 {
    logger_init();
+   elm_init(0, 0);
    app_init();
    Ewe_Ruler_Marker *result;
 
@@ -101,6 +104,7 @@ EFLETE_TEST(ewe_ruler_marker_add_test_n)
    ck_assert_msg(result == NULL, "Not NULL returned");
 
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
