@@ -118,9 +118,10 @@ static char *part_types[] = {
      "Mesh node",
      "Light",
      "Camera",
-     "Snapshot"
+     "Snapshot",
+     "Vector"
 };
-static unsigned int part_types_count = 16;
+static unsigned int part_types_count = 17;
 
 const char *
 part_type_text_get(Edje_Part_Type part_type)

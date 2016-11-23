@@ -98,6 +98,7 @@ static Edje_Part_Type part_types[] = {
      EDJE_PART_TYPE_TABLE,
      EDJE_PART_TYPE_PROXY,
      EDJE_PART_TYPE_SPACER,
+     EDJE_PART_TYPE_VECTOR,
      EDJE_PART_TYPE_NONE
 };
 static const char *program_actions[] = {
@@ -371,6 +372,9 @@ _part_content_get(void *data,
            case EDJE_PART_TYPE_EXTERNAL:
               IMAGE_ADD_NEW(obj, content, "icon", "external");
               break;
+           case EDJE_PART_TYPE_VECTOR:
+              IMAGE_ADD_NEW(obj, content, "icon", "vector");
+              break;
           default:
               ERR("Unhandled part type");
               abort();
@@ -414,6 +418,9 @@ _part_content_get(void *data,
            case EDJE_PART_TYPE_EXTERNAL:
               IMAGE_ADD_NEW(obj, content, "icon", "external");
               break;
+           case EDJE_PART_TYPE_VECTOR:
+              IMAGE_ADD_NEW(obj, content, "icon", "vector1");
+              break;
           default:
               ERR("Unhandled part type");
               abort();
@@ -455,6 +462,9 @@ _part_content_get(void *data,
               break;
            case EDJE_PART_TYPE_EXTERNAL:
               IMAGE_ADD_NEW(obj, content, "icon", "external");
+              break;
+           case EDJE_PART_TYPE_VECTOR:
+              IMAGE_ADD_NEW(obj, content, "icon", "vector2");
               break;
           default:
               ERR("Unhandled part type");
