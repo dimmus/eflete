@@ -11,7 +11,9 @@ group { name: "elm/layout/manager/internal";
             text {
                font: "Breeze";
                size: 13;
+               min: 1 0;
                max: 1 0;
+               ellipsis: -1;
             }
             rel1.to_x: "border";
             rel2.to_x: "border";
