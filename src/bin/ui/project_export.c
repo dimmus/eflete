@@ -107,7 +107,7 @@ _export_dev(void *data __UNUSED__,
    exist_permission_check(dir,
                           name,
                           _("Export to develop edj-file"),
-                          eina_strbuf_string_get(buf), EINA_TRUE, /* check this true on upstream I have doubts about that */
+                          eina_strbuf_string_get(buf), FILE_SAVE_APPEND,
                           _after_export_dev_check, (void *)eina_stringshare_add(path));
    free(dir);
    eina_strbuf_free(buf);
@@ -185,7 +185,7 @@ _export_release(void *data __UNUSED__,
    exist_permission_check(elm_fileselector_path_get(obj),
                           elm_fileselector_current_name_get(obj),
                           _("Export to release edj-file"),
-                          eina_strbuf_string_get(buf), EINA_FALSE,
+                          eina_strbuf_string_get(buf), FILE_SAVE_ASK,
                           _after_export_release_check, (void *)eina_stringshare_add(path));
    eina_strbuf_free(buf);
 
@@ -264,7 +264,7 @@ _export_source_code(void *data,
    exist_permission_check(exdata->path,
                           ap.project->name,
                           _("Export to develop edj-file"),
-                          eina_strbuf_string_get(buf), EINA_FALSE,
+                          eina_strbuf_string_get(buf), FILE_SAVE_ASK,
                           _after_export_source_code_check, exdata);
    eina_strbuf_free(buf);
 
@@ -338,7 +338,7 @@ _export_group_source_code(void *data __UNUSED__,
                              path, name);
    exist_permission_check(path, name,
                           _("Export group source code"),
-                          eina_strbuf_string_get(buf), EINA_FALSE, _after_group_source_check, path);
+                          eina_strbuf_string_get(buf), FILE_SAVE_ASK, _after_group_source_check, path);
 
    eina_strbuf_free(buf);
    free(name);

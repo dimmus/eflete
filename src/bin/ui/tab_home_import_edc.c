@@ -465,7 +465,7 @@ _after_popup_close(void *data __UNUSED__,
 
    exist_permission_check(elm_entry_entry_get(tab_edc.path),
                                elm_entry_entry_get(tab_edc.name),
-                               _("Import edc-file"), eina_strbuf_string_get(buf), EINA_FALSE,
+                               _("Import edc-file"), eina_strbuf_string_get(buf), FILE_SAVE_ASK,
                                _after_import_check, NULL);
    eina_strbuf_free(buf);
 }

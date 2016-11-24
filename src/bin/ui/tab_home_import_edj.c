@@ -522,7 +522,12 @@ _after_popup_close(void *data __UNUSED__,
 
    exist_permission_check(elm_entry_entry_get(tab_edj.path),
                                elm_entry_entry_get(tab_edj.name),
-                               _("Import edj-file"), eina_strbuf_string_get(buf), EINA_FALSE,
+                               _("Import edj-file"), eina_strbuf_string_get(buf),
+#if !HAVE_TIZEN
+							   FILE_SAVE_ASK,
+#else
+							   FILE_SAVE_REPLACE,
+#endif
                                _after_import_check, NULL);
    eina_strbuf_free(buf);
 }

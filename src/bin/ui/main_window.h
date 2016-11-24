@@ -104,6 +104,13 @@ typedef enum
    BG_PREVIEW_BLACK
 } Bg_Preview;
 
+typedef enum
+{
+   FILE_SAVE_ASK = 1,
+   FILE_SAVE_REPLACE,
+   FILE_SAVE_APPEND
+} File_Save;
+
 /**
  * The validation func for popup action.
  *

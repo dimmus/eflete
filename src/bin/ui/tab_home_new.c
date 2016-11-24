@@ -558,7 +558,7 @@ _after_popup_close(void *data __UNUSED__,
 
    exist_permission_check(elm_entry_entry_get(tab_new.path),
                                elm_entry_entry_get(tab_new.name),
-                               _("New project"), eina_strbuf_string_get(buf), EINA_FALSE,
+                               _("New project"), eina_strbuf_string_get(buf), FILE_SAVE_ASK,
                                _after_on_create_check, NULL);
    eina_strbuf_free(buf);
 }

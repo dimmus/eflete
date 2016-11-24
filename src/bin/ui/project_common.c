@@ -69,7 +69,7 @@ end:
 
 Eina_Bool
 exist_permission_check(const char *path, const char *name,
-                       const char *title, const char *msg, Eina_Bool append,
+                       const char *title, const char *msg, File_Save option,
                        Ecore_Cb func,
                        const void *data)
 {
@@ -108,15 +108,26 @@ exist_permission_check(const char *path, const char *name,
         eina_strbuf_free(pcd->buf);
         goto exit;
      }
-   if (!append)
+
+   if (option == FILE_SAVE_ASK)
      {
         popup = popup_add(title, msg, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
         evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _exist_permission_popup_close_cb, pcd);
         return ret;
      }
-   else if (pcd->func)
+   else
      {
-        pcd->func((void *)pcd->data);
+        if (!ecore_file_can_write(eina_strbuf_string_get(pcd->buf)))
+          {
+             ecore_job_add(_permision_popup_job, pcd);
+             ret = false;
+             goto exit;
+          }
+
+        if (option == FILE_SAVE_REPLACE)
+             ecore_file_recursive_rm(eina_strbuf_string_get(pcd->buf));
+        if (pcd->func)
+          pcd->func((void *)pcd->data);
      }
 
 exit:
