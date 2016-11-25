@@ -99,9 +99,7 @@ _project_descriptor_init(Project_Process_Data *ppd)
    ppd->eed_project = eet_data_descriptor_stream_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "version", version, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "dev", dev, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "develop_path", develop_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "name", name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "release_options", release_options, EET_T_STRING);
 }
 
@@ -586,7 +584,7 @@ _project_close_internal(Project *project)
 static PM_Project_Result
 _project_open_internal(Project_Process_Data *ppd)
 {
-   char cmd[PATH_MAX];
+   char buf[PATH_MAX];
    char *file_dir;
 
 #ifdef _WIN32
@@ -638,6 +636,20 @@ _project_open_internal(Project_Process_Data *ppd)
    ppd->project->ef = ef;
    ppd->project->pro_path = eina_stringshare_add(ppd->path);
    ppd->project->pro_fd = pro_fd;
+
+   file_dir = ecore_file_dir_get(ppd->path);
+   ppd->project->dev = eina_stringshare_printf("%s/%s.dev", file_dir, ppd->name);
+   ppd->project->saved_edj = eina_stringshare_printf("%s/%s.edj", file_dir, ppd->name);
+   ppd->project->develop_path = eina_stringshare_printf("%s/develop", file_dir);
+
+   snprintf(buf, sizeof(buf), "%s/images", ppd->project->develop_path);
+   ecore_file_mkdir(buf);
+   snprintf(buf, sizeof(buf), "%s/sounds", ppd->project->develop_path);
+   ecore_file_mkdir(buf);
+   snprintf(buf, sizeof(buf), "%s/fonts", ppd->project->develop_path);
+   ecore_file_mkdir(buf);
+
+
 
    /* updating .dev file path */
    tmp = strdup(ppd->path);
@@ -724,11 +736,10 @@ _project_open_internal(Project_Process_Data *ppd)
 
 
 /******************************************************************************/
-   file_dir = ecore_file_dir_get(ppd->path);
-   snprintf(cmd, sizeof(cmd),
+   snprintf(buf, sizeof(buf),
             "%s --edj %s --path %s/develop", ap.path.exporter, ppd->project->saved_edj, file_dir);
 
-   ecore_exe_pipe_run(cmd, FLAGS, NULL);
+   ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exporter_finish_handler, ppd);
