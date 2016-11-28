@@ -223,7 +223,6 @@ _project_create(Project_Process_Data *ppd)
         last_error = PM_PROJECT_CREATE_PRO_FAILED;
         goto exit;
      }
-   pro->pro_fd = -1;
    ecore_file_mkdir(pro->develop_path);
    snprintf(buf, sizeof(buf), "%s/images", pro->develop_path);
    ecore_file_mkdir(buf);
@@ -406,100 +405,130 @@ _end_send(void *data)
    func(udata, last_error, project);
 }
 
-#ifndef _WIN32
 static Eina_Bool
-_lock_try(const char *path, Eina_Bool check, int *pro_fd)
+_project_lock(Project *project)
 {
-   struct flock lock, savelock;
+   char path[PATH_MAX];
+   char buf[BUFF_MAX];
+   char *dir;
+   int pid;
 
-   int fd = open(path, O_RDWR);
+   assert(project != NULL);
+
+   pid = getpid();
+
+   dir = ecore_file_dir_get(project->pro_path);
+   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   free(dir);
+   project->fd_lock = open(path, O_RDWR | O_CREAT, S_IWUSR);
+   if (!project->fd_lock)
+     {
+        ERR("%s: %s\n", path, strerror(errno));
+        return false;
+     }
+
+#ifndef _WIN32
+   struct flock fl;
+   fl.l_type = F_WRLCK;
+   fl.l_whence = SEEK_SET;
+   fl.l_start = 0;
+   fl.l_len = 0;
+   fl.l_pid = pid;
+   if (fcntl(project->fd_lock, F_SETLK, &fl) == -1)
+     {
+        ERR("Unable to lock project file '%s'\n", path);
+        close(project->fd_lock);
+        return false;
+     }
+#endif /* _WIN32 */
+
+   snprintf(buf, sizeof(buf), "%d\n", pid);
+   if (!write(project->fd_lock, buf, strlen(buf)))
+     {
+        close(project->fd_lock);
+        return false;
+     }
+
+   return true;
+}
+
+static Eina_Bool
+_project_unlock(Project *project)
+{
+   char path[PATH_MAX];
+   char *dir;
+
+   assert(project != NULL);
+
+
+   dir = ecore_file_dir_get(project->pro_path);
+   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   free(dir);
+
+#ifndef _WIN32
+   struct flock fl;
+   fl.l_type = F_UNLCK;
+   fl.l_whence = SEEK_SET;
+   fl.l_start = 0;
+   fl.l_len = 0;
+   fl.l_pid = getpid();
+   if (fcntl(project->fd_lock, F_SETLK, &fl) == -1)
+     {
+        ERR("Unable to unlock file '%s'\n", path);
+        return false;
+     }
+#endif /* _WIN32 */
+
+   close(project->fd_lock);
+   if (!ecore_file_unlink(path))
+     ERR("unlink %s: %s\n", path, strerror(errno));
+
+   return true;
+}
+
+static Eina_Bool
+_project_trylock(const char *pro_path)
+{
+   int fd;
+   char *dir;
+   char path[PATH_MAX];
+   Eina_Bool ret = true;
+
+   assert(path != NULL);
+
+   dir = ecore_file_dir_get(pro_path);
+   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   free(dir);
+   if (!ecore_file_exists(path))
+     return true;
+
+
+   fd = open(path, O_RDWR);
    if (fd < 1)
      {
         ERR(" %s\n", strerror(errno));
-        return check;
-     }
-
-   lock.l_type    = F_WRLCK;   /* Test for any lock on any part of file. */
-   lock.l_whence  = SEEK_SET;
-   lock.l_start   = 0;
-   lock.l_len     = 0;
-   lock.l_pid     = 0;
-   savelock = lock;
-   if (fcntl(fd, F_GETLK, &lock) == -1)
-     {
-        ERR("Failed get lock status of file [%s] error message [%s].\n", path, strerror(errno));
-        close(fd);
-        return false;
-     }
-   if ((lock.l_pid != 0) && ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK)))
-     {
-        ERR("Process %d has a write lock already!", lock.l_pid);
-        close(fd);
         return false;
      }
 
-   /* if flag check is false not need to lock the file, just close handler */
-   if (!check)
+#ifndef _WIN32
+   struct flock fl;
+   fl.l_type = F_UNLCK;
+   fl.l_whence = SEEK_SET;
+   fl.l_start = 0;
+   fl.l_len = 0;
+   fl.l_pid = 0;
+   if (fcntl(fd, F_GETLK, &fl) != -1)
      {
-        close(fd);
-        return true;
+        if (fl.l_type != F_UNLCK)
+          ret = false;
      }
+   else
+     ret = false;
+#endif /* _WIN32 */
 
-   if (pro_fd)
-     {
-        savelock.l_pid = getpid();
-        if (fcntl(fd, F_SETLK, &savelock) == -1)
-          {
-             ERR("Failed set lock status of file [%s] error message [%s].\n", path, strerror(errno));
-             close(fd);
-             return false;
-          }
-        *pro_fd = fd;
-        return true;
-     }
    close(fd);
-   return false;
+   return ret;
 }
-#else
-static Eina_Bool
-_lock_try(const char *path, Eina_Bool check, HANDLE *pro_fd)
-{
-   LPCTSTR  lpFileName = path;
-   DWORD dwDesiredAccess = GENERIC_READ|GENERIC_WRITE;
-   DWORD  dwShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
-   LPSECURITY_ATTRIBUTES  lpSecurityAttributes = NULL;
-   DWORD  dwCreationDisposition = OPEN_EXISTING;
-   DWORD  dwFlagsAndAttributes = 0;
-   HANDLE  hTemplateFile = NULL;
-   HANDLE fd = CreateFile(lpFileName,
-                          dwDesiredAccess,
-                          dwShareMode,
-                          lpSecurityAttributes,
-                          dwCreationDisposition,
-                          dwFlagsAndAttributes,
-                          hTemplateFile);
-
-   if (fd == INVALID_HANDLE_VALUE)
-     {
-        ERR("The file '%s' cannot be opened in mode read-write!", path);
-        return !check;
-     }
-
-   if (!check)
-     {
-        CloseHandle(fd);
-        return true;
-     }
-    if (pro_fd)
-     {
-        *pro_fd = fd;
-        return true;
-     }
-
-    CloseHandle(fd);
-    return false;
-}
-#endif
 
 static Eina_Bool
 _exe_output_handler(void *data,
@@ -545,6 +574,8 @@ _exporter_finish_handler(void *data,
 static void
 _project_close_internal(Project *project)
 {
+   _project_unlock(project);
+
    if (project->global_object)
      evas_object_del(project->global_object);
 
@@ -572,13 +603,6 @@ _project_close_internal(Project *project)
 
    if (project->ef)
      eet_close(project->ef);
-#ifdef _WIN32
-   if (project->pro_fd != INVALID_HANDLE_VALUE)
-     CloseHandle(project->pro_fd);
-#else
-   if (project->pro_fd != -1)
-     close(project->pro_fd);
-#endif
 }
 
 static PM_Project_Result
@@ -586,12 +610,6 @@ _project_open_internal(Project_Process_Data *ppd)
 {
    char buf[PATH_MAX];
    char *file_dir;
-
-#ifdef _WIN32
-   HANDLE pro_fd = NULL;
-#else
-   int pro_fd = -1;
-#endif
 
    Eet_File *ef;
    char *tmp;
@@ -601,20 +619,6 @@ _project_open_internal(Project_Process_Data *ppd)
    last_error = PM_PROJECT_SUCCESS;
 
    edje_file_cache_flush();
-   if (!_lock_try(ppd->path, true,  &pro_fd))
-     {
-        /* really this case is unlickly, but we need handle it */
-        ERR("Project file already locked by another application");
-#ifdef _WIN32
-        CloseHandle(pro_fd);
-#else
-        if (pro_fd != -1)
-          close(pro_fd);
-#endif
-        last_error = PM_PROJECT_LOCKED;
-        return last_error;
-     }
-
    ef = eet_open(ppd->path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      {
@@ -635,7 +639,6 @@ _project_open_internal(Project_Process_Data *ppd)
 
    ppd->project->ef = ef;
    ppd->project->pro_path = eina_stringshare_add(ppd->path);
-   ppd->project->pro_fd = pro_fd;
 
    file_dir = ecore_file_dir_get(ppd->path);
    ppd->project->dev = eina_stringshare_printf("%s/%s.dev", file_dir, ppd->name);
@@ -649,7 +652,7 @@ _project_open_internal(Project_Process_Data *ppd)
    snprintf(buf, sizeof(buf), "%s/fonts", ppd->project->develop_path);
    ecore_file_mkdir(buf);
 
-
+   _project_lock(ppd->project);
 
    /* updating .dev file path */
    tmp = strdup(ppd->path);
@@ -827,14 +830,6 @@ _project_import_edj(Project_Process_Data *ppd)
    ppd->project = _project_create(ppd);
    if (!ppd->project)
      return last_error;
-
-   if (!_lock_try(ppd->project->pro_path, true, &ppd->project->pro_fd))
-     {
-        /* really this case is unlickly, but we need handle it */
-        last_error = PM_PROJECT_LOCKED;
-        _end_send(ppd);
-        return last_error;
-     }
 
    groups = edje_file_collection_list(ppd->edj);
    count = eina_list_count(groups);
@@ -1458,7 +1453,7 @@ pm_lock_check(const char *path)
 {
    if (ecore_file_exists(path) == false)
      return true;
-   return _lock_try(path, false, NULL);
+   return _project_trylock(path);
 }
 
 const char *

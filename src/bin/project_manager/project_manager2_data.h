@@ -41,12 +41,6 @@ struct _Project
 {
    /* version of project file */
    int version;
-   /** File descriptor of open "*.pro" file. Needed for keep that file locked*/
-#ifdef _WIN32
-   HANDLE pro_fd;
-#else
-   int pro_fd;
-#endif
    /** The project name */
    Eina_Stringshare *name;
    /** project path */
@@ -61,6 +55,13 @@ struct _Project
    Evas_Object *global_object;
    /** this is saved file. */
    Eina_Stringshare *saved_edj;
+
+   /** File descriptor of open "project.lock" file. Needed for keep that file locked*/
+#ifdef _WIN32
+   HANDLE fd_lock;
+#else
+   int fd_lock;
+#endif
 
    /** path where will be saved the develop edj file */
    Eina_Stringshare *develop_path;
