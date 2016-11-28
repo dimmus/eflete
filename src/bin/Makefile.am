@@ -204,8 +204,8 @@ libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
 
 eflete_LDADD = \
 libete.a \
-@EFL_LIBS@ \
 ${top_builddir}/src/lib/libewe.a \
+@EFL_LIBS@ \
 @LTLIBINTL@
 
 eflete_exporter_SOURCES = ../../src/bin/exporter/eflete_exporter.c

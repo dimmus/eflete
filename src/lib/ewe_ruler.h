@@ -32,13 +32,6 @@
  */
 
 #include "ewe_ruler_common.h"
-
-#ifdef EFL_EO_API_SUPPORT
-#include "ewe_ruler_eo.h"
-#endif
-
-#ifndef EFL_NOLEGACY_API_SUPPORT
 #include "ewe_ruler_legacy.h"
-#endif
 
 #endif /* EWE_RULER_H */

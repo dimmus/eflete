@@ -15,8 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+
 #include "ewe_private.h"
 #include "ewe_widget_ruler.h"
+#undef EAPI
+#define EAPI
+#include "ewe_ruler_eo.h"
 
 #define MY_CLASS EWE_RULER_CLASS
 
