@@ -238,6 +238,11 @@ elm_main(int argc, char **argv)
              return -1;
           }
 
+        if (export_edj)
+          {
+             if (!eina_str_has_suffix(export_edj, ".edj"))
+               _ERR_EXIT(_("--export-edj value have not extension '.edj'. Wrong value."));
+          }
         if (reopen)
           {
              if (file)
@@ -339,11 +344,6 @@ elm_main(int argc, char **argv)
                }
              else if (widgets)
                _ERR_EXIT(_("widgets can be added only to new project."));
-          }
-        if (export_edj)
-          {
-             if (!eina_str_has_suffix(export_edj, ".edj"))
-               _ERR_EXIT(_("--export-edj value have not extension '.edj'. Wrong value."));
           }
 
 run:
