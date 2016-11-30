@@ -362,6 +362,10 @@ run:
         evas_object_show(ap.win);
         elm_run();
 exit:
+   if (ap.project)
+     if (pm_project_close(ap.project) != PM_PROJECT_SUCCESS)
+       ERR("Unable to close project");
+
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();
 #endif
