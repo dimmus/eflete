@@ -97,6 +97,8 @@ _image_resources_load(Project *project)
         /* for supporting old themes, which were compilled
          * with edje_cc version less than 1.10 */
         if (!image_name) continue;
+        if (!strcmp(image_name, EFLETE_DUMMY_IMAGE_NAME))
+          continue;
 
         res = mem_calloc(1, sizeof(Image2));
         res->common.type = RESOURCE2_TYPE_IMAGE;
