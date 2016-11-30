@@ -446,9 +446,6 @@ _image_manager_init(void)
                    continue;
                 }
 
-              /* skip dummy image */
-              if (!strcmp(res->common.name, EFLETE_DUMMY_IMAGE_NAME)) continue;
-
               it = _image_manager_gengrid_item_data_create(ap.project->global_object, res);
               elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);
            }
