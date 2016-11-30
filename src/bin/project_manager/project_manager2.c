@@ -936,6 +936,7 @@ pm_project_import_edj(const char *name,
                       const void *data)
 {
    Project_Process_Data *ppd;
+   Eina_Stringshare *pro_path;
 
    assert(name != NULL);
    assert(path != NULL);
@@ -958,7 +959,9 @@ pm_project_import_edj(const char *name,
         Project *project = ppd->project;
         _project_process_data_cleanup(ppd);
         _project_close_internal(project);
-        ecore_file_recursive_rm(spath);
+        pro_path = eina_stringshare_printf("%s/%s", spath, name);
+        ecore_file_recursive_rm(pro_path);
+        eina_stringshare_del(pro_path);
      }
 
    free(spath);
