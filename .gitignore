@@ -17,6 +17,8 @@
 intl/
 src/bin/eflete
 src/bin/eflete_exporter
+src/bin/eflete.exe
+src/bin/eflete_exporter.exe
 *.dirstamp
 *.log
 *.trs
