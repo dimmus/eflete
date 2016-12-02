@@ -39,7 +39,7 @@
 #define DATA_NAME_REGEX ".*"
 #define FONT_STYLE_REGEX "^((\\w|[- ])+(:(style|slant|weight|width|spacing|lang)=\\w+)?)?$"
 #define IMAGE_BORDER_REGEX "^([0-9]+( [0-9]+){3}){0,1}?$"
-#define FREQUENCY_REGEX "^\\b([2-9][0-9]|[1-9][0-9]{2,3}|1[0-9]{4}|20000)\\b$"
+#define FREQUENCY_REGEX "^([2-9][0-9]|[1-9][0-9]{2,3}|1[0-9]{4}|20000)$"
 
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
 #define STYLE_NAME_BANNED_SYMBOLS ":;,.'`\"~!?&^%$#@()[]=+*{} |\\№"
