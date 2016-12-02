@@ -55,6 +55,41 @@ _help(void *data __UNUSED__,
 }
 
 static void
+_image_manager(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   if (ap.project)
+     image_manager_add();
+}
+
+static void
+_sound_manager(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   if (ap.project)
+     sound_manager_add();
+}
+
+static void
+_style_manager(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   if (ap.project)
+     style_manager_add();
+}
+
+static void
+_color_class_manager(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   if (ap.project)
+     colorclass_manager_add();
+}
+static void
 _after_popup_close(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
@@ -126,6 +161,10 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, signals.elm.win.delete_request, _close_request, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.quit, _close_request, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.help, _help, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.manager.image, _image_manager, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.manager.sound, _sound_manager, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.manager.color_class, _color_class_manager, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.manager.style, _style_manager, NULL);
 
 #if 0 // turn off the eflete main cursor, while not used elementary combobox, and not fixed bug with double cursors
    if (!cursor_main_set(ap.win, CURSOR_ARROW))
