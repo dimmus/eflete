@@ -21,6 +21,7 @@
 #include "property_private.h"
 #include "demo_group.h"
 #include "project_manager2.h"
+#include "tabs.h"
 
 #define DEMO_MASK(TYPE) (1u << TYPE)
 #define DEMO_SIGNAL     DEMO_MASK(EDJE_PART_TYPE_NONE) /* in case of SIGNAL things are different */
@@ -191,6 +192,7 @@ _fill_combobox_group(Evas_Object *control)
    Elm_Genlist_Item_Class *itc;
    Eina_List *l;
    Group2 *group;
+   Group2 *current_group = tabs_current_group_get();
 
    assert(control != NULL);
 
@@ -207,6 +209,7 @@ _fill_combobox_group(Evas_Object *control)
 
    EINA_LIST_FOREACH(ap.project->RM.groups, l, group)
      {
+        if (group == current_group) continue;
         combobox_item = mem_malloc(sizeof(Combobox_Item));
         combobox_item->index = i++;
         combobox_item->data = eina_stringshare_add(group->common.name);
