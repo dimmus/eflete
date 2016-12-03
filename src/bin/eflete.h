@@ -145,6 +145,7 @@ struct _App_Data
                                        This is needed to continue closing application after
                                        clicking in save/don't save buttons in project close
                                        popup */
+   Eina_Bool open_group : 1;
 #ifdef HAVE_ENVENTOR
    Evas_Object *enventor;
    Eina_Bool enventor_mode : 1;

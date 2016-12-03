@@ -57,6 +57,7 @@ typedef struct
 static Project_Navigator project_navigator;
 static Layout_Popup layout_p;
 static Resource_Name_Validator *validator = NULL;
+static Eina_Bool first_group_open = EINA_FALSE;
 
 static char *
 _group_item_label_get(void *data,
@@ -196,6 +197,7 @@ _expanded_cb(void *data __UNUSED__,
    Eina_List *folders = NULL, *groups = NULL;
    Elm_Object_Item *glit = event_info;
    Eina_Stringshare *prefix = elm_object_item_data_get(glit);
+   Elm_Object_Item *it;
 
    if (glit == project_navigator.item_top)
      widget_tree_items_get(ap.project->RM.groups, "", &folders, &groups);
@@ -204,23 +206,33 @@ _expanded_cb(void *data __UNUSED__,
 
    EINA_LIST_FREE(folders, prefix)
      {
-        elm_genlist_item_append(project_navigator.genlist,
+        it = elm_genlist_item_append(project_navigator.genlist,
                                 project_navigator.itc_folder,
                                 prefix,
                                 glit,
                                 ELM_GENLIST_ITEM_TREE,
                                 NULL,
                                 NULL);
+        if (ap.open_group && !first_group_open)
+          elm_genlist_item_expanded_set(it, true);
      }
    EINA_LIST_FREE(groups, group)
      {
-        elm_genlist_item_append(project_navigator.genlist,
+        it = elm_genlist_item_append(project_navigator.genlist,
                                 project_navigator.itc_group,
                                 group,
                                 glit,
                                 ELM_GENLIST_ITEM_NONE,
                                 NULL,
                                 NULL);
+        if (ap.open_group && !first_group_open)
+          {
+             elm_genlist_item_selected_set(it, true);
+
+             Group2 *group = (Group2 *)elm_object_item_data_get(it);
+             evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, group);
+             first_group_open = EINA_TRUE;
+          }
      }
 }
 

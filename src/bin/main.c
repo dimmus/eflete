@@ -71,6 +71,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Add data directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('w', "widget", "Add widget to new project or import edj-file. Add its styles if the style names are added. Copy its styles if the copy style names are added. **rule = WIDGET:STYLE[COPY_STYLE,..]{ITEM_STYLE,..[COPY_ITEM_STYLE,..]},..", "(Follow the below rule)", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
+      ECORE_GETOPT_STORE_TRUE('o', "open-group", "open the first group automatically"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
       ECORE_GETOPT_LICENSE  ('l', "license"),
@@ -185,7 +186,7 @@ _new_project(void *data __UNUSED__)
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
-   Eina_Bool info_only = false, reopen = false;
+   Eina_Bool info_only = false, reopen = false, open_group = false;
    Config *config;
    Recent *r;
    int pos;
@@ -201,6 +202,7 @@ elm_main(int argc, char **argv)
      ECORE_GETOPT_VALUE_LIST(data_dirs),
      ECORE_GETOPT_VALUE_LIST(widgets),
      ECORE_GETOPT_VALUE_BOOL(reopen),
+     ECORE_GETOPT_VALUE_BOOL(open_group),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -359,6 +361,7 @@ run:
              ecore_file_mkpath(export_edc);
              ap.path.export_edc = eina_stringshare_add(export_edc);
           }
+        ap.open_group = open_group;
         evas_object_show(ap.win);
         elm_run();
 exit:

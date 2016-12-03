@@ -1255,7 +1255,7 @@ subtab_select:
    button = elm_object_part_content_get(content, "elm.swallow.btn_create");
    evas_object_smart_callback_call(button, signals.elm.button.clicked, NULL);
 #endif /* HAVE_TIZEN */
-   elm_toolbar_item_selected_set(item->toolbar_item, true);
+   if (!ap.open_group) elm_toolbar_item_selected_set(item->toolbar_item, true);
 }
 
 void
