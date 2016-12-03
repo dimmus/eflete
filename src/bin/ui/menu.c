@@ -183,16 +183,16 @@ _menu_cb(void *data __UNUSED__,
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_WINDOW_MANAGER_IMAGE:
-         image_manager_add();
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_IMAGE_MANAGER);
          break;
       case MENU_WINDOW_MANAGER_SOUND:
-         sound_manager_add();
-         break;
-      case MENU_WINDOW_MANAGER_COLORCLASS:
-         colorclass_manager_add();
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SOUND_MANAGER);
          break;
       case MENU_WINDOW_MANAGER_TEXT_STYLE:
-         style_manager_add();
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_STYLE_MANAGER);
+         break;
+      case MENU_WINDOW_MANAGER_COLORCLASS:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER);
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
