@@ -112,7 +112,11 @@ _content_set(void *data,
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
         if (ap.project)
-          ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
+          {
+             ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
+             ui_menu_disable_set(ap.menu, MENU_EDIT_STATE_ADD, true);
+             ui_menu_disable_set(ap.menu, MENU_EDIT_ITEM_ADD, true);
+          }
         if (item->need_recalc)
           {
              workspace_groupview_hard_update(tabs.current_workspace);

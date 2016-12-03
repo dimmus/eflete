@@ -674,7 +674,9 @@ _unselect_internal(Part_List *pl)
    pl->group->current_selected = NULL;
 
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
+   ui_menu_disable_set(ap.menu, MENU_EDIT_STATE_ADD, true);
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
+   ui_menu_disable_set(ap.menu, MENU_EDIT_ITEM_ADD, true);
 
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
@@ -691,10 +693,14 @@ _enable_buttons(Part_List *pl, Elm_Object_Item *glit)
    if (pl->part)
      {
         elm_object_item_disabled_set(pl->add_state_menu_item, false);
+        ui_menu_disable_set(ap.menu, MENU_EDIT_STATE_ADD, false);
 
         if ((pl->part->type == EDJE_PART_TYPE_BOX) ||
             (pl->part->type == EDJE_PART_TYPE_TABLE))
-          elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
+          {
+             elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
+             ui_menu_disable_set(ap.menu, MENU_EDIT_ITEM_ADD, false);
+          }
      }
    if (pl->group->current_selected)
      {
@@ -2602,9 +2608,11 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(pl->add_state_menu_item), "elm.shortcut", "w");
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
+   ui_menu_disable_set(ap.menu, MENU_EDIT_STATE_ADD, true);
    pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(pl->add_part_item_menu_item), "elm.shortcut", "e");
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
+   ui_menu_disable_set(ap.menu, MENU_EDIT_ITEM_ADD, true);
 #if !HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
 #endif
