@@ -234,7 +234,11 @@ ui_main_window_add(void)
    #endif /* HAVE_ENVENTOR */
 
    elm_config_window_auto_focus_enable_set(false);
-   return true;
+
+#if HAVE_TIZEN
+   elm_config_tooltip_delay_set(0.2);
+#endif
+    return true;
 }
 
 #if !HAVE_TIZEN
