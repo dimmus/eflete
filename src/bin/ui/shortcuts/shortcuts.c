@@ -673,6 +673,7 @@ shortcuts_shortcut_new_set(Shortcut_Type type, Evas_Event_Key_Up *ev)
         shortcut->combination = _combination_string_get(shortcut);
         ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts,
                                                           (Eina_Compare_Cb) _shortcut_cmp, shortcut);
+        ((Profile *)profile_get())->shortcuts = ap.shortcuts->shortcuts;
      }
    else return false;
 
