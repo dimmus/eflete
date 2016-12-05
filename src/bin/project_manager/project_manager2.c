@@ -1006,6 +1006,7 @@ _project_import_edc(void *data)
    ppd->edj = eina_stringshare_printf("%s/out.edj", ppd->tmp_dirname);
    snprintf(buf, sizeof(buf),
             "edje_cc -v %s %s %s", ppd->edc, ppd->edj, ppd->build_options);
+   DBG("Run command for compile: %s\n", buf);
    ecore_exe_pipe_run(buf, FLAGS, NULL);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
