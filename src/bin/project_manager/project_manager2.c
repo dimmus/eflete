@@ -1297,7 +1297,7 @@ _develop_export_finish_handler(void *data,
 
    if (ppd->tmp_dirname)
      {
-        ecore_file_recursive_rm(ppd->path);
+        ecore_file_unlink(ppd->path);
         ecore_file_mv(ppd->tmp_dirname, ppd->path);
         eina_tmpstr_del(ppd->tmp_dirname);
         ppd->tmp_dirname = NULL;
