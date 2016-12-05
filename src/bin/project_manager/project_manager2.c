@@ -1343,7 +1343,10 @@ pm_project_develop_export(Project *project,
           eina_strbuf_append_printf(cmd, "edje_pick -o %s", path);
         else
           {
-             eina_file_mkstemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
+             int fd = eina_file_mkstemp("eflete_export_XXXXXX", &ppd->tmp_dirname);
+             /* special for Windows. Window does not like the opened handlers
+                we need close it for write file in future. */
+             close(fd);
              eina_strbuf_append_printf(cmd, "edje_pick -o %s", ppd->tmp_dirname);
              eina_strbuf_append_printf(cmd, " -a %s", path);
           }
