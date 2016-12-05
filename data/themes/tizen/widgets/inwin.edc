@@ -4,11 +4,7 @@ group { name: "elm/win/inwin/modal_window";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
-            color: 255 0 0 50;
+            color: 0 0 0 50;
          }
       }
       part { name: "shadow";
@@ -232,17 +228,6 @@ group { name: "elm/win/inwin/modal_window";
          signal: "mouse,clicked,*";
          source: "block_events";
          action: SIGNAL_EMIT "elm,action,click" "elm";
-         after: "deeper_block_color";
-      }
-      program { name: "deeper_block_color";
-         action: STATE_SET "clicked" 0.00;
-         target: "block_events";
-         after: "default_block_color";
-      }
-      program { name: "default_block_color";
-         action: STATE_SET "default" 0.00;
-         transition: LINEAR 0.20000;
-         target: "block_events";
       }
    }
 }
