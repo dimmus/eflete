@@ -2239,53 +2239,6 @@ group { name: "elm/layout/about/default";
             }
          }
       }
-      part { name: "note.label";
-         type: TEXT;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 104 13;
-            max: 104 13;
-            color_class: "genlist_text_tree";
-            text {
-               text: "Release Note";
-               font: FN_B;
-               size: 10;
-               align: 0.0 0.5;
-            }
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 28 14;
-               to_x: "bg";
-               to_y: "site.label";
-            }
-            rel2.to: "bg";
-         }
-      }
-      part { name: "note.text";
-         type: TEXT;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            min: 0 13;
-            max: -1 13;
-            color_class: "popup_helper_border";
-            text {
-               text: "http://xx.xx.xx";
-               font: FN;
-               size: 10;
-               align: 0.0 0.5;
-            }
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 47 0;
-               to: "note.label";
-            }
-            rel2 {
-               offset: -54 0;
-               to_x: "bg";
-               to_y: "note.label";
-            }
-         }
-      }
    }
 }
 
