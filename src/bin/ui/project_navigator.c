@@ -698,7 +698,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         if (!_folder_check(prefix, true))
           {
              popup_add(_("Warning: Delete layout"),
-                       _("Cann't delete one of those opened layouts. Please, "
+                       _("Can't delete one of those opened layouts. Please, "
                          "close the layout tab before delete it."),
                        BTN_CANCEL, NULL, NULL);
              return;
@@ -720,7 +720,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         if (group->edit_object)
           {
              popup_add(_("Warning: Delete layout"),
-                       _("Cann't delete the opened layout. Please, "
+                       _("Can't delete the opened layout. Please, "
                          "close the layout tab before delete it."),
                        BTN_CANCEL, NULL, NULL);
              return;
