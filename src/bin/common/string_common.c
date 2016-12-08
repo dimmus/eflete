@@ -102,8 +102,11 @@ char *
 string_backslash_insert(const char *str, char src)
 {
    assert(str != NULL);
-   char dst[256];
+   char *dst;
    int i = 0;
+   int count = 1;
+
+   dst = mem_malloc((strlen(str) + count) * sizeof(char));
 
    while (*str != '\0')
      {
@@ -111,6 +114,8 @@ string_backslash_insert(const char *str, char src)
           dst[i] = *str;
         else
           {
+             count++;
+             dst = mem_malloc((strlen(str) + count) * sizeof(char));
              dst[i++] = '\\';
              dst[i] = src;
           }
@@ -119,7 +124,7 @@ string_backslash_insert(const char *str, char src)
      }
    dst[i] = '\0';
 
-   return strdup(dst);
+   return dst;
 }
 
 /**
