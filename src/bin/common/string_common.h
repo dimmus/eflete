@@ -66,6 +66,9 @@ string_cat(const char *str1, const char *str2);
 const char *
 string_rstr(const char *str1, const char *str2);
 
+char *
+string_backslash_insert(const char *str, char src);
+
 const char *
 part_type_text_get(Edje_Part_Type part_type);
 

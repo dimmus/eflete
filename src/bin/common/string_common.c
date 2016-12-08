@@ -98,6 +98,30 @@ string_rstr(const char *str1, const char *str2)
    return NULL;
 }
 
+char *
+string_backslash_insert(const char *str, char src)
+{
+   assert(str != NULL);
+   char dst[256];
+   int i = 0;
+
+   while (*str != '\0')
+     {
+        if (*str != src)
+          dst[i] = *str;
+        else
+          {
+             dst[i++] = '\\';
+             dst[i] = src;
+          }
+        str++;
+        i++;
+     }
+   dst[i] = '\0';
+
+   return strdup(dst);
+}
+
 /**
  * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
  */
