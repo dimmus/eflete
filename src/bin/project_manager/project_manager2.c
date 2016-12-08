@@ -1090,6 +1090,7 @@ static PM_Project_Result
 _project_import_edc(void *data)
 {
    Project_Process_Data *ppd = data;
+   Eina_Strbuf *ebuf;
    char buf[PATH_MAX];
 
    assert(ppd != NULL);
@@ -1100,10 +1101,12 @@ _project_import_edc(void *data)
 
    eina_file_mkdtemp("eflete_build_XXXXXX", &ppd->tmp_dirname);
    ppd->edj = eina_stringshare_printf("%s/out.edj", ppd->tmp_dirname);
-   snprintf(buf, sizeof(buf),
-            "edje_cc -v %s %s %s", ppd->edc, ppd->edj, ppd->build_options);
-   DBG("Run command for compile: %s\n", buf);
-   ecore_exe_pipe_run(buf, FLAGS, NULL);
+
+   ebuf = eina_strbuf_new();
+   eina_strbuf_append_printf(ebuf, "edje_cc -v %s %s %s", ppd->edc, ppd->edj, ppd->build_options);
+   DBG("Run command for compile: %s\n", eina_strbuf_string_get(ebuf));
+   ecore_exe_pipe_run(eina_strbuf_string_get(ebuf), FLAGS, NULL);
+   eina_strbuf_free(ebuf);
 
    ppd->data_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_output_handler, ppd);
    ppd->del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _finish_from_edje_cc, ppd);
