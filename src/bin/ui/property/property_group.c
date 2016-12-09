@@ -166,7 +166,14 @@ static const char *action_type[] = {"NONE",
                                     "[NOT SUPPORTED] PHYSICS_ANG_VEL_SET",
                                     "[NOT SUPPORTED] PHYSICS_STOP",
                                     "[NOT SUPPORTED] PHYSICS_ROT_SET",
-                                    "[NOT SUPPORTED] VIBRATION_SAMPLE"};
+                                    "[NOT SUPPORTED] VIBRATION_SAMPLE",
+#ifdef HAVE_TIZEN
+                                    "RUN_PLUGIN"
+#else
+                                    "UNKNOWN TYPE"
+#endif
+};
+
 
 static const char *item_aspect_mode_strings[] = { STR_NONE,
                                                   "Neither",
