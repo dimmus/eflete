@@ -171,6 +171,13 @@ popup_add(const char *title,
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
+   elm_object_focus_set(pd->button.ok, false);
+   elm_object_focus_set(pd->button.save, false);
+   elm_object_focus_set(pd->button.replace, false);
+   elm_object_focus_set(pd->button.dont_save, false);
+   elm_object_focus_set(pd->button.cancel, false);
+   elm_object_focus_set(pd->button.reset, false);
+
    return pd->popup;
 }
 
