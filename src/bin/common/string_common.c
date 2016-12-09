@@ -103,19 +103,21 @@ string_backslash_insert(const char *str, char src)
 {
    assert(str != NULL);
    char *dst;
-   int i = 0;
-   int count = 1;
+   int i = 0, count = 1;
 
-   dst = mem_malloc((strlen(str) + count) * sizeof(char));
+   for (i = 0; i < strlen(str); i++)
+     if (str[i] == src)
+       count++;
 
+   dst = mem_calloc(strlen(str) + count, sizeof(char));
+
+   i = 0;
    while (*str != '\0')
      {
         if (*str != src)
           dst[i] = *str;
         else
           {
-             count++;
-             dst = mem_malloc((strlen(str) + count) * sizeof(char));
              dst[i++] = '\\';
              dst[i] = src;
           }
