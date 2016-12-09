@@ -832,9 +832,13 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
    else if (type == EDJE_PART_TYPE_GROUP)
      res = res && editor_part_group_source_reset(edit_object, change, apply, part_name);
 
+   if (type != EDJE_PART_TYPE_SPACER)
+     {
+        res = res && editor_part_mouse_events_reset(edit_object, change, apply, part_name);
+        res = res && editor_part_repeat_events_reset(edit_object, change, apply, part_name);
+     }
+
    res = res && editor_part_ignore_flags_reset(edit_object, change, apply, part_name);
-   res = res && editor_part_mouse_events_reset(edit_object, change, apply, part_name);
-   res = res && editor_part_repeat_events_reset(edit_object, change, apply, part_name);
    res = res && editor_part_scale_reset(edit_object, change, apply, part_name);
    res = res && editor_part_drag_count_x_reset(edit_object, change, apply, part_name);
    res = res && editor_part_drag_count_y_reset(edit_object, change, apply, part_name);
