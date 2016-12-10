@@ -137,8 +137,12 @@ _import_edj(void *data __UNUSED__)
      }
    else
      {
+#ifndef HAVE_TIZEN
         name = ecore_file_file_get(file);
         proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+#else
+        proj_name = eina_tmpstr_add("Component_Designer");
+#endif
         tabs_menu_import_edj_data_set(proj_name, pro_path, file, widgets);
         eina_tmpstr_del(proj_name);
      }
@@ -234,6 +238,27 @@ elm_main(int argc, char **argv)
 #endif
 
         config_load();
+
+#ifdef HAVE_TIZEN
+        Eina_Strbuf *buf;
+        const char *path, *name;
+
+        if (pro_path) path = pro_path;
+        else path = profile_get()->general.projects_folder;
+        if (pro_name) name = pro_name;
+        else name = "Component_Designer";
+
+        buf = eina_strbuf_new();
+        eina_strbuf_append_printf(buf, "%s/%s/%s.pro",
+                                  path, name, name);
+        if (!pm_lock_check(eina_strbuf_string_get(buf)))
+          {
+             eina_strbuf_free(buf);
+             goto exit;
+          }
+        eina_strbuf_free(buf);
+#endif /* HAVE_TIZEN */
+
         if (!ui_main_window_add())
           {
              app_shutdown();
