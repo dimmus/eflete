@@ -40,6 +40,8 @@
 #define FLAGS ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED | \
               ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED
 
+#define LOCK_FILE ".project.lock"
+
 static Eet_Compression compess_level = EET_COMPRESSION_HI;
 static PM_Project_Result last_error = PM_PROJECT_LAST;
 
@@ -418,7 +420,7 @@ _project_lock(Project *project)
    pid = getpid();
 
    dir = ecore_file_dir_get(project->pro_path);
-   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
    project->fd_lock = open(path, O_RDWR | O_CREAT, S_IWUSR);
    if (!project->fd_lock)
@@ -462,7 +464,7 @@ _project_unlock(Project *project)
 
 
    dir = ecore_file_dir_get(project->pro_path);
-   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
 
 #ifndef _WIN32
@@ -497,7 +499,7 @@ _project_trylock(const char *pro_path)
    assert(path != NULL);
 
    dir = ecore_file_dir_get(pro_path);
-   snprintf(path, sizeof(path), "%s/project.lock", dir);
+   snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
    if (!ecore_file_exists(path))
      return true;
