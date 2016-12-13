@@ -127,6 +127,19 @@ _button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
    return btn;
 }
 
+static void
+_popup_button_click(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Evas_Object *btn = data;
+
+   assert(btn != NULL);
+
+   if (!elm_object_disabled_get(btn))
+     evas_object_smart_callback_call(btn, signals.elm.button.clicked, NULL);
+}
+
 Evas_Object *
 popup_add(const char *title,
           const char *msg,
@@ -154,6 +167,11 @@ popup_add(const char *title,
    pd->button.dont_save = _button_add(pd, &bt_num, _("Don't save"), popup_btns & BTN_DONT_SAVE);
    pd->button.cancel    = _button_add(pd, &bt_num, _("Cancel"),     popup_btns & BTN_CANCEL);
    pd->button.reset     = _button_add(pd, &bt_num, _("Reset"),      popup_btns & BTN_RESET);
+
+   if (pd->button.ok)
+     evas_object_smart_callback_add(pd->popup, signals.shortcut.popup.done, _popup_button_click, pd->button.ok);
+   if (pd->button.cancel)
+     evas_object_smart_callback_add(pd->popup, signals.shortcut.popup.cancel, _popup_button_click, pd->button.cancel);
 
    if (msg)
      elm_object_text_set(pd->popup, msg);
