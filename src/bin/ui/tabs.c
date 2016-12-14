@@ -819,7 +819,12 @@ _shortcut_tab_num_cb(void *data __UNUSED__,
    int num = *((int *)event_info);
    Tabs_Item *item;
 
+#if HAVE_TIZEN
+   /*In tizen mode "Home tab" is hidden*/
+   item = eina_list_nth(tabs.items, num);
+#else
    item = eina_list_nth(tabs.items, num - 1);
+#endif
    if (item)
      elm_toolbar_item_selected_set(item->toolbar_item, true);
 }
