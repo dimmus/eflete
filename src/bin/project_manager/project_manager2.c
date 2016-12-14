@@ -26,6 +26,8 @@
 #include <sys/wait.h>
 #else
 #include <win32.h>
+#include <Windows.h>
+static HANDLE hMutex = NULL;
 #endif
 
 #define PROJECT_FILE_KEY      "project"
@@ -429,7 +431,17 @@ _project_lock(Project *project)
         return false;
      }
 
-#ifndef _WIN32
+#ifdef _WIN32
+   hMutex = CreateMutex(NULL, FALSE, PACKAGE_NAME);
+
+   HANDLE handle = CreateFile(path, GENERIC_READ, NULL, NULL, CREATE_NEW,
+                              FILE_FLAG_DELETE_ON_CLOSE, 0);
+   if (INVALID_HANDLE_VALUE == handle)
+     {
+        ERR("Failed to open file \"%s\"", path);
+        return false;
+     }
+#else
    struct flock fl;
    fl.l_type = F_WRLCK;
    fl.l_whence = SEEK_SET;
@@ -442,7 +454,6 @@ _project_lock(Project *project)
         close(project->fd_lock);
         return false;
      }
-#endif /* _WIN32 */
 
    snprintf(buf, sizeof(buf), "%d\n", pid);
    if (!write(project->fd_lock, buf, strlen(buf)))
@@ -450,6 +461,7 @@ _project_lock(Project *project)
         close(project->fd_lock);
         return false;
      }
+#endif /* _WIN32 */
 
    return true;
 }
@@ -462,12 +474,17 @@ _project_unlock(Project *project)
 
    assert(project != NULL);
 
-
    dir = ecore_file_dir_get(project->pro_path);
    snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
 
-#ifndef _WIN32
+#ifdef _WIN32
+   if (hMutex)
+     {
+        CloseHandle(hMutex);
+        hMutex = NULL;
+     }
+#else
    struct flock fl;
    fl.l_type = F_UNLCK;
    fl.l_whence = SEEK_SET;
@@ -504,7 +521,6 @@ _project_trylock(const char *pro_path)
    if (!ecore_file_exists(path))
      return true;
 
-
    fd = open(path, O_RDWR);
    if (fd < 1)
      {
@@ -512,7 +528,11 @@ _project_trylock(const char *pro_path)
         return false;
      }
 
-#ifndef _WIN32
+#ifdef _WIN32
+   hMutex = OpenMutex(MUTEX_ALL_ACCESS, 0, PACKAGE_NAME);
+   if (hMutex)
+     return false;
+#else
    struct flock fl;
    fl.l_type = F_UNLCK;
    fl.l_whence = SEEK_SET;
