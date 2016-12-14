@@ -207,6 +207,9 @@ mw_add(void)
         BUTTON_ADD(mw, btn, _("Ok"))
            evas_object_smart_callback_add(btn, signals.elm.button.clicked, _mw_done, mw);
         elm_object_part_content_set(mw, "eflete.swallow.btn_ok", btn);
+
+        evas_object_smart_callback_add(mw, signals.shortcut.popup.cancel, _mw_close, mw);
+        evas_object_smart_callback_add(mw, signals.shortcut.popup.done, _mw_done, mw);
      }
 
    shortcuts_object_push(mw);
