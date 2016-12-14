@@ -85,6 +85,7 @@ _image_manager_image_setup(Evas_Object *image,
    assert(image != NULL);
    assert(it != NULL);
 
+#ifndef _WIN32
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      {
         if (ecore_file_exists(it->source))
@@ -96,6 +97,20 @@ _image_manager_image_setup(Evas_Object *image,
      {
         elm_thumb_file_set(image, it->source, NULL);
      }
+#else
+   TODO("Remove this urgly hack when we fix thumbs on Windows")
+   if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+     {
+        if (ecore_file_exists(it->source))
+          elm_image_file_set(image, it->source, NULL);
+        else
+          elm_image_file_set(image, ap.path.theme_edj, "elm/image/icon/attention");
+     }
+   else
+     {
+        elm_image_file_set(image, it->source, NULL);
+     }
+#endif /* _WIN32 */
 }
 
 static inline Evas_Object *
@@ -126,7 +141,11 @@ _grid_content_get(void *data,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
+#ifndef _WIN32
         image_obj = elm_thumb_add(grid);
+#else
+        image_obj = elm_image_add(grid);
+#endif /* _win32 */
         elm_object_style_set(image_obj, "noframe");
         _image_manager_image_setup(image_obj, it);
         evas_object_show(image_obj);

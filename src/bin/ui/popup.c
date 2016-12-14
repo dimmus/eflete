@@ -784,10 +784,17 @@ _grid_content_get(void *data,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
+#ifndef _WIN32
         image_obj = elm_thumb_add(grid);
-        elm_object_style_set(image_obj, "noframe");
         if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)
           elm_thumb_file_set(image_obj, it->source, NULL);
+#else
+        TODO("Remove this urgly hack when we fix thumbs on Windows")
+        image_obj = elm_image_add(grid);
+        if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)
+          elm_image_file_set(image_obj, it->source, NULL);
+#endif /* _WIN32 */
+        elm_object_style_set(image_obj, "noframe");
         evas_object_show(image_obj);
      }
    else if ((!strcmp(part, "elm.swallow.end") && (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0)))
