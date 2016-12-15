@@ -437,9 +437,13 @@ static void
 _default_shortcuts_add()
 {
    assert(ap.shortcuts != NULL);
-
+#if HAVE_TIZEN
+   _add_shortcut(SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
+                 MOD_ALT, 70, "F4" /*q*/);
+#else
    _add_shortcut(SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 24, "q" /*q*/);
+#endif
 
    _add_shortcut(SHORTCUT_TYPE_UNDO, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 52, "z" /*z*/);
@@ -716,11 +720,19 @@ shortcuts_shortcut_reset()
         ap.shortcuts->shortcuts = eina_list_remove_list(ap.shortcuts->shortcuts, l);
         switch (shortcut->type_press)
           {
+#if HAVE_TIZEN
+           case SHORTCUT_TYPE_QUIT:
+              shortcut->modifiers =  MOD_ALT;
+              shortcut->keycode = 70;
+              shortcut->keyname =  "F4";
+              break;
+#else
            case SHORTCUT_TYPE_QUIT:
               shortcut->modifiers =  MOD_CTRL;
               shortcut->keycode = 24;
               shortcut->keyname =  "q";
               break;
+#endif
            case SHORTCUT_TYPE_UNDO:
               shortcut->modifiers =  MOD_CTRL;
               shortcut->keycode = 52;
