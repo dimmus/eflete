@@ -271,18 +271,27 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
      }
 
    sc.keyname = (char *)ev->keyname;
+   if (!sc.keyname)
+     return ECORE_CALLBACK_PASS_ON;
    /* ignore hotkey if */
    obj_name = evas_object_type_get(elm_object_focused_object_get(ap.win));
    if (/* it is without modifier or with shift-only */
       ((sc.modifiers == MOD_NONE) || (sc.modifiers == MOD_SHIFT)) &&
       /* is not F1 - F12 */
-      (!(((sc.keycode >= 67 /*F1*/) &&
-          (sc.keycode <= 76 /*F10*/)) ||
-         (sc.keycode == 95 /*F11*/) ||
-         (sc.keycode == 96 /*F12*/) ||
-         (sc.keycode == 36 /*ENTER*/) ||
-         (sc.keycode == 104 /*KP_ENTER*/) ||
-         (sc.keycode == 9 /*ESC*/)) ) &&
+      !(!strcmp(sc.keyname, "F1") ||
+        !strcmp(sc.keyname, "F2") ||
+        !strcmp(sc.keyname, "F3") ||
+        !strcmp(sc.keyname, "F4") ||
+        !strcmp(sc.keyname, "F5") ||
+        !strcmp(sc.keyname, "F6") ||
+        !strcmp(sc.keyname, "F7") ||
+        !strcmp(sc.keyname, "F8") ||
+        !strcmp(sc.keyname, "F9") ||
+        !strcmp(sc.keyname, "F10") ||
+        !strcmp(sc.keyname, "F11") ||
+        !strcmp(sc.keyname, "F12") ||
+        !strcmp(sc.keyname, "Return") ||
+        !strcmp(sc.keyname, "Escape"))  &&
       /* elm_entry is in focus */
       (obj_name ? (!strcmp("elm_entry", obj_name)) : false))
      {
