@@ -210,6 +210,10 @@ EFLETE_DEFINE+=" -DCOMPILE_PATH=\\\"`pwd`\\\" "
 
 AC_SUBST([EFLETE_DEFINE])
 
+#space need to be escaped because otherwise gcc complains
+BUILD_TIME=$(date +"%F\ %H:%M")
+EFLETE_DEFINE+=" -DBUILD_TIME=\\\"${BUILD_TIME}\\\" "
+
 AM_PROG_CC_C_O
 
 #AM_CONDITIONAL([HAVE_ENVENTOR], [test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"])

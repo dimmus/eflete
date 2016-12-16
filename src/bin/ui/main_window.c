@@ -248,7 +248,7 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
    Evas_Object *label = (Evas_Object *) data;
    elm_object_text_set(label,
      "<color=#b6b6b6>"
-     "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
+     "<b><align=center>"PACKAGE_NAME" v."VERSION" (build time "BUILD_TIME")</align></b><br>"
      "This application was written for Enlightenment project.<br>"
      "It is designed to create and modify styles of Elementary widgets.<br>"
      "<br>"
@@ -291,6 +291,7 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
   elm_object_part_text_set(layout, "ver.text", VERSION);
+  elm_object_part_text_set(layout, "build.text", BUILD_TIME);
   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
   return layout;
