@@ -103,7 +103,7 @@ string_backslash_insert(const char *str, char src)
 {
    assert(str != NULL);
    char *dst;
-   int i = 0, count = 1;
+   unsigned int i = 0, count = 1;
 
    for (i = 0; i < strlen(str); i++)
      if (str[i] == src)
