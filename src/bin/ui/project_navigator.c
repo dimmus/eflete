@@ -193,7 +193,7 @@ _expanded_cb(void *data __UNUSED__,
              Evas_Object *o __UNUSED__,
              void *event_info)
 {
-   Group2 *group;
+   Group2 *group, *gr1;
    Eina_List *folders = NULL, *groups = NULL;
    Elm_Object_Item *glit = event_info;
    Eina_Stringshare *prefix = elm_object_item_data_get(glit);
@@ -229,8 +229,8 @@ _expanded_cb(void *data __UNUSED__,
           {
              elm_genlist_item_selected_set(it, true);
 
-             Group2 *group = (Group2 *)elm_object_item_data_get(it);
-             evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, group);
+             gr1 = (Group2 *)elm_object_item_data_get(it);
+             evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, gr1);
              first_group_open = EINA_TRUE;
           }
      }
