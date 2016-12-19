@@ -615,6 +615,8 @@ done:
     * first time or projectwas reopened */
    if (!elm_gengrid_realized_items_get(mng.gengrid))
      _image_manager_init();
+   else
+     elm_gengrid_realized_items_update(mng.gengrid);
 
    elm_object_content_set(mng.win, mng.panes);
    evas_object_show(mng.win);
