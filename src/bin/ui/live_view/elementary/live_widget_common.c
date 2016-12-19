@@ -180,8 +180,6 @@ object_generate(Demo_Part *part, Evas_Object *object)
               break;
            case WIDGET_ICON:
               content = elm_icon_add(object);
-              elm_icon_order_lookup_set(content,
-                                        ELM_ICON_LOOKUP_THEME_FDO);
               elm_icon_standard_set(content, "home");
               break;
            case WIDGET_COLORSELECTOR:
