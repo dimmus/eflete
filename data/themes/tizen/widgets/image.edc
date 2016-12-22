@@ -58,6 +58,10 @@ IM("icon",     "box",            "Group contents navigator/group_box_nor.png",  
 IM("icon",     "box1",           "Group contents navigator/group_box_sel.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "box2",           "Group contents navigator/group_box_mv.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
+IM("icon",     "vector",      "Group contents navigator/group_vector_nor.png",      16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "vector1",     "Group contents navigator/group_vector_sel.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "vector2",     "Group contents navigator/group_vector_mv.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "folder",         "Group navigator/view_s_folder_nor.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "folder1",        "Group navigator/view_s_folder_sel.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "folder2",        "Group navigator/view_s_folder_mv.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
