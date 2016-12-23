@@ -197,18 +197,16 @@ app_shutdown(void);
 #include "alloc.h"
 
 
-#ifdef HAVE_TIZEN
 /* hack functions prototypes (same as original functions) */
 Evas_Object *
-tizen_hack_spinner_add(Evas_Object *parent);
+hack_spinner_add(Evas_Object *parent);
 void
-tizen_hack_spinner_value_set(Evas_Object *spinner, double val);
+hack_spinner_value_set(Evas_Object *spinner, double val);
 /* saving function pointers to use later in tizen_hack* functions to avoid infonote recursion on call */
 static void (* _elm_spinner_value_set)(Evas_Object *, double) __UNUSED__ = elm_spinner_value_set;
 static Evas_Object * (* _elm_spinner_add)(Evas_Object *)  __UNUSED__ = elm_spinner_add;
 /* replacing functions with hack-version */
-#define elm_spinner_value_set    tizen_hack_spinner_value_set
-#define elm_spinner_add          tizen_hack_spinner_add
-#endif
+#define elm_spinner_value_set    hack_spinner_value_set
+#define elm_spinner_add          hack_spinner_add
 
 #endif /* EFLETE_H */

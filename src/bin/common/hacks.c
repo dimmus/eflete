@@ -18,11 +18,10 @@
  */
 
 #include "eflete.h"
-#ifdef HAVE_TIZEN
 
 static int _spinner_changed_from_code = 0;
 static void
-_tizen_spinner_changed_hack(void *data __UNUSED__, Evas_Object *obj, void *ei)
+_spinner_changed_hack(void *data __UNUSED__, Evas_Object *obj, void *ei)
 {
    /* don't call callback if we are setting value to spinner from code */
    if (!_spinner_changed_from_code)
@@ -30,7 +29,7 @@ _tizen_spinner_changed_hack(void *data __UNUSED__, Evas_Object *obj, void *ei)
 }
 
 void
-tizen_hack_spinner_value_set(Evas_Object *spinner, double val)
+hack_spinner_value_set(Evas_Object *spinner, double val)
 {
    assert(spinner != NULL);
 
@@ -40,10 +39,9 @@ tizen_hack_spinner_value_set(Evas_Object *spinner, double val)
 }
 
 Evas_Object *
-tizen_hack_spinner_add(Evas_Object *parent)
+hack_spinner_add(Evas_Object *parent)
 {
    Evas_Object *ret = _elm_spinner_add(parent);
-   evas_object_smart_callback_add(ret, signals.elm.spinner.changed, _tizen_spinner_changed_hack, NULL);
+   evas_object_smart_callback_add(ret, signals.elm.spinner.changed, _spinner_changed_hack, NULL);
    return ret;
 }
-#endif

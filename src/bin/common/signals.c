@@ -117,11 +117,7 @@ const Signals signals = {
      .elm = {
           .spinner = {
                .changed                = "changed",
-#if HAVE_TIZEN
                .changed_user           = "[eflete_custom]changed,user",
-#else
-               .changed_user           = "changed",
-#endif
                .drag_start             = "spinner,drag,start",
                .drag_stop              = "spinner,drag,stop",
           },
