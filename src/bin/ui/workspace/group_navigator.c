@@ -2638,6 +2638,8 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
         elm_genlist_item_expanded_set(pl->data_caption_item, true);
         elm_genlist_item_expanded_set(pl->programs_caption_item, true);
         elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+
+        elm_genlist_item_bring_in(pl->parts_caption_item, ELM_GENLIST_ITEM_SCROLLTO_TOP);
      }
 
    evas_object_event_callback_add(pl->layout, EVAS_CALLBACK_DEL, _group_navigator_del, pl);
