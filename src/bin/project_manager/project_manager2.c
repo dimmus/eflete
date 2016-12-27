@@ -26,7 +26,7 @@
 #include <sys/wait.h>
 #else
 #include <win32.h>
-#include <Windows.h>
+#include <windows.h>
 static HANDLE hMutex = NULL;
 #endif
 
