@@ -93,7 +93,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
       case PROPERTY_SOUND_ITEM_FREQ:
-         elm_spinner_min_max_set(action->control, 200, 20000);
+         elm_spinner_min_max_set(action->control, 20, 20000);
          elm_object_disabled_set(action->control, true);
          break;
 #ifdef HAVE_AUDIO
