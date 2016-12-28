@@ -20,15 +20,6 @@
 #ifndef WIDGET_LIST_H
 #define WIDGET_LIST_H
 
-struct _Tree_Item_Data
-{
-   const char *name;
-   Eina_Bool check;
-   Eina_List *list;
-   Eina_List *copy;
-};
-typedef struct _Tree_Item_Data Tree_Item_Data;
-
 struct _End_Item_Data
 {
    const char *name;

@@ -84,8 +84,6 @@ _validate()
         goto validation_edj_failed;
      }
 
-   printf("COUNT [%d] \n", eina_list_count(tab_edj.widget_list));
-
    if (elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR)
      goto validation_edj_failed;
 
@@ -329,7 +327,7 @@ _on_item_activated(void *data __UNUSED__,
                    void *event_info)
 {
    Elm_Object_Item *it = (Elm_Object_Item *)event_info;
-   Tree_Item_Data *widget_data = elm_object_item_data_get(it);
+   Node *widget_data = elm_object_item_data_get(it);
 
    assert(widget_data != NULL);
 
