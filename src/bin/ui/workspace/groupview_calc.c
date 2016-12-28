@@ -812,14 +812,16 @@ _image_proxy_common_param_update(Evas_Object *image, Groupview_Part *gp, Evas_Ob
 static void
 _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
 {
-   Evas_Load_Error err;
    Evas_Object *edit_obj = sd->group->edit_object;
-   const char *image_normal;
    const char *buf = NULL;
-   int id;
    int bl, br, bt, bb;
+   int img_w = 0, img_h = 0;
+   void *image_data = NULL;
+   const Evas_Object *part_image = NULL;
+   Evas_Colorspace cspace;
    unsigned char middle;
-   /* map values */
+   Eina_Bool isalpha = false;
+    /* map values */
    Evas_Map *m;
    Eina_Bool map_on;
    const char *perpective = NULL, *light = NULL, *rot_part = NULL;
@@ -836,28 +838,30 @@ _image_param_update(Groupview_Part *gp, Groupview_Smart_Data *sd)
    assert(edit_obj != NULL);
 
    PART_STATE_GET(edit_obj, gp->part->common.name)
-
+   part_image = edje_object_part_object_get(edit_obj, gp->part->common.name);
    evas_object_image_source_set(gp->proxy_dead_part, NULL);
-   evas_object_image_source_set(gp->proxy_dead_part,
-                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->common.name));
+   evas_object_image_source_set(gp->proxy_dead_part, (Evas_Object *) part_image);
    evas_object_image_source_visible_set(gp->proxy_dead_part, false);
+   evas_object_hide(gp->proxy_dead_part);
 
-   image_normal = edje_edit_state_image_get(edit_obj, gp->part->common.name, state, value);
-   if (!image_normal) return;
-   if (edje_edit_image_compression_type_get(edit_obj, image_normal) == EDJE_EDIT_IMAGE_COMP_USER)
+   evas_object_image_size_get(part_image, &img_w, &img_h);
+   if (img_w == 0 && img_h == 0)
      {
-        evas_object_image_file_set(gp->proxy_part, image_normal, NULL);
+        WARN("Image part[%s] size is 0x0. Image wouldn't draw.", gp->part->common.name);
+        return;
      }
-   else
+   evas_object_image_size_set(gp->proxy_part, img_w, img_h);
+   cspace = evas_object_image_colorspace_get(part_image);
+   evas_object_image_colorspace_set(gp->proxy_part, cspace);
+   isalpha = evas_object_image_alpha_get(part_image);
+   evas_object_image_alpha_set(gp->proxy_part, isalpha);
+   image_data = evas_object_image_data_get(part_image, false);
+   if (!image_data)
      {
-        id = edje_edit_image_id_get(edit_obj, image_normal);
-        edje_edit_string_free(image_normal);
-        buf = eina_stringshare_printf("edje/images/%i", id);
-        evas_object_image_file_set(gp->proxy_part, ap.project->dev, buf);
-        err = evas_object_image_load_error_get(gp->proxy_part);
-        if (err != EVAS_LOAD_ERROR_NONE)
-          WARN("Could not update image:\"%s\"\n", evas_load_error_str(err));
+        ERR("Image part[%s] doesn't contain any raw image data!", gp->part->common.name);
+        return;
      }
+   evas_object_image_data_set(gp->proxy_part, image_data);
 
    edje_edit_state_image_border_get(edit_obj, gp->part->common.name, state, value,
                                     &bl, &br, &bt, &bb);
