@@ -44,6 +44,10 @@ struct _Tab_Home_Edj
    Evas_Object *genlist;
 
    const char *prev_edj_path;
+   /*
+    * This list contain only checked group, so if there are no checked groups
+    * this list should be empty or = NULL.
+    */
    Eina_List *widget_list;
 };
 
@@ -70,33 +74,6 @@ static void
 _tree_nodes_get(Eina_List *groups_list, Node *node);
 
 static Eina_Bool
-_checked_get(void)
-{
-   Tree_Item_Data *widget = NULL, *style = NULL;
-   End_Item_Data *item_style;
-   Eina_List *l, *ll, *lll;
-
-   EINA_LIST_FOREACH(tab_edj.widget_list, l, widget)
-     {
-        if (widget->check)
-          return EINA_TRUE;
-
-        EINA_LIST_FOREACH(widget->list, ll, style)
-          {
-             if (style->check)
-               return EINA_TRUE;
-
-             EINA_LIST_FOREACH(style->list, lll, item_style)
-               {
-                  if (item_style->check)
-                    return EINA_TRUE;
-               }
-          }
-     }
-   return EINA_FALSE;
-}
-
-static Eina_Bool
 _validate()
 {
    if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
@@ -107,16 +84,16 @@ _validate()
         goto validation_edj_failed;
      }
 
-   if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
-       (tab_edj.widget_list && !_checked_get()))
+   printf("COUNT [%d] \n", eina_list_count(tab_edj.widget_list));
+
+   if (elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR)
      goto validation_edj_failed;
 
-   elm_object_disabled_set(tab_edj.btn_create, false);
+   elm_object_disabled_set(tab_edj.btn_create, !eina_list_count(tab_edj.widget_list));
    elm_object_disabled_set(tab_edj.ch_all, false);
    return EINA_TRUE;
 
 validation_edj_failed:
-   elm_object_disabled_set(tab_edj.btn_create, true);
    elm_object_disabled_set(tab_edj.ch_all, true);
    return EINA_FALSE;
 }
@@ -164,14 +141,12 @@ _edj_changed_cb(void *data __UNUSED__,
    Group2 *group;
    Node *node;
 
+   _validate();
    if (tab_edj.prev_edj_path && !strcmp(tab_edj.prev_edj_path, elm_entry_entry_get(tab_edj.edj)))
      {
-       return;
+        return;
      }
    tab_edj.prev_edj_path = elm_entry_entry_get(tab_edj.edj);
-
-   if (!_validate())
-      return;
 
    EINA_LIST_FREE(tab_edj.widget_list, group_name)
      {
