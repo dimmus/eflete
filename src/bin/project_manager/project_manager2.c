@@ -1496,7 +1496,7 @@ pm_project_result_string_get(PM_Project_Result result)
    switch (result)
      {
       case PM_PROJECT_SUCCESS:
-         return "Project job is succes";
+         return "Project job is success";
       case PM_PROJECT_CANCEL:
          return "User cancel project job";
       case PM_PROJECT_LOCKED:
