@@ -424,7 +424,7 @@ _project_lock(Project *project)
    dir = ecore_file_dir_get(project->pro_path);
    snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
-   project->fd_lock = open(path, O_RDWR | O_CREAT, S_IWUSR);
+   project->fd_lock = open(path, O_RDWR | O_CREAT);
    if (!project->fd_lock)
      {
         ERR("%s: %s\n", path, strerror(errno));
