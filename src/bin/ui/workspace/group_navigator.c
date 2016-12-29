@@ -2635,9 +2635,9 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
      elm_object_disabled_set(pl->layout, true);
    else
      {
-        elm_genlist_item_expanded_set(pl->parts_caption_item, true);
-        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
         elm_genlist_item_expanded_set(pl->data_caption_item, true);
+        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+        elm_genlist_item_expanded_set(pl->parts_caption_item, true);
      }
 
    evas_object_event_callback_add(pl->layout, EVAS_CALLBACK_DEL, _group_navigator_del, pl);
