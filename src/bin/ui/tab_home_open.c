@@ -88,7 +88,7 @@ _open_after_popup_close(void *data __UNUSED__,
    selected = elm_fileselector_selected_get(tab.fs);
    if ((!selected) || !eina_str_has_suffix(selected, ".pro")) return;
 
-   if (!pm_lock_check(selected))
+   if (PM_PROJECT_SUCCESS != pm_lock_check(selected))
      {
        popup_add(_("Open project"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
@@ -206,7 +206,7 @@ _recent_after_popup_close(void *data,
 
    if (BTN_CANCEL == pbtn) return;
 
-   if (!pm_lock_check(r->path))
+   if (PM_PROJECT_SUCCESS != pm_lock_check(r->path))
      {
        popup_add(_("Open project"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;

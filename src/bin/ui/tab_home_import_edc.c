@@ -447,7 +447,7 @@ _after_popup_close(void *data __UNUSED__,
                              elm_entry_entry_get(tab_edc.path),
                              elm_entry_entry_get(tab_edc.name),
                              elm_entry_entry_get(tab_edc.name));
-   if (!pm_lock_check(eina_strbuf_string_get(buf)))
+   if (PM_PROJECT_SUCCESS != pm_lock_check(eina_strbuf_string_get(buf)))
      {
        popup_add(_("Import EDC-file"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;

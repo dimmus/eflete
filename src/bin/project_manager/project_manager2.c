@@ -490,28 +490,65 @@ _project_unlock(Project *project)
    return true;
 }
 
-static Eina_Bool
+static PM_Project_Result
+_project_lock_pid_check(const char *lock_file)
+{
+   FILE *lf;
+   int pid;
+
+   assert(lock_file != NULL);
+
+   lf = fopen(lock_file, "r");
+   if (!lf)
+     {
+        return PM_PROJECT_LOCKED_PERMISSION;
+     }
+   if (fscanf(lf, "%i", &pid) <= 0)
+     {
+        ERR(" %s\n", strerror(errno));
+        return PM_PROJECT_LOCKED_PERMISSION;
+     }
+   if (kill(pid, 0) == -1)
+     {
+        if (ESRCH == errno)
+          return PM_PROJECT_LOCKED_PROC_MISS;
+        if (EPERM == errno)
+          return PM_PROJECT_LOCKED_PERMISSION;
+     }
+   else
+     {
+        return PM_PROJECT_LOCKED;
+     }
+   /* It is unexpected result */
+   return PM_PROJECT_ERROR;
+}
+
+static PM_Project_Result
 _project_trylock(const char *pro_path)
 {
    int fd;
    char *dir;
    char path[PATH_MAX];
-   Eina_Bool ret = true;
+   PM_Project_Result ret = true;
 
    assert(path != NULL);
 
    dir = ecore_file_dir_get(pro_path);
    snprintf(path, sizeof(path), "%s/"LOCK_FILE, dir);
    free(dir);
-   if (!ecore_file_exists(path))
-     return true;
+   if (ecore_file_exists(path))
+     {
+        return _project_lock_pid_check(path);
+     }
+   else
+     return PM_PROJECT_SUCCESS;
 
 
    fd = open(path, O_RDWR);
    if (fd < 1)
      {
         ERR(" %s\n", strerror(errno));
-        return false;
+        return PM_PROJECT_LOCKED_PERMISSION;
      }
 
 #ifndef _WIN32
@@ -524,10 +561,10 @@ _project_trylock(const char *pro_path)
    if (fcntl(fd, F_GETLK, &fl) != -1)
      {
         if (fl.l_type != F_UNLCK)
-          ret = false;
+          ret = PM_PROJECT_LOCKED_PERMISSION;
      }
    else
-     ret = false;
+     ret = PM_PROJECT_LOCKED_PERMISSION;
 #endif /* _WIN32 */
 
    close(fd);
@@ -1464,11 +1501,11 @@ pm_project_release_export(Project *project,
    return last_error;
 }
 
-Eina_Bool
+PM_Project_Result
 pm_lock_check(const char *path)
 {
    if (ecore_file_exists(path) == false)
-     return true;
+     return PM_PROJECT_SUCCESS;
    return _project_trylock(path);
 }
 

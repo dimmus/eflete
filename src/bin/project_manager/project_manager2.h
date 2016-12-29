@@ -282,11 +282,11 @@ pm_project_release_export(Project *pro,
  *
  * @param path The path to checked file
  *
- * @return EINA_TRUE if file not locked, owerise EINA_FALSE.
+ * @return The Project doing result
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+PM_Project_Result
 pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
 
 /**

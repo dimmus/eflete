@@ -479,7 +479,7 @@ _after_popup_close(void *data __UNUSED__,
                              elm_entry_entry_get(tab_edj.name),
                              elm_entry_entry_get(tab_edj.name));
 
-   if (!pm_lock_check(eina_strbuf_string_get(buf)))
+   if (PM_PROJECT_LOCKED == pm_lock_check(eina_strbuf_string_get(buf)))
      {
        popup_add(_("Import EDJ-file"), _("The given file is locked by another application"), BTN_OK, NULL, NULL);
        return;
