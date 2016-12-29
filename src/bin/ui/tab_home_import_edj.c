@@ -210,7 +210,7 @@ _widget_list_group_set(Node *node)
 {
    if (node->check)
      {
-        if (!node->list)
+        if ((!node->list) && (!eina_list_data_find(tab_edj.widget_list, node->name)))
           tab_edj.widget_list = eina_list_append(tab_edj.widget_list, node->name);
      }
    else
