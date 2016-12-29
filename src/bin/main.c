@@ -94,7 +94,7 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
    if (PM_PROJECT_SUCCESS != result)
      {
         snprintf(buf, sizeof(buf), "Warning: %s", pm_project_result_string_get(result));
-        popup_add(_("Open project"), NULL, BTN_CANCEL, NULL, NULL);
+        popup_add(_("Open project"), buf, BTN_CANCEL, NULL, NULL);
         ret = false;
      }
    eina_stringshare_del(path);
