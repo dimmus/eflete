@@ -497,9 +497,9 @@ _after_popup_close(void *data __UNUSED__,
                                elm_entry_entry_get(tab_edj.name),
                                _("Import edj-file"), eina_strbuf_string_get(buf),
 #if !HAVE_TIZEN
-							   FILE_SAVE_ASK,
+                               FILE_SAVE_ASK,
 #else
-							   FILE_SAVE_REPLACE,
+                               FILE_SAVE_REPLACE,
 #endif
                                _after_import_check, NULL);
    eina_strbuf_free(buf);
