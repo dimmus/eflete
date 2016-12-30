@@ -26,6 +26,7 @@
 #include <sys/wait.h>
 #else
 #include <win32.h>
+#include <tlhelp32.h>
 #endif
 
 #define PROJECT_FILE_KEY      "project"
@@ -490,6 +491,36 @@ _project_unlock(Project *project)
    return true;
 }
 
+#ifdef _WIN32
+static int
+_process_alive_is(int pid)
+{
+   int ret = 0;
+   HANDLE proc_list;
+   PROCESSENTRY32 proc_entry;
+
+   proc_entry.dwSize = sizeof(PROCESSENTRY32);
+   proc_list = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+   if (Process32First(proc_list, &proc_entry))
+     {
+        do
+          {
+             if (proc_entry.th32ProcessID == pid)
+               {
+                  ret = 1;
+                  goto exit;
+               }
+          }
+        while (Process32Next(proc_list, &proc_entry));
+     }
+
+exit:
+   CloseHandle(proc_list);
+   return ret;
+}
+#endif /* _WIN32 */
+
 static PM_Project_Result
 _project_lock_pid_check(const char *lock_file)
 {
@@ -508,6 +539,12 @@ _project_lock_pid_check(const char *lock_file)
         ERR(" %s\n", strerror(errno));
         return PM_PROJECT_LOCKED_PERMISSION;
      }
+#ifdef _WIN32
+   if (_process_alive_is(pid))
+     return PM_PROJECT_LOCKED;
+   else
+     return PM_PROJECT_LOCKED_PROC_MISS;
+#else
    if (kill(pid, 0) == -1)
      {
         if (ESRCH == errno)
@@ -519,6 +556,7 @@ _project_lock_pid_check(const char *lock_file)
      {
         return PM_PROJECT_LOCKED;
      }
+#endif /* _WIN32 */
    /* It is unexpected result */
    return PM_PROJECT_ERROR;
 }
@@ -647,7 +685,7 @@ _project_close_internal(Project *project)
 }
 
 static PM_Project_Result
-_project_open_internal(Project_Process_Data *ppd)
+_project_open_internal(Project_Process_Data *ppd, Eina_Bool recover)
 {
    char buf[PATH_MAX];
    char *file_dir;
@@ -755,10 +793,18 @@ _project_open_internal(Project_Process_Data *ppd)
         ppd->project->version = 5;
      }
 
-   TODO("Add crash recovery prompt here");
    TODO("Add project integrity check here");
 
-   _project_dev_file_create(ppd->project);
+   if (!recover)
+     _project_dev_file_create(ppd->project);
+   else
+     {
+        /* if we try to recover project we should be sure that dev file is exist,
+         * in other case we have trouble, bacause we will try to open not
+         * exist file */
+        if (!ecore_file_exists(ppd->project->dev))
+          _project_dev_file_create(ppd->project);
+     }
    ppd->project->mmap_file = eina_file_open(ppd->project->dev, false);
 
    ppd->project->changed = false;
@@ -797,7 +843,8 @@ PM_Project_Result
 pm_project_open(const char *path,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
-                const void *data)
+                const void *data,
+                Eina_Bool recover)
 {
    Project_Process_Data *ppd;
    char *spath;
@@ -812,7 +859,7 @@ pm_project_open(const char *path,
    ppd->func_end = func_end;
    ppd->data = (void *)data;
 
-   if (PM_PROJECT_SUCCESS != _project_open_internal(ppd))
+   if (PM_PROJECT_SUCCESS != _project_open_internal(ppd, recover))
      {
         Project *project = ppd->project;
         _project_process_data_cleanup(ppd);
@@ -843,7 +890,7 @@ _edje_pick_finish_handler(void *data,
        PM_PROJECT_SUCCESS != _project_dummy_sample_add(ppd->project))
      return ECORE_CALLBACK_CANCEL;
 
-   if (PM_PROJECT_SUCCESS != _project_open_internal(ppd))
+   if (PM_PROJECT_SUCCESS != _project_open_internal(ppd, false))
      {
         _project_close_internal(ppd->project);
         return ECORE_CALLBACK_CANCEL;
@@ -961,7 +1008,7 @@ _project_import_edj(Project_Process_Data *ppd)
           return last_error;
         if (PM_PROJECT_SUCCESS != _project_dummy_sample_add(ppd->project))
           return last_error;
-        if (PM_PROJECT_SUCCESS != _project_open_internal(ppd))
+        if (PM_PROJECT_SUCCESS != _project_open_internal(ppd, false))
           return last_error;
      }
    return last_error;

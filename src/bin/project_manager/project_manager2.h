@@ -101,6 +101,7 @@ pm_project_import_edc(const char *name,
  * @param func_end The end callback, this callback be called on the end of
  *        Project progress;
  * @param data The user data.
+ * @param recover Recover the given project
  *
  * @return The Project doing result
  *
@@ -110,7 +111,8 @@ PM_Project_Result
 pm_project_open(const char *path,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
-                const void *data) __UNUSED_RESULT__;
+                const void *data,
+                Eina_Bool recover) __UNUSED_RESULT__;
 
 /**
  * Save all changes in current project to the dev file.
