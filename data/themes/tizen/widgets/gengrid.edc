@@ -561,7 +561,7 @@ group { name: "elm/gengrid/item/image_set/default";
             color_class: "gengrid_text_default";
             text {
                font: FN;
-               fit: 1 1;
+               fit: 0 1;
             }
             rel1.to: "elm.swallow.fouth";
             rel2.to: "elm.swallow.fouth";
