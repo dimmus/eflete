@@ -111,6 +111,12 @@ typedef enum
    FILE_SAVE_APPEND
 } File_Save;
 
+typedef enum
+{
+   SINGLE_IMAGE = 1,
+   IMAGE_SET
+} Image_Instance_Type;
+
 /**
  * The validation func for popup action.
  *
@@ -492,6 +498,7 @@ struct _Image_Item
    int quality;
    Eina_Bool is_used;
    int height, width;
+   Image_Instance_Type type;
 };
 
 /**

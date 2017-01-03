@@ -181,6 +181,40 @@ _grid_content_get(void *data,
    return image_obj;
 }
 
+static inline Evas_Object *
+_image_manager_image_set_grid_create(Evas_Object *parent,
+                                     const Image_Item *it)
+{
+   Resource2 *res = NULL;
+   Image2 *image_res = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *images_set_grid = NULL;
+   Image_Item *image_set_item = NULL;
+
+   assert(parent != NULL);
+   assert(it != NULL);
+
+   images_set_grid = elm_gengrid_add(parent);
+   elm_gengrid_item_size_set(images_set_grid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(images_set_grid, 0.0, 0.0);
+   elm_scroller_policy_set(images_set_grid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_gengrid_multi_select_mode_set(images_set_grid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+   elm_gengrid_select_mode_set(images_set_grid, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(mng.image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(mng.image, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
+   EINA_LIST_FOREACH(res->common.uses___, l, image_res)
+     {
+        image_set_item = (Image_Item *)mem_calloc(1, sizeof(Image_Item));
+        image_set_item->type = SINGLE_IMAGE;
+        image_set_item->image_name = eina_stringshare_add(image_res->common.name);
+        image_set_item->source = eina_stringshare_add(image_res->source);
+        elm_gengrid_item_append(images_set_grid, gic, image_set_item, NULL, (void *)it);
+     }
+
+   return images_set_grid;
+}
 /* icon fetching callback */
 static Evas_Object *
 _grid_image_set_content_get(void *data,
@@ -269,14 +303,18 @@ _grid_del(void *data,
 static void
 _image_info_setup(const Image_Item* it)
 {
-   Evas_Object *image;
+   Evas_Object *content = NULL;
 
    assert(it != NULL);
 
-   image = _image_manager_image_create(mng.layout, it);
-   evas_object_show(image);
+   if (it->type == SINGLE_IMAGE)
+     content = _image_manager_image_create(mng.layout, it);
+   else if (it->type == IMAGE_SET)
+     content =  _image_manager_image_set_grid_create(mng.layout, it);
 
-   evas_object_data_set(image, "image_name", it->image_name);
+   evas_object_show(content);
+
+   mng.image = content;
 }
 
 /* item selection change callback */
@@ -289,6 +327,7 @@ _grid_sel_cb(void *data __UNUSED__,
    Eina_List *l;
    Eina_List *sel_list;
    Elm_Object_Item *grid_item = NULL;
+   Evas_Object *to_del  = NULL;
    char buf[PATH_MAX];
 
    sel_list = (Eina_List *)elm_gengrid_selected_items_get(mng.gengrid);
@@ -298,27 +337,21 @@ _grid_sel_cb(void *data __UNUSED__,
    if (selected_images_count != 0)
      elm_object_disabled_set(mng.del_button, true);
 
+#ifdef HAVE_TIZEN
+   to_del = elm_object_part_content_unset(mng.entry_prev, "elm.swallow.entry");
+#else
+   to_del = elm_object_part_content_unset(mng.property_panes, "left");
+#endif
+   evas_object_del(to_del);
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        _image_info_setup(item);
+
         /* if selected image is not used, we can delete it */
         if (!item->is_used)
           elm_object_disabled_set(mng.del_button, false);
 
-         /* apply picture */
-         if (item->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-           {
-              if (ecore_file_exists(item->source))
-                elm_image_file_set(mng.image, item->source, NULL);
-              else
-                elm_image_file_set(mng.image, ap.path.theme_edj, "elm/image/icon/attention");
-           }
-         else
-           {
-              elm_image_file_set(mng.image, item->source, NULL);
-           }
-         evas_object_image_smooth_scale_set(mng.image, false);
+        _image_info_setup(item);
      }
    else
      {
@@ -333,8 +366,15 @@ _grid_sel_cb(void *data __UNUSED__,
                }
           }
         snprintf(buf, sizeof(buf), "%s"EFLETE_DUMMY_IMAGE_NAME, ap.path.image_path);
+        mng.image = elm_image_add(mng.property_panes);
         elm_image_file_set(mng.image, buf, NULL);
+        evas_object_show(mng.image);
      }
+#ifdef HAVE_TIZEN
+   elm_object_part_content_set(mng.entry_prev, "elm.swallow.entry", mng.image);
+#else
+   elm_object_part_content_set(mng.property_panes, "left", mng.image);
+#endif
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, item);
 }
 
@@ -356,6 +396,7 @@ _image_manager_gengrid_item_data_set_create(Evas_Object *edje_edit_obj,
    Image2 *res_image = NULL;
    res_image = eina_list_data_get(res->common.uses___);
    it->source = eina_stringshare_add(res_image->source);
+   it->type = IMAGE_SET;
 
    img = _image_manager_image_create(ap.project->global_object, it);
    elm_image_object_size_get(img, &it->width, &it->height);
@@ -381,6 +422,7 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    it->quality = edje_edit_image_compression_rate_get(edje_edit_obj,
                                                       it->image_name);
    it->source = eina_stringshare_add(res->source);
+   it->type = SINGLE_IMAGE;
 
    img = _image_manager_image_create(ap.project->global_object, it);
    elm_image_object_size_get(img, &it->width, &it->height);
@@ -631,6 +673,7 @@ _project_closed_cb(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   evas_object_del(mng.image);
    elm_gengrid_clear(mng.gengrid);
 }
 
@@ -673,13 +716,9 @@ image_manager_add(void)
    elm_layout_theme_set(mng.entry_prev, "layout", "manager", "preview");
    evas_object_show(mng.entry_prev);
 
-   mng.image = elm_image_add(mng.panes);
-   evas_object_show(mng.image);
-
    bg = elm_layout_add(mng.layout);
    elm_layout_theme_set(bg, "layout", "workspace", "bg");
    elm_object_part_content_set(mng.entry_prev, "elm.swallow.background", bg);
-   elm_object_part_content_set(mng.entry_prev, "elm.swallow.entry", mng.image);
    elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
    elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.entry_prev);
 #else
@@ -690,9 +729,6 @@ image_manager_add(void)
    mng.property_panes = elm_panes_add(mng.win);
    elm_panes_horizontal_set(mng.property_panes, true);
    elm_object_part_content_set(mng.panes, "right", mng.property_panes);
-   mng.image = elm_image_add(mng.panes);
-   evas_object_show(mng.image);
-   elm_object_part_content_set(mng.property_panes, "left", mng.image);
    elm_object_part_content_set(mng.property_panes, "right", ap.property.image_manager);
 #endif
 
@@ -721,7 +757,7 @@ image_manager_add(void)
    elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    elm_gengrid_multi_select_set(mng.gengrid, true);
    elm_gengrid_multi_select_mode_set(mng.gengrid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-   elm_gengrid_select_mode_set(mng.gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_gengrid_select_mode_set(mng.gengrid, ELM_OBJECT_SELECT_MODE_DEFAULT);
    evas_object_smart_callback_add(mng.gengrid, signals.elm.gengrid.unselected, _grid_sel_cb, NULL);
    evas_object_show(mng.gengrid);
 
