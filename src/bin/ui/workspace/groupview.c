@@ -276,6 +276,7 @@ groupview_add(Evas_Object *parent, Group2 *group)
    TODO("set the state for all parts to default 0.0")
    sd->group = group;
    evas_object_smart_member_add(sd->group->edit_object, obj);
+   edje_object_scale_set(sd->group->edit_object, edje_object_base_scale_get(sd->group->edit_object));
 
    sd->box = elm_box_add(parent);
    elm_box_layout_set(sd->box, _parts_stack_layout, sd, NULL);
