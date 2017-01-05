@@ -132,7 +132,7 @@ group { name: "elm/layout/popup/hint";
    }
    programs {
       program { name: "dismiss";
-         signal: "mouse,up,*";
+         signal: "mouse,clicked,1";
          source: "event";
          action: SIGNAL_EMIT "hint,dismiss" "eflete";
       }
