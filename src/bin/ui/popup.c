@@ -50,9 +50,11 @@ struct _Item
 {
    const char* image_name;
    const char* source;
+   Image_Instance_Type type;
 };
 typedef struct _Item Item;
 static Elm_Gengrid_Item_Class *gic = NULL;
+static Elm_Gengrid_Item_Class *gic_set = NULL;
 
 static void
 _delete_object_job(void *data)
@@ -720,6 +722,7 @@ _image_gengrid_init(Helper_Data *helper_data)
    Eina_List *images = NULL;
    int counter = 0;
    Image2 *res;
+   Image_Set2 *image_set = NULL;
 
    images = ap.project->RM.images;
 
@@ -744,11 +747,31 @@ _image_gengrid_init(Helper_Data *helper_data)
               it = (Item *)mem_malloc(sizeof(Item));
               it->image_name = eina_stringshare_add(res->common.name);
               it->source = eina_stringshare_add(res->source);
+              it->type = SINGLE_IMAGE;
               elm_gengrid_item_append(helper_data->gengrid, gic, it, NULL, NULL);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(helper_data->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
      }
+
+   counter = 0;
+   EINA_LIST_FOREACH(ap.project->RM.image_sets, l, image_set)
+     {
+        counter++;
+        if (!image_set->common.name)
+          {
+             ERR("name not found for image #%d",counter);
+             continue;
+          }
+
+        it = (Item *)mem_malloc(sizeof(Item));
+        it->image_name = eina_stringshare_add(image_set->common.name);
+        res = eina_list_data_get(image_set->common.uses___);
+        it->source = eina_stringshare_add(res->source);
+        it->type = IMAGE_SET;
+        elm_gengrid_item_append(helper_data->gengrid, gic_set, it, NULL, NULL);
+     }
+
    elm_scroller_policy_set(helper_data->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
    evas_object_smart_calculate(helper_data->gengrid);
@@ -762,9 +785,23 @@ _grid_label_get(void *data,
                 const char  *part __UNUSED__)
 {
    const Item *it = data;
-   if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) == 0)
-     return strdup("None");
-   return strdup(it->image_name);
+   Resource2 *res;
+
+   if (!strcmp(part, "elm.text.count"))
+     {
+        res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
+        int count = eina_list_count(res->common.uses___);
+        if (count <= 4) return strdup("");
+        char buf[256];
+        snprintf(buf, 256, "%d", count);
+        return strdup(buf);
+     }
+   else
+     {
+        if (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) == 0)
+          return strdup("None");
+        return strdup(it->image_name);
+     }
 }
 
 /* icon fetching callback */
@@ -811,6 +848,75 @@ _grid_content_get(void *data,
    return image_obj;
 }
 #undef MAX_ICON_SIZE
+
+/* icon fetching callback */
+static Evas_Object *
+_grid_image_set_content_get(void *data,
+                            Evas_Object *obj,
+                            const char  *part)
+{
+   Item *it = data;
+   Evas_Object *image_obj = NULL;
+   Evas_Object *grid = (Evas_Object *)obj;
+   Resource2 *res;
+   Image2 *img_res = NULL;
+
+   assert(it != NULL);
+   assert(grid != NULL);
+
+   if (!strcmp(part, "elm.swallow.end") && (strcmp(it->image_name, EFLETE_DUMMY_IMAGE_NAME) != 0))
+     {
+        res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
+        if (!res->common.used_in)
+          {
+             image_obj = elm_icon_add(grid);
+             elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");
+             evas_object_show(image_obj);
+          }
+     }
+   else
+     {
+#ifndef _WIN32
+        image_obj = elm_thumb_add(grid);
+#else
+        image_obj = elm_image_add(grid);
+#endif /* _win32 */
+        elm_object_style_set(image_obj, "noframe");
+        res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
+        int count = eina_list_count(res->common.uses___);
+
+        if (!strcmp(part, "elm.swallow.first"))
+          {
+             img_res = (Image2 *)(eina_list_nth(res->common.uses___, 0));
+          }
+        else if (!strcmp(part, "elm.swallow.second"))
+          {
+             img_res = (Image2 *)(eina_list_nth(res->common.uses___, 1));
+          }
+        else if (!strcmp(part, "elm.swallow.third"))
+          {
+             img_res = (Image2 *)(eina_list_nth(res->common.uses___, 2));
+          }
+        else if (!strcmp(part, "elm.swallow.fouth"))
+          {
+             if (count > 4) goto empty_content;
+             img_res = (Image2 *)(eina_list_nth(res->common.uses___, 3));
+          }
+        if (!img_res) goto empty_content;
+#ifndef _WIN32
+        elm_thumb_file_set(image_obj, img_res->source, NULL);
+#else
+        elm_image_file_set(image_obj, img_res->source, NULL);
+#endif /* _WIN32 */
+        elm_object_style_set(image_obj, "noframe");
+        evas_object_show(image_obj);
+     }
+   return image_obj;
+
+empty_content:
+   evas_object_del(image_obj);
+   return NULL;
+}
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
@@ -919,6 +1025,16 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         gic->func.content_get = _grid_content_get;
         gic->func.del = _grid_del;
      }
+
+   if (!gic_set)
+     {
+        gic_set = elm_gengrid_item_class_new();
+        gic_set->item_style = "image_set";
+        gic_set->func.text_get = _grid_label_get;
+        gic_set->func.content_get = _grid_image_set_content_get;
+        gic_set->func.del = _grid_del;
+     }
+
 
    _image_gengrid_init(helper_data);
 

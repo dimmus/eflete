@@ -297,9 +297,12 @@ _property_attribute_changed(void *data,
               _resource_usage_resource_del(state, old_source);
            }
          TODO("Support some image sets here");
+
          if (change->value && strcmp(change->value, EFLETE_DUMMY_IMAGE_NAME))
            {
               source = resource_manager_find(pro->RM.images, change->value);
+              if (!source)
+                source = resource_manager_find(pro->RM.image_sets, change->value);
               _resource_usage_resource_add(state, source);
            }
          eina_stringshare_del(((State2 *)state)->normal);
