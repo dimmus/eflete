@@ -348,6 +348,7 @@ _btn_del_cb(void *data __UNUSED__,
         style_name = elm_object_item_data_get(glit);
         CRIT_ON_FAIL(editor_style_del(edje_edit_obj, style_name, true));
         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+        elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
      }
    else
      {

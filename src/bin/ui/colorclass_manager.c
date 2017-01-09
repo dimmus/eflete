@@ -152,6 +152,7 @@ _colorclass_del_cb(void *data __UNUSED__,
    Elm_Object_Item *it = elm_genlist_selected_item_get(mng.genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
    Colorclass_Item *ccl = elm_object_item_data_get(it);
+   if (!next) next = elm_genlist_item_prev_get(it);
 
    CRIT_ON_FAIL(editor_color_class_del(ap.project->global_object, ccl->name, true));
    elm_object_item_del(it);
@@ -184,13 +185,13 @@ _colorclass_del_cb(void *data __UNUSED__,
      }
 #endif
 
-   if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
       elm_genlist_item_selected_set(next, EINA_TRUE);
    else
      {
         mng.current_ccl = NULL;
         elm_object_disabled_set(mng.del_button, EINA_TRUE);
+        elm_object_signal_emit(mng.preview_layout, "entry,hide", "eflete");
         evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
      }
 }
