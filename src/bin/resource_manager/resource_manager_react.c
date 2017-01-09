@@ -78,7 +78,8 @@ _property_resource_attribute_changed(void *data,
                                                           change->style_name);
          style_tag = (Style_Tag2 *)resource_manager_find(style_res->tags,
                                                      change->tag_name);
-         _resource_style_tag_free(style_tag);
+         if (style_tag)
+           _resource_style_tag_free(style_tag);
          break;
       default:
          break;
