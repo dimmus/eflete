@@ -355,6 +355,7 @@ _btn_del_cb(void *data __UNUSED__,
         style_name = elm_object_item_data_get(glit_parent);
         tag = elm_object_item_data_get(glit);
         CRIT_ON_FAIL(editor_style_tag_del(edje_edit_obj, style_name, tag));
+        elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
      }
 
    elm_object_item_del(glit);
