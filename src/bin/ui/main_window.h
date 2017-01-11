@@ -113,8 +113,9 @@ typedef enum
 
 typedef enum
 {
-   SINGLE_IMAGE = 1,
-   IMAGE_SET
+   SINGLE_IMAGE,
+   IMAGE_SET,
+   IMAGE_SET_ITEM
 } Image_Instance_Type;
 
 /**
@@ -491,6 +492,14 @@ project_export_edc_group(void);
 
 struct _Image_Item
 {
+   int border_l;
+   int border_r;
+   int border_t;
+   int border_b;
+   int min_w;
+   int min_h;
+   int max_w;
+   int max_h;
    int id;
    const char* image_name;
    const char* source;
@@ -499,6 +508,7 @@ struct _Image_Item
    Eina_Bool is_used;
    int height, width;
    Image_Instance_Type type;
+   double border_scale;
 };
 
 /**

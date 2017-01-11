@@ -181,6 +181,19 @@ _grid_content_get(void *data,
    return image_obj;
 }
 
+
+static void
+_grid_image_set_image_sel(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Image_Item *it = (Image_Item *)data;
+
+   assert(it != NULL);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, it);
+}
+
 static inline Evas_Object *
 _image_manager_image_set_grid_create(Evas_Object *parent,
                                      const Image_Item *it)
@@ -204,13 +217,29 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
    evas_object_size_hint_align_set(mng.image, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
+   int place = 0;
    EINA_LIST_FOREACH(res->common.uses___, l, image_res)
      {
         image_set_item = (Image_Item *)mem_calloc(1, sizeof(Image_Item));
-        image_set_item->type = SINGLE_IMAGE;
+        image_set_item->type = IMAGE_SET_ITEM;
         image_set_item->image_name = eina_stringshare_add(image_res->common.name);
         image_set_item->source = eina_stringshare_add(image_res->source);
-        elm_gengrid_item_append(images_set_grid, gic, image_set_item, NULL, (void *)it);
+        image_set_item->height = image_res->height;
+        image_set_item->width = image_res->width;
+        image_set_item->quality = image_res->quality;
+        image_set_item->comp_type = image_res->comp_type;
+        edje_edit_image_set_image_border_get(ap.project->global_object, res->common.name, place,
+                                             &image_set_item->border_l, &image_set_item->border_r,
+                                             &image_set_item->border_t, &image_set_item->border_b);
+        edje_edit_image_set_image_max_get(ap.project->global_object, res->common.name, place,
+                                          &image_set_item->max_w, &image_set_item->max_h);
+        edje_edit_image_set_image_min_get(ap.project->global_object, res->common.name, place,
+                                          &image_set_item->min_w, &image_set_item->min_h);
+        image_set_item->border_scale = edje_edit_image_set_image_border_scale_get(ap.project->global_object,
+                                                                                  res->common.name,
+                                                                                  place);
+        elm_gengrid_item_append(images_set_grid, gic, image_set_item, _grid_image_set_image_sel , (void *)image_set_item);
+        place++;
      }
 
    return images_set_grid;
@@ -640,7 +669,6 @@ _image_manager_init(void)
         elm_gengrid_item_append(mng.gengrid, gic_set, it, _grid_sel_cb, NULL);
      }
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
    return true;
 }
 
