@@ -91,15 +91,27 @@ typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
 #pragma GCC poison elm_genlist_filter_set
 
 typedef enum {
-   PROPERTY_IMAGE_CONTROL_NAME,
-   PROPERTY_IMAGE_CONTROL_LOCATION,
-   PROPERTY_IMAGE_CONTROL_TYPE,
-   PROPERTY_IMAGE_CONTROL_COMPRESSION,
-   PROPERTY_IMAGE_CONTROL_QUALITY,
-   PROPERTY_IMAGE_CONTROL_WIDTH,
-   PROPERTY_IMAGE_CONTROL_HEIGHT,
-   PROPERTY_IMAGE_CONTROL_LAST
-} Attribute_Image;
+   ATTRIBUTE_IMAGE_ITEM_NAME,
+   ATTRIBUTE_IMAGE_ITEM_TYPE,
+
+   ATTRIBUTE_IMAGE_ITEM_LOCATION,
+   ATTRIBUTE_IMAGE_ITEM_COMPRESSION,
+   ATTRIBUTE_IMAGE_ITEM_QUALITY,
+   ATTRIBUTE_IMAGE_ITEM_WIDTH,
+   ATTRIBUTE_IMAGE_ITEM_HEIGHT,
+
+   ATTRIBUTE_IMAGE_ITEM_BORDER_L,
+   ATTRIBUTE_IMAGE_ITEM_BORDER_R,
+   ATTRIBUTE_IMAGE_ITEM_BORDER_T,
+   ATTRIBUTE_IMAGE_ITEM_BORDER_B,
+   ATTRIBUTE_IMAGE_ITEM_MIN_W,
+   ATTRIBUTE_IMAGE_ITEM_MIN_H,
+   ATTRIBUTE_IMAGE_ITEM_MAX_W,
+   ATTRIBUTE_IMAGE_ITEM_MAX_H,
+   ATTRIBUTE_IMAGE_ITEM_BORDER_SCALE,
+
+   ATTRIBUTE_IMAGE_ITEM_LAST
+} Attribute_Image_Item;
 
 typedef enum {
    ATTRIBUTE_DEMO_ITEM_TEXT_NAME,
@@ -173,7 +185,7 @@ struct _Property_Action {
    Eina_Stringshare *tooltip;
    union {
       Attribute attribute; /**< type for group properties */
-      Attribute_Image attribute_image; /**< type for group properties */
+      Attribute_Image_Item attribute_image; /**< type for group properties */
       Attribute_Demo_Item attribute_demo; /**< type for demo properties */
       Attribute_Textblock_Item attribute_textblock; /**< type for textblock properties */
    } type; /**< submodule-specific enums */
@@ -387,6 +399,29 @@ typedef enum {
    PROPERTY_SOUND_ITEM_LAST
 } Property_Sound_Item;
 
+/* Enum of property_image items. */
+typedef enum {
+     PROPERTY_IMAGE_ITEM_INFO_TITLE,
+     PROPERTY_IMAGE_ITEM_NAME,
+     PROPERTY_IMAGE_ITEM_TYPE,
+
+     PROPERTY_IMAGE_ITEM_IMAGE_PROPERTY_TITLE,
+     PROPERTY_IMAGE_ITEM_LOCATION,
+     PROPERTY_IMAGE_ITEM_COMPRESSION,
+     PROPERTY_IMAGE_ITEM_QUALITY,
+     PROPERTY_IMAGE_ITEM_WIDTH,
+     PROPERTY_IMAGE_ITEM_HEIGHT,
+
+     PROPERTY_IMAGE_ITEM_SET_IMAGE_PROPERTY_TITLE,
+     PROPERTY_IMAGE_ITEM_BORDER_H,
+     PROPERTY_IMAGE_ITEM_BORDER_V,
+     PROPERTY_IMAGE_ITEM_BORDER_SCALE,
+     PROPERTY_IMAGE_ITEM_MIN,
+     PROPERTY_IMAGE_ITEM_MAX,
+
+     PROPERTY_IMAGE_ITEM_LAST
+} Property_Image_Item;
+
 /* Enum of property_demo items. */
 typedef enum {
    PROPERTY_DEMO_ITEM_TEXT_TITLE,
@@ -460,6 +495,7 @@ struct _Property_Attribute {
    union {
       Property_Group_Item group_item;
       Property_Sound_Item sound_item;
+      Property_Image_Item image_item;
       Property_Demo_Item demo_item;
       Property_Textblock_Item textblock_item;
    } type;
@@ -474,6 +510,7 @@ struct _Property_Attribute {
    union {
       unsigned int part_types;
       unsigned int sound_types;
+      unsigned int image_types;
       unsigned int action_types;
       unsigned int demo_types;
       unsigned int textblock_types;
@@ -554,7 +591,7 @@ property_color_class_manager_items_get(void);
 
 /* image manager submodule */
 void
-property_image_manager_init(void);
+property_image_manager_init(Property_Data *pd);
 
 Eina_List *
 property_image_manager_items_get(void);

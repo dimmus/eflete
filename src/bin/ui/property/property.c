@@ -279,7 +279,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
 #ifdef HAVE_TIZEN
          elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
 #endif
-         property_image_manager_init();
+         property_image_manager_init(pd);
          items = property_image_manager_items_get();
          break;
       case PROPERTY_MODE_SOUND:
