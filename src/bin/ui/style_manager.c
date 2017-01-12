@@ -117,17 +117,27 @@ _on_glit_selected(void *data __UNUSED__,
    glit = (Elm_Object_Item *)event_info;
    glit_parent = elm_genlist_item_parent_get(glit);
 
-   if (!glit_parent) return;
+   if (!glit_parent)
+     {
+        style_name = (char *)elm_object_item_data_get(glit);
+        tag = STYLE_DEFAULT;
+     }
+   else
+     {
+        style_name = elm_object_item_data_get(glit_parent);
+        tag = (char *)elm_object_item_data_get(glit);
+     }
 
    style = eina_strbuf_new();
    eina_strbuf_append(style, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE);
 
-   style_name = elm_object_item_data_get(glit_parent);
-   tag = (char *)elm_object_item_data_get(glit);
-   if (!strcmp(tag, STYLE_DEFAULT))
-     elm_object_disabled_set(mng.button_del, true);
-   value = edje_edit_style_tag_value_get(ap.project->global_object, style_name, tag);
+   value = edje_edit_style_tag_value_get(ap.project->global_object, style_name, STYLE_DEFAULT);
    eina_strbuf_append(style, value);
+   if (strcmp(tag, STYLE_DEFAULT))
+     {
+        value = edje_edit_style_tag_value_get(ap.project->global_object, style_name, tag);
+        eina_strbuf_append(style, value);
+     }
 
    elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
    eina_strbuf_append(style, "'");
@@ -621,19 +631,28 @@ _expanded_cb(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    const char *name = elm_object_item_data_get(glit);
-   Eina_List *tags, *l_tg;
+   Eina_List *l, *l_tg;
    Elm_Object_Item *glit_tag;
-   char *tag;
+   Style2 *style;
+   Style_Tag2 *tag;
 
-   tags = edje_edit_style_tags_list_get(ap.project->global_object, name);
-   EINA_LIST_FOREACH(tags, l_tg, tag)
+   EINA_LIST_FOREACH(ap.project->RM.styles, l, style)
      {
-        glit_tag = elm_genlist_item_append(mng.genlist, _itc_tags,
-                                           tag, glit, ELM_GENLIST_ITEM_NONE,
-                                           _on_glit_selected, NULL);
-        elm_object_item_data_set(glit_tag, tag);
+        if (!strcmp(style->common.name, name))
+          {
+             EINA_LIST_FOREACH(style->tags, l_tg, tag)
+               {
+                  if (strcmp(tag->common.name, STYLE_DEFAULT))
+                    {
+                       glit_tag = elm_genlist_item_append(mng.genlist, _itc_tags,
+                                                          tag->common.name, glit, ELM_GENLIST_ITEM_NONE,
+                                                          _on_glit_selected, NULL);
+                       elm_object_item_data_set(glit_tag, (char *)tag->common.name);
+                    }
+               }
+             return;
+          }
      }
-   eina_list_free(tags);
 }
 
 static void
