@@ -115,6 +115,16 @@ _state_dependency_load(Project *pro, Group2 *group, Part2 *part, State2 *state)
           }
      }
 
+   if (part->type == EDJE_PART_TYPE_VECTOR)
+     {
+        if (state->normal)
+          {
+             res = resource_manager_find(pro->RM.vectors, state->normal);
+             if (res)
+               _resource_usage_resource_add((Resource2 *)state, res);
+          }
+     }
+
    color_class = edje_edit_state_color_class_get(group->edit_object,
                                                  part->common.name,
                                                  state->common.name,

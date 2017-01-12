@@ -175,6 +175,7 @@ resource_manager_init(Project *project)
    /* loading resources are in here */
    _image_resources_load(project);
    _image_set_resources_load(project);
+   _vector_resources_load(project);
    _sound_resources_load(project);
    _font_resources_load(project);
    _tones_resources_load(project);

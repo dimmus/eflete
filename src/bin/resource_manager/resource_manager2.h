@@ -35,6 +35,7 @@ enum _Resource2_Type
    RESOURCE2_TYPE_DATA_GROUP,
 
    /* other managers */
+   RESOURCE2_TYPE_VECTOR,
    RESOURCE2_TYPE_IMAGE,
    RESOURCE2_TYPE_IMAGE_SET,
    RESOURCE2_TYPE_SAMPLE,
@@ -78,6 +79,7 @@ typedef struct _Tone2 Tone2;
 typedef struct _Style_Tag2 Style_Tag2;
 typedef struct _Colorclass2 Colorclass2;
 
+typedef struct _Sound2 Vector2;
 typedef struct _Sound2 Sound2;
 typedef struct _Sound2 Font2;
 typedef struct _Sound2 Global_Data2;

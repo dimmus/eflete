@@ -36,6 +36,9 @@ _resource_usage_dependency_cleanup(Resource2 *origin);
 /* RESOURCE LOADING */
 
 Eina_Bool
+_vector_resources_load(Project *project);
+
+Eina_Bool
 _image_resources_load(Project *project);
 
 Eina_Bool
