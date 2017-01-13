@@ -228,14 +228,16 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
         image_set_item->width = image_res->width;
         image_set_item->quality = image_res->quality;
         image_set_item->comp_type = image_res->comp_type;
+        image_set_item->set.name = eina_stringshare_add(res->common.name);
+        image_set_item->set.position = place;
         edje_edit_image_set_image_border_get(ap.project->global_object, res->common.name, place,
-                                             &image_set_item->border_l, &image_set_item->border_r,
-                                             &image_set_item->border_t, &image_set_item->border_b);
+                                             &image_set_item->set.border_l, &image_set_item->set.border_r,
+                                             &image_set_item->set.border_t, &image_set_item->set.border_b);
         edje_edit_image_set_image_max_get(ap.project->global_object, res->common.name, place,
-                                          &image_set_item->max_w, &image_set_item->max_h);
+                                          &image_set_item->set.max_w, &image_set_item->set.max_h);
         edje_edit_image_set_image_min_get(ap.project->global_object, res->common.name, place,
-                                          &image_set_item->min_w, &image_set_item->min_h);
-        image_set_item->border_scale = edje_edit_image_set_image_border_scale_get(ap.project->global_object,
+                                          &image_set_item->set.min_w, &image_set_item->set.min_h);
+        image_set_item->set.border_scale = edje_edit_image_set_image_border_scale_get(ap.project->global_object,
                                                                                   res->common.name,
                                                                                   place);
         elm_gengrid_item_append(images_set_grid, gic, image_set_item, _grid_image_set_image_sel , (void *)image_set_item);

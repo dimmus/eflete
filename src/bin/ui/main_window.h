@@ -492,14 +492,6 @@ project_export_edc_group(void);
 
 struct _Image_Item
 {
-   int border_l;
-   int border_r;
-   int border_t;
-   int border_b;
-   int min_w;
-   int min_h;
-   int max_w;
-   int max_h;
    int id;
    const char* image_name;
    const char* source;
@@ -508,7 +500,19 @@ struct _Image_Item
    Eina_Bool is_used;
    int height, width;
    Image_Instance_Type type;
-   double border_scale;
+   struct {
+        int border_l;
+        int border_r;
+        int border_t;
+        int border_b;
+        int min_w;
+        int min_h;
+        int max_w;
+        int max_h;
+        const char *name;
+        int position;
+        double border_scale;
+   } set;
 };
 
 /**

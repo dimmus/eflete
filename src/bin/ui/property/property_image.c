@@ -144,31 +144,31 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
          eina_stringshare_del(str);
          break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_L:
-         elm_spinner_value_set(action->control, image_pd.img->border_l);
+         elm_spinner_value_set(action->control, image_pd.img->set.border_l);
          break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_R:
-         elm_spinner_value_set(action->control, image_pd.img->border_r);
+         elm_spinner_value_set(action->control, image_pd.img->set.border_r);
          break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_T:
-         elm_spinner_value_set(action->control, image_pd.img->border_t);
+         elm_spinner_value_set(action->control, image_pd.img->set.border_t);
          break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_B:
-         elm_spinner_value_set(action->control, image_pd.img->border_b);
+         elm_spinner_value_set(action->control, image_pd.img->set.border_b);
          break;
       case ATTRIBUTE_IMAGE_ITEM_MIN_W:
-         elm_spinner_value_set(action->control, image_pd.img->min_w);
+         elm_spinner_value_set(action->control, image_pd.img->set.min_w);
          break;
       case ATTRIBUTE_IMAGE_ITEM_MIN_H:
-         elm_spinner_value_set(action->control, image_pd.img->min_h);
+         elm_spinner_value_set(action->control, image_pd.img->set.min_h);
          break;
       case ATTRIBUTE_IMAGE_ITEM_MAX_W:
-         elm_spinner_value_set(action->control, image_pd.img->max_w);
+         elm_spinner_value_set(action->control, image_pd.img->set.max_w);
          break;
       case ATTRIBUTE_IMAGE_ITEM_MAX_H:
-         elm_spinner_value_set(action->control, image_pd.img->max_h);
+         elm_spinner_value_set(action->control, image_pd.img->set.max_h);
          break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_SCALE:
-         elm_spinner_value_set(action->control, image_pd.img->border_scale);
+         elm_spinner_value_set(action->control, image_pd.img->set.border_scale);
          break;
       default:
          CRIT("Failed to update attribute [%s]", action->name ? action->name : "unknown");
