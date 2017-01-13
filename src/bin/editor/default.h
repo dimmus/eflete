@@ -313,6 +313,11 @@ Eina_Bool
 editor_state_image_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
       const char *part_name, const char *state_name, double state_val);
 Eina_Bool
+editor_state_vector_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_vector_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
+      const char *part_name, const char *state_name, double state_val);
+Eina_Bool
 editor_state_text_source_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_text_source_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,

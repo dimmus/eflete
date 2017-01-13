@@ -74,6 +74,7 @@ typedef enum {
    RM_ATTRIBUTE_STATE_FIXED_W,
    RM_ATTRIBUTE_STATE_FILL_SMOOTH,
    RM_ATTRIBUTE_STATE_VISIBLE,
+   RM_ATTRIBUTE_STATE_VECTOR,
    RM_ATTRIBUTE_STATE_IMAGE,
    RM_ATTRIBUTE_STATE_IMAGE_TWEEN,
    RM_ATTRIBUTE_STATE_COLOR_CLASS,
@@ -641,6 +642,10 @@ editor_state_font_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bo
       const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_image_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
+editor_state_vector_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
       const char * new_val) EINA_WARN_UNUSED_RESULT;
 
 
