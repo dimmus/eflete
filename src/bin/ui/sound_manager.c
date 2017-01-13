@@ -402,7 +402,7 @@ _tone_add_cb(void *data __UNUSED__,
    resource_name_validator_list_set(mng.tone_validator, &ap.project->RM.tones, true);
    mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
-   popup = popup_add(_("Create a new layout"), NULL, BTN_OK|BTN_CANCEL, _add_tone_content_get, mng.tone_entry);
+   popup = popup_add(_("Create a new tone"), NULL, BTN_OK|BTN_CANCEL, _add_tone_content_get, mng.tone_entry);
    popup_button_disabled_set(popup, BTN_OK, true);
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _tone_add_popup_close_cb, NULL);
 }
