@@ -211,7 +211,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_IMAGE_ITEM_QUALITY:
       case ATTRIBUTE_IMAGE_ITEM_WIDTH:
       case ATTRIBUTE_IMAGE_ITEM_HEIGHT:
-         break;
       case ATTRIBUTE_IMAGE_ITEM_BORDER_L:
       case ATTRIBUTE_IMAGE_ITEM_BORDER_R:
       case ATTRIBUTE_IMAGE_ITEM_BORDER_T:
@@ -222,10 +221,98 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_IMAGE_ITEM_MAX_H:
       case ATTRIBUTE_IMAGE_ITEM_BORDER_SCALE:
          elm_spinner_value_set(action->control, 0);
-         elm_object_disabled_set(action->control, true);
          break;
-      case ATTRIBUTE_IMAGE_ITEM_LAST:
+      default:
+         CRIT("Failed to init attribute [%s]", action->name ? action->name : "unknown");
+         abort();
          break;
+     }
+}
+
+static void
+_change_cb(Property_Attribute *pa, Property_Action *action)
+{
+   double double_val = 0.0;
+
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   PROPERTY_DATA_GET(action->control);
+
+   switch (action->control_type)
+     {
+      case PROPERTY_CONTROL_SPINNER:
+         double_val = elm_spinner_value_get(action->control);
+         break;
+      default:
+         break;
+     }
+
+   switch (action->type.attribute_image)
+     {
+      case ATTRIBUTE_IMAGE_ITEM_NAME:
+      case ATTRIBUTE_IMAGE_ITEM_TYPE:
+      case ATTRIBUTE_IMAGE_ITEM_LOCATION:
+      case ATTRIBUTE_IMAGE_ITEM_COMPRESSION:
+      case ATTRIBUTE_IMAGE_ITEM_QUALITY:
+      case ATTRIBUTE_IMAGE_ITEM_WIDTH:
+      case ATTRIBUTE_IMAGE_ITEM_HEIGHT:
+         break;
+      case ATTRIBUTE_IMAGE_ITEM_BORDER_L:
+         CRIT_ON_FAIL(editor_image_set_image_border_left_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+         break;
+      case ATTRIBUTE_IMAGE_ITEM_BORDER_R:
+         CRIT_ON_FAIL(editor_image_set_image_border_right_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+         break;
+      case ATTRIBUTE_IMAGE_ITEM_BORDER_T:
+         CRIT_ON_FAIL(editor_image_set_image_border_top_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+         break;
+      case ATTRIBUTE_IMAGE_ITEM_BORDER_B:
+         CRIT_ON_FAIL(editor_image_set_image_border_bottom_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+         break;
+      case ATTRIBUTE_IMAGE_ITEM_MIN_W:
+         CRIT_ON_FAIL(editor_image_set_image_min_width_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+          break;
+      case ATTRIBUTE_IMAGE_ITEM_MIN_H:
+         CRIT_ON_FAIL(editor_image_set_image_min_height_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+          break;
+      case ATTRIBUTE_IMAGE_ITEM_MAX_W:
+         CRIT_ON_FAIL(editor_image_set_image_max_width_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+          break;
+      case ATTRIBUTE_IMAGE_ITEM_MAX_H:
+         CRIT_ON_FAIL(editor_image_set_image_max_height_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             (int)double_val));
+          break;
+      case ATTRIBUTE_IMAGE_ITEM_BORDER_SCALE:
+         CRIT_ON_FAIL(editor_image_set_image_border_scale_set(ap.project->global_object,
+                                                             image_pd.img->set.name,
+                                                             image_pd.img->set.position,
+                                                             double_val));
+          break;
       default:
          CRIT("Failed to init attribute [%s]", action->name ? action->name : "unknown");
          abort();
@@ -249,6 +336,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->type.attribute_image = attribute;
    action->update_cb = _update_cb;
    action->init_cb = _init_cb;
+   action->change_cb = _change_cb;
 }
 
 static inline void
