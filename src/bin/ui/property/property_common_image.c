@@ -56,6 +56,7 @@ _on_state_image_choose(void *data,
                               data,
                               _on_image_editor_done,
                               data,
+                              false,
                               false);
 TODO("apply after helper popup would be fixed")
 //   elm_object_scroll_freeze_push(data);
@@ -73,6 +74,46 @@ property_image_normal_control_add(Evas_Object *parent)
    elm_object_style_set(btn, "elipsis");
    evas_object_smart_callback_add(btn, signals.elm.button.clicked, _on_state_image_choose, content);
    evas_object_smart_callback_add(content, signals.elm.entry.clicked, _on_state_image_choose, content);
+   elm_object_part_content_set(content, "elm.swallow.elipsis", btn);
+   elm_entry_editable_set(content, false);
+   evas_object_show(btn);
+   evas_object_show(content);
+
+   evas_object_event_callback_add(content,
+                                  EVAS_CALLBACK_FREE,
+                                  popup_active_helper_close,
+                                  (void*)(uintptr_t)POPUP_GENGRID_IMAGE_HELPER);
+
+   return content;
+}
+
+static void
+_on_state_vector_choose(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
+{
+   popup_gengrid_image_helper(NULL,
+                              data,
+                              _on_image_editor_done,
+                              data,
+                              false,
+                              true);
+TODO("apply after helper popup would be fixed")
+//   elm_object_scroll_freeze_push(data);
+}
+
+Evas_Object *
+property_vector_normal_control_add(Evas_Object *parent)
+{
+   Evas_Object *content, *btn;
+
+   assert(parent != NULL);
+
+   ENTRY_ADD(parent, content, true);
+   btn = elm_button_add(content);
+   elm_object_style_set(btn, "elipsis");
+   evas_object_smart_callback_add(btn, signals.elm.button.clicked, _on_state_vector_choose, content);
+   evas_object_smart_callback_add(content, signals.elm.entry.clicked, _on_state_vector_choose, content);
    elm_object_part_content_set(content, "elm.swallow.elipsis", btn);
    elm_entry_editable_set(content, false);
    evas_object_show(btn);

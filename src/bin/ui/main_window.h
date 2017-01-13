@@ -113,6 +113,7 @@ typedef enum
 
 typedef enum
 {
+   VECTOR_IMAGE,
    SINGLE_IMAGE,
    IMAGE_SET,
    IMAGE_SET_ITEM
@@ -422,7 +423,7 @@ popup_log_message_helper(const char *msg);
 void
 popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
-                           Eina_Bool multi);
+                           Eina_Bool multi, Eina_Bool vector);
 
 void
 popup_gengrid_helper_item_select(const char *item_title);

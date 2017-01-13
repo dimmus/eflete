@@ -55,6 +55,7 @@ struct _Item
 typedef struct _Item Item;
 static Elm_Gengrid_Item_Class *gic = NULL;
 static Elm_Gengrid_Item_Class *gic_set = NULL;
+static Elm_Gengrid_Item_Class *gic_vec = NULL;
 
 static void
 _delete_object_job(void *data)
@@ -710,8 +711,48 @@ _grid_del(void *data,
    assert(it != NULL);
 
    eina_stringshare_del(it->image_name);
-   eina_stringshare_del(it->source);
+   TODO("Remove 'IF' when exporting from edj to svg would be done properly")
+   if (it->source)
+     eina_stringshare_del(it->source);
    free(it);
+}
+
+static Eina_Bool
+_vector_gengrid_init(Helper_Data *helper_data)
+{
+   Eina_List *l = NULL;
+   Item *it = NULL;
+   Eina_List *vectors = NULL;
+   int counter = 0;
+   Vector2 *res;
+
+   vectors = ap.project->RM.vectors;
+
+   if (vectors)
+     {
+        EINA_LIST_FOREACH(vectors, l, res)
+           {
+              counter++;
+              if (!res->common.name)
+                {
+                   ERR("name not found for image #%d",counter);
+                   continue;
+                }
+              it = (Item *)mem_malloc(sizeof(Item));
+              it->image_name = eina_stringshare_add(res->common.name);
+              TODO("Export SVG images then allow to load it properly, through source");
+              it->source = NULL; /*  eina_stringshare_add(res->source); */
+              it->type = VECTOR_IMAGE;
+              elm_gengrid_item_append(helper_data->gengrid, gic_vec, it, NULL, NULL);
+           }
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(helper_data->gengrid),
+                                   ELM_GENGRID_ITEM_SCROLLTO_TOP);
+     }
+   elm_scroller_policy_set(helper_data->gengrid, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_AUTO);
+   evas_object_smart_calculate(helper_data->gengrid);
+
+   return true;
 }
 
 static Eina_Bool
@@ -918,6 +959,49 @@ empty_content:
    return NULL;
 }
 
+/* icon fetching callback */
+static Evas_Object *
+_grid_vector_content_get(void *data,
+                             Evas_Object *obj,
+                             const char  *part)
+{
+   Item *it = data;
+   Evas_Object *image_obj = NULL;
+   Evas_Object *grid = (Evas_Object *)obj;
+   Resource2 *res;
+
+   assert(it != NULL);
+   assert(grid != NULL);
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+#ifndef _WIN32
+        image_obj = elm_thumb_add(grid);
+        TODO("Learn how to load picture from eet file to show OR wait when export svg implemenetation will be")
+//        elm_thumb_file_set(image_obj, it->source, it->image_name);
+#else
+        TODO("Remove this urgly hack when we fix thumbs on Windows")
+        image_obj = elm_image_add(grid);
+//        elm_image_file_set(image_obj, it->source, it->image_name);
+#endif /* _WIN32 */
+        elm_object_style_set(image_obj, "noframe");
+        evas_object_show(image_obj);
+     }
+   else if (!strcmp(part, "elm.swallow.end"))
+     {
+        res = resource_manager_find(ap.project->RM.vectors, it->image_name);
+        if (eina_list_count(res->common.used_in) == 0)
+          {
+             image_obj = elm_icon_add(grid);
+             elm_image_file_set(image_obj, ap.path.theme_edj, "elm/image/icon/attention");
+             evas_object_show(image_obj);
+          }
+     }
+
+   return image_obj;
+}
+#undef MAX_ICON_SIZE
+
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
@@ -971,7 +1055,7 @@ _btn_image_manager_cb(void *data __UNUSED__,
 void
 popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
-                           Eina_Bool multi)
+                           Eina_Bool multi, Eina_Bool vector)
 {
    Evas_Object *entry, *icon, *button;
    Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
@@ -1035,8 +1119,19 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         gic_set->func.del = _grid_del;
      }
 
+   if (!gic_vec)
+     {
+        gic_vec = elm_gengrid_item_class_new();
+        gic_vec->item_style = "default";
+        gic_vec->func.text_get = _grid_label_get;
+        gic_vec->func.content_get = _grid_vector_content_get;
+        gic_vec->func.del = _grid_del;
+     }
 
-   _image_gengrid_init(helper_data);
+   if (vector)
+     _vector_gengrid_init(helper_data);
+   else
+     _image_gengrid_init(helper_data);
 
    ENTRY_ADD(fs, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));

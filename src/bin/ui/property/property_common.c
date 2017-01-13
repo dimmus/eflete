@@ -436,6 +436,10 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          content = property_image_normal_control_add(parent);
          evas_object_smart_callback_add(content, signals.eflete.property.image_normal_control.changed, _start_change_stop_cb, pa);
          break;
+      case PROPERTY_CONTROL_VECTOR_NORMAL:
+         content = property_vector_normal_control_add(parent);
+         evas_object_smart_callback_add(content, signals.eflete.property.image_normal_control.changed, _start_change_stop_cb, pa);
+         break;
       case PROPERTY_CONTROL_IMAGE_TWEEN:
          content = property_image_tween_control_add(parent);
          evas_object_smart_callback_add(content, signals.eflete.property.image_tween_control.changed, _start_change_stop_cb, pa);
@@ -754,6 +758,7 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX_CC]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_VECTOR_NORMAL]  [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_TWEEN]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_SELECTOR] [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;

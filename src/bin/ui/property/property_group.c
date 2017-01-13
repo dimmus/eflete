@@ -3461,6 +3461,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_CONTROL_ENTRY:
       case PROPERTY_CONTROL_IMAGE_NORMAL:
+      case PROPERTY_CONTROL_VECTOR_NORMAL:
          str_val1 = property_entry_get(action->control);
          break;
       case PROPERTY_CONTROL_CHECK:
@@ -5410,7 +5411,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_VECTOR_NORMAL:
               IT.name = "Vector";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_VECTOR,
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_VECTOR_NORMAL, ATTRIBUTE_STATE_VECTOR,
                        _("Name of vector to be used."));
               break;
 

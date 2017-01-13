@@ -128,7 +128,8 @@ _add_tween_image(void *data,
                               obj,
                               _on_image_editor_tween_done,
                               control,
-                              true);
+                              true,
+                              false);
 TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_push(data);
 }
