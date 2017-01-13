@@ -35,6 +35,7 @@
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
 #define PART_TEXT PART_MASK(EDJE_PART_TYPE_TEXT)
 #define PART_IMAGE PART_MASK(EDJE_PART_TYPE_IMAGE)
+#define PART_VECTOR PART_MASK(EDJE_PART_TYPE_VECTOR)
 #define PART_SWALLOW PART_MASK(EDJE_PART_TYPE_SWALLOW)
 #define PART_TEXTBLOCK PART_MASK(EDJE_PART_TYPE_TEXTBLOCK)
 #define PART_GROUP PART_MASK(EDJE_PART_TYPE_GROUP)
@@ -558,6 +559,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_VECTOR_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE);
@@ -619,6 +621,9 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET);
 #endif
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_VECTOR_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_VECTOR_NORMAL);
          break;
       case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
@@ -856,6 +861,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          efl_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.group_data_name_validator);
          break;
       case ATTRIBUTE_STATE_IMAGE:
+      case ATTRIBUTE_STATE_VECTOR:
       case ATTRIBUTE_GROUP_DATA_VALUE:
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
       case ATTRIBUTE_GROUP_MIN_W:
@@ -1792,6 +1798,13 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
          return editor_state_image_default_is(EDIT_OBJ, STATE_ARGS);
+      case ATTRIBUTE_STATE_VECTOR:
+         str_val1 = edje_edit_state_vector_get(EDIT_OBJ, STATE_ARGS);
+         if (!str_val1)
+           return true;
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         return editor_state_vector_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          images_list = edje_edit_state_tweens_list_get(EDIT_OBJ, STATE_ARGS);
          property_image_tween_cleanup(action->control);
@@ -2665,6 +2678,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
            }
          STR_VAL(str_val1, tmp_str_val1);
          break;
+      case ATTRIBUTE_STATE_VECTOR:
+         group_pd.history.format = _("vector changed from \"%s\" to \"%s\"");
+         tmp_str_val1 = edje_edit_state_vector_get(EDIT_OBJ, STATE_ARGS);
+         STR_VAL(str_val1, tmp_str_val1);
+         break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          group_pd.history.format = _("changed \"%d\" tween images");
          break;
@@ -3483,6 +3501,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_IMAGE:
          CRIT_ON_FAIL(editor_state_image_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_VECTOR:
+         CRIT_ON_FAIL(editor_state_vector_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -4488,6 +4511,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_SCRIPT:
       case ATTRIBUTE_PART_ITEM_NAME:
       case ATTRIBUTE_STATE_IMAGE:
+      case ATTRIBUTE_STATE_VECTOR:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -5375,6 +5399,20 @@ _init_items()
                        _("Affects the right-down corner position for a fixed "
                          "number of pixels along the Y axis."));
                break;
+
+              /* part vector */
+           case PROPERTY_GROUP_ITEM_STATE_VECTOR_TITLE:
+              IT.name = "Vector";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_VECTOR;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_VECTOR_NORMAL:
+              IT.name = "Vector";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_VECTOR,
+                       _("Name of vector to be used."));
+              break;
 
               /* part image */
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
