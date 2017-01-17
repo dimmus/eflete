@@ -30,6 +30,7 @@ enum _Resource2_Type
    RESOURCE2_TYPE_STATE,
    RESOURCE2_TYPE_ITEM,
    RESOURCE2_TYPE_PROGRAM,
+   RESOURCE2_TYPE_SCRIPT,
    RESOURCE2_TYPE_LIMIT, /* not yet */
    RESOURCE2_TYPE_DATA_GLOBAL,
    RESOURCE2_TYPE_DATA_GROUP,
@@ -84,6 +85,7 @@ typedef struct _Sound2 Sound2;
 typedef struct _Sound2 Font2;
 typedef struct _Sound2 Global_Data2;
 typedef struct _Sound2 Group_Data2;
+typedef struct _Script2 Script2;
 
 struct _Resource2
 {
@@ -97,6 +99,7 @@ struct _Group2
    Eina_List *programs;
    Eina_List *data_items;
    Eina_List *limits;
+   Script2 *script;
    Group2 *main_group;         /**< pointer to main group. NULL if group is not an alias */
    Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
 
@@ -149,6 +152,13 @@ struct _Program2
    Eina_List *afters;
    Eina_Stringshare *filter_part;
    Group2 *group;
+};
+
+
+struct _Script2
+{
+   Resource2_Internal common;
+   Eina_Strbuf *code;          /**< pointer to script code */
 };
 
 struct _Style2
