@@ -851,8 +851,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_SCRIPT:
          elm_entry_single_line_set(action->control, false);
+         elm_entry_editable_set(action->control, false);
          evas_object_size_hint_min_set(action->control, 0, 400);
-         elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_PART_NAME:
          efl_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
