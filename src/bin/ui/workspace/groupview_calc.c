@@ -564,6 +564,7 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
          eina_stringshare_del(str);
          _common_param_update(gp, sd->group->edit_object);
          break;
+      case EDJE_PART_TYPE_VECTOR:
       case EDJE_PART_TYPE_RECTANGLE:
       case EDJE_PART_TYPE_GROUP:
          _common_param_update(gp, sd->group->edit_object);
@@ -642,6 +643,7 @@ _part_draw_add(Groupview_Smart_Data *sd, Part2 *part)
          break;
       case EDJE_PART_TYPE_TEXT:
       case EDJE_PART_TYPE_TEXTBLOCK:
+      case EDJE_PART_TYPE_VECTOR:
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
