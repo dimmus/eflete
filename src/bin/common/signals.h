@@ -543,7 +543,7 @@ typedef struct {
 #define SIGNAL_EDITOR_TONE_ADDED "SIGNAL_EDITOR_TONE_ADDED"
 
 /**
- * emited when sound is deleted.
+ * emited when tone is deleted.
  * eventinfo - tone's name
  *
  * @ingroup Window
@@ -551,7 +551,7 @@ typedef struct {
 #define SIGNAL_EDITOR_TONE_DELETED "SIGNAL_EDITOR_TONE_DELETED"
 
 /**
- * emited when tone is added.
+ * emited when image is added.
  * eventinfo - image's name
  *
  * @ingroup Window
@@ -559,7 +559,7 @@ typedef struct {
 #define SIGNAL_EDITOR_IMAGE_ADDED "SIGNAL_EDITOR_IMAGE_ADDED"
 
 /**
- * emited when sound is deleted.
+ * emited when image is deleted.
  * eventinfo - image's name
  *
  * @ingroup Window
