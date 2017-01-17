@@ -175,6 +175,12 @@ void
 _resource_image_del(Project *pro, Image2 *res_image);
 
 void
+_resource_image_set_free(Project *pro, Image_Set2 *res);
+
+void
+_resource_image_set_del(Project *pro, Image_Set2 *res_image);
+
+void
 _resource_tone_free(Project *pro, Tone2 *res);
 
 void
@@ -203,8 +209,8 @@ _resource_style_del(Project *pro, Style2 *res_style);
 
 /***** NOT IMPLEMENTED YET BUT NEED FREEING ***********/
 
-void
-_resource_image_set_free(Project *pro, Image_Set2 *res);
+//void
+//_resource_image_set_free(Project *pro, Image_Set2 *res);
 
 void
 _resource_font_free(Project *pro, Font2 *res);

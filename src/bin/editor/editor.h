@@ -292,6 +292,9 @@ Eina_Bool
 editor_image_set_add(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
+editor_image_set_del(Evas_Object *obj, const char *name, Eina_Bool notify) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
 editor_image_set_image_border_left_set(Evas_Object *obj, const char *name, int position, int l) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool

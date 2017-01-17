@@ -76,6 +76,24 @@ editor_image_set_add(Evas_Object *obj, const char *name, Eina_Bool notify)
    return true;
 }
 
+Eina_Bool
+editor_image_set_del(Evas_Object *obj, const char *name, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   if (!edje_edit_image_set_del(obj, name))
+     return false;
+
+   if (!editor_save_all(obj))
+     return false;
+   _editor_project_changed();
+
+   if (notify)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_IMAGE_SET_DELETED, (void *)name);
+   return true;
+}
+
 inline static Eina_Bool
 _image_set_image_attribute_save(Evas_Object *obj, Editor_Attribute_Resource_Change *send)
 {

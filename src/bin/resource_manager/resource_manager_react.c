@@ -651,6 +651,20 @@ _image_set_added(void *data,
 }
 
 static void
+_image_set_deleted(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei)
+{
+   Image_Set2 *res;
+   const char *name = (const char *)ei;
+   Project *project = (Project *)data;
+
+
+   res = (Image_Set2 *)resource_manager_find(project->RM.image_sets, name);
+   _resource_image_set_del(project, res);
+}
+
+static void
 _style_added(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei)
@@ -955,6 +969,7 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_SET_ADDED, _image_set_added, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_SET_DELETED, _image_set_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
@@ -991,6 +1006,7 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_SET_ADDED, _image_set_added, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_SET_DELETED, _image_set_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);

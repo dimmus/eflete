@@ -139,6 +139,76 @@ _resource_image_del(Project *pro, Image2 *res_image)
 }
 
 void
+_resource_image_set_del(Project *pro, Image_Set2 *res_image_set)
+{
+   Eina_List *l, *images;
+   Resource2 *res;
+   State2 *state;
+   Image_Set2 *image_set;
+   int idx;
+
+   Eina_Bool is_opened = false;
+
+   EINA_LIST_FOREACH(res_image_set->common.used_in, l, res)
+     {
+        if (res->common.type == RESOURCE2_TYPE_STATE)
+          {
+             state = (State2 *)res;
+             if (res_image_set->common.name == state->normal)
+               {
+                  if (!state->part->group->edit_object)
+                    {
+                       is_opened = true;
+                       resource_group_edit_object_load(pro,
+                                                       state->part->group,
+                                                       evas_object_evas_get(ap.win));
+                    }
+                  CRIT_ON_FAIL(editor_state_image_set(state->part->group->edit_object,
+                                                      NULL,
+                                                      false,
+                                                      true,
+                                                      state->part->common.name,
+                                                      state->common.name,
+                                                      state->val,
+                                                      EFLETE_DUMMY_IMAGE_NAME));
+                  if (is_opened)
+                    resource_group_edit_object_unload(state->part->group);
+                  eina_stringshare_del(state->normal);
+                  state->normal = eina_stringshare_add(EFLETE_DUMMY_IMAGE_NAME);
+               }
+             else
+               {
+                  /* NOT WORKING FOR NOW SINCE TWEEN ALREADY DELETED SOMEHOW
+                  CRIT_ON_FAIL(editor_state_tween_del(state->part->group->edit_object,
+                                                      NULL,
+                                                      false,
+                                                      true,
+                                                      state->part->common.name,
+                                                      state->common.name,
+                                                      state->val,
+                                                      res_image->common.name));
+                   */
+                  state->tweens = eina_list_remove(state->tweens, res_image_set);
+               }
+          }
+        else if (res->common.type == RESOURCE2_TYPE_IMAGE_SET)
+          {
+             image_set = (Image_Set2 *)res;
+
+             TODO("Make editor_image_set_image_del");
+             images = edje_edit_image_set_images_list_get(pro->global_object,
+                                                          image_set->common.name);
+             idx = eina_list_data_idx(images, (void *)res_image_set->common.name);
+             edje_edit_image_set_image_del(pro->global_object,
+                                           image_set->common.name,
+                                           idx);
+             edje_edit_string_list_free(images);
+          }
+     }
+   _resource_image_set_free(pro, res_image_set);
+}
+
+void
 _resource_tone_free(Project *pro, Tone2 *res)
 {
    pro->RM.tones = eina_list_remove(pro->RM.tones, res);
