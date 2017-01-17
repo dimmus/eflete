@@ -582,6 +582,19 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_IMAGE_SET_DELETED "SIGNAL_EDITOR_IMAGE_SET_DELETED"
 
+typedef struct {
+     int image_position;
+     const char *set_name;
+     const char *image_name;
+} Image_Set_Change;
+/**
+ * emited on add new image into image set
+ * eventinfo - Image_Set_Change struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_IMAGE_SET_IMAGE_ADD "SIGNAL_EDITOR_IMAGE_SET_IMAGE_ADD"
+
 
 /**
  * emited when textblock style is added.

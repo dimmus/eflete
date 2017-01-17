@@ -94,6 +94,34 @@ editor_image_set_del(Evas_Object *obj, const char *name, Eina_Bool notify)
    return true;
 }
 
+Eina_Bool
+editor_image_set_image_add(Evas_Object *obj, const char *image_set_name, const char *image, Eina_Bool notify)
+{
+   assert(obj != NULL);
+   assert(image_set_name != NULL);
+   assert(image != NULL);
+
+   Image_Set_Change send;
+
+   if (!edje_edit_image_set_image_add(obj, image_set_name, image))
+     return false;
+
+   if (!editor_save_all(obj))
+     return false;
+   _editor_project_changed();
+
+   if (notify)
+     {
+        send.set_name = eina_stringshare_add(image_set_name);
+        send.image_name = eina_stringshare_add(image);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_IMAGE_SET_IMAGE_ADD, &send);
+        eina_stringshare_del(send.set_name);
+        eina_stringshare_del(send.image_name);
+     }
+
+   return true;
+}
+
 inline static Eina_Bool
 _image_set_image_attribute_save(Evas_Object *obj, Editor_Attribute_Resource_Change *send)
 {
