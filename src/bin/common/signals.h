@@ -567,7 +567,14 @@ typedef struct {
 #define SIGNAL_EDITOR_IMAGE_DELETED "SIGNAL_EDITOR_IMAGE_DELETED"
 
 /**
- * emited when tone is added.
+ * emited when image set added.
+ * eventinfo - image set name.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_IMAGE_SET_ADDED "SIGNAL_EDITOR_IMAGE_SET_ADDED"
+/**
+ * emited when textblock style is added.
  * eventinfo - NULL
  *
  * @ingroup Window

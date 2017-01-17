@@ -634,6 +634,23 @@ image_deleted(void *data,
 }
 
 static void
+_image_set_added(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei)
+{
+   Image_Set2 *res;
+   const char *name = (const char *)ei;
+   Project *project = (Project *)data;
+
+
+   res = mem_calloc(1, sizeof(Image2));
+   res->common.type = RESOURCE2_TYPE_IMAGE_SET;
+   res->common.name = eina_stringshare_add(name);
+
+   project->RM.image_sets = eina_list_append(project->RM.image_sets, res);
+}
+
+static void
 _style_added(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei)
@@ -937,6 +954,7 @@ _resource_callbacks_register(Project *project)
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_TONE_DELETED, _tone_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
+   evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_IMAGE_SET_ADDED, _image_set_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
    evas_object_smart_callback_add(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
@@ -972,6 +990,7 @@ _resource_callbacks_unregister(Project *project)
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_TONE_DELETED, _tone_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_ADDED, _image_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_DELETED, image_deleted, project);
+   evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_IMAGE_SET_ADDED, _image_set_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_ADDED, _style_added, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_DELETED, _style_deleted, project);
    evas_object_smart_callback_del_full(ap.win,  SIGNAL_EDITOR_STYLE_TAG_CHANGED, _style_changed, project);
