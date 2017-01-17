@@ -282,6 +282,24 @@ _property_attribute_changed(void *data,
               ((Program2 *)program)->targets = eina_list_append(((Program2 *)program)->targets, source);
            }
          break;
+      case RM_ATTRIBUTE_STATE_VECTOR:
+         part = resource_manager_find(group->parts, change->part_name);
+         state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
+         TODO("Add dummy vector and check it here")
+         if (change->old_value)
+           {
+              old_source = resource_manager_find(pro->RM.vectors, change->old_value);
+              _resource_usage_resource_del(state, old_source);
+           }
+
+         if (change->value && strcmp(change->value, EFLETE_DUMMY_IMAGE_NAME))
+           {
+              source = resource_manager_find(pro->RM.vectors, change->value);
+              _resource_usage_resource_add(state, source);
+           }
+         eina_stringshare_del(((State2 *)state)->normal);
+         ((State2 *)state)->normal = eina_stringshare_add(change->value);
+         break;
       case RM_ATTRIBUTE_STATE_IMAGE:
          part = resource_manager_find(group->parts, change->part_name);
          state = resource_manager_v_find(((Part2 *)part)->states, change->state_name, change->state_value);
