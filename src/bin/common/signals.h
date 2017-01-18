@@ -612,7 +612,7 @@ typedef struct {
 #define SIGNAL_EDITOR_STYLE_ADDED "SIGNAL_EDITOR_STYLE_ADDED"
 
 /**
- * emited when sound is deleted.
+ * emited when textblock style is deleted.
  * eventinfo - NULL
  *
  * @ingroup Window
