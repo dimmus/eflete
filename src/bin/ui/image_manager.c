@@ -65,6 +65,7 @@ struct _Image_Manager
    Evas_Object *menu;
    struct {
         Evas_Object *entry;
+        Evas_Object *grid;
         Evas_Object *box;
         Resource_Name_Validator *validator;
    } image_set;
@@ -213,20 +214,26 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
    Resource2 *res = NULL;
    Image2 *image_res = NULL;
    Eina_List *l = NULL;
-   Evas_Object *images_set_grid = NULL;
+   Evas_Object *layout = NULL;
+   Evas_Object *button = NULL;
    Image_Item *image_set_item = NULL;
 
    assert(parent != NULL);
    assert(it != NULL);
 
-   images_set_grid = elm_gengrid_add(parent);
-   elm_gengrid_item_size_set(images_set_grid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_align_set(images_set_grid, 0.0, 0.0);
-   elm_scroller_policy_set(images_set_grid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
-   elm_gengrid_multi_select_mode_set(images_set_grid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-   elm_gengrid_select_mode_set(images_set_grid, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(mng.image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(mng.image, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   layout = elm_layout_add(parent);
+#ifdef HAVE_TIZEN
+   elm_layout_theme_set(layout, "layout", "manager", "internal");
+#else
+   elm_layout_theme_set(layout, "layout", "image_manager", "default");
+#endif
+   evas_object_del(mng.image_set.grid);
+   mng.image_set.grid = elm_gengrid_add(parent);
+   elm_gengrid_item_size_set(mng.image_set.grid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(mng.image_set.grid, 0.0, 0.0);
+   elm_scroller_policy_set(mng.image_set.grid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_gengrid_multi_select_mode_set(mng.image_set.grid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+   elm_gengrid_select_mode_set(mng.image_set.grid, ELM_OBJECT_SELECT_MODE_ALWAYS);
 
    res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
    int place = 0;
@@ -250,13 +257,24 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
         edje_edit_image_set_image_min_get(ap.project->global_object, res->common.name, place,
                                           &image_set_item->set.min_w, &image_set_item->set.min_h);
         image_set_item->set.border_scale = edje_edit_image_set_image_border_scale_get(ap.project->global_object,
-                                                                                  res->common.name,
-                                                                                  place);
-        elm_gengrid_item_append(images_set_grid, gic, image_set_item, _grid_image_set_image_sel , (void *)image_set_item);
+                                                                                      res->common.name,
+                                                                                      place);
+        elm_gengrid_item_append(mng.image_set.grid, gic, image_set_item, _grid_image_set_image_sel , (void *)image_set_item);
         place++;
      }
 
-   return images_set_grid;
+   elm_object_part_content_set(layout, "elm.swallow.list", mng.image_set.grid);
+
+   button = elm_button_add(layout);
+   elm_object_style_set(button, "plus_managers");
+   elm_object_part_content_set(layout, "elm.swallow.btn_add", button);
+
+   button = elm_button_add(layout);
+   elm_object_style_set(button, "minus_managers");
+   elm_object_part_content_set(layout, "elm.swallow.btn_del", button);
+
+   evas_object_show(layout);
+   return layout;
 }
 /* icon fetching callback */
 static Evas_Object *
@@ -385,7 +403,12 @@ _grid_sel_cb(void *data __UNUSED__,
 #else
    to_del = elm_object_part_content_unset(mng.property_panes, "left");
 #endif
+   if (to_del == mng.image)
+     mng.image = NULL;
+   else if (to_del == mng.image_set.grid)
+     mng.image_set.grid = NULL;
    evas_object_del(to_del);
+
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
@@ -430,7 +453,7 @@ _image_manager_gengrid_item_data_set_create(Evas_Object *edje_edit_obj,
    assert(edje_edit_obj != NULL);
    assert(res != NULL);
 
-   Image_Item *it = (Image_Item *)mem_malloc(sizeof(Image_Item));
+   Image_Item *it = (Image_Item *)mem_calloc(1, sizeof(Image_Item));
    it->image_name = eina_stringshare_add(res->common.name);
    it->id = edje_edit_image_set_id_get(edje_edit_obj, it->image_name);
    it->comp_type = 0;
@@ -438,7 +461,8 @@ _image_manager_gengrid_item_data_set_create(Evas_Object *edje_edit_obj,
 
    Image2 *res_image = NULL;
    res_image = eina_list_data_get(res->common.uses___);
-   it->source = eina_stringshare_add(res_image->source);
+   if (res_image) it->source = eina_stringshare_add(res_image->source);
+   else it->source = eina_stringshare_printf("%s%s", ap.path.image_path, EFLETE_DUMMY_IMAGE_NAME);
    it->type = IMAGE_SET;
 
    img = _image_manager_image_create(ap.project->global_object, it);
@@ -520,6 +544,7 @@ _on_image_done(void *data __UNUSED__,
 
         it = (Image_Item *)mem_malloc(sizeof(Image_Item));
         it->image_name = eina_stringshare_add(file_name);
+        it->type = SINGLE_IMAGE;
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);
         it->comp_type = edje_edit_image_compression_type_get(ap.project->global_object,
