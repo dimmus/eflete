@@ -207,6 +207,34 @@ _grid_image_set_image_sel(void *data,
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, it);
 }
 
+static void
+_image_set_image_del(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   Image_Item *image_set = (Image_Item *)data;
+   Image_Item *image = NULL;
+   Eina_List *sel_list = NULL, *l = NULL, *l2 = NULL;
+   Elm_Object_Item *gengrid_item = NULL;
+   Elm_Object_Item *gengrid_next_item = NULL;
+
+   assert(mng.image_set.grid != NULL);
+   sel_list = (Eina_List *)elm_gengrid_selected_items_get(mng.image_set.grid);
+
+   EINA_LIST_FOREACH_SAFE(sel_list, l, l2, gengrid_item)
+     {
+        image = (Image_Item *)elm_object_item_data_get(gengrid_item);
+        CRIT_ON_FAIL(editor_image_set_image_del(ap.project->global_object, image_set->image_name, image->image_name, true));
+
+        elm_gengrid_item_selected_set(gengrid_item, false);
+        gengrid_next_item = elm_gengrid_item_next_get(gengrid_item);
+        elm_object_item_del(gengrid_item);
+     }
+   elm_gengrid_item_selected_set(gengrid_next_item, true);
+   elm_gengrid_realized_items_update(mng.image_set.grid);
+   elm_gengrid_realized_items_update(mng.gengrid);
+}
+
 static inline Evas_Object *
 _image_manager_image_set_grid_create(Evas_Object *parent,
                                      const Image_Item *it)
@@ -271,6 +299,7 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
 
    button = elm_button_add(layout);
    elm_object_style_set(button, "minus_managers");
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _image_set_image_del, it);
    elm_object_part_content_set(layout, "elm.swallow.btn_del", button);
 
    evas_object_show(layout);
