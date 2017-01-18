@@ -16,10 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 
 #include "main_window.h"
 #include "project_manager2.h"
 #include "modal_window.h"
+#include "config.h"
+#include "validator.h"
 
 #ifndef HAVE_TIZEN
    #define ITEM_WIDTH 100
@@ -56,6 +62,12 @@ struct _Image_Manager
    Evas_Object *del_button;
    Evas_Object *gengrid;
    Evas_Object *layout;
+   Evas_Object *menu;
+   struct {
+        Evas_Object *entry;
+        Evas_Object *box;
+        Resource_Name_Validator *validator;
+   } image_set;
 #ifdef HAVE_TIZEN
    struct {
         Evas_Object *black;
@@ -526,7 +538,7 @@ _on_image_done(void *data __UNUSED__,
 }
 
 static void
-_image_add_cb(void *data,
+_new_image_add_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
@@ -547,6 +559,114 @@ _image_add_cb(void *data,
                                    true,
                                    false);
 #endif
+}
+
+static void
+_validation(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Evas_Object *popup = data;
+   Eina_Bool validate = EINA_FALSE;
+
+   assert(popup != NULL);
+
+   if (resource_name_validator_status_get(mng.image_set.validator) != ELM_REG_NOERROR)
+     {
+        validate = EINA_FALSE;
+        elm_object_signal_emit(mng.image_set.entry, "validation,default,fail", "elm");
+     }
+   else
+     {
+        validate = EINA_TRUE;
+        elm_object_signal_emit(mng.image_set.entry, "validation,default,pass", "elm");
+     }
+
+
+   if (!validate)
+       popup_button_disabled_set(popup, BTN_OK, true);
+   else
+       popup_button_disabled_set(popup, BTN_OK, false);
+}
+
+static void
+_image_set_add(void)
+{
+   Eina_Stringshare *image_set_name = eina_stringshare_add(elm_entry_entry_get(mng.image_set.entry));
+   Image_Item *it = NULL;
+
+   CRIT_ON_FAIL(editor_image_set_add(ap.project->global_object, image_set_name, true));
+   it = (Image_Item *)mem_calloc(1, sizeof(Image_Item));
+   it->image_name = eina_stringshare_add(image_set_name);
+   it->id = edje_edit_image_set_id_get(ap.project->global_object, it->image_name);
+   it->type = IMAGE_SET;
+   elm_gengrid_item_append(mng.gengrid, gic_set, it, _grid_sel_cb, NULL);
+   eina_stringshare_del(image_set_name);
+}
+
+static void
+_image_set_add_popup_close_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   Popup_Button btn_res = (Popup_Button) event_info;
+
+   if (BTN_CANCEL != btn_res)
+     _image_set_add();
+
+   resource_name_validator_free(mng.image_set.validator);
+   evas_object_del(mng.image_set.box);
+}
+
+
+Evas_Object *
+_add_image_set_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+{
+   Evas_Object *item, *box;
+
+   BOX_ADD(mng.win, box, false, false);
+   elm_box_padding_set(box, 0, 10);
+   LAYOUT_PROP_ADD(box, _("Image set name:"), "popup", "1swallow")
+   ENTRY_ADD(item, mng.image_set.entry, true);
+   efl_event_callback_add(mng.image_set.entry, ELM_ENTRY_EVENT_VALIDATE,
+                          resource_name_validator_helper, mng.image_set.validator);
+   evas_object_smart_callback_add(mng.image_set.entry, signals.elm.entry.changed, _validation, popup);
+   elm_object_part_text_set(mng.image_set.entry, "guide", _("Type a new image set name"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.image_set.entry);
+   /* need to manualy set not valid string for triggered validator */
+   elm_entry_entry_set(mng.image_set.entry, NULL);
+   elm_box_pack_end(box, item);
+   mng.image_set.box = box;
+
+   if (to_focus) *to_focus = mng.image_set.entry;
+   return box;
+}
+
+static void
+_new_image_set_add_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *popup;
+   mng.image_set.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.image_set.validator, &ap.project->RM.image_sets, true);
+
+   popup = popup_add(_("Create a new image set"), NULL, BTN_OK|BTN_CANCEL, _add_image_set_content_get, mng.image_set.entry);
+   popup_button_disabled_set(popup, BTN_OK, true);
+   evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _image_set_add_popup_close_cb, NULL);
+}
+
+static void
+_image_add_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Coord x, y, h;
+
+   evas_object_geometry_get(obj, &x, &y, NULL, &h);
+
+   elm_menu_move(mng.menu, x, y + h);
+   evas_object_show(mng.menu);
 }
 
 static void
@@ -801,6 +921,10 @@ image_manager_add(void)
    evas_object_smart_callback_add(mng.del_button, signals.elm.button.clicked, _image_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, true);
+
+   mng.menu = elm_menu_add(ap.win);
+   elm_menu_item_add(mng.menu, NULL, "image", _("Image"), _new_image_add_cb, NULL);
+   elm_menu_item_add(mng.menu, NULL, "image_set", _("Image set"), _new_image_set_add_cb, NULL);
 
    // Search line add
    search_entry = _image_manager_search_field_create(mng.layout);
