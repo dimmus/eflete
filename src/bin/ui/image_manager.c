@@ -653,7 +653,7 @@ _on_image_done(void *data __UNUSED__,
         it->image_name = eina_stringshare_add(file_name);
         it->type = SINGLE_IMAGE;
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
-        elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);
+        elm_gengrid_item_insert_before(mng.gengrid, gic, it, mng.image_set_header, _grid_sel_cb, NULL);
         it->comp_type = edje_edit_image_compression_type_get(ap.project->global_object,
                                                              it->image_name);
         it->quality = edje_edit_image_compression_rate_get(ap.project->global_object,
@@ -732,7 +732,7 @@ _image_set_add(void)
    it->image_name = eina_stringshare_add(image_set_name);
    it->id = edje_edit_image_set_id_get(ap.project->global_object, it->image_name);
    it->type = IMAGE_SET;
-   elm_gengrid_item_append(mng.gengrid, gic_set, it, _grid_sel_cb, NULL);
+   elm_gengrid_item_insert_before(mng.gengrid, gic_set, it, mng.vector_header, _grid_sel_cb, NULL);
    eina_stringshare_del(image_set_name);
 }
 
