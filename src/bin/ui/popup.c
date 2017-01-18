@@ -805,10 +805,13 @@ _image_gengrid_init(Helper_Data *helper_data)
              continue;
           }
 
-        it = (Item *)mem_malloc(sizeof(Item));
+        it = (Item *)mem_calloc(1, sizeof(Item));
         it->image_name = eina_stringshare_add(image_set->common.name);
-        res = eina_list_data_get(image_set->common.uses___);
-        it->source = eina_stringshare_add(res->source);
+        if (image_set->common.uses___)
+          {
+             res = eina_list_data_get(image_set->common.uses___);
+             it->source = eina_stringshare_add(res->source);
+          }
         it->type = IMAGE_SET;
         elm_gengrid_item_append(helper_data->gengrid, gic_set, it, NULL, NULL);
      }
@@ -832,7 +835,7 @@ _grid_label_get(void *data,
      {
         res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
         int count = eina_list_count(res->common.uses___);
-        if (count <= 4) return strdup("");
+        if (count <= 4 && count > 0) return strdup("");
         char buf[256];
         snprintf(buf, 256, "%d", count);
         return strdup(buf);

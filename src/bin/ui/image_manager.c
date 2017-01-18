@@ -82,7 +82,7 @@ _grid_label_get(void *data,
      {
         res = resource_manager_find(ap.project->RM.image_sets, it->image_name);
         int count = eina_list_count(res->common.uses___);
-        if (count <= 4) return strdup("");
+        if (count <= 4 && count > 0) return strdup("");
         char buf[256];
         snprintf(buf, 256, "%d", count);
         return strdup(buf);
