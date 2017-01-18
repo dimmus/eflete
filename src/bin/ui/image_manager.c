@@ -77,12 +77,17 @@ struct _Image_Manager
    } bg_switcher;
 #endif
    Search_Data image_search_data;
+
+   Elm_Object_Item *image_set_header;
+   Elm_Object_Item *image_header;
+   Elm_Object_Item *vector_header;
 };
 
 static Eina_Bool _on_image_done(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info);
 static void _image_info_setup(const Image_Item* it);
 
 static Image_Manager mng;
+static Elm_Gengrid_Item_Class *gic_group = NULL;
 static Elm_Gengrid_Item_Class *gic = NULL;
 static Elm_Gengrid_Item_Class *gic_set = NULL;
 
@@ -446,6 +451,21 @@ _grid_del(void *data,
    eina_stringshare_del(it->image_name);
    eina_stringshare_del(it->source);
    free(it);
+}
+
+static char *
+_grid_group_label_get(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      const char  *part __UNUSED__)
+{
+   return strdup(data);
+}
+
+static void
+_grid_group_del(void *data,
+                Evas_Object *obj __UNUSED__)
+{
+   eina_stringshare_del(data);
 }
 
 static void
@@ -881,9 +901,15 @@ _image_manager_init(void)
    int counter = 0;
    Image2 *res = NULL;
    Image_Set2 *image_set = NULL;
+   Eina_Stringshare *name;
 
    images = ap.project->RM.images;
 
+   /*
+    * Add group image
+    */
+   name = eina_stringshare_add(_("Image"));
+   mng.image_header = elm_gengrid_item_append(mng.gengrid, gic_group, name, NULL, NULL);
    if (images)
      {
         EINA_LIST_FOREACH(images, l, res)
@@ -901,6 +927,11 @@ _image_manager_init(void)
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(mng.gengrid), ELM_GENGRID_ITEM_SCROLLTO_TOP);
      }
 
+   /*
+    * Add group image-set
+    */
+   name = eina_stringshare_add(_("Image Set"));
+   mng.image_set_header = elm_gengrid_item_append(mng.gengrid, gic_group, name, NULL, NULL);
    counter = 0;
    EINA_LIST_FOREACH(ap.project->RM.image_sets, l, image_set)
      {
@@ -914,6 +945,12 @@ _image_manager_init(void)
         it = _image_manager_gengrid_item_data_set_create(ap.project->global_object, image_set);
         elm_gengrid_item_append(mng.gengrid, gic_set, it, _grid_sel_cb, NULL);
      }
+
+   /*
+    * Add group vectors
+    */
+   name = eina_stringshare_add(_("Vectors"));
+   mng.vector_header = elm_gengrid_item_append(mng.gengrid, gic_group, name, NULL, NULL);
 
    return true;
 }
@@ -1022,6 +1059,15 @@ image_manager_add(void)
         gic_set->func.text_get = _grid_label_get;
         gic_set->func.content_get = _grid_image_set_content_get;
         gic_set->func.del = _grid_del;
+     }
+
+   if (!gic_group)
+     {
+        gic_group = elm_gengrid_item_class_new();
+        gic_group->item_style = "group_index";
+        gic_group->func.text_get = _grid_group_label_get;
+        gic_group->func.content_get = NULL;
+        gic_group->func.del = _grid_group_del;
      }
 
    mng.gengrid = elm_gengrid_add(mng.layout);
