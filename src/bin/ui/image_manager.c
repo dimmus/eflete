@@ -678,6 +678,7 @@ _image_del_cb(void *data __UNUSED__,
    Image_Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
    Image2 *res;
+   Image_Set2 *res_is = NULL;
 
    assert(mng.gengrid != NULL);
 
@@ -688,16 +689,27 @@ _image_del_cb(void *data __UNUSED__,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        res = (Image2 *)resource_manager_find(ap.project->RM.images, it->image_name);
-
-        if (!res->common.used_in)
+        if (it->type == SINGLE_IMAGE)
           {
-             ecore_file_unlink(res->source);
-             CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
-             /* Unselect and remove image from property */
-             elm_gengrid_item_selected_set(grid_item, false);
-             elm_object_item_del(grid_item);
+             res = (Image2 *)resource_manager_find(ap.project->RM.images, it->image_name);
+
+             if (!res->common.used_in)
+               {
+                  ecore_file_unlink(res->source);
+                  CRIT_ON_FAIL(editor_image_del(ap.project->global_object, it->image_name, true));
+                  /* Unselect and remove image from property */
+               }
           }
+        else if (it->type == IMAGE_SET)
+          {
+             res_is = (Image_Set2 *)resource_manager_find(ap.project->RM.image_sets, it->image_name);
+             if (!res_is->common.used_in)
+               {
+                  CRIT_ON_FAIL(editor_image_set_del(ap.project->global_object, it->image_name, true));
+               }
+          }
+        elm_gengrid_item_selected_set(grid_item, false);
+        elm_object_item_del(grid_item);
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
