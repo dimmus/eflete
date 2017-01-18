@@ -88,6 +88,7 @@ static void _image_info_setup(const Image_Item* it);
 
 static Image_Manager mng;
 static Elm_Gengrid_Item_Class *gic_group = NULL;
+static Elm_Gengrid_Item_Class *gic_vector = NULL;
 static Elm_Gengrid_Item_Class *gic = NULL;
 static Elm_Gengrid_Item_Class *gic_set = NULL;
 
@@ -112,6 +113,16 @@ _grid_label_get(void *data,
      {
         return strdup(it->image_name);
      }
+}
+
+static char *
+_grid_vector_label_get(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       const char  *part __UNUSED__)
+{
+   const Eina_Stringshare *vector_name = data;
+
+   return strdup(vector_name);
 }
 
 static void
@@ -440,6 +451,17 @@ empty_content:
 }
 
 /* deletion callback */
+static void
+_grid_vector_del(void *data,
+                 Evas_Object *obj __UNUSED__)
+{
+   Eina_Stringshare *vector_name = data;
+
+   assert(vector_name != NULL);
+
+   eina_stringshare_del(vector_name);
+}
+
 static void
 _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
@@ -901,6 +923,7 @@ _image_manager_init(void)
    int counter = 0;
    Image2 *res = NULL;
    Image_Set2 *image_set = NULL;
+   Vector2 *vector = NULL;
    Eina_Stringshare *name;
 
    images = ap.project->RM.images;
@@ -951,6 +974,18 @@ _image_manager_init(void)
     */
    name = eina_stringshare_add(_("Vectors"));
    mng.vector_header = elm_gengrid_item_append(mng.gengrid, gic_group, name, NULL, NULL);
+   counter = 0;
+   EINA_LIST_FOREACH(ap.project->RM.vectors, l, vector)
+     {
+        counter++;
+        if (!vector->common.name)
+          {
+             ERR("name not found for vector #%d",counter);
+             continue;
+          }
+
+        elm_gengrid_item_append(mng.gengrid, gic_vector, eina_stringshare_add(vector->common.name), NULL, NULL);
+     }
 
    return true;
 }
@@ -1068,6 +1103,15 @@ image_manager_add(void)
         gic_group->func.text_get = _grid_group_label_get;
         gic_group->func.content_get = NULL;
         gic_group->func.del = _grid_group_del;
+     }
+
+   if (!gic_vector)
+     {
+        gic_vector = elm_gengrid_item_class_new();
+        gic_vector->item_style = "default";
+        gic_vector->func.text_get = _grid_vector_label_get;
+        gic_vector->func.content_get = NULL; /* Not until it would be able to get svg from edj */
+        gic_vector->func.del = _grid_vector_del;
      }
 
    mng.gengrid = elm_gengrid_add(mng.layout);
