@@ -79,6 +79,9 @@ struct _Image_Manager
    Search_Data image_search_data;
 };
 
+static Eina_Bool _on_image_done(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info);
+static void _image_info_setup(const Image_Item* it);
+
 static Image_Manager mng;
 static Elm_Gengrid_Item_Class *gic = NULL;
 static Elm_Gengrid_Item_Class *gic_set = NULL;
@@ -207,6 +210,60 @@ _grid_image_set_image_sel(void *data,
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, it);
 }
 
+static Eina_Bool
+_on_image_set_image_done(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   const Eina_List *images = NULL, *l = NULL;
+   const char *selected = NULL;
+   const char *file_name = NULL;
+   Image_Item *image_set = (Image_Item *)data;
+
+   images = (const Eina_List *)event_info;
+   _on_image_done(NULL, NULL, (void *)eina_list_clone(images));
+
+   EINA_LIST_FOREACH(images, l, selected)
+     {
+        if (ecore_file_is_dir(selected))
+          {
+             ERR(_("Unable to add a folder"));
+             continue;
+          }
+        file_name = ecore_file_file_get(selected);
+
+        CRIT_ON_FAIL(editor_image_set_image_add(ap.project->global_object, image_set->image_name, file_name, true));
+
+     }
+   _image_info_setup(image_set);
+   elm_gengrid_realized_items_update(mng.gengrid);
+   return true;
+}
+
+static void
+_image_set_image_add(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+#if HAVE_TIZEN
+   popup_fileselector_image_helper(_("Create new image set"),
+                                   NULL,
+                                   NULL,
+                                   _on_image_set_image_done,
+                                   data,
+                                   true,
+                                   false);
+#else
+   popup_fileselector_image_helper(NULL,
+                                   NULL,
+                                   NULL,
+                                   _on_image_set_image_done,
+                                   data,
+                                   true,
+                                   false);
+#endif
+}
+
 static void
 _image_set_image_del(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
@@ -295,6 +352,7 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
 
    button = elm_button_add(layout);
    elm_object_style_set(button, "plus_managers");
+   evas_object_smart_callback_add(button, signals.elm.button.clicked, _image_set_image_add, it);
    elm_object_part_content_set(layout, "elm.swallow.btn_add", button);
 
    button = elm_button_add(layout);
