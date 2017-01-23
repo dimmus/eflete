@@ -86,6 +86,7 @@ PKG_CHECK_MODULES([EFL],
    [have_efl="${GREEN}yes${RESET}"],
    [have_efl="${RED}no${RESET} (version < efl_version or > efl_version_max)"]
 )
+AC_SUBST([efl_v], [$(pkg-config efl --modversion)])
 
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
@@ -254,7 +255,7 @@ echo ""
 echo "Configuration Options Summary:"
 echo "  os.............: ${host_os}"
 echo "                   ${os_remark}"
-echo "  efl............: ${have_efl}"
+echo "  efl............: ${have_efl} (version: ${efl_v})"
 echo ""
 echo "Features:"
 echo "  tizen..........: ${summary_tizen}"
