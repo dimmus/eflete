@@ -193,5 +193,4 @@ EXTRA_DIST = \
 	test_logger/test_logger.h \
 	test_project_manager/test_project_manager.h \
 	test_config/test_config.h \
-	test_cursor/test_cursor.h \
-	test_live_widget/test_live_widget.h
+	test_cursor/test_cursor.h
