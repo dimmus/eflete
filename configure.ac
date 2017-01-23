@@ -104,6 +104,7 @@ AM_COND_IF([CHECK_FOUND],
 
 #Usage: EFLETE_WITH_BIN(package, binary, default_value). See eflete_binary.m4
 EFLETE_WITH_BIN([edje], [edje_cc], [edje_cc])
+EFLETE_WITH_BIN([edje], [edje_pick], [edje_pick])
 EFLETE_WITH_BIN([eet], [eet-eet], [eet])
 EWE_WITH_BIN([edje], [edje_cc], [edje_cc])
 EWE_WITH_BIN([eolian], [eolian-gen], [eolian_gen])
