@@ -8,7 +8,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
-AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
+AM_INIT_AUTOMAKE([1.13 dist-xz subdir-objects color-tests foreign])
 
 LT_INIT([win32-dll disable-static pic-only])
 
