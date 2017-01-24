@@ -324,12 +324,12 @@ _image_manager_image_set_grid_create(Evas_Object *parent,
 
    layout = elm_layout_add(parent);
 #ifdef HAVE_TIZEN
-   elm_layout_theme_set(layout, "layout", "manager", "internal");
+   elm_layout_theme_set(layout, "layout", "image_manager", "image_set");
 #else
    elm_layout_theme_set(layout, "layout", "image_manager", "default");
 #endif
    evas_object_del(mng.image_set.grid);
-   mng.image_set.grid = elm_gengrid_add(parent);
+   mng.image_set.grid = elm_gengrid_add(layout);
    elm_gengrid_item_size_set(mng.image_set.grid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(mng.image_set.grid, 0.0, 0.0);
    elm_scroller_policy_set(mng.image_set.grid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
