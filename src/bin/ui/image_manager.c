@@ -262,7 +262,7 @@ _image_set_image_add(void *data,
                      void *event_info __UNUSED__)
 {
 #if HAVE_TIZEN
-   popup_fileselector_image_helper(_("Create new image set"),
+   popup_fileselector_image_helper(_("Add new image into set"),
                                    NULL,
                                    NULL,
                                    _on_image_set_image_done,
