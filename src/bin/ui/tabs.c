@@ -100,7 +100,6 @@ _content_set(void *data,
         if (!item->group)
           {
              elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
-             elm_object_part_content_unset(ap.panes.right, "right");
              /* this case for when Property shows something selected in NORMAL mode */
              evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, NULL);
              /* this case for when Property shows something selected in DEMO mode */
@@ -1121,7 +1120,6 @@ _tab_close(void *data,
         content = elm_layout_content_unset(ap.panes.left_ver, "right");
         evas_object_hide(content);
         elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
-        elm_object_part_content_unset(ap.panes.right, "right");
         /* this case for when Property shows something selected in NORMAL mode */
         evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, NULL);
         /* this case for when Property shows something selected in DEMO mode */
