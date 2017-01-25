@@ -824,6 +824,7 @@ _shortcut_tab_num_cb(void *data __UNUSED__,
 #else
    item = eina_list_nth(tabs.items, num - 1);
 #endif
+   DBG("Switch tab by shortcut. Switch to tab #%d", num);
    if (item)
      elm_toolbar_item_selected_set(item->toolbar_item, true);
 }
