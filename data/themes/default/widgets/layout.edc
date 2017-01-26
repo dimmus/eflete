@@ -203,7 +203,7 @@ group { name: "elm/layout/popup/hint_title";
    }
    programs {
       program { name: "dismiss";
-         signal: "mouse,up,*";
+         signal: "mouse,up,1";
          source: "event";
          action: SIGNAL_EMIT "hint,dismiss" "eflete";
       }
