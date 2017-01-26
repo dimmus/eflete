@@ -112,7 +112,7 @@ _export_dev(void *data __UNUSED__,
    free(dir);
    eina_strbuf_free(buf);
 
-   return false;
+   return true;
 }
 
 void
@@ -189,7 +189,7 @@ _export_release(void *data __UNUSED__,
                           _after_export_release_check, (void *)eina_stringshare_add(path));
    eina_strbuf_free(buf);
 
-   return false;
+   return true;
 }
 
 void
