@@ -95,7 +95,7 @@ static Elm_Gengrid_Item_Class *gic_set = NULL;
 static char *
 _grid_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
-                const char  *part __UNUSED__)
+                const char  *part)
 {
    const Image_Item *it = data;
    Resource2 *res;
