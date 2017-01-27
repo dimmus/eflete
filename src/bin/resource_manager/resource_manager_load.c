@@ -641,7 +641,7 @@ _group_add(Project *pro, Eina_Stringshare *group_name)
 
    res = mem_calloc(1, sizeof(Group2));
    res->common.type = RESOURCE2_TYPE_GROUP;
-   res->common.name = eina_stringshare_add(group_name);
+   res->common.name = eina_stringshare_ref(group_name);
    pro->RM.groups = eina_list_sorted_insert(pro->RM.groups, groupcmp,  res);
 
    return res;
