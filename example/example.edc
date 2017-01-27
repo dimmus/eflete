@@ -15,6 +15,13 @@ styles {
    }
 }
 
+fonts {
+   font: "PTS55F.ttf" "PT";
+   font: "PTS75F.ttf" "PT-Bold";
+   font: "PTS56F.ttf" "PT-Italic";
+   font: "PTS76F.ttf" "PT-BoldItalic";
+}
+
 images {
    image: "dragons.svg" RAW;
    image: "dragons_unused.svg" RAW;
@@ -591,6 +598,42 @@ group { "test/parts/IMAGE/set";
             signal: "mouse,clicked,1";
             source: "click_me_not_a_sound";
             action: PLAY_SAMPLE "not_a_sound_test" 1;
+         }
+      }
+   }
+
+   group { name: "test/font";
+      parts {
+         part { name: "normal";
+            type: TEXT;
+            description {
+               rel2.relative: 1.0 0.25;
+               text { size: 36; font: "PT"; text: "normal"; };
+            }
+         }
+         part { name: "bold";
+            type: TEXT;
+            description {
+               rel1.relative: 0.0 0.25;
+               rel2.relative: 1.0 0.5;
+               text { size: 36; font: "PT-Bold"; text: "bold"; };
+            }
+         }
+         part { name: "italian";
+            type: TEXT;
+            description {
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 0.75;
+               text { size: 36; font: "PT-Italic"; text: "italic"; };
+            }
+         }
+         part { name: "bolditalian";
+            type: TEXT;
+            description {
+               rel1.relative: 0.0 0.75;
+               rel2.relative: 1.0 1.0;
+               text { size: 36; font: "PT-BoldItalic"; text: "bold italic"; };
+            }
          }
       }
    }

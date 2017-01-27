@@ -1,1 +1,1 @@
-eflete --id images --sd sounds example.edc
+eflete --id images --sd sounds --fd ../data/fonts example.edc
