@@ -625,6 +625,15 @@ _group_load(Project *pro, Group2 *group)
    resource_group_edit_object_unload(group);
 }
 
+static int
+groupcmp(const void *d1, const void *d2)
+{
+   Group2 *g1 = (Group2 *)d1;
+   Group2 *g2 = (Group2 *)d2;
+
+   return strcmp(g1->common.name, g2->common.name);
+}
+
 Group2 *
 _group_add(Project *pro, Eina_Stringshare *group_name)
 {
@@ -633,7 +642,7 @@ _group_add(Project *pro, Eina_Stringshare *group_name)
    res = mem_calloc(1, sizeof(Group2));
    res->common.type = RESOURCE2_TYPE_GROUP;
    res->common.name = eina_stringshare_add(group_name);
-   pro->RM.groups = eina_list_append(pro->RM.groups, res);
+   pro->RM.groups = eina_list_sorted_insert(pro->RM.groups, groupcmp,  res);
 
    return res;
 }
