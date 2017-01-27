@@ -517,6 +517,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_GROUP_NAME);
          APPEND(PROPERTY_GROUP_ITEM_GROUP_MIN);
          APPEND(PROPERTY_GROUP_ITEM_GROUP_MAX);
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_SCRIPT);
          break;
       case PROPERTY_GROUP_ITEM_PART_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_NAME);
@@ -848,6 +849,11 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PART_ITEM_NAME:
          elm_object_disabled_set(action->control, true);
+         break;
+      case ATTRIBUTE_GROUP_SCRIPT:
+         elm_entry_single_line_set(action->control, false);
+         elm_entry_editable_set(action->control, false);
+         evas_object_size_hint_min_set(action->control, 0, 400);
          break;
       case ATTRIBUTE_PROGRAM_SCRIPT:
          elm_entry_single_line_set(action->control, false);
@@ -1767,6 +1773,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          property_entry_set(action->control, group_pd.group->common.name);
+         return true;
+      case ATTRIBUTE_GROUP_SCRIPT:
+         code = edje_edit_script_get(EDIT_OBJ);
+         property_entry_set(action->control, code);
+         free(code);
          return true;
       case ATTRIBUTE_STATE_NAME:
          str_val1 = eina_stringshare_printf("%s %.2f",
@@ -3482,6 +3493,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = elm_spinner_value_get(action->control);
          break;
       case PROPERTY_CONTROL_ENTRY:
+      case PROPERTY_CONTROL_ENTRY_SCRIPT:
       case PROPERTY_CONTROL_IMAGE_NORMAL:
       case PROPERTY_CONTROL_VECTOR_NORMAL:
          str_val1 = property_entry_get(action->control);
@@ -4527,6 +4539,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
+      case ATTRIBUTE_GROUP_SCRIPT:
       case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_GROUP_DATA_NAME:
       case ATTRIBUTE_GROUP_DATA_VALUE:
@@ -4882,6 +4895,10 @@ _init_items()
                         _("The maximum height for the container defined by "
                           "the composition of the parts. This value is not enforced."));
              break;
+           case PROPERTY_GROUP_ITEM_GROUP_SCRIPT:
+              IT.name = "Script";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY_SCRIPT, ATTRIBUTE_GROUP_SCRIPT, NULL);
+              break;
 
               /* part block */
            case PROPERTY_GROUP_ITEM_PART_TITLE:

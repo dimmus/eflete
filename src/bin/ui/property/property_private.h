@@ -51,6 +51,7 @@ enum _Property_Control {
    PROPERTY_CONTROL_COMBOBOX_CC, /* special combobox for color_classes */
    PROPERTY_CONTROL_SPINNER,
    PROPERTY_CONTROL_ENTRY,
+   PROPERTY_CONTROL_ENTRY_SCRIPT,
    PROPERTY_CONTROL_COLOR,
    PROPERTY_CONTROL_COLORSEL,
    PROPERTY_CONTROL_LABEL,
@@ -205,6 +206,7 @@ typedef enum {
    PROPERTY_GROUP_ITEM_GROUP_NAME,
    PROPERTY_GROUP_ITEM_GROUP_MIN,
    PROPERTY_GROUP_ITEM_GROUP_MAX,
+   PROPERTY_GROUP_ITEM_GROUP_SCRIPT,
 
    PROPERTY_GROUP_ITEM_PART_TITLE,
    PROPERTY_GROUP_ITEM_PART_NAME,
@@ -617,6 +619,9 @@ property_textblock_manager_init(Property_Data *pd);
 
 Eina_List *
 property_textblock_manager_items_get(void);
+
+Evas_Object *
+property_entry_script_control_add(Evas_Object *parent);
 
 /* dummy submodule. for implementation tests. will be deleted later */
 void

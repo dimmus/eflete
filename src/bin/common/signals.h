@@ -111,6 +111,9 @@ typedef struct {
          const struct {
             const char *changed;
          } image_selector;
+         const struct {
+            const char *clicked;
+         } script_control;
       } property;
    } eflete;
 

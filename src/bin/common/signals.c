@@ -111,6 +111,9 @@ const Signals signals = {
                .image_selector = {
                     .changed           = "[eflete]image,selector,changed",
                },
+               .script_control = {
+                    .clicked           = "[eflete]script,control,clicked",
+               },
           },
      },
 

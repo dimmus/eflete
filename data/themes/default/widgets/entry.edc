@@ -1,5 +1,6 @@
 group { name: "elm/entry/base/default";
    alias: "elm/entry/base-single-noedit/default";
+   alias: "elm/entry/base-nowrap-noedit/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -571,6 +572,21 @@ group { name: "elm/scroller/entry/default";
                normal: "control-focus.png";
                border: 8 8 8 8;
                middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.elipsis";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            max: 24 24;
+            min: 24 24;
+            rel1 {
+               offset: 0 -2;
+            }
+            rel2 {
+               offset: 1 0;
             }
          }
       }

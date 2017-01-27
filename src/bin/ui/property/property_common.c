@@ -392,6 +392,12 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, signals.elm.entry.activated, _stop_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.entry.unfocused, _stop_cb, pa);
          break;
+      case PROPERTY_CONTROL_ENTRY_SCRIPT:
+         content = property_entry_script_control_add(parent);
+         evas_object_smart_callback_add(content, signals.elm.entry.changed_user, _start_change_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.entry.activated, _stop_cb, pa);
+         evas_object_smart_callback_add(content, signals.elm.entry.unfocused, _stop_cb, pa);
+         break;
       case PROPERTY_CONTROL_COLOR:
          content = property_color_control_add(parent);
          evas_object_smart_callback_add(content, signals.eflete.property.color_control.changed, _start_change_cb, pa);
@@ -754,6 +760,7 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_NONE]           [PROPERTY_CONTROL_NONE]     = pd->itc_caption;
 
    pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_ENTRY_SCRIPT]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX_CC]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow_wide;
