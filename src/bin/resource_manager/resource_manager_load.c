@@ -662,13 +662,12 @@ _groups_load(Project *pro)
 
    assert(collections != NULL);
 
-   collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
-   EINA_LIST_FOREACH(collections, l, group_name)
+   EINA_LIST_FREE(collections, group_name)
      {
         if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
         _group_add(pro, group_name);
+        eina_stringshare_del(group_name);
      }
-   edje_file_collection_list_free(collections);
 
    EINA_LIST_FOREACH(pro->RM.groups, l, res)
      _group_load(pro, res);
