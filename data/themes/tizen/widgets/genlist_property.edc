@@ -283,10 +283,10 @@ group { name: "elm/genlist/item/1swallow/property";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             text {
-               text: "x:";
                font: FN;
                size: 13;
                align: 1.0 0.5;
+               elipsis: -1;
             }
             rel1 {
                to_x: "swallow.action1";
