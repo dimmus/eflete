@@ -638,6 +638,11 @@ group { "test/parts/IMAGE/set";
       }
    }
 
+   /* test for inherit_only attribute */
+   group { "inherit_only";
+      inherit_only: 1;
+   }
+
    /* group naming */
    group { "test/group_names/group"; }
    group { "test/group_names/group/"; }
