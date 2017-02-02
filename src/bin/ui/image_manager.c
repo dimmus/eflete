@@ -136,13 +136,13 @@ _image_manager_image_setup(Evas_Object *image,
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      {
         if (ecore_file_exists(it->source))
-          elm_thumb_file_set(image, it->source, NULL);
+          elm_image_file_set(image, it->source, NULL);
         else
-          elm_thumb_file_set(image, ap.path.theme_edj, "elm/image/icon/attention");
+          elm_image_file_set(image, ap.path.theme_edj, "elm/image/icon/attention");
      }
    else
      {
-        elm_thumb_file_set(image, it->source, NULL);
+        elm_image_file_set(image, it->source, NULL);
      }
 #else
    TODO("Remove this urgly hack when we fix thumbs on Windows")
