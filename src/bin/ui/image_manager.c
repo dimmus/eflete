@@ -168,6 +168,7 @@ _image_manager_image_create(Evas_Object *parent,
    assert(it != NULL);
 
    Evas_Object *image = elm_image_add(parent);
+   elm_image_smooth_set(image, false);
    _image_manager_image_setup(image, it);
    return image;
 }
