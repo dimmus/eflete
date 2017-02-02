@@ -349,17 +349,14 @@ _slider_zoom_cb(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
+   Eina_Stringshare *text;
    Workspace_Data *wd = data;
 
    wd->zoom_factor = elm_slider_value_get(wd->toolbar.zoom.slider) / 100;
-#if HAVE_TIZEN
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, (int)(wd->zoom_factor * 100));
-#else
-   Eina_Stringshare *text;
    text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
    elm_object_text_set(wd->toolbar.zoom.cmb_zoom, text);
    eina_stringshare_del(text);
-#endif
    _members_zoom_set(wd);
 }
 
@@ -2055,6 +2052,8 @@ workspace_delete_request(Evas_Object *obj)
 void
 workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
+   Eina_Stringshare *text;
+
    WS_DATA_GET(obj);
 
    if (factor * 100 < 10.0) factor = 0.1;
@@ -2063,14 +2062,10 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    if (!elm_object_disabled_get(wd->toolbar.zoom.slider))
      {
         wd->zoom_factor = factor;
-#if HAVE_TIZEN
         elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
-#else
-        Eina_Stringshare *text;
         text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
         elm_object_text_set(wd->toolbar.zoom.cmb_zoom, text);
         eina_stringshare_del(text);
-#endif
         TODO("Fix elementary callbacks on changing value from code");
         _slider_zoom_cb(wd, wd->toolbar.zoom.slider, NULL);
      }
