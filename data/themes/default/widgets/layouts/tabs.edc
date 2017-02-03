@@ -1,4 +1,5 @@
 group { name: "elm/layout/tabs/default";
+   images.image: "bg_logo.png" COMP;
    parts {
       part { name: "bg_toolbar";
          type: RECT;
@@ -27,6 +28,16 @@ group { name: "elm/layout/tabs/default";
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
             }
+         }
+      }
+      part { name: "bg_logo";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            min: 738 458;
+            max: 738 458;
+            image.normal: "bg_logo.png";
+            rel1.to: "bg_content";
+            rel2.to: "bg_content";
          }
       }
       part { name: "elm.swallow.content";
