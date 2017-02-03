@@ -1755,6 +1755,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Stringshare *str_val1, *str_val2;
    Eina_List *images_list, *l;
    char *code;
+   Edje_Text_Effect effect;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1893,6 +1894,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          return editor_state_fill_type_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_PART_TEXT_EFFECT:
          elm_object_text_set(action->control, text_effect_strings[(int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS)]);
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR]);
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR]);
          return editor_part_text_effect_default_is(EDIT_OBJ, PART_ARGS);
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
          /* shodow directions are shifted by 4 in enum */
@@ -2314,10 +2317,27 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
          edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         effect = edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS);
+         if ((EDJE_TEXT_EFFECT_OUTLINE == effect) ||
+             (EDJE_TEXT_EFFECT_SOFT_OUTLINE == effect) ||
+             (EDJE_TEXT_EFFECT_OUTLINE_SHADOW == effect) ||
+             (EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW == effect))
+           elm_object_disabled_set(action->control, false);
+         else
+           elm_object_disabled_set(action->control, true);
          return editor_state_outline_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_SHADOW_COLOR:
          edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         effect = edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS);
+         if ((EDJE_TEXT_EFFECT_SHADOW == effect) ||
+             (EDJE_TEXT_EFFECT_SOFT_SHADOW == effect) ||
+             (EDJE_TEXT_EFFECT_OUTLINE_SHADOW == effect) ||
+             (EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW == effect))
+           elm_object_disabled_set(action->control, false);
+         else
+           elm_object_disabled_set(action->control, true);
+
          return editor_state_shadow_color_default_is(EDIT_OBJ, STATE_ARGS);
       case ATTRIBUTE_STATE_COLOR_CLASS:
          elm_genlist_clear(action->control);
