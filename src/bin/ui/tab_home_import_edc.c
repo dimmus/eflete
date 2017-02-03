@@ -168,6 +168,7 @@ _dir_del(Eina_List **dirs_list, Dir_Data *dir_data,
    if (eina_list_count(*dirs_list) == 1)
      {
         tmp = eina_list_data_get(*dirs_list);
+        elm_entry_entry_set(tmp->entry, NULL);
         elm_object_disabled_set(tmp->btn_del, true);
      }
 }
