@@ -909,6 +909,7 @@ group { name: "elm/layout/animator/program_area";
 
 group { name: "elm/layout/image_manager/default";
    alias: "elm/layout/sound_manager/default";
+   alias: "elm/layout/script_manager/default";
    parts {
       part { name: "area.edit";
          type: SPACER;

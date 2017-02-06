@@ -589,13 +589,24 @@ typedef struct _Sound_Data Sound_Data;
 /**
  * Add new sound manager layout object.
  *
+ * @return Pointer to layout object, which contain code of group script,
+ * etc.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+sound_manager_add(void);
+
+/**
+ * Add new script manager layout object.
+ *
  * @return Pointer to layout object, which contain list of sounds,
  * control buttons, etc.
  *
  * @ingroup Window
  */
 Evas_Object *
-sound_manager_add(void);
+script_manager_add(Resource2 *res);
 
 /**
  * Show the whole inwin window by using some data

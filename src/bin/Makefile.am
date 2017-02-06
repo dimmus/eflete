@@ -105,6 +105,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
 ../../src/bin/ui/colorclass_manager.c \
+../../src/bin/ui/script_manager.c \
 ../../src/bin/ui/tabs.c \
 ../../src/bin/ui/tab_home_common.c \
 ../../src/bin/ui/tab_home_open.c \

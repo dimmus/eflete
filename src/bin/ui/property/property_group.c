@@ -792,6 +792,18 @@ _ccl_control_free(void *data __UNUSED__,
    color = evas_object_data_del(obj, "color3");
    evas_object_del(color);
 }
+
+static void
+_btn_script_manager_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (group_pd.group->current_selected)
+     script_manager_add(group_pd.group->current_selected);
+   else
+     script_manager_add((Resource2 *)group_pd.group);
+}
+
 /*
 static void
 _color_class_colors_fill(void *data __UNUSED__,
@@ -851,14 +863,11 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_GROUP_SCRIPT:
-         elm_entry_single_line_set(action->control, false);
-         elm_entry_editable_set(action->control, false);
-         evas_object_size_hint_min_set(action->control, 0, 400);
-         break;
       case ATTRIBUTE_PROGRAM_SCRIPT:
          elm_entry_single_line_set(action->control, false);
          elm_entry_editable_set(action->control, false);
          evas_object_size_hint_min_set(action->control, 0, 400);
+         evas_object_smart_callback_add(action->control, signals.eflete.property.script_control.clicked, _btn_script_manager_cb, NULL);
          break;
       case ATTRIBUTE_PART_NAME:
          efl_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
@@ -5888,7 +5897,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT:
               IT.name = "Script";
               IT.filter_data.action_types = ACTION_SCRIPT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SCRIPT, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY_SCRIPT, ATTRIBUTE_PROGRAM_SCRIPT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION:
               IT.name = "Action";

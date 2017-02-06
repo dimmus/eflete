@@ -1,6 +1,7 @@
 group { name: "elm/entry/base/default";
    alias: "elm/entry/base-single-noedit/default";
    alias: "elm/entry/base-nowrap-noedit/default";
+   alias: "elm/entry/base-nowrap/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
