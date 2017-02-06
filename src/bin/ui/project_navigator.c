@@ -332,6 +332,7 @@ _group_add(void *data __UNUSED__,
 
    group = (Group2 *)event_info;
    item = elm_genlist_first_item_get(project_navigator.genlist);
+   if (!elm_genlist_item_expanded_get(item)) return;
    arr = eina_str_split_full(group->common.name, "/", 0, &count);
 
    if (count > 1)
