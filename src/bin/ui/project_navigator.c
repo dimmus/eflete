@@ -67,6 +67,9 @@ _group_item_label_get(void *data,
    const char *pos;
    Group2 *group = data;
 
+   if (group->display_name)
+     return strdup(group->display_name);
+
    pos = strrchr(group->common.name, '/');
    if (pos) return strdup(pos + 1);
    else return strdup(group->common.name);

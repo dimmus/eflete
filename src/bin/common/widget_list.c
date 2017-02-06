@@ -447,6 +447,7 @@ widget_tree_items_get(Eina_List *groups,
    char *group_prefix;
    int group_prefix_len;
    Eina_List *l, *lnext;
+   Eina_Bool broken_tree;
 
    assert(prefix != NULL);
    assert(folders_out != NULL);
@@ -460,6 +461,8 @@ widget_tree_items_get(Eina_List *groups,
 
    EINA_LIST_FOREACH(groups, l, group)
      {
+        group->display_name = NULL;
+        broken_tree = false;
         cmp = strncmp(group->common.name, prefix, prefix_len);
         /* skipping all groups with different prefix */
         if (cmp < 0)
@@ -475,9 +478,24 @@ widget_tree_items_get(Eina_List *groups,
           }
 
         group_prefix = widget_prefix_get(group->common.name, level, &group_prefix_len);
+
+        /* chech the item to correctness before to add to the tree */
         if (group_prefix)
           {
-             *folders_out= eina_list_append(*folders_out, eina_stringshare_ref(group_prefix));
+             /* if prefix '/' - it's posible only if groups name starts from
+              * symbol '/' */
+             if ((group_prefix_len == 1) && (group_prefix[0] == '/'))
+               broken_tree = true;
+
+             /* case if group name have successaively two and more '/' symbols */
+             if ((group_prefix[group_prefix_len - 1] == '/') &&
+                 (group_prefix[group_prefix_len - 2] == '/'))
+               broken_tree = true;
+          }
+
+        if (group_prefix && !broken_tree)
+          {
+             *folders_out= eina_list_append(*folders_out, eina_stringshare_add(group_prefix));
 
              /* skipping other groups from the same "folder" */
              lnext = l;
@@ -492,6 +510,8 @@ widget_tree_items_get(Eina_List *groups,
           }
         else
           {
+             if (broken_tree)
+               group->display_name = group->common.name + group_prefix_len - 1;
              *groups_out = eina_list_append(*groups_out, group);
           }
         free(group_prefix);
