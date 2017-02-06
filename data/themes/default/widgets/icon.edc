@@ -32,6 +32,7 @@ IC("color",             "toolbar/color",            "menu/color",             "i
 IC("text",              "toolbar/text",             "menu/text",              "icon_text.png",           14, 0);
 IC("info",              "toolbar/info",             "menu/info",              "icon_info.png",           14, 0);
 IC("eye",               "toolbar/eye",              "menu/eye",               "icon_eye.png",            14, 0);
+IC("code2",             "toolbar/code",             "menu/code",              "icon_code2.png",          14, 0);
 
 IC("type_rectangle",    "toolbar/type_rectangle",   "menu/type_rectangle",    "icon-rectangle.png",      14, 0);
 IC("type_text",         "toolbar/type_text",        "menu/type_text",         "icon-text.png",           14, 0);
