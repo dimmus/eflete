@@ -46,7 +46,7 @@ Eina_List *widget_prefix_list_get(Eina_List *collections, const char *widget_nam
  * @param level The depth of prefix;
  * @param len The lenght of finded prefix.
  */
-Eina_Stringshare *
+char *
 widget_prefix_get(const char *group_name, int level, int *len);
 
 /*

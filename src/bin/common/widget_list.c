@@ -408,7 +408,7 @@ widget_prefix_list_get(Eina_List *collections, const char *widget_name, const ch
    return list;
 }
 
-Eina_Stringshare *
+char *
 widget_prefix_get(const char *group_name, int level, int *symbols)
 {
    const char *pos;
@@ -430,7 +430,7 @@ widget_prefix_get(const char *group_name, int level, int *symbols)
    prefix[len] = '\0';
    if (symbols) *symbols = len;
 
-   return eina_stringshare_add(prefix);
+   return strdup(prefix);
 }
 
 void
@@ -444,7 +444,7 @@ widget_tree_items_get(Eina_List *groups,
    const char *pos;
    Group2 *group, *group_next;
    size_t prefix_len;
-   Eina_Stringshare *group_prefix;
+   char *group_prefix;
    int group_prefix_len;
    Eina_List *l, *lnext;
 
@@ -494,6 +494,6 @@ widget_tree_items_get(Eina_List *groups,
           {
              *groups_out = eina_list_append(*groups_out, group);
           }
-        eina_stringshare_del(group_prefix);
+        free(group_prefix);
      }
 }
