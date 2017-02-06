@@ -250,6 +250,7 @@ elm_main(int argc, char **argv)
 #ifdef HAVE_ENVENTOR
    enventor_init(argc, argv);
 #endif
+   elm_config_profile_set("standard");
 
    elm_config_icon_theme_set(NULL);
    pos = ecore_getopt_parse(&options, values, argc, argv);
