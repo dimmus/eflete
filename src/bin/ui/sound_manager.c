@@ -536,7 +536,7 @@ sound_manager_add(void)
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
 #if !HAVE_TIZEN
    ic = elm_icon_add(mng.win);
-   elm_icon_standard_set(ic, "image2");
+   elm_icon_standard_set(ic, "sound2");
 #else
    IMAGE_ADD_NEW(mng.win, ic, "icon", "logo");
 #endif
