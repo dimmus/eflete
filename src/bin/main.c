@@ -251,6 +251,7 @@ elm_main(int argc, char **argv)
    enventor_init(argc, argv);
 #endif
 
+   elm_config_icon_theme_set(NULL);
    pos = ecore_getopt_parse(&options, values, argc, argv);
    if (pos < 0)
      return 1;
