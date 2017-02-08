@@ -272,7 +272,7 @@ _find_item(Elm_Object_Item *item, const char *name)
         if (elm_genlist_item_type_get(item) != ELM_GENLIST_ITEM_TREE)
           item_name = _group_item_label_get(elm_object_item_data_get(item), NULL, NULL);
         else
-          item_name = _folder_item_label_get(elm_object_item_data_get(item), NULL, NULL);
+          item_name = strdup(elm_object_item_data_get(item));
 
         if (!strcmp(item_name, name))
           {
@@ -297,6 +297,9 @@ _items_compare(const void *data1, const void *data2)
 
    it1_class = elm_genlist_item_item_class_get(it1);
    it2_class = elm_genlist_item_item_class_get(it2);
+
+   if (it1 == project_navigator.item_top) return -1;
+   if (it2 == project_navigator.item_top) return 1;
 
    if ((it1_class == project_navigator.itc_group) &&
        (it2_class == project_navigator.itc_folder))
@@ -329,54 +332,64 @@ _group_add(void *data __UNUSED__,
 {
    Group2 *group;
    Elm_Object_Item *item, *parent = NULL;
-   char **arr;
-   unsigned int count, i = 0;
    Eina_Stringshare *prefix;
+   Eina_List *list = NULL, *folders = NULL, *groups = NULL;
+   int to_add = 0;
 
    group = (Group2 *)event_info;
-   item = elm_genlist_first_item_get(project_navigator.genlist);
-   if (!elm_genlist_item_expanded_get(item)) return;
-   arr = eina_str_split_full(group->common.name, "/", 0, &count);
+   if (!elm_genlist_item_expanded_get(project_navigator.item_top)) return;
+   item = project_navigator.item_top;
 
-   if (count > 1)
+   list = eina_list_append(list, group);
+   prefix = eina_stringshare_add("");
+   while (to_add == 0)
      {
-        for (i = 0; i < count; i++)
+        eina_list_free(folders);
+        folders = NULL;
+        eina_list_free(groups);
+        groups = NULL;
+
+        widget_tree_items_get(list, prefix, &folders, &groups);
+        if (eina_list_count(folders) > 0)
           {
-             parent = elm_genlist_item_parent_get(item);
-             item = _find_item(item, arr[i]);
-             if (!item) break;
-             if (elm_genlist_item_item_class_get(item) != project_navigator.itc_folder) break;
-             if (!elm_genlist_item_expanded_get(item)) goto exit;
-             item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+             eina_stringshare_del(prefix);
+             prefix = eina_list_data_get(folders);
+             parent = item;
+             item = _find_item(eina_list_data_get(elm_genlist_item_subitems_get(item)), prefix);
+             if (!item)
+               {
+                  to_add = 1;
+                  break;
+               }
+             if (!elm_genlist_item_expanded_get(item)) return;
           }
+        else if (eina_list_count(groups) > 0)
+          to_add = 2;
      }
-   if (!parent) parent = project_navigator.item_top;
+   eina_list_free(folders);
+   eina_list_free(groups);
+   eina_list_free(list);
 
-   if ((count > 1) && (i != count - 1))
+   if (to_add == 1)
      {
-        prefix = widget_prefix_get(group->common.name, i, NULL);
         elm_genlist_item_sorted_insert(project_navigator.genlist,
                                        project_navigator.itc_folder,
                                        prefix,
-                                       parent,
+                                       parent ? parent : project_navigator.item_top,
                                        ELM_GENLIST_ITEM_TREE,
                                        _items_compare,
                                        NULL,
                                        NULL);
      }
-   else
+   else if (to_add == 2)
      elm_genlist_item_sorted_insert(project_navigator.genlist,
                                     project_navigator.itc_group,
                                     group,
-                                    parent,
+                                    parent ? parent : project_navigator.item_top,
                                     ELM_GENLIST_ITEM_NONE,
                                     _items_compare,
                                     NULL,
                                     NULL);
-
-exit:
-   free(arr[0]);
-   free(arr);
 }
 
 static void
