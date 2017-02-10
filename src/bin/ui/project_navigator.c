@@ -371,25 +371,24 @@ _group_add(void *data __UNUSED__,
    eina_list_free(list);
 
    if (to_add == 1)
-     {
-        elm_genlist_item_sorted_insert(project_navigator.genlist,
-                                       project_navigator.itc_folder,
-                                       prefix,
-                                       parent ? parent : project_navigator.item_top,
-                                       ELM_GENLIST_ITEM_TREE,
-                                       _items_compare,
-                                       NULL,
-                                       NULL);
-     }
+        item = elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                              project_navigator.itc_folder,
+                                              prefix,
+                                              parent ? parent : project_navigator.item_top,
+                                              ELM_GENLIST_ITEM_TREE,
+                                              _items_compare,
+                                              NULL,
+                                              NULL);
    else if (to_add == 2)
-     elm_genlist_item_sorted_insert(project_navigator.genlist,
-                                    project_navigator.itc_group,
-                                    group,
-                                    parent ? parent : project_navigator.item_top,
-                                    ELM_GENLIST_ITEM_NONE,
-                                    _items_compare,
-                                    NULL,
-                                    NULL);
+     item = elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                           project_navigator.itc_group,
+                                           group,
+                                           parent ? parent : project_navigator.item_top,
+                                           ELM_GENLIST_ITEM_NONE,
+                                           _items_compare,
+                                           NULL,
+                                           NULL);
+   elm_genlist_item_selected_set(item, true);
 }
 
 static void
