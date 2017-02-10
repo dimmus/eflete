@@ -577,36 +577,52 @@ _folder_check(const char *prefix, Eina_Bool del)
 }
 
 static void
-_folder_del(const char *prefix)
+_folder_del(Elm_Object_Item *item)
 {
-   Eina_List *folders = NULL, *groups = NULL;
+   Elm_Object_Item *itm, *parent;
+   const Eina_List *items;
+   Eina_List *l;
    Eina_Stringshare *tmp, *msg;
    Group2 *group;
+   const Elm_Genlist_Item_Class *itc;
 
-   widget_tree_items_get(ap.project->RM.groups, prefix, &folders, &groups);
-   EINA_LIST_FREE(folders, tmp)
+   items = elm_genlist_item_subitems_get(item);
+   EINA_LIST_FOREACH((Eina_List *)items, l, itm)
      {
-       _folder_del(tmp);
-     }
-   EINA_LIST_FREE(groups, group)
-     {
-        tmp = eina_stringshare_add(group->common.name);
-        if (!editor_group_del(ap.project->global_object, tmp, true))
+        itc = elm_genlist_item_item_class_get(itm);
+        if (itc == project_navigator.itc_folder)
           {
-             msg = eina_stringshare_printf(_("Can't delete layout \"%s\". "
-                                             "Please close a tab with given group."),
-                                           group->common.name);
-             TODO("Check if it's correct to ignore error");
-             popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
-             eina_stringshare_del(msg);
+             // recursion for del folder
+             _folder_del(itm);
           }
+        else if (itc == project_navigator.itc_group)
+          {
+             group = elm_object_item_data_get(itm);
+             tmp = eina_stringshare_add(group->common.name);
+             if (!editor_group_del(ap.project->global_object, tmp, false))
+               {
+                  msg = eina_stringshare_printf(_("Can't delete layout \"%s\". "
+                                                  "Please close a tab with given group."),
+                                                group->common.name);
+                  TODO("Check if it's correct to ignore error");
+                  popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
+                  eina_stringshare_del(msg);
+               }
+             eina_stringshare_del(tmp);
+          }
+        elm_object_item_del(itm);
      }
-}
 
-static int
-group_cmp(Resource2 *res1, const char *name)
-{
-   return strncmp(res1->common.name, name, strlen(name));
+   parent = elm_genlist_item_parent_get(item);
+   elm_object_item_del(item);
+   while ((parent != project_navigator.item_top) &&
+          (elm_genlist_item_subitems_count(parent) == 0 ))
+     {
+        item = parent;
+        parent = elm_genlist_item_parent_get(item);
+        elm_object_item_del(item);
+     }
+
 }
 
 static void
@@ -615,50 +631,31 @@ _group_del(void *data __UNUSED__,
            void *event_info)
 {
    Eina_Stringshare *group_name;
-   Elm_Object_Item *item;
-   char **arr;
-   unsigned int depth, i;
-   Eina_List *stack = NULL, *l;
-   Eina_Strbuf *buf;
+   Elm_Object_Item *item, *parent;
+   Group2 *group;
 
-   buf = eina_strbuf_new();
    group_name = (Eina_Stringshare *)event_info;
-   item = elm_genlist_first_item_get(project_navigator.genlist);
-   arr = eina_str_split_full(group_name, "/", 0, &depth);
-   for (i = 0; i < depth; i++)
+
+   item = elm_genlist_selected_item_get(project_navigator.genlist);
+   group = elm_object_item_data_get(item);
+   if ((group->common.name == group_name) || !strcmp(group->common.name, group_name))
      {
-        item = _find_item(item, arr[i]);
-        eina_strbuf_append_printf(buf, "%s", arr[i]);
-        if (!item) break;
-        if (i != depth - 1)
-          {
-             eina_strbuf_append(buf, "/");
-          }
-        else
-          {
-             if (elm_genlist_item_type_get(item) == ELM_GENLIST_ITEM_TREE)
-               item = _find_item(elm_genlist_item_next_get(item), arr[i]);
-             stack = eina_list_append(stack, item);
-             break;
-          }
-        if (!elm_genlist_item_expanded_get(item) &&
-            NULL != eina_list_search_sorted_list(ap.project->RM.groups, (Eina_Compare_Cb)group_cmp, eina_strbuf_string_get(buf)))
-          {
-             stack = eina_list_append(stack, item);
-             break;
-          }
-        stack = eina_list_append(stack, item);
-        item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+        parent = elm_genlist_item_parent_get(item);
+        elm_object_item_del(item);
      }
-   EINA_LIST_REVERSE_FOREACH(stack, l, item)
+   else
      {
-        if (elm_genlist_item_subitems_count(item) == 0)
-          elm_object_item_del(item);
+        CRIT("Unable to remove group. Income name different from delete.");
+        return;
      }
 
-   eina_strbuf_free(buf);
-   free(arr[0]);
-   free(arr);
+   while ((parent != project_navigator.item_top) &&
+          (elm_genlist_item_subitems_count(parent) == 0 ))
+     {
+        item = parent;
+        parent = elm_genlist_item_parent_get(item);
+        elm_object_item_del(item);
+     }
 }
 
 static void
@@ -671,7 +668,7 @@ _folder_del_popup_close_cb(void *data,
 
    if (BTN_CANCEL == btn_res) return;
 
-   _folder_del(elm_object_item_data_get(glit));
+   _folder_del(glit);
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
