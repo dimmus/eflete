@@ -939,16 +939,37 @@ group { name: "elm/layout/image_manager/usage_info";
 
 group { name: "elm/layout/sound_editor/player";
    parts {
-      part { name: "eflete.swallow.teg";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 1;
+      part { name: "eflete.sound.type";
+         type: TEXT;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 10;
+               min: 0 1;
+               max: 0 1;
+            }
+            rel1.offset: 3 3;
+            rel2.offset: -4 -1;
+         }
+      }
+      part { name: "eflete.sound.value";
+         type: TEXT;
+         description { state: "default" 0.00;
+            color_class: "select";
+            text {
+               font: "PT:style=Bold";
+               size: 42;
+            }
             rel1 {
+               relative: 0.00 1.00;
                offset: 3 3;
+               to_y: "eflete.sound.type";
             }
             rel2 {
-               relative: 1.0 0.0;
-               offset: -4 -7;
+               relative: 1.00 0.00;
+               offset: -4 -4;
                to_y: "eflete.swallow.fast";
             }
          }
