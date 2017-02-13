@@ -24,6 +24,7 @@
 #include "project_manager2.h"
 #include "validator.h"
 #include "modal_window.h"
+#include "shortcuts.h"
 
 #define STYLE_DEFAULT         "DEFAULT"
 #define STYLE_DEFAULT_VALUE "align=middle font=Sans font_size=24 color=#000000 "
@@ -266,6 +267,23 @@ _add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to
    if (to_focus) *to_focus = mng.popup.name;
    popup_button_disabled_set(popup, BTN_OK, true);
    return item;
+}
+
+static void
+_menu_dismissed_cb(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info __UNUSED__)
+{
+   shortcuts_object_check_pop(obj);
+}
+
+static void
+_menu_dismiss_cb(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   elm_menu_close(obj);
+   shortcuts_object_check_pop(obj);
 }
 
 typedef struct {
@@ -683,6 +701,7 @@ _btn_add_cb(void *data __UNUSED__,
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
    elm_menu_move(mng.menu, x, y + h);
    evas_object_show(mng.menu);
+   shortcuts_object_push(mng.menu);
 
    if (elm_genlist_selected_item_get(mng.genlist))
      elm_object_item_disabled_set(mng.menu_tag, false);
@@ -905,6 +924,8 @@ style_manager_add()
    mng.menu = elm_menu_add(ap.win);
    elm_menu_item_add(mng.menu, NULL, "text_style", _("Style"), _style_add_cb, NULL);
    mng.menu_tag = elm_menu_item_add(mng.menu, NULL, "text_style_tag", _("Tag"), _tag_add_cb, NULL);
+   evas_object_smart_callback_add(mng.menu, "dismissed", _menu_dismissed_cb, NULL);
+   evas_object_smart_callback_add(mng.menu, signals.shortcut.popup.cancel, _menu_dismiss_cb, NULL);
 
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "plus_managers");

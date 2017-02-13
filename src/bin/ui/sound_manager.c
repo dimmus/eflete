@@ -26,6 +26,7 @@
 #include "config.h"
 #include "validator.h"
 #include "sound_player.h"
+#include "shortcuts.h"
 
 #ifndef HAVE_TIZEN
    #define ITEM_WIDTH 100
@@ -307,6 +308,23 @@ _sample_add_cb(void *data,
 }
 
 static void
+_menu_dismissed_cb(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info __UNUSED__)
+{
+   shortcuts_object_check_pop(obj);
+}
+
+static void
+_menu_dismiss_cb(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   elm_menu_close(obj);
+   shortcuts_object_check_pop(obj);
+}
+
+static void
 _validation(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
@@ -423,6 +441,7 @@ _sound_add_cb(void *data __UNUSED__,
 
    elm_menu_move(mng.menu, x, y + h);
    evas_object_show(mng.menu);
+   shortcuts_object_push(mng.menu);
 }
 
 static void
@@ -618,6 +637,8 @@ sound_manager_add(void)
    mng.menu = elm_menu_add(ap.win);
    elm_menu_item_add(mng.menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, NULL);
    elm_menu_item_add(mng.menu, NULL, "sound_tone", _("Tone"), _tone_add_cb, NULL);
+   evas_object_smart_callback_add(mng.menu, "dismissed", _menu_dismissed_cb, NULL);
+   evas_object_smart_callback_add(mng.menu, signals.shortcut.popup.cancel, _menu_dismiss_cb, NULL);
 
    ENTRY_ADD(mng.layout, search_entry, true);
    elm_object_part_text_set(search_entry, "guide", _("Search"));
