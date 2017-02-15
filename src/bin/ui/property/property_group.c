@@ -3815,6 +3815,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT]);
          break;
       case ATTRIBUTE_STATE_TEXT_STYLE:
          assert(cb_item_combo != NULL);
