@@ -1094,10 +1094,14 @@ image_manager_add(void)
    elm_layout_theme_set(mng.layout, "layout", "image_manager", "default");
    mng.panes = elm_panes_add(mng.win);
    elm_object_part_content_set(mng.panes, "left", mng.layout);
+   elm_panes_content_right_size_set(mng.panes, 0);
+   elm_panes_content_right_min_size_set(mng.panes, 400);
    mng.property_panes = elm_panes_add(mng.win);
    elm_panes_horizontal_set(mng.property_panes, true);
    elm_object_part_content_set(mng.panes, "right", mng.property_panes);
    elm_object_part_content_set(mng.property_panes, "right", ap.property.image_manager);
+   elm_panes_content_left_size_set(mng.property_panes, 0);
+   elm_panes_content_left_min_size_set(mng.property_panes, 400);
 #endif
 
    if (!gic)
