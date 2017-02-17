@@ -84,7 +84,7 @@ _add_colorclass_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Obje
 {
    Evas_Object *item = NULL;
 
-   LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
+   LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "popup", "1swallow")
    ENTRY_ADD(item, mng.entry, true);
    efl_event_callback_add(mng.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.name_validator);
    evas_object_smart_callback_add(mng.entry, signals.elm.entry.changed, _validation, popup);
