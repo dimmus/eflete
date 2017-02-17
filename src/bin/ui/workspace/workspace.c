@@ -354,7 +354,11 @@ _slider_zoom_cb(void *data,
 
    wd->zoom_factor = elm_slider_value_get(wd->toolbar.zoom.slider) / 100;
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, (int)(wd->zoom_factor * 100));
+#ifdef HAVE_TIZEN
+   text = eina_stringshare_printf("%d", (int)(wd->zoom_factor * 100));
+#else
    text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
+#endif /* HAVE_TIZEN */
    elm_object_text_set(wd->toolbar.zoom.cmb_zoom, text);
    eina_stringshare_del(text);
    _members_zoom_set(wd);
@@ -520,7 +524,11 @@ _zoom_controls_add(Workspace_Data *wd)
    wd->toolbar.zoom.itc->func.text_get = _combobox_text_get;
    wd->toolbar.zoom.itc->func.del = _combobox_item_del;
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
+#ifdef HAVE_TIZEN
+   elm_object_text_set(wd->toolbar.zoom.cmb_zoom, _("100"));
+#else
    elm_object_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
+#endif /* HAVE_TIZEN */
    evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, signals.elm.combobox.item_pressed, _zoom_selected_cb, wd);
    while (zoom_values[i])
     {
@@ -2063,7 +2071,11 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
      {
         wd->zoom_factor = factor;
         elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
+#ifdef HAVE_TIZEN
+        text = eina_stringshare_printf("%d", (int)(wd->zoom_factor * 100));
+#else
         text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
+#endif /* HAVE_TIZEN */
         elm_object_text_set(wd->toolbar.zoom.cmb_zoom, text);
         eina_stringshare_del(text);
         TODO("Fix elementary callbacks on changing value from code");
