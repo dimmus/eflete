@@ -82,10 +82,10 @@ PKG_CHECK_MODULES([EFL],
     efreet >= efl_version        efreet < efl_version_max
     efreet-mime >= efl_version   efreet-mime < efl_version_max
     elementary >= efl_version    elementary < efl_version_max
-   ]
+   ],
+   [have_efl="${GREEN}yes${RESET}"]
 )
 AC_SUBST([efl_v], [$(pkg-config efl --modversion)])
-AM_CONDITIONAL([EFL_FOUND], [test "x$have_efl" = "x${GREEN}yes${RESET}"])
 
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
