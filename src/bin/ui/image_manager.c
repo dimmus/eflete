@@ -695,9 +695,10 @@ _on_image_done(void *data __UNUSED__,
 
 static void
 _new_image_add_cb(void *data,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj,
               void *event_info __UNUSED__)
 {
+   shortcuts_object_check_pop(obj);
 #if HAVE_TIZEN
    popup_fileselector_image_helper(_("Choose image"),
                                    NULL,
@@ -823,6 +824,9 @@ _new_image_set_add_cb(void *data __UNUSED__,
               void *event_info __UNUSED__)
 {
    Evas_Object *popup;
+
+   shortcuts_object_check_pop(obj);
+
    mng.image_set.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.image_set.validator, &ap.project->RM.image_sets, true);
 

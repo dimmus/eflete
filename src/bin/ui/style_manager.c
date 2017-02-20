@@ -240,10 +240,13 @@ close:
 
 static void
 _style_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj,
               void *event_info __UNUSED__)
 {
    Evas_Object *popup;
+
+   shortcuts_object_check_pop(obj);
+
    mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &ap.project->RM.styles, true);
 
@@ -325,13 +328,15 @@ close:
 }
 static void
 _tag_add_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
+            Evas_Object *obj,
             void *event_info __UNUSED__)
 {
    Style2 *res;
    Eina_Stringshare *buf;
    Evas_Object *popup;
    Tag_Popup_Data * tpd = mem_calloc(1, sizeof(Tag_Popup_Data));
+
+   shortcuts_object_check_pop(obj);
 
    tpd->glit = elm_genlist_selected_item_get(mng.genlist);
    tpd->glit_parent = elm_genlist_item_parent_get(tpd->glit);

@@ -301,9 +301,11 @@ _tone_add(void)
 
 static void
 _sample_add_cb(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj,
                void *event_info __UNUSED__)
 {
+   shortcuts_object_check_pop(obj);
+
    popup_fileselector_sound_helper(_("Choose a sound"), NULL, NULL, _add_sample_done, data, false, false);
 }
 
@@ -419,6 +421,9 @@ _tone_add_cb(void *data __UNUSED__,
              void *event_info __UNUSED__)
 {
    Evas_Object *popup;
+
+   shortcuts_object_check_pop(obj);
+
    mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.tone_validator, &ap.project->RM.tones, true);
    mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
