@@ -6,10 +6,10 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (>= 1.17.0 && < 1.17.9999)
+   * efl (>= 1.19.0 && < 1.19.9999)
 
 Please note that some features may not quite function correctly or
-completely on EFL 1.17.0
+completely on EFL 1.19.0
 
 Please see http://www.enlightenment.org for information on these.
 
@@ -26,7 +26,7 @@ To install program to specified directory use --prefix option on configure step:
 
    ./autogen.sh --prefix=/full/path/to/some/dir
 
-Apllying themes:
+Applying themes:
 ----------------
 
 To apply created theme to elementary you should place exported .edj-file to
