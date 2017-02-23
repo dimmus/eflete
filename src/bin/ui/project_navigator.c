@@ -764,8 +764,11 @@ _btn_del_group_cb(void *data __UNUSED__,
 static void
 _selected_cb(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             void *event_info)
 {
+   const Elm_Object_Item *it = event_info;
+
+   if (it == project_navigator.item_top) return;
    elm_object_disabled_set(project_navigator.btn_del, false);
 }
 
