@@ -144,6 +144,8 @@ libtool
 #tarballs
 *.tar.gz
 *.tar.bz2
+*.tar.xz
+
 
 #localization
 *.gmo
