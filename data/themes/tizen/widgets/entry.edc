@@ -82,6 +82,26 @@ group { name: "elm/entry/base/default";
    }
 }
 
+group { name: "elm/entry/base-noedit/default";
+   inherit: "elm/entry/base/default";
+   parts {
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         source: "elm/entry/selection/default";
+         source4: "";
+         source6: "elm/entry/anchor/default";
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            text {
+               style: "entry_main_text";
+               align: 0.0 0.0;
+               min: 0 1;
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/scroller/entry/default";
    data {
       item: "focus_highlight" "on";
