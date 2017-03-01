@@ -1013,6 +1013,55 @@ group { name: "elm/layout/image_manager/default";
    }
 }
 
+group { name: "elm/layout/script_manager/build_log";
+   parts {
+      part { name: "area.edit";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            min: 37 25;
+            max: -1 25;
+            rel1 {
+               offset: 0 2;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.edit";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            color: 0 150 221 255;
+            text {
+               font: FN_B;
+               size: 13;
+            }
+            rel1 {
+               relative: 0.0 0.0;
+               to_y: "area.edit";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "elm.swallow.content";
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/layout/image_manager/preview";
    parts {
       part { name: "eflete.swallow.image";
