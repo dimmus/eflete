@@ -114,76 +114,76 @@ Fixes:
 Changes since 0.5.0
 -------------------
 Features:
-* new project navigator: use tree to navigate within groups
-* tabs: move the managers to tabs
-* tabs: edit several groups at one time
-* history: support all group arrtibutes
-* group navigator: merge the parts, states and programs lists
-* demo: additional options for swallowed object
-* navigator: posible to add new group, copy or make alias of existing one
-* Eflete: add option for import edj file from command line
-* Property: make possible to rename layouts and styles
+   * new project navigator: use tree to navigate within groups
+   * tabs: move the managers to tabs
+   * tabs: edit several groups at one time
+   * history: support all group arrtibutes
+   * group navigator: merge the parts, states and programs lists
+   * demo: additional options for swallowed object
+   * navigator: posible to add new group, copy or make alias of existing one
+   * Eflete: add option for import edj file from command line
+   * Property: make possible to rename layouts and styles
 
 Fixes:
-* navigator: fix group deletion
-* image_manager: disable del button after deletion
-* property_group: fix doubling rename change
-* tabs: avoid double tab clicking
-* live_gengrid: fix SIGSEV on item text load
-* shortcuts: delete extra assert
-* image_editor: disable del button when no image is selected
-* popup: disallow empty group addition when popup just showed
-* property_group: better logic with filter
-* property: select program back if it was selected after tab change
-* property_sound: fix the close Eflete after a sound play end
-* property_macros: set None for targets and afters when NULL is selected
-* tabs: clear property so when loaded again it won't show last property
-* property_group: unset Program Property after program deletion
-* project_manager: fix import edc, set correct edje_cc params
-* Config: fix set projects dir path.
-* Main window: hide History block controls.
-* Property: unset and hide any previous content.
-* workspace: fix segfault after closing tab
-* project_navigator: set the corrent string to entry
-* project_navigator: fix group add
-* popup: get the selected path from fs on 'done'
-* property: fix bug with property over history
-* Popup: do not delete list of selected files returned by fileselector while multi
-* style_editor: fix abort while 'open,close,open' routine
-* sound_editor: fix abort after sound editor close
-* Shortcuts: Hot key now work after export project as edc
-* Styles: fix the single line entry size calculation
-* History: fix the wrong property update on undo
-* History: disacart changes only if it exist
-* Styles: do not change the bg state if button disabled
-* Wizards: disable button 'Apply' if project name is invalid
-* History: fix part restack
-* Widget List: Nesting level does not match indentation
-* Part dialog: free validator before close the dialog
-* Connect: don't try unselect the deleted part
-* Property: set the correct name for image fill start and end points.
-* Groupedit: discard set text to part two times
-* Groupedit: discard the double object calculation
-* Colorsel: fix colorsel in property that changes it's size while moving window
-* History: update live view on all other redo/undo changes
-* Connector: rename part gets more and more laggy with every change
-* Live View Property: change parent for Check
-* Property: multiplier min value should be 0
-* Property: don't unset the color_class on part color set
+   * navigator: fix group deletion
+   * image_manager: disable del button after deletion
+   * property_group: fix doubling rename change
+   * tabs: avoid double tab clicking
+   * live_gengrid: fix SIGSEV on item text load
+   * shortcuts: delete extra assert
+   * image_editor: disable del button when no image is selected
+   * popup: disallow empty group addition when popup just showed
+   * property_group: better logic with filter
+   * property: select program back if it was selected after tab change
+   * property_sound: fix the close Eflete after a sound play end
+   * property_macros: set None for targets and afters when NULL is selected
+   * tabs: clear property so when loaded again it won't show last property
+   * property_group: unset Program Property after program deletion
+   * project_manager: fix import edc, set correct edje_cc params
+   * Config: fix set projects dir path.
+   * Main window: hide History block controls.
+   * Property: unset and hide any previous content.
+   * workspace: fix segfault after closing tab
+   * project_navigator: set the corrent string to entry
+   * project_navigator: fix group add
+   * popup: get the selected path from fs on 'done'
+   * property: fix bug with property over history
+   * Popup: do not delete list of selected files returned by fileselector while multi
+   * style_editor: fix abort while 'open,close,open' routine
+   * sound_editor: fix abort after sound editor close
+   * Shortcuts: Hot key now work after export project as edc
+   * Styles: fix the single line entry size calculation
+   * History: fix the wrong property update on undo
+   * History: disacart changes only if it exist
+   * Styles: do not change the bg state if button disabled
+   * Wizards: disable button 'Apply' if project name is invalid
+   * History: fix part restack
+   * Widget List: Nesting level does not match indentation
+   * Part dialog: free validator before close the dialog
+   * Connect: don't try unselect the deleted part
+   * Property: set the correct name for image fill start and end points.
+   * Groupedit: discard set text to part two times
+   * Groupedit: discard the double object calculation
+   * Colorsel: fix colorsel in property that changes it's size while moving window
+   * History: update live view on all other redo/undo changes
+   * Connector: rename part gets more and more laggy with every change
+   * Live View Property: change parent for Check
+   * Property: multiplier min value should be 0
+   * Property: don't unset the color_class on part color set
 
 Changes since 0.5.0-beta
 -------------------------
 Features:
-* Widget list: set the name for new layout on add
+   * Widget list: set the name for new layout on add
 
 Fixes:
-* History: show added diff in history list from combobox
-* History: hide the state list if part list is empty on Unde action
-* Workspace: do not set max part size less then min
-* Styles: propogate events for ctxpopup
-* Property: hide the color class attribute for swallow, spoacer and textblock
-* layouts: fix fallback styles
-* Layout Add: add any number of layouts when there are widgets in project
+   * History: show added diff in history list from combobox
+   * History: hide the state list if part list is empty on Unde action
+   * Workspace: do not set max part size less then min
+   * Styles: propogate events for ctxpopup
+   * Property: hide the color class attribute for swallow, spoacer and textblock
+   * layouts: fix fallback styles
+   * Layout Add: add any number of layouts when there are widgets in project
 
 
 Changes since 0.5.0-alpha
