@@ -28,7 +28,7 @@ collections {
    #include "widgets/cursor.edc"
    #include "widgets/layout.edc"
    #include "widgets/image.edc"
-   //#include "widgets/icon.edc"
+   #include "widgets/icon.edc"
    #include "widgets/colorselector.edc"
    #include "widgets/win.edc"
    #include "widgets/fileselector.edc"
