@@ -1003,6 +1003,10 @@ editor_program_source_set(Evas_Object *edit_object, Change *change, Eina_Bool me
 Eina_Bool
 editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_script_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+
 #define edje_edit_program_emit_signal_get edje_edit_program_state_get
 Eina_Bool
 editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,

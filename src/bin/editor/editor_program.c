@@ -536,6 +536,48 @@ EDITOR_PROGRAM_DOUBLE(drag_value_x, value, RM_ATTRIBUTE_PROGRAM_DRAG_VALUE_X);
 EDITOR_PROGRAM_DOUBLE(drag_value_y, value2, RM_ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
 
 Eina_Bool
+editor_program_script_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                          const char *program, const char *new_val)
+{
+   Diff *diff;
+   Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
+   send.attribute = RM_ATTRIBUTE_PROGRAM_SCRIPT;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+   if (change)
+     {
+        char *old_value = edje_edit_script_program_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_program_script_set;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_program_script_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(old_value);
+        free(old_value);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+       CRIT_ON_FAIL(edje_edit_script_program_set(edit_object, program, new_val));
+       _editor_project_changed();
+       if (!_editor_signals_blocked)
+         {
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program);
+         }
+     }
+   return true;
+}
+
+Eina_Bool
 editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                                const char *program, const char *new_val)
 {
