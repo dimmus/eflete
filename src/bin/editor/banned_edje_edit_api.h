@@ -303,8 +303,8 @@
 #pragma GCC poison edje_edit_program_channel_set
 
 /* Scripts API */
-//#pragma GCC poison edje_edit_script_set
-//#pragma GCC poison edje_edit_script_program_set
+#pragma GCC poison edje_edit_script_set
+#pragma GCC poison edje_edit_script_program_set
 //#pragma GCC poison edje_edit_script_compile
 
 #endif /* ALLOW_DIRECT_EDJE_EDIT_CALLS */

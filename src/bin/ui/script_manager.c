@@ -23,6 +23,8 @@
 #include "modal_window.h"
 #include "property.h"
 #include "property_private.h"
+#include "history.h"
+#include "change.h"
 
 typedef struct _Script_Manager Script_Manager;
 
@@ -73,6 +75,7 @@ _btn_save_cb(void *data,
    Eina_Stringshare *code;
    Group2 *group;
    Program2 *program;
+   Change *change;
    Eina_List *errors = NULL;
    Eina_List *l = NULL;
    Edje_Edit_Script_Error *list_error = NULL;
@@ -97,11 +100,13 @@ _btn_save_cb(void *data,
 
    if (res->common.type == RESOURCE2_TYPE_GROUP)
      {
-        edje_edit_script_set(group->edit_object, code);
+        change = change_add("code of group script changed");
+        CRIT_ON_FAIL(editor_group_script_set(group->edit_object, change, false, true, code));
      }
    else
      {
-        edje_edit_script_program_set(group->edit_object, program->common.name, code);
+        change = change_add("code of program script changed");
+        CRIT_ON_FAIL(editor_program_script_set(group->edit_object, change, false, true, program->common.name, code));
      }
 
    if (!edje_edit_script_compile(group->edit_object))
@@ -124,6 +129,8 @@ _btn_save_cb(void *data,
         CRIT_ON_FAIL(editor_save(group->edit_object));
      }
 
+   history_change_add(group->history, change);
+   change = NULL;
    eina_stringshare_del(code);
 }
 
