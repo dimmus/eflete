@@ -254,6 +254,45 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 }
 
 Eina_Bool
+editor_group_script_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                        const char *new_val)
+{
+   Diff *diff;
+   Editor_Attribute_Change send;
+   send.edit_object = edit_object;
+
+   send.attribute = RM_ATTRIBUTE_GROUP_SCRIPT;
+   assert(edit_object != NULL);
+   assert(new_val != NULL);
+   if (change)
+     {
+        char *old_value = edje_edit_script_get(edit_object);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_group_script_set;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_group_script_set;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(old_value);
+        free(old_value);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+       CRIT_ON_FAIL(edje_edit_script_set(edit_object, new_val));
+       _editor_project_changed();
+       if (!_editor_signals_blocked)
+         {
+            evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_RM_ATTRIBUTE_CHANGED, &send);
+         }
+     }
+   return true;
+}
+
+Eina_Bool
 editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                             const char *item_name, const char *new_val)
 {

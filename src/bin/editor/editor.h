@@ -422,6 +422,10 @@ Eina_Bool
 editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                       const char *item_name) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
+editor_group_script_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                        const char *new_val) EINA_WARN_UNUSED_RESULT;
+
+Eina_Bool
 editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                             const char *item_name, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
