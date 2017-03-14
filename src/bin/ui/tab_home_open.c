@@ -192,9 +192,29 @@ _recent_clear(void *data __UNUSED__,
    evas_object_smart_callback_add(popup, POPUP_CLOSE_CB, _recent_clear_popup_close_cb, NULL);
 }
 
+static void
+_fs_mode_cb(void *data __UNUSED__,
+            Evas_Object *obj,
+            void *event_info __UNUSED__)
+{
+   int mode = elm_radio_value_get(obj);
+
+   if (mode == 0)
+     {
+        elm_fileselector_mode_set(tab.fs, ELM_FILESELECTOR_LIST);
+        elm_fileselector_thumbnail_size_set(tab.fs, 14, 14);
+     }
+   else if (mode == 1)
+     {
+        elm_fileselector_mode_set(tab.fs, ELM_FILESELECTOR_GRID);
+        elm_fileselector_thumbnail_size_set(tab.fs, 64, 64);
+     }
+}
+
 Evas_Object *
 _tab_open_project_add(void)
 {
+   Evas_Object *r_list, *r_grid;
    tab.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tab.layout, "layout", "tab_home", "open_project");
    elm_layout_text_set(tab.layout, "elm.text.recent", _("Open recent"));
@@ -205,6 +225,7 @@ _tab_open_project_add(void)
    evas_object_smart_callback_add(tab.btn_clear, signals.elm.button.clicked, _recent_clear, NULL);
 
    tab.fs = elm_fileselector_add(ap.win);
+   elm_object_style_set(tab.fs, "extended");
    elm_fileselector_expandable_set(tab.fs, false);
    elm_fileselector_path_set(tab.fs, profile_get()->general.projects_folder);
    elm_fileselector_custom_filter_append(tab.fs, _eflete_filter, NULL, "Eflete Files");
@@ -220,6 +241,19 @@ _tab_open_project_add(void)
    /* one more hack, set text our text to button 'ok' */
    elm_object_text_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), _("Open"));
    elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
+
+   r_list = elm_radio_add(tab.fs);
+   elm_object_style_set(r_list, "fs_list");
+   elm_radio_state_value_set(r_list, 0);
+   elm_layout_content_set(tab.fs, "elm.swallow.btn_list", r_list);
+   evas_object_smart_callback_add(r_list, signals.elm.radio.changed, _fs_mode_cb, NULL);
+
+   r_grid = elm_radio_add(tab.fs);
+   elm_object_style_set(r_grid, "fs_grid");
+   elm_radio_state_value_set(r_grid, 1);
+   elm_layout_content_set(tab.fs, "elm.swallow.btn_grid", r_grid);
+   elm_radio_group_add(r_list, r_grid);
+   evas_object_smart_callback_add(r_grid, signals.elm.radio.changed, _fs_mode_cb, NULL);
 
    elm_layout_content_set(tab.layout, "elm.swallow.fileselector", tab.fs);
 

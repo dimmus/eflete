@@ -700,3 +700,211 @@ WORKSPACE_RADIO("separate", "separate.png")
 WORKSPACE_RADIO("animator", "animator.png")
 WORKSPACE_RADIO("code", "code.png")
 WORKSPACE_RADIO("demo", "demo.png")
+
+group { name: "elm/radio/base/fs_list";
+   images {
+      image: "icon_list.png" COMP;
+   }
+   parts {
+      part { name: "radio";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 19;
+            max: 20 19;
+            image {
+               normal: "button_bg.png";
+               border: 4 4 9 9;
+            }
+         }
+         description { state: "visible" 0.0;
+            min: 20 19;
+            max: 20 19;
+            image {
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
+            }
+         }
+      }
+      part { name: "picture";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 12 12;
+            max: 12 12;
+            rel1 {
+               to: "radio";
+               offset: 0 1;
+            }
+            rel2.to: "radio";
+            image {
+               normal: "icon_list.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to: "radio";
+            }
+            rel2 {
+               to: "radio";
+            }
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,radio,toggle" "";
+      }
+      program { name: "radio_on";
+         signal: "elm,state,radio,on";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         transition: LINEAR 0.08000;
+         target: "radio";
+      }
+      program { name: "radio_off";
+         signal: "elm,state,radio,off";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.08000;
+         target: "radio";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "disabler";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "disabler";
+      }
+   }
+}
+
+group { name: "elm/radio/base/fs_grid";
+   images {
+      image: "icon_grid.png" COMP;
+   }
+   parts {
+      part { name: "radio";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 19;
+            max: 20 19;
+            image {
+               normal: "button_bg.png";
+               border: 4 4 9 9;
+            }
+         }
+         description { state: "visible" 0.0;
+            min: 20 19;
+            max: 20 19;
+            image {
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
+            }
+         }
+      }
+      part { name: "picture";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 12 12;
+            max: 12 12;
+            rel1 {
+               to: "radio";
+               offset: 0 1;
+            }
+            rel2.to: "radio";
+            image {
+               normal: "icon_grid.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to: "radio";
+            }
+            rel2 {
+               to: "radio";
+            }
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,radio,toggle" "";
+      }
+      program { name: "radio_on";
+         signal: "elm,state,radio,on";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         transition: LINEAR 0.08000;
+         target: "radio";
+      }
+      program { name: "radio_off";
+         signal: "elm,state,radio,off";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.08000;
+         target: "radio";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "disabler";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "disabler";
+      }
+   }
+}

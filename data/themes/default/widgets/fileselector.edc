@@ -188,6 +188,219 @@ group { name: "elm/fileselector/base/default";
             }
          }
       }
+      programs {
+         program { name: "program_0x1e19fa0";
+            signal: "elm,action,spinner,show";
+            source: "elm";
+            action: STATE_SET "visible" 0.00;
+            transition: LINEAR 0.20000;
+            target: "elm.spinner.clip";
+         }
+         program { name: "program_0x1e1a2d0";
+            signal: "elm,action,spinner,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.00;
+            transition: LINEAR 0.50000 CURRENT;
+            target: "elm.spinner.clip";
+         }
+      }
+   }
+}
+
+group { name: "elm/fileselector/base/extended";
+   data {
+      item: "path_separator" "<item relsize=15x15 vsize=full href=path/separator></item>";
+   }
+   parts {
+      part { name: "elm.swallow.up";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            fixed: 1 1;
+            min: 5 5;
+            rel2.relative: 0.00 0.00;
+         }
+      }
+      part { name: "elm.swallow.home";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.00 0.00;
+            fixed: 1 1;
+            min: 5 5;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 6 0;
+               to: "elm.swallow.up";
+            }
+            rel2 {
+               offset: 3 -1;
+               to: "elm.swallow.up";
+            }
+         }
+      }
+      part { name: "elm.swallow.search";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.00 0.50;
+            fixed: 1 1;
+            max: 350 -1;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: 6 0;
+               to: "elm.swallow.home";
+            }
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -7 -1;
+               to_x: "elm.swallow.btn_list";
+               to_y: "elm.swallow.home";
+            }
+         }
+      }
+      part { name: "elm.spinner.clip";
+         type: RECT;
+         description { state: "default" 0.00;
+            color: 255 255 255 0;
+            rel1.to: "elm.swallow.spinner";
+            rel2.to: "elm.swallow.spinner";
+         }
+         description { state: "visible" 0.00;
+            inherit: "default" 0.00;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.files";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 0.00;
+            min: 10 10;
+            rel1 {
+               relative: 0.00 1.00;
+               offset: 0 6;
+               to_y: "elm.swallow.home";
+            }
+            rel2 {
+               relative: 1.00 0.00;
+               offset: -1 -7;
+               to_y: "elm.swallow.path";
+            }
+         }
+      }
+      part { name: "elm.swallow.path";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            fixed: 1 1;
+            rel1 {
+               offset: 0 -4;
+               to_y: "elm.swallow.filename";
+            }
+            rel2 {
+               relative: 1.00 0.00;
+               offset: -1 -4;
+               to_y: "elm.swallow.filename";
+            }
+         }
+      }
+      part { name: "elm.swallow.filename";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            fixed: 1 1;
+            rel1 {
+               offset: 0 -7;
+               to_y: "separator";
+            }
+            rel2 {
+               relative: 1.00 0.00;
+               offset: -1 -7;
+               to_y: "separator";
+            }
+         }
+      }
+      part { name: "separator";
+         type: IMAGE;
+         description { state: "default" 0.00;
+            align: 0.50 1.00;
+            min: 0 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel2 {
+               relative: 1.00 0.00;
+               offset: -1 -7;
+               to_y: "elm.swallow.ok";
+            }
+         }
+      }
+      part { name: "elm.swallow.filters";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 1.00;
+            fixed: 1 1;
+            min: 74 0;
+            rel1.to: "elm.swallow.cancel";
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -32 -1;
+               to: "elm.swallow.cancel";
+            }
+         }
+      }
+      part { name: "elm.swallow.cancel";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 1.00;
+            fixed: 1 1;
+            min: 63 0;
+            rel1.to: "elm.swallow.ok";
+            rel2 {
+               relative: 0.00 1.00;
+               offset: -7 -1;
+               to: "elm.swallow.ok";
+            }
+         }
+      }
+      part { name: "elm.swallow.ok";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 1.00;
+            fixed: 1 1;
+            min: 42 0;
+            rel1.relative: 1.00 1.00;
+         }
+      }
+      part { name: "elm.swallow.spinner";
+         type: SWALLOW;
+         clip_to: "elm.spinner.clip";
+         description { state: "default" 0.00;
+            rel1.to: "elm.swallow.files";
+            rel2.to: "elm.swallow.files";
+         }
+      }
+      part { name: "elm.swallow.btn_list";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 0.00;
+            fixed: 1 1;
+            min: 20 19;
+            rel1.to_x: "elm.swallow.btn_grid";
+            rel2 {
+               relative: 0.00 0.00;
+               offset: -7 -1;
+               to_x: "elm.swallow.btn_grid";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_grid";
+         type: SWALLOW;
+         description { state: "default" 0.00;
+            align: 1.00 0.00;
+            fixed: 1 1;
+            min: 20 19;
+            rel1.relative: 1.00 0.00;
+            rel2.relative: 1.00 0.00;
+         }
+      }
    }
    programs {
       program { name: "program_0x1e19fa0";

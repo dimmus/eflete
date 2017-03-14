@@ -471,6 +471,25 @@ _done(void *data __UNUSED__,
 }
 
 static void
+_fs_mode_cb(void *data __UNUSED__,
+            Evas_Object *obj,
+            void *event_info __UNUSED__)
+{
+   int mode = elm_radio_value_get(obj);
+
+   if (mode == 0)
+     {
+        elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
+        elm_fileselector_thumbnail_size_set(fs, 14, 14);
+     }
+   else if (mode == 1)
+     {
+        elm_fileselector_mode_set(fs, ELM_FILESELECTOR_GRID);
+        elm_fileselector_thumbnail_size_set(fs, 64, 64);
+     }
+}
+
+static void
 _fileselector_helper(const char *title,
                      Evas_Object *follow_up,
                      const char *path,
@@ -481,6 +500,7 @@ _fileselector_helper(const char *title,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
    Evas_Object *scroller;
+   Evas_Object *r_list, *r_grid;
 
    dismiss_func = func;
    func_data = data;
@@ -490,6 +510,7 @@ _fileselector_helper(const char *title,
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_fileselector_add(ap.win);
+   elm_object_style_set(fs, "extended");
 #if HAVE_TIZEN
    /* Dirty Hack */
    Evas_Object *files_list;
@@ -513,6 +534,19 @@ _fileselector_helper(const char *title,
    evas_object_smart_callback_add(fs, signals.elm.fileselector.activated, _done, follow_up);
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
    evas_object_resize(helper, FS_W, FS_H);
+
+   r_list = elm_radio_add(fs);
+   elm_object_style_set(r_list, "fs_list");
+   elm_radio_state_value_set(r_list, 0);
+   elm_layout_content_set(fs, "elm.swallow.btn_list", r_list);
+   evas_object_smart_callback_add(r_list, signals.elm.radio.changed, _fs_mode_cb, fs);
+
+   r_grid = elm_radio_add(fs);
+   elm_object_style_set(r_grid, "fs_grid");
+   elm_radio_state_value_set(r_grid, 1);
+   elm_layout_content_set(fs, "elm.swallow.btn_grid", r_grid);
+   elm_radio_group_add(r_list, r_grid);
+   evas_object_smart_callback_add(r_grid, signals.elm.radio.changed, _fs_mode_cb, fs);
 
    /* scroller is necessary to fix issues with fileselector size */
    SCROLLER_ADD(ap.win, scroller);
