@@ -1785,7 +1785,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          return true;
       case ATTRIBUTE_GROUP_SCRIPT:
          code = edje_edit_script_get(EDIT_OBJ);
-         property_entry_set(action->control, code);
+         property_color_entry_set(action->control, code, ap.color_data);
          free(code);
          return true;
       case ATTRIBUTE_STATE_NAME:
@@ -1800,7 +1800,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          return true;
       case ATTRIBUTE_PROGRAM_SCRIPT:
          code = edje_edit_script_program_get(EDIT_OBJ, PROGRAM_ARGS);
-         property_entry_set(action->control, code);
+         property_color_entry_set(action->control, code, ap.color_data);
          free(code);
          return true;
       case ATTRIBUTE_PART_ITEM_NAME:

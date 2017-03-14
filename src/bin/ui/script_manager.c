@@ -25,6 +25,8 @@
 #include "property_private.h"
 #include "history.h"
 #include "change.h"
+#include "syntax_color.h"
+#include "eflete.h"
 
 typedef struct _Script_Manager Script_Manager;
 
@@ -203,7 +205,7 @@ script_manager_add(Resource2 *res)
         code = edje_edit_script_program_get(group->edit_object, program->common.name);
      }
 
-   property_entry_set(mng.script_entry, code);
+   property_color_entry_set(mng.script_entry, code, ap.color_data);
 
    BUTTON_ADD(mng.win, btn_save, _("Save"))
    evas_object_smart_callback_add(btn_save, signals.elm.button.clicked, _btn_save_cb, res);
