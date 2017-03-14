@@ -18,6 +18,8 @@
  */
 
 #include "main_window.h"
+#include "syntax_color.h"
+
 
 #ifndef PROPERTY_PRIVATE_H
 #define PROPERTY_PRIVATE_H
@@ -681,6 +683,28 @@ property_entry_set(Evas_Object *entry, const char *text)
             (strcmp(markup, elm_entry_entry_get(entry)) != 0))
           elm_entry_entry_set(entry, markup);
         free(markup);
+     }
+   else
+     elm_entry_entry_set(entry, "");
+}
+
+static inline void
+property_color_entry_set(Evas_Object *entry, const char *text, color_data *c_data)
+{
+   char *markup;
+   char *colored;
+
+   assert(entry != NULL);
+
+   if (text != NULL)
+     {
+        markup = elm_entry_utf8_to_markup(text);
+        colored = color_apply(c_data, markup, strlen(markup), NULL, NULL);
+        if ((elm_entry_entry_get(entry)) &&
+            (strcmp(colored, elm_entry_entry_get(entry)) != 0))
+          elm_entry_entry_set(entry, colored);
+        free(markup);
+        free(colored);
      }
    else
      elm_entry_entry_set(entry, "");
