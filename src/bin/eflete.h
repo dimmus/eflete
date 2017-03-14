@@ -68,6 +68,7 @@ typedef struct _Shortcuts Shortcuts;
 typedef struct _ColorClassData ColorClassData;
 typedef struct _Image_Item Image_Item;
 typedef struct _Colorclass_Item Colorclass_Item;
+typedef struct syntax_color_s color_data;
 
 #include "common_macro.h"
 TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
@@ -100,6 +101,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 struct _App_Data
 {
+   color_data *color_data;
    Elm_Theme *theme;
    Evas_Object *win;
    Evas_Object *win_layout;

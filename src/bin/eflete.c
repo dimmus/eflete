@@ -21,6 +21,7 @@
 #include "main_window.h"
 #include "shortcuts.h"
 #include "config.h"
+#include "syntax_color.h"
 
 #define EXT ""
 #ifdef _WIN32
@@ -128,6 +129,8 @@ app_init()
 
    ap.last_path = NULL;
 
+   ap.color_data = color_init(eina_strbuf_new());
+
    eina_stringshare_del(conf_path);
    return true;
 }
@@ -135,6 +138,8 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
+   if(ap.color_data)
+     color_term(ap.color_data);
    if (ap.last_path)
      eina_stringshare_del(ap.last_path);
    if (ap.path.theme_edj)

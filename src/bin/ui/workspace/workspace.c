@@ -135,7 +135,6 @@ struct _Workspace_Data
    Scroll_Area demo;
    struct {
       Evas_Object *obj;
-      color_data *color_data;
       double size;
    } code;
    Workspace_Mode mode;
@@ -173,7 +172,7 @@ _group_code_get(Workspace_Data *wd)
 
    code = edje_edit_source_generate(wd->group->edit_object);
    str = elm_entry_utf8_to_markup(code);
-   colored = color_apply(wd->code.color_data, str, strlen(str), NULL, NULL);
+   colored = color_apply(ap.color_data, str, strlen(str), NULL, NULL);
 
    free(str);
    eina_stringshare_del(code);
@@ -236,7 +235,6 @@ _workspace_del(void *data,
 
    Workspace_Data *wd = data;
    resource_group_edit_object_unload(wd->group);
-   color_term(wd->code.color_data);
 
    TODO("remove after moving from smart object");
    evas_object_del(wd->normal.layout);
@@ -1614,7 +1612,6 @@ workspace_add(Evas_Object *parent, Group2 *group)
    ENTRY_ADD(wd->panes_h, wd->code.obj, false)
    elm_entry_editable_set(wd->code.obj, false);
    elm_object_part_content_set(wd->panes_h, "right", wd->code.obj);
-   wd->code.color_data = color_init(eina_strbuf_new());
 
    _scroll_area_add(wd, &wd->normal, true);
    elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
