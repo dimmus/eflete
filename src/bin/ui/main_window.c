@@ -246,32 +246,42 @@ Evas_Object *
 _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *label = (Evas_Object *) data;
-   elm_object_text_set(label,
-     "<color=#b6b6b6>"
-     "<b><align=center>"PACKAGE_NAME" v."VERSION" (build time "BUILD_TIME")</align></b><br>"
-     "This application was written for Enlightenment project.<br>"
-     "It is designed to create and modify styles of Elementary widgets.<br>"
-     "<br>"
-     "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
-     "<br>"
-     "<align=center><b>Authors:</b><br>"
-     "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)<br>"
-     "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
-     "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
-     "Andrii Kroitor (an.kroitor@samsung.com)<br>"
-     "Kateryna Fesyna (fesyna1@gmail.com)<br>"
-     "Maksym Volodin (mac9.ua@gmail.com)<br>"
-     "Igor Gala (igor.gala89@gmail.com)<br>"
-     "<br>"
-     "Olga Kolesnik (o.kolesnik@samsung.com)<br>"
-     "<br>"
-     "Oleg Dotsenko (o.dotsenko@samsung.com)<br>"
-     "Yurii Tsivun (y.tsivun@samsung.com)<br>"
-     "Dmitriy Samoylov (dm.samoylov@samsung.com)<br>"
-     "</align>");
+   Eina_Strbuf *authors_file_path = NULL;
+   Eina_Strbuf *authors = NULL;
+   FILE *authors_file  = NULL;
+   char *line = NULL;
+   size_t len = 0;
+   ssize_t read = 0;
 
+   authors_file_path = eina_strbuf_new();
+   eina_strbuf_prepend_printf(authors_file_path, "%s/AUTHORS", elm_app_data_dir_get());
+
+   authors_file = fopen(eina_strbuf_string_get(authors_file_path), "r");
+
+   authors = eina_strbuf_new();
+   eina_strbuf_append_printf(authors,
+                             "<color=#b6b6b6>"
+                             "<b><align=center>"PACKAGE_NAME" v."VERSION" (build time "BUILD_TIME")</align></b><br>"
+                             "This application was written for Enlightenment project.<br>"
+                             "It is designed to create and modify styles of Elementary widgets.<br>"
+                             "<br>"
+                             "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
+                             "<br>"
+                             "<align=center><b>Authors:</b><br>");
+
+   while ((read = getline(&line, &len, authors_file)) != -1)
+     {
+        eina_strbuf_append_printf(authors, "%s<br>", line);
+     }
+
+   eina_strbuf_append_printf(authors, "</align>");
+
+   elm_object_text_set(label, eina_strbuf_string_get(authors));
    elm_object_style_set(label, "slide_about");
    elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
+   eina_strbuf_free(authors_file_path);
+   eina_strbuf_free(authors);
+   fclose(authors_file);
 
    return label;
 }
