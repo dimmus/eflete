@@ -175,6 +175,7 @@ script_manager_add(Resource2 *res)
 
    ENTRY_ADD(mng.script_layout, mng.script_entry, true);
    elm_entry_single_line_set(mng.script_entry, false);
+   elm_scroller_policy_set(mng.script_entry, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    elm_object_content_set(mng.script_layout, mng.script_entry);
    elm_layout_content_set(mng.script_layout, "elm.swallow.list", mng.script_entry);
 

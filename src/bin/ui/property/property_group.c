@@ -867,6 +867,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_entry_single_line_set(action->control, false);
          elm_entry_editable_set(action->control, false);
          evas_object_size_hint_min_set(action->control, 0, 400);
+         elm_scroller_policy_set(action->control, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
          evas_object_smart_callback_add(action->control, signals.eflete.property.script_control.clicked, _btn_script_manager_cb, NULL);
          break;
       case ATTRIBUTE_PART_NAME:
