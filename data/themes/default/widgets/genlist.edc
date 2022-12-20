@@ -647,6 +647,10 @@ group { name: "elm/genlist/tree/default/default";
             visible: 0;
             color: 0 0 0 0;
          }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
       }
    }
    programs {
@@ -684,7 +688,7 @@ group { name: "elm/genlist/tree/default/default";
       program { name: "reorder";
          signal: "elm,state,reorder,enabled";
          source: "elm";
-         action: STATE_SET "reordered" 0.00;
+         action: STATE_SET "reorder" 0.00;
          target: "bg";
       }
       program { name: "unreordered";
@@ -837,6 +841,10 @@ group { name: "elm/genlist/tree/part/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
       part { name: "events";
@@ -1417,6 +1425,10 @@ group { name: "elm/genlist/tree/items_caption/default";
             visible: 0;
             color: 255 255 255 0;
          }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
       }
    }
    programs {
@@ -1641,6 +1653,10 @@ group { name: "elm/genlist/tree/caption/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
    }
@@ -2237,6 +2253,9 @@ group { name: "elm/genlist/base/default";
                to: "sb_vbar";
             }
          }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
       }
       part { name: "sb_hbar";
          type: RECT;
@@ -2324,6 +2343,9 @@ group { name: "elm/genlist/base/default";
                relative: 0.0 0.0;
                to: "sb_hbar";
             }
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "clipper";
@@ -3000,6 +3022,10 @@ group { name: "elm/genlist/item/shortcuts/default";
          repeat_events: 1;
          description { state: "default" 0.00;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }

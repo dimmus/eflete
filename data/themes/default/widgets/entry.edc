@@ -213,6 +213,9 @@ group { name: "elm/scroller/entry/default";
                to: "sb_vbar";
             }
          }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
       }
       part { name: "sb_hbar";
          type: RECT;
@@ -296,6 +299,9 @@ group { name: "elm/scroller/entry/default";
                relative: 0.5 0.5;
                to: "sb_hbar";
             }
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "clipper";

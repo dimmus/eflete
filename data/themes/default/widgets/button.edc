@@ -305,6 +305,9 @@ group { name: "elm/button/base/hoversel_vertical_entry/entry";
          description { state: "visible" 0.0;
             inherit: "default" 0.00;
          }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.00;
+         }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;

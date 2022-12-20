@@ -941,6 +941,10 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
       }
    }
    programs {
@@ -1018,6 +1022,10 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
          }
       }
    }

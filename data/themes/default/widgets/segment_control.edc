@@ -29,7 +29,7 @@ group { name: "elm/segment_control/item/default";
       image: "segment_control_pressed_center.png" COMP;
       image: "segment_control_pressed_end.png" COMP;
       image: "segment_control_pressed_start.png" COMP;
-      image: "segment_control_dim_enter.png" COMP;
+      image: "segment_control_dim_center.png" COMP;
       image: "segment_control_dim_end.png" COMP;
       image: "segment_control_dim_start.png" COMP;
    }

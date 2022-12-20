@@ -5,10 +5,16 @@ group { name: "elm/layout/workspace/bg";
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }
+         description { state: "default" 0.5;
+            color: 255 255 255 0;
+         }
          description { state: "black" 0.0;
             color: 0 0 0 255;
          }
          description { state: "white" 0.0;
+         }
+         description { state: "white" 0.5;
+            inherit: "default" 0.0;
          }
       }
       part { name: "bg1";
@@ -22,6 +28,9 @@ group { name: "elm/layout/workspace/bg";
                type: TILE;
             }
          }
+         description { state: "default" 0.5;
+            inherit: "default" 0.0;
+         }
          description { state: "black" 0.0;
             color: 255 255 255 0;
             image {
@@ -41,6 +50,9 @@ group { name: "elm/layout/workspace/bg";
             fill {
                type: TILE;
             }
+         }
+         description { state: "white" 0.5;
+            inherit: "white" 0.0;
          }
       }
    }

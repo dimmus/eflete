@@ -127,6 +127,9 @@ group { name: "ewe/scroller/base/default";
             }
             color: 0 0 0 0;
          }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -230,6 +233,9 @@ group { name: "ewe/scroller/base/default";
                relative: 0.5  0.5;
                to: "sb_hbar_base";
             }
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
          }
          dragable {
             x: 1 1 0;
