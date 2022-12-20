@@ -292,6 +292,10 @@ group { name: "elm/radio/base/test";
             aspect_preference: VERTICAL;
             image.normal: "radio_base.png";
          }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
    }
    programs {

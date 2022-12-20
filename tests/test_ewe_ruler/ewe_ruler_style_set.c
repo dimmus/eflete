@@ -64,10 +64,10 @@ EFLETE_TEST(ewe_ruler_style_set_test_p)
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Scale *scale = ewe_ruler_scale_add(ruler, NULL);
 
-   ck_assert_msg(ewe_ruler_style_set(ruler, scale, "green") == EINA_TRUE, "EINA_FALSE returned");
-   ck_assert_str_eq(ewe_ruler_style_get(ruler, scale), "green");
-   ck_assert_msg(ewe_ruler_style_set(ruler, scale, "default") == EINA_TRUE, "EINA_FALSE returned");
-   ck_assert_str_eq(ewe_ruler_style_get(ruler, scale), "default");
+   ck_assert_msg(ewe_ruler_ewe_style_set(ruler, scale, "green") == EINA_TRUE, "EINA_FALSE returned");
+   ck_assert_str_eq(ewe_ruler_ewe_style_get(ruler, scale), "green");
+   ck_assert_msg(ewe_ruler_ewe_style_set(ruler, scale, "default") == EINA_TRUE, "EINA_FALSE returned");
+   ck_assert_str_eq(ewe_ruler_ewe_style_get(ruler, scale), "default");
 
    evas_object_del(win);
    app_shutdown();
@@ -103,7 +103,7 @@ EFLETE_TEST(ewe_ruler_style_set_test_n)
    elm_init(0, 0);
    app_init();
 
-   ck_assert_msg(ewe_ruler_style_set(NULL, NULL, "green") == EINA_FALSE, "Setted style for NULL ruler object");
+   ck_assert_msg(ewe_ruler_ewe_style_set(NULL, NULL, "green") == EINA_FALSE, "Setted style for NULL ruler object");
 
    app_shutdown();
    elm_shutdown();
