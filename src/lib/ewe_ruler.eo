@@ -1,13 +1,17 @@
-type Ewe_Ruler_Scale: __undefined_type;
-type Ewe_Ruler_Marker: __undefined_type;
+type @beta Ewe_Ruler_Scale: __undefined_type;
+type @beta Ewe_Ruler_Marker: __undefined_type;
 
-class Ewe.Ruler (Elm.Widget)
-{
-   eo_prefix: ewe_obj_ruler;
-   legacy_prefix: ewe_ruler;
+class @beta Ewe.Ruler extends Efl.Ui.Widget {
+   [[
+      This file is part of Elementary Widgets Extension
+   ]]
+   c_prefix: ewe_ruler;
    data: Ewe_Ruler_Smart_Data;
    methods {
       @property horizontal {
+         [[
+            Ruler orientation
+         ]]
          get {
             [[Get the ruler orientation
             ]]
@@ -22,8 +26,11 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property step {
+         [[
+            Step between marks in given scale of the ruler
+         ]]
          set {
-            [[Set step between marks of the ruler.
+            [[Set step between marks of the ruler. Min step is 10.
             ]]
           return: bool; [[EINA_TRUE if step was set or EINA_FALSE on failure.]]
          }
@@ -39,6 +46,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property value_step {
+         [[
+            Step between marks values in given scale of the ruler
+         ]]
          get {
             [[Get step between marks values of the ruler.
             ]]
@@ -56,6 +66,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property zero_offset {
+         [[
+            "Zero pointer" mark position of given scale in pixels relative to start  parent's layout
+         ]]
          get {
             [[Get "zero pointer" mark position
             ]]
@@ -73,6 +86,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property format {
+         [[
+            Format string for given scale of the ruler
+         ]]
          get {
          [[
           Get format string of given scale.
@@ -91,7 +107,11 @@ class Ewe.Ruler (Elm.Widget)
            format: string;
          }
       }
-      @property style {
+      @property ewe_style {
+         [[ 
+            Style for given scale of the ruler           
+            CONFLICT with elementary 'style' property. So set as 'ewe_style'
+         ]]
          get {
          [[
           Get style of given scale.
@@ -111,6 +131,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property scale_visible {
+         [[
+            Visibility of given scale of the ruler
+         ]]
          get {
          [[
           Get visibility of given scale
@@ -130,6 +153,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property scale_middle_mark {
+         [[
+            Visibility of middle mark in given scale of the ruler
+         ]]
          get {
          [[
           Get visibility of middle mark in given scale
@@ -149,6 +175,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_relative {
+         [[
+            Marker position relative to given scale of the ruler
+         ]]
          get {
          [[
           Get marker position relative to given scale
@@ -169,6 +198,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_absolute {
+         [[
+            Marker position
+         ]]
          get {
          [[
           Get marker position
@@ -188,6 +220,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_visible {
+         [[
+            Visibility of given marker
+         ]]
          get {
          [[
           Get visibility of given marker
@@ -207,9 +242,12 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_style {
+         [[
+            Style of given marker
+         ]]
          get {
          [[
-          Get style of given marker.
+          Get style of given marker
          ]]
          }
          set {
@@ -226,9 +264,12 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_size {
+         [[
+            Size of given marker
+         ]]
          get {
          [[
-          Get size of given marker.
+          Get size of given marker
          ]]
          }
          set {
@@ -244,9 +285,12 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_text {
+         [[
+            Text of given marker
+         ]]
          get {
          [[
-          Get text of given marker.
+          Get text of given marker
          ]]
          }
          set {
@@ -262,6 +306,9 @@ class Ewe.Ruler (Elm.Widget)
          }
       }
       @property marker_tooltip {
+         [[
+            A tooltip for given marker
+         ]]
          set {
          [[
           Set text to given marker
@@ -287,7 +334,7 @@ class Ewe.Ruler (Elm.Widget)
          [[
           Delete given scale from ruler.
          ]]
-         return: bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE on success, EINA_FALSE on failure.]]
          params {
             scale: ptr(Ewe_Ruler_Scale);
          }
@@ -305,7 +352,7 @@ class Ewe.Ruler (Elm.Widget)
          [[
           Delete given marker from ruler.
          ]]
-         return: bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE on success, EINA_FALSE on failure.]]
          params {
             marker: ptr(Ewe_Ruler_Marker);
          }
@@ -314,13 +361,11 @@ class Ewe.Ruler (Elm.Widget)
    implements {
       class.constructor;
       Efl.Object.constructor;
-      Efl.Gfx.size { set; }
-      Efl.Gfx.position { set; }
-      Efl.Gfx.visible { set; }
-      Efl.Canvas.Group.group_add;
-      Efl.Canvas.Group.group_del;
+      Efl.Gfx.Entity.size { set; }
+      Efl.Gfx.Entity.position { set; }
+      Efl.Gfx.Entity.visible { set; }
       Efl.Canvas.Group.group_calculate;
-      Elm.Widget.theme_apply;
+      Efl.Ui.Widget.theme_apply;
    }
    events {
    }
