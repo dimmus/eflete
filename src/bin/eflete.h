@@ -90,6 +90,8 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #pragma GCC poison elm_object_item_part_text_get
 
 #include <Elementary.h>
+#include <elm_entry_eo.h> // to use ELM_ENTRY_EVENT_VALIDATE in ui/style_manager.c
+
 #include "logger.h"
 #include "string_common.h"
 #include "editor.h"
