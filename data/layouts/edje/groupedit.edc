@@ -159,7 +159,7 @@ group { name: "eflete/group/item/default";
       program { name: "unselect";
          source: "eflete";
          signal: "item,unselected";
-         action: STATE_SET "defult" 0.0;
+         action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
          target: "border_glow";
          target: "border";
