@@ -226,6 +226,10 @@ group { name: "elm/genlist/item/default/default";
    }
 }
 
+group { name: "elm/genlist/item/empty/default";
+   inherit: "elm/genlist/item/default/default";
+}
+
 group { name: "elm/genlist/item/aligned/default";
    inherit: "elm/genlist/item/default/default";
    parts {
