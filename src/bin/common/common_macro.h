@@ -44,10 +44,10 @@ struct _Uns_List
 #endif
 
 /* using enum instead of defines because of OSX */
-enum {
-   false = 0, //EINA_FALSE
-   true = 1, //EINA_TRUE
-} bool;
+// enum {
+//    false = 0, //EINA_FALSE
+//    true = 1, //EINA_TRUE
+// } bool;
 #define RETURN_VOID
 
 #ifdef SHOW_TODO

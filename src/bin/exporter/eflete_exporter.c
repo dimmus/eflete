@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>

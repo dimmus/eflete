@@ -37,6 +37,7 @@
 #endif /* include eflete_config.h */
 
 #include <assert.h>
+#include <stdbool.h>
 
 /* localization */
 #ifdef HAVE_GETTEXT
