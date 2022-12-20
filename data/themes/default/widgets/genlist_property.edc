@@ -239,6 +239,10 @@ group { name: "elm/genlist/tree/caption/property";
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            min: 0 0;
+         }
       }
    }
    programs {
