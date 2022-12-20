@@ -14,33 +14,60 @@ images {
 
 group { name: "elm/colorselector/palette/default";
    data {
-      item: "vertical_pad" "10";
-      item: "horizontal_pad" "10";
+      item: "vertical_pad" "20";
+      item: "horizontal_pad" "20";
    }
    parts {
+      part { name: "top_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 0 1;
+            min: 0 12;
+            max: -1 12;
+         }
+      }
       part { name: "elm.picker";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.0;
             fixed: 1 1;
-            rel1.offset: 0 12;
+            rel1{
+               relative: 0.0 1.0;
+               to_y: "top_space";
+            }
             rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "middle1_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            min: 0 14;
+            max: -1 14;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.picker";
+            }
          }
       }
       part { name: "elm.palette";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 14;
-               to_y: "elm.picker";
+               to_y: "middle1_space";
             }
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -26;
-               to_y: "elm.selector";
+               to_y: "middle2_space";
             }
          }
          description { state: "off" 0.0;
@@ -49,8 +76,23 @@ group { name: "elm/colorselector/palette/default";
             rel2.relative: 1.0 0.0;
          }
       }
+      part { name: "middle2_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 25;
+            max: -1 25;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "elm.selector";
+            }
+         }
+      }
       part { name: "elm.selector";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 1.0;
             fixed: 1 1;
@@ -107,14 +149,26 @@ group { name: "elm/colorselector/palette/default";
 
 group { name: "elm/colorselector/picker/base/default";
    parts {
+      part { name: "top_left_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 0;
+            min: 21 0;
+            max: 21 -1;
+         }
+      }
       part { name: "elm.swallow.picker";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 72 76;
             max: 72 76;
             rel1 {
-               offset: 21 0;
+               relative: 1.0 0.0;
+               to_x: "top_left_space";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -124,6 +178,7 @@ group { name: "elm/colorselector/picker/base/default";
       }
       part { name: "elm.label.red";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 15 0;
@@ -141,6 +196,7 @@ group { name: "elm/colorselector/picker/base/default";
       }
       part { name: "elm.swallow.red";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 60 19;
@@ -149,6 +205,7 @@ group { name: "elm/colorselector/picker/base/default";
       }
       part { name: "elm.label.green";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             min: 15 0;
             max: 15 -1;
@@ -167,21 +224,36 @@ group { name: "elm/colorselector/picker/base/default";
             }
          }
       }
+      part { name: "top_green_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 0 1;
+            min: 0 1;
+            max: -1 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.red";
+            }
+         }
+      }
       part { name: "elm.swallow.green";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 60 19;
             max: 60 19;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.red";
+               to: "top_green_space";
             }
          }
       }
       part { name: "elm.label.blue";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             min: 15 0;
             max: 15 -1;
@@ -200,21 +272,36 @@ group { name: "elm/colorselector/picker/base/default";
             }
          }
       }
+      part { name: "top_blue_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 0 1;
+            min: 0 1;
+            max: -1 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.green";
+            }
+         }
+      }
       part { name: "elm.swallow.blue";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 60 19;
             max: 60 19;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.green";
+               to: "top_blue_space";
             }
          }
       }
       part { name: "elm.label.alpha";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             min: 15 0;
             max: 15 -1;
@@ -233,16 +320,30 @@ group { name: "elm/colorselector/picker/base/default";
             }
          }
       }
+      part { name: "top_alpha_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 0 1;
+            min: 0 1;
+            max: -1 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.blue";
+            }
+         }
+      }
       part { name: "elm.swallow.alpha";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 60 19;
             max: 60 19;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 1;
-               to: "elm.swallow.blue";
+               to: "top_alpha_space";
             }
          }
       }
@@ -253,6 +354,7 @@ group { name: "elm/colorselector/picker/default";
    parts {
       part { name: "pat";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "elm.picker";
@@ -271,6 +373,7 @@ group { name: "elm/colorselector/picker/default";
       }
       part { name: "elm.picker";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 51 52;
@@ -279,6 +382,7 @@ group { name: "elm/colorselector/picker/default";
       }
       part { name: "shadow";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             rel1 {
@@ -299,6 +403,7 @@ group { name: "elm/colorselector/picker/default";
       }
       part { name: "inset";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             rel1 {
@@ -317,15 +422,32 @@ group { name: "elm/colorselector/picker/default";
             }
          }
       }
+      part { name: "top_left_cross_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 8 8;
+            max: 8 8;
+            rel1 {
+               to: "elm.picker";
+            }
+            rel2 {
+               to: "elm.picker";
+            }
+         }
+      }
       part { name: "cross";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             min: 35 35;
             max: 35 35;
             align: 0 0;
             rel1 {
-               to: "elm.picker";
-               offset: 8 8;
+               relative: 1.0 1.0;
+               to: "top_left_cross_space";
             }
             rel2 {
                to: "elm.picker";
@@ -343,6 +465,7 @@ group { name: "elm/colorselector/item/default";
    parts {
       part { name: "base";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             min: 27 28;
             max: 27 28;
@@ -352,6 +475,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "bg";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             min: 18 19;
             max: 18 19;
@@ -368,6 +492,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "color_obj";
          type: SWALLOW;
+         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             min: 16 17;
@@ -378,6 +503,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "shadow";
          type: IMAGE;
+         scale: 1;
          repeat_events: 1;
          description { state: "default" 0.0;
             rel1.to: "bg";
@@ -390,6 +516,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "glow";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          repeat_events: 1;
          description { state: "default" 0.0;
@@ -420,6 +547,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "clipper";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             rel1.to: "color_obj";
             rel2.to: "color_obj";
@@ -432,6 +560,7 @@ group { name: "elm/colorselector/item/default";
       }
       part { name: "disabler";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
          }
@@ -488,10 +617,12 @@ group { name: "elm/button/base/colorselector/left/default";
    parts {
       part { name: "base";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-down.png";
                middle: DEFAULT;
@@ -501,6 +632,7 @@ group { name: "elm/button/base/colorselector/left/default";
          description { state: "clicked" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-down-clicked.png";
                middle: DEFAULT;
@@ -510,6 +642,7 @@ group { name: "elm/button/base/colorselector/left/default";
          description { state: "disabled" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-down-disabled.png";
                middle: DEFAULT;
@@ -519,12 +652,14 @@ group { name: "elm/button/base/colorselector/left/default";
       }
       part { name: "event";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
       part { name: "disabler";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
          }
@@ -593,10 +728,12 @@ group { name: "elm/button/base/colorselector/right/default";
    parts {
       part { name: "base";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-up.png";
                middle: DEFAULT;
@@ -606,6 +743,7 @@ group { name: "elm/button/base/colorselector/right/default";
          description { state: "clicked" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-up-clicked.png";
                middle: DEFAULT;
@@ -615,6 +753,7 @@ group { name: "elm/button/base/colorselector/right/default";
          description { state: "disabled" 0.0;
             min: 10 17;
             max: 10 17;
+            fixed: 1 1;
             image {
                normal: "spinner-horizontal-up-disabled.png";
                middle: DEFAULT;
@@ -624,6 +763,7 @@ group { name: "elm/button/base/colorselector/right/default";
       }
       part { name: "event";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -634,6 +774,7 @@ group { name: "elm/button/base/colorselector/right/default";
       }
       part { name: "disabler";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
          }
@@ -701,6 +842,7 @@ group { name: "elm/colorselector/base/default";
    parts {
       part { name: "elm.bar_bg";
          type: SWALLOW;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             min: 32 15;
@@ -716,6 +858,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "elm.bar";
          type: SWALLOW;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             rel1.to: "elm.bar_bg";
@@ -724,6 +867,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "elm.arrow_bg";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
@@ -737,6 +881,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "elm.arrow";
          type: RECT;
+         scale: 1;
          dragable {
             x: 1 1 0;
             y: 0 0 0;
@@ -752,6 +897,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "event";
          type: RECT;
+         scale: 1;
          dragable.events: "elm.arrow";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -764,6 +910,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "arrow_under";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             rel1.to: "elm.arrow_icon";
@@ -794,6 +941,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "arrow_over";
          type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             rel1.to: "elm.arrow_icon";
@@ -806,6 +954,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "bg";
          type: IMAGE;
+         scale: 1;
          repeat_events: 1;
          description { state: "default" 0.0;
             rel1.to_y: "elm.l_button";
@@ -843,6 +992,7 @@ group { name: "elm/colorselector/base/default";
       }
       part { name: "cursor";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 1 1;
@@ -875,13 +1025,27 @@ group { name: "elm/colorselector/bg/default";
             max: -1 19;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
-               to_y: "elm.colorbar_1";
+               to_y: "top_colorbar1_space";
+            }
+         }
+      }
+      part { name: "top_colorbar1_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 13;
+            max: -1 13;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "elm.colorbar_1";
             }
          }
       }
       part { name: "elm.colorbar_1";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
@@ -889,13 +1053,27 @@ group { name: "elm/colorselector/bg/default";
             max: -1 19;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
-               to_y: "elm.colorbar_2";
+               to_y: "top_colorbar2_space";
+            }
+         }
+      }
+      part { name: "top_colorbar2_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 13;
+            max: -1 13;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "elm.colorbar_2";
             }
          }
       }
       part { name: "elm.colorbar_2";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;
@@ -903,13 +1081,27 @@ group { name: "elm/colorselector/bg/default";
             max: -1 19;
             rel2 {
                relative: 1.0 0.0;
-               offset: -1 -14;
-               to_y: "elm.colorbar_3";
+               to_y: "top_colorbar3_space";
+            }
+         }
+      }
+      part { name: "top_colorbar3_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 13;
+            max: -1 13;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "elm.colorbar_3";
             }
          }
       }
       part { name: "elm.colorbar_3";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 0 1;

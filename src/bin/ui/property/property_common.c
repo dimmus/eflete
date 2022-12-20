@@ -433,7 +433,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          elm_colorselector_palette_color_add(content, 255, 255, 255, 255);
          elm_colorselector_palette_color_add(content, 200, 200, 200, 255);
 #else
-         evas_object_size_hint_min_set(content, 200, 270);
+         evas_object_size_hint_min_set(content, 200 * elm_config_scale_get(), 270 * elm_config_scale_get());
 #endif
          break;
       case PROPERTY_CONTROL_LABEL:

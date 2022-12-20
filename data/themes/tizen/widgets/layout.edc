@@ -909,7 +909,6 @@ group { name: "elm/layout/animator/program_area";
 
 group { name: "elm/layout/image_manager/default";
    alias: "elm/layout/sound_manager/default";
-   alias: "elm/layout/script_manager/default";
    parts {
       part { name: "area.edit";
          type: SPACER;
@@ -1013,7 +1012,8 @@ group { name: "elm/layout/image_manager/default";
    }
 }
 
-group { name: "elm/layout/script_manager/build_log";
+group { name: "elm/layout/script_manager/default";
+   alias: "elm/layout/script_manager/build_log";
    parts {
       part { name: "area.edit";
          type: SPACER;
@@ -1048,10 +1048,12 @@ group { name: "elm/layout/script_manager/build_log";
             text {
                font: FN_B;
                size: 13;
+               align: 0.0 0.5;
             }
             rel1 {
                relative: 0.0 0.0;
                to_y: "area.edit";
+               offset: 20 0;
             }
             rel2 {
                relative: 1.0 0.0;
@@ -1981,8 +1983,8 @@ group { name: "elm/layout/popup/1swallow";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
-            min: 97 0;
-            max: 97 -1;
+            min: 107 0;
+            max: 107 -1;
             color_class: "text_popup";
             text {
                font: FN;
@@ -2022,8 +2024,8 @@ group { name: "elm/layout/popup/1swallow_subtext";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 97 0;
-            max: 97 -1;
+            min: 107 0;
+            max: 107 -1;
             color_class: "text_popup";
             text {
                font: FN;

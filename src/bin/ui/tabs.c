@@ -54,7 +54,6 @@ typedef struct _Tab_Home Tab_Home;
 struct _Tabs {
    Evas_Object *layout;
    Evas_Object *toolbar;
-   Evas_Object *box;
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
@@ -104,10 +103,14 @@ _content_set(void *data,
              evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, NULL);
              /* this case for when Property shows something selected in DEMO mode */
              evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+             ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, true);
              return;
           }
         else
-          elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
+          {
+             elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
+             ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, false);
+          }
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
         if (ap.project)
@@ -995,12 +998,6 @@ tabs_add(void)
 
    tabs.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.layout, "layout", "tabs", "default");
-   BOX_ADD(tabs.layout, tabs.box, true, false);
-   evas_object_size_hint_weight_set(tabs.box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(tabs.box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_align_set(tabs.box, 0.0, 0.5);
-   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.box);
-   evas_object_show(tabs.box);
 
    tabs.toolbar = elm_toolbar_add(tabs.layout);
    elm_object_style_set(tabs.toolbar, "tabs_horizontal");
@@ -1009,7 +1006,7 @@ tabs_add(void)
    evas_object_size_hint_weight_set(tabs.toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(tabs.toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_toolbar_align_set(tabs.toolbar, 0.0);
-   elm_box_pack_end(tabs.box, tabs.toolbar);
+   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);
    evas_object_show(tabs.toolbar);
 
    tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);

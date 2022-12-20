@@ -43,6 +43,7 @@ typedef struct
 {
    Group2 *group;
    Part2 *part;
+   Program2 *program;
 
    Evas_Object *layout;
    Evas_Object *genlist;
@@ -694,6 +695,7 @@ _enable_buttons(Part_List *pl, Elm_Object_Item *glit)
      {
         elm_object_item_disabled_set(pl->add_state_menu_item, false);
         ui_menu_disable_set(ap.menu, MENU_EDIT_STATE_ADD, false);
+        ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, true);
 
         if ((pl->part->type == EDJE_PART_TYPE_BOX) ||
             (pl->part->type == EDJE_PART_TYPE_TABLE))
@@ -720,9 +722,16 @@ _enable_buttons(Part_List *pl, Elm_Object_Item *glit)
              if (glit != eina_list_data_get(eina_list_last(items_list)))
                elm_object_disabled_set(pl->btn_down, false);
           }
+        if ((pl->group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM) &&
+            (((Program2 *)pl->group->current_selected)->type == EDJE_ACTION_TYPE_SCRIPT))
+           ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, false);
+        else
+           ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, true);
 
         TODO("handle part items here");
      }
+   else
+      ui_menu_disable_set(ap.menu, MENU_WINDOW_MANAGER_SCRIPT, false);
 }
 
 static void
@@ -739,9 +748,11 @@ _unselect_part(Part_List *pl)
 static void
 _unselected_cb(void *data,
                Evas_Object *o,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
    Part_List *pl = data;
+   Elm_Object_Item *glit = event_info;
+
    assert(pl != NULL);
 
    /* focusing genlist to trigger unfocus callbacks in property */
@@ -749,6 +760,7 @@ _unselected_cb(void *data,
 
    _unselect_internal(pl);
 
+   _enable_buttons(pl, glit);
    evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, NULL);
 }
 
@@ -1897,6 +1909,7 @@ _part_del(Part_List *pl,
    assert(glit != NULL);
 
    part = elm_object_item_data_get(glit);
+   _unselect_internal(pl);
 
    part_name = eina_stringshare_add(part->common.name);
    msg = eina_stringshare_printf(_("deleted part \"%s\""), part_name);

@@ -270,7 +270,17 @@ _find_item(Elm_Object_Item *item, const char *name)
    while (item)
      {
         if (elm_genlist_item_type_get(item) != ELM_GENLIST_ITEM_TREE)
-          item_name = _group_item_label_get(elm_object_item_data_get(item), NULL, NULL);
+          {
+             Eina_Strbuf *tmp = eina_strbuf_new();
+             Elm_Object_Item *parent = elm_genlist_item_parent_get(item);
+             if (parent != project_navigator.item_top)
+               {
+                  eina_strbuf_append(tmp, elm_object_item_data_get(parent));
+               }
+             eina_strbuf_append(tmp, _group_item_label_get(elm_object_item_data_get(item), NULL, NULL));
+             item_name = eina_strbuf_string_steal(tmp);
+             eina_strbuf_free(tmp);
+          }
         else
           item_name = strdup(elm_object_item_data_get(item));
 
@@ -576,52 +586,77 @@ _folder_check(const char *prefix, Eina_Bool del)
 }
 
 static void
-_folder_del(Elm_Object_Item *item)
+_editor_group_del(const char *name, Eina_Bool event_call)
 {
-   Elm_Object_Item *itm, *parent;
+   Eina_Stringshare *tmp = eina_stringshare_add(name);
+
+   if (!editor_group_del(ap.project->global_object, tmp, event_call))
+     {
+        Eina_Stringshare *msg = eina_stringshare_printf(_("Can't remove layout \"%s\""), name);
+        popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
+        eina_stringshare_del(msg);
+     }
+   eina_stringshare_del(tmp);
+}
+
+static Eina_Bool
+_folder_del_recursively(Elm_Object_Item *item, const char *folder)
+{
+   Eina_Stringshare *prefix;
+   Eina_List *folders = NULL, *groups = NULL, *l;
    const Eina_List *items;
-   Eina_List *l;
-   Eina_Stringshare *tmp, *msg;
+   Elm_Object_Item *itm;
    Group2 *group;
    const Elm_Genlist_Item_Class *itc;
 
-   items = elm_genlist_item_subitems_get(item);
-   EINA_LIST_FOREACH((Eina_List *)items, l, itm)
+   widget_tree_items_get(ap.project->RM.groups, folder, &folders, &groups);
+   if ((item) && elm_genlist_item_expanded_get(item))
      {
-        itc = elm_genlist_item_item_class_get(itm);
-        if (itc == project_navigator.itc_folder)
+        items = elm_genlist_item_subitems_get(item);
+        EINA_LIST_FOREACH((Eina_List *)items, l, itm)
           {
-             // recursion for del folder
-             _folder_del(itm);
-          }
-        else if (itc == project_navigator.itc_group)
-          {
-             group = elm_object_item_data_get(itm);
-             tmp = eina_stringshare_add(group->common.name);
-             if (!editor_group_del(ap.project->global_object, tmp, false))
+             itc = elm_genlist_item_item_class_get(itm);
+             if (itc == project_navigator.itc_folder)
                {
-                  msg = eina_stringshare_printf(_("Can't delete layout \"%s\". "
-                                                  "Please close a tab with given group."),
-                                                group->common.name);
-                  TODO("Check if it's correct to ignore error");
-                  popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
-                  eina_stringshare_del(msg);
+                  prefix = elm_object_item_data_get(itm);
+                  if (!_folder_del_recursively(itm, prefix))
+                    return false;
+                  elm_object_item_del(itm);
                }
-             eina_stringshare_del(tmp);
           }
-        elm_object_item_del(itm);
      }
-
-   parent = elm_genlist_item_parent_get(item);
-   elm_object_item_del(item);
-   while ((parent != project_navigator.item_top) &&
-          (elm_genlist_item_subitems_count(parent) == 0 ))
+   else
      {
-        item = parent;
-        parent = elm_genlist_item_parent_get(item);
-        elm_object_item_del(item);
+        EINA_LIST_FREE(folders, prefix)
+          {
+             if (!_folder_del_recursively(NULL, prefix))
+               return false;
+          }
      }
+   EINA_LIST_FREE(groups, group)
+     {
+        if (group->edit_object)
+          {
+             popup_add(_("Warning: Delete layout"),
+                       _("Can't delete the opened layout. Please, "
+                         "close the layout tab before delete it."),
+                       BTN_CANCEL, NULL, NULL);
+             return false;
+          }
+        else
+          _editor_group_del(group->common.name, true);
+     }
+   return true;
+}
 
+static void
+_folder_del(Elm_Object_Item *item)
+{
+   Eina_Stringshare *folder;
+
+   folder = elm_object_item_data_get(item);
+
+   _folder_del_recursively(item, folder);
 }
 
 static void
@@ -631,22 +666,13 @@ _group_del(void *data __UNUSED__,
 {
    Eina_Stringshare *group_name;
    Elm_Object_Item *item, *parent;
-   Group2 *group;
 
    group_name = (Eina_Stringshare *)event_info;
+   item = _find_item(eina_list_data_get(elm_genlist_item_subitems_get(project_navigator.item_top)), group_name);
+   if (!item) return;
 
-   item = elm_genlist_selected_item_get(project_navigator.genlist);
-   group = elm_object_item_data_get(item);
-   if ((group->common.name == group_name) || !strcmp(group->common.name, group_name))
-     {
-        parent = elm_genlist_item_parent_get(item);
-        elm_object_item_del(item);
-     }
-   else
-     {
-        CRIT("Unable to remove group. Income name different from delete.");
-        return;
-     }
+   parent = elm_genlist_item_parent_get(item);
+   elm_object_item_del(item);
 
    while ((parent != project_navigator.item_top) &&
           (elm_genlist_item_subitems_count(parent) == 0 ))
@@ -655,6 +681,19 @@ _group_del(void *data __UNUSED__,
         parent = elm_genlist_item_parent_get(item);
         elm_object_item_del(item);
      }
+}
+
+static Eina_Bool _item_fully_expanded_get(Elm_Object_Item *item)
+{
+   Eina_Bool ret = true;
+   const Eina_List *l;
+
+   if (!elm_genlist_item_expanded_get(item)) return false;
+
+   const Eina_List *items = elm_genlist_item_subitems_get(item);
+   EINA_LIST_FOREACH(items, l, item)
+     ret &= _item_fully_expanded_get(item);
+   return ret;
 }
 
 static void
@@ -667,7 +706,11 @@ _folder_del_popup_close_cb(void *data,
 
    if (BTN_CANCEL == btn_res) return;
 
+   Eina_Bool was_fully_expanded = _item_fully_expanded_get(glit);
    _folder_del(glit);
+   // if item was fully expanded it is already deleted by _group_del callback
+   if (!was_fully_expanded)
+     elm_object_item_del(glit);
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
@@ -676,21 +719,12 @@ _group_del_popup_close_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info)
 {
-   Eina_Stringshare *tmp, *msg;
    Group2 *group = data;
    Popup_Button btn_res = (Popup_Button) event_info;
 
    if (BTN_CANCEL == btn_res) return;
 
-   tmp = eina_stringshare_add(group->common.name);
-
-   if (!editor_group_del(ap.project->global_object, tmp, true))
-     {
-        msg = eina_stringshare_printf(_("Can't delete layout \"%s\""), group->common.name);
-        TODO("Check if it's correct to ignore error");
-        popup_add(_("Error"), msg, BTN_OK, NULL, NULL);
-        eina_stringshare_del(msg);
-     }
+   _editor_group_del(group->common.name, true);
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 

@@ -139,11 +139,9 @@ _grid_sel_cb(void *data __UNUSED__,
      {
       case SOUND_TYPE_SAMPLE:
          res = resource_manager_find(ap.project->RM.sounds, snd->name);
-         elm_layout_text_set(mng.player, "eflete.sound.type", _("sample"));
          break;
       case SOUND_TYPE_TONE:
          res = resource_manager_find(ap.project->RM.tones, snd->name);
-         elm_layout_text_set(mng.player, "eflete.sound.type", _("tone"));
          break;
      }
    elm_layout_text_set(mng.player, "eflete.sound.value", snd->type_label);
@@ -520,7 +518,6 @@ _mw_cancel_cb(void *data __UNUSED__,
    Evas_Object *content;
 
    elm_layout_text_set(mng.player, "eflete.sound.value", NULL);
-   elm_layout_text_set(mng.player, "eflete.sound.type", NULL);
 
    /* unset and hide the image property */
    content = elm_object_content_unset(mng.win);

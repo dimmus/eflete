@@ -1662,6 +1662,55 @@ group { name: "elm/scroller/entry/default";
    }
 }
 
+group { name: "elm/scroller/entry/script";
+   inherit: "elm/scroller/entry/default";
+   parts {
+      part { name: "sb_vbar";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.00 0.00;
+               offset: -1 23;
+            }
+         }
+      }
+      part { name: "elipsis_border";
+         type: RECT;
+         insert_before: "elm.swallow.elipsis";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            max: 24 24;
+            min: 24 24;
+            color_class: "scrollbar_line_nor";
+            rel1 {
+               offset: 0 0;
+            }
+            rel2 {
+               offset: -1 0;
+            }
+         }
+      }
+      part { name: "elm.swallow.elipsis";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            rel1 {
+               offset: 0 2;
+               to: "elipsis_border";
+            }
+            rel2 {
+               offset: -3 0;
+               to: "elipsis_border";
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/scroller/entry_single/default";
    data {
       item: "focus_highlight" "on";

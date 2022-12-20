@@ -194,6 +194,9 @@ _menu_cb(void *data __UNUSED__,
       case MENU_WINDOW_MANAGER_COLORCLASS:
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER);
          break;
+      case MENU_WINDOW_MANAGER_SCRIPT:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SCRIPT_MANAGER);
+         break;
       case MENU_HELP_ABOUT:
          about_window_add();
          break;
@@ -325,6 +328,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_SOUND, "sound2", _("Sound manager"), "F8")
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_COLORCLASS, "color", _("Color class manager"), "F10")
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_SCRIPT, "code2", _("Script manager"), "F11")
 
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_SHORTCUTS, NULL, _("Shortcuts"), "F1")
@@ -334,6 +338,7 @@ ui_menu_add(void)
 
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+   ui_menu_disable_set(menu, MENU_WINDOW_MANAGER_SCRIPT, true);
 
    menu->window_menu = window_menu;
 

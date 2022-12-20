@@ -43,6 +43,7 @@ const Signals signals = {
                .image                  = "signal.shortcut.manager.image",
                .sound                  = "signal.shortcut.manager.sound",
                .style                  = "signal.shortcut.manager.style",
+               .script                 = "signal.shortcut.manager.script",
           },
           .popup = {
                .cancel                 = "signal.shortcut.popup.cancel",

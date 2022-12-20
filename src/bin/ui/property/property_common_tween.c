@@ -68,8 +68,8 @@ _item_del(void *data,
 
 /* tweens functions */
 
-static Eina_List *deleted_tweens;
-static Eina_List *added_tweens;
+static Eina_List *deleted_tweens = NULL;
+static Eina_List *added_tweens = NULL;;
 
 static void
 _del_tween_image(void *data,
@@ -107,10 +107,12 @@ _on_image_editor_tween_done(void *data,
    if (!selected) return false;
    EINA_LIST_FOREACH(selected, l, name)
      {
-        added_tweens = eina_list_append(added_tweens, name);
+        if (strcmp(name, EFLETE_DUMMY_IMAGE_NAME) != 0)
+          added_tweens = eina_list_append(added_tweens, name);
      }
 
-   evas_object_smart_callback_call(control, signals.eflete.property.image_tween_control.changed, NULL);
+   if (added_tweens)
+     evas_object_smart_callback_call(control, signals.eflete.property.image_tween_control.changed, NULL);
 TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_pop(tween_list);
 
@@ -162,6 +164,8 @@ property_image_tween_lists_free()
           eina_stringshare_del(eina_list_data_get(deleted_tweens));
         deleted_tweens = eina_list_remove(deleted_tweens, eina_list_data_get(deleted_tweens));
      }
+   added_tweens = NULL;
+   deleted_tweens = NULL;
 }
 
 void

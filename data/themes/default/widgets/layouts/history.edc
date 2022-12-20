@@ -49,6 +49,7 @@ group { name: "elm/layout/history/control";
    parts {
       part { name: "button";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 20 20;
             max: 20 20;
@@ -56,8 +57,24 @@ group { name: "elm/layout/history/control";
             align: 0 0.5;
          }
       }
+      part { name: "space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "button";
+            }
+            rel2.to: "button";
+         }
+      }
       part { name: "arrow";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 1;
@@ -65,10 +82,9 @@ group { name: "elm/layout/history/control";
             max: 9 9;
             rel1 {
                relative: 1.0 0.0;
-               offset: 3 0;
-               to: "button";
+               to: "space";
             }
-            rel2.to: "button";
+            rel2.to: "space";
          }
       }
    }
@@ -78,6 +94,7 @@ group { name: "elm/layout/history/combobox";
    parts {
      part { name: "spacer";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 3 3;

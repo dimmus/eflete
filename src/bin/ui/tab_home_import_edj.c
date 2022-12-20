@@ -439,6 +439,7 @@ static Eina_Bool
 _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   elm_check_state_set(tab_edj.ch_all, false);
    return true;
 }
 

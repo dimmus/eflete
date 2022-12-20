@@ -4,6 +4,7 @@
       parts { \
          part { name: "image"; \
             type: IMAGE; \
+            scale: 1; \
             description { state: "default" 0.0; \
                max: MAX_X_Y; \
                image { \

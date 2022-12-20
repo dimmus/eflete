@@ -44,6 +44,7 @@ group { name: "elm/notify/center/popup/default";
    parts {
       part { name: "base";
          type: RECT;
+         scale: 1;
          mouse_events: 0;
          repeat_events: 1;
          description { state: "default" 0.0;
@@ -53,10 +54,12 @@ group { name: "elm/notify/center/popup/default";
          }
       }
       part { name: "pop";
+         scale: 1;
          description { state: "default" 0.0;
             image {
                normal: "popup-bg.png";
                border: 34 34 34 34;
+               border_scale: 1;
             }
             rel1 {
                to: "base";
@@ -66,17 +69,40 @@ group { name: "elm/notify/center/popup/default";
             }
          }
       }
+      part { name: "top_left_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 27 21;
+            max: 27 21;
+            rel1.to: "pop";
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               to: "pop";
-               offset: 27 21;
+               relative: 1.0 1.0;
+               to: "top_left_space";
             }
             rel2 {
-               to: "pop";
-               offset: -28 -22;
+               relative: 0.0 0.0;
+               to: "bottom_right_space";
             }
+         }
+      }
+      part { name: "bottom_right_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 27 21;
+            max: 27 21;
+            rel2.to: "pop";
          }
       }
    }
@@ -114,6 +140,7 @@ group { name: "elm/popup/base/default";
       }
       part { name: "elm.text.title";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.0;
             min: 0 34;
@@ -267,6 +294,7 @@ group { name: "elm/popup/content/popup/default";
    parts{
       part{ name:"elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 380 0;
          }
@@ -606,13 +634,23 @@ group { name: "elm/popup/buttons1/popup/default";
             align: 1.0 0.5;
             fixed: 1 1;
             rel1 {
-               relative: 1.0 0.5;
-               offset: -12 0;
+               relative: 0.0 0.5;
+               to_x: "right_space";
             }
             rel2 {
-               relative: 1.0 0.5;
-               offset: -13 -1;
+               relative: 0.0 0.5;
+               to_x: "right_space";
             }
+         }
+      }
+      part { name: "right_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 0;
+            min: 12 0;
+            max: 12 -1;
          }
       }
    }

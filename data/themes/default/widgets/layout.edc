@@ -37,8 +37,8 @@ group { name: "elm/layout/window/main";
       }
       part { name: "eflete.project.time";
          type: TEXT;
+         scale: 1;
          description {
-            max: 500 -1;
             align: 0.0 0.5;
             rel1 {
                to: "statusbar";
@@ -46,6 +46,7 @@ group { name: "elm/layout/window/main";
             }
             rel2 {
                to: "statusbar";
+               relative: 0.5 1.0;
             }
             text {
                size: 11;
@@ -56,6 +57,7 @@ group { name: "elm/layout/window/main";
       }
       part { name: "eflete.project.part";
          type: TEXT;
+         scale: 1;
          description {
             align: 0.0 0.5;
             rel1 {
@@ -80,20 +82,46 @@ group { name: "elm/layout/popup/hint";
    parts {
       part { name: "event";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             rel1.offset: -9999 -9999;
             rel2.offset: 9999 9999;
             color: 0 0 0 0;
          }
       }
+      part { name: "top_left_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 6 6;
+            max: 6 6;
+            rel2.relative: 0.0 0.0;
+         }
+      }
+      part { name: "bottom_right_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 6 6;
+            max: 6 6;
+            rel1.relative: 1.0 1.0;
+         }
+      }
       part { name: "bg";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               offset: -6 -6;
+               relative: 0.0 0.0;
+               to: "top_left_space";
             }
             rel2 {
-               offset: 6 6;
+               relative: 1.0 1.0;
+               to: "bottom_right_space";
             }
             image {
                normal: "hint-background.png";
@@ -102,30 +130,72 @@ group { name: "elm/layout/popup/hint";
             }
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
+      part { name: "left_content_space";
+         type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            fixed: 1 1;
+            min: 8 6;
+            max: 8 6;
             rel1 {
-               offset: 6 6;
+               relative: 0.0 0.0;
                to: "bg";
             }
+         }
+      }
+      part { name: "right_content_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 6 6;
+            max: 6 6;
             rel2 {
                relative: 1.0 0.0;
-               offset: -7 -7;
                to_x: "bg";
                to_y: "elm.swallow.ok";
             }
          }
       }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "left_content_space";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "right_content_space";
+            }
+         }
+      }
+      part { name: "right_ok_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 6 6;
+            max: 6 6;
+            rel2 {
+               to: "bg";
+            }
+         }
+      }
       part { name: "elm.swallow.ok";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             max: 32 16;
             rel2 {
-               offset: -7 -7;
-               to: "bg";
+               relative: 0.0 0.0;
+               to: "right_ok_space";
             }
          }
       }
@@ -233,12 +303,14 @@ group { name: "elm/layout/navigator/default";
    parts {
       part { name: "bg";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "bg_main";
          }
       }
       part { name: "area.top";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.0;
             fixed: 0 1;
@@ -248,6 +320,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.5;
             fixed: 1 1;
@@ -291,6 +364,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 0.0 1.0;
@@ -302,6 +376,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.swallow.btn0";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -316,6 +391,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.swallow.btn1";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -332,6 +408,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.swallow.btn2";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -348,6 +425,7 @@ group { name: "elm/layout/navigator/default";
       }
       part { name: "elm.swallow.btn3";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -746,17 +824,28 @@ group { name: "elm/layout/animator/program_area";
 
 group { name: "elm/layout/image_manager/default";
    alias: "elm/layout/sound_manager/default";
-   alias: "elm/layout/script_manager/default";
    parts {
+      part { name: "top_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 0 1;
+            min: 0 2;
+            max: -1 2;
+         }
+      }
       part { name: "area.edit";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             fixed: 1 1;
             min: 37 25;
             max: -1 25;
             rel1 {
-               offset: 0 2;
+               relative: 0.0 1.0;
+               to: "top_space";
             }
             rel2 {
                relative: 1.0 0.0;
@@ -765,6 +854,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "padding.edit_search";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 5 5;
@@ -780,6 +870,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "elm.swallow.search";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 0 1;
@@ -795,6 +886,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "elm.swallow.btn_del";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 18 19;
@@ -809,6 +901,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "padding.edit_btns";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             min: 3 3;
@@ -824,6 +917,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "elm.swallow.btn_add";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             min: 18 19;
@@ -839,6 +933,7 @@ group { name: "elm/layout/image_manager/default";
       }
       part { name: "elm.swallow.list";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
@@ -850,25 +945,25 @@ group { name: "elm/layout/image_manager/default";
    }
 }
 
-group { name: "elm/layout/script_manager/build_log";
+group { name: "elm/layout/script_manager/default";
+   alias: "elm/layout/script_manager/build_log";
    parts {
       part { name: "area.edit";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 1.0 0.0;
+            align: 0.0 0.0;
             fixed: 1 1;
             min: 37 25;
             max: -1 25;
             rel1 {
-               offset: 0 2;
-            }
-            rel2 {
-               relative: 1.0 0.0;
+               relative: 0.0 0.0;
             }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
@@ -877,17 +972,33 @@ group { name: "elm/layout/script_manager/build_log";
             }
          }
       }
+      part { name: "left_text_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 20 25;
+            max: 20 25;
+            rel1 {
+               relative: 0.0 0.0;
+               to: "area.edit";
+            }
+         }
+      }
       part { name: "elm.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             text {
                font: FN;
                size: 13;
+               align: 0.0 0.5;
             }
             rel1 {
-               relative: 0.0 0.0;
-               to_y: "area.edit";
+               relative: 1.0 0.0;
+               to: "left_text_space";
             }
             rel2 {
                relative: 1.0 0.0;
@@ -988,21 +1099,6 @@ group { name: "elm/layout/image_manager/usage_info";
 
 group { name: "elm/layout/sound_editor/player";
    parts {
-      part { name: "eflete.sound.type";
-         type: TEXT;
-         description { state: "default" 0.00;
-            align: 0.00 0.00;
-            color_class: "main";
-            text {
-               font: "PT";
-               size: 10;
-               min: 0 1;
-               max: 0 1;
-            }
-            rel1.offset: 3 3;
-            rel2.offset: -4 -1;
-         }
-      }
       part { name: "eflete.sound.value";
          type: TEXT;
          description { state: "default" 0.00;
@@ -1012,9 +1108,7 @@ group { name: "elm/layout/sound_editor/player";
                size: 42;
             }
             rel1 {
-               relative: 0.00 1.00;
                offset: 3 3;
-               to_y: "eflete.sound.type";
             }
             rel2 {
                relative: 1.00 0.00;
@@ -1755,6 +1849,7 @@ group { name: "elm/layout/property/color";
    parts {
       part { name: "base";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             min: 60 19;
             max: 60 19;
@@ -1946,6 +2041,7 @@ group { name: "elm/layout/popup/1swallow";
    parts {
       part { name: "area.base";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 19;
             max: -1 19;
@@ -1959,6 +2055,7 @@ group { name: "elm/layout/popup/1swallow";
       }
       part { name: "elm.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -1975,14 +2072,30 @@ group { name: "elm/layout/popup/1swallow";
             }
          }
       }
+      part { name: "space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 3 19;
+            max: 3 19;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.4 0.0;
+               to_y: "area.base";
+            }
+            rel2 {
+               to_y: "area.base";
+            }
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 0 1;
             rel1 {
-               relative: 0.4 0.0;
-               offset: 3 0;
-               to_y: "area.base";
+               relative: 1.0 0.0;
+               to: "space";
             }
             rel2 {
                to_y: "area.base";
@@ -1996,6 +2109,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
    parts {
       part { name: "area.base";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 19;
             max: -1 19;
@@ -2009,6 +2123,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
       }
       part { name: "elm.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -2025,15 +2140,31 @@ group { name: "elm/layout/popup/1swallow_subtext";
             }
          }
       }
+      part { name: "left_content_space";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 3 19;
+            max: 3 19;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.4 0.0;
+               to_y: "area.base";
+            }
+            rel2 {
+               to_y: "area.base";
+            }
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 1;
             rel1 {
-               relative: 0.4 0.0;
-               offset: 3 0;
-               to_y: "area.base";
+               relative: 1.0 0.0;
+               to: "left_content_space";
             }
             rel2 {
                relative: 0.4 1.0;
@@ -2041,15 +2172,31 @@ group { name: "elm/layout/popup/1swallow_subtext";
             }
          }
       }
-      part { name: "elm.subtext";
-         type: TEXT;
+      part { name: "left_subtext_space";
+         type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            color_class: "main";
+            min: 6 19;
+            max: 6 19;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                to_x: "elm.swallow.content";
                to_y: "area.base";
-               offset: 6 0;
+            }
+            rel2 {
+               to_y: "area.base";
+            }
+         }
+      }
+      part { name: "elm.subtext";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left_subtext_space";
             }
             rel2 {
                to_y: "area.base";
@@ -2109,12 +2256,14 @@ group { name: "elm/layout/shortcuts/default";
    parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             min: 400 420;
          }
       }
       part { name: "rect";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.00;
             visible: 0;
             min: 400 420;
@@ -2132,6 +2281,7 @@ group { name: "elm/layout/shortcuts/default";
       }
       part { name: "elm.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.00;
             visible: 0;
             color_class: "main";

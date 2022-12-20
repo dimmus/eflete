@@ -91,6 +91,7 @@ _keycode_convert(unsigned int keycode)
       KEY(100, 74) /* F8 */
       KEY(101, 75) /* F9 */
       KEY(109, 76) /* F10 */
+      KEY(103, 77) /* F11 */
    }
    DBG("notconverted mac keycode: %d", keycode);
 #undef KEY
@@ -190,6 +191,7 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(TAB_SOUND_MANAGER, signals.shortcut.manager.sound);
         SHORTCUT(TAB_COLOR_CLASS_MANAGER, signals.shortcut.manager.color_class);
         SHORTCUT(TAB_STYLE_MANAGER, signals.shortcut.manager.style);
+        SHORTCUT(TAB_SCRIPT_MANAGER, signals.shortcut.manager.script);
         SHORTCUT(MODE_NORMAL, signals.shortcut.workspace.mode.normal);
         SHORTCUT(MODE_CODE, signals.shortcut.workspace.mode.code);
         SHORTCUT(MODE_DEMO, signals.shortcut.workspace.mode.demo);
@@ -535,6 +537,8 @@ _default_shortcuts_add()
                  MOD_NONE, 75, "F9"/*F9*/);
    _add_shortcut(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 76, "F10"/*F10*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_SCRIPT_MANAGER, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 77, "F11"/*F11*/);
 
    _add_shortcut(SHORTCUT_TYPE_ZOOM_IN, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 86, "KP_Add"/*KP_+*/);
@@ -886,6 +890,10 @@ shortcuts_shortcut_reset()
            case SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER:
               shortcut->modifiers =  MOD_NONE;
               shortcut->keyname =  "F10";
+              break;
+           case SHORTCUT_TYPE_TAB_SCRIPT_MANAGER:
+              shortcut->modifiers =  MOD_NONE;
+              shortcut->keyname =  "F11";
               break;
            case SHORTCUT_TYPE_ZOOM_IN:
               shortcut->modifiers =  MOD_NONE;

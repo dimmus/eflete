@@ -357,7 +357,12 @@ _on_group_changed(void *data,
 
    GENLIST_FILTER_APPLY(pd->genlist);
 
-   if (!event_info) return;
+   if (!event_info)
+     {
+        elm_object_disabled_set(elm_object_part_content_get(ap.panes.right, "right"), true);
+        return;
+     }
+   elm_object_disabled_set(elm_object_part_content_get(ap.panes.right, "right"), false);
 
    if (!group_pd.group->current_selected) /* group_only */
      {
@@ -1326,7 +1331,7 @@ static void
 _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
 {
    Eina_List *l;
-   Part2 *part, *part_check;
+   Part2 *part, *part_check = NULL;
    unsigned int i = 1;
    Combobox_Item *combobox_item;
    Elm_Genlist_Item_Class *itc;
@@ -1347,10 +1352,13 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
                            combobox_item, NULL,
                            ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
-   if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
-     part_check = ((State2 *)group_pd.group->current_selected)->part;
-   else
-     part_check = (Part2 *)group_pd.group->current_selected;
+   if (group_pd.group->current_selected)
+     {
+        if (group_pd.group->current_selected->common.type == RESOURCE2_TYPE_STATE)
+          part_check = ((State2 *)group_pd.group->current_selected)->part;
+        else
+          part_check = (Part2 *)group_pd.group->current_selected;
+     }
 
    if (allowed_types_mask)
      {

@@ -805,6 +805,7 @@ group {name: "elm/genlist/item/default/default";
    parts {
       part { name: "bg";
          type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             visible: 0;
          }
@@ -826,6 +827,7 @@ group {name: "elm/genlist/item/default/default";
       }
       part { name: "bg1";
          type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             visible: 0;
          }
@@ -956,7 +958,6 @@ group {name: "elm/genlist/item/default/default";
       }
       part { name: "elm.text";
          type: TEXT;
-         repeat_events: 1;
          clip_to: "text_clip";
          description { state: "default" 0.0;
             min: 0 16;
@@ -990,7 +991,6 @@ group {name: "elm/genlist/item/default/default";
       }
       part { name: "elm.text1";
          type: TEXT;
-         repeat_events: 1;
          description { state: "default" 0.0;
             visible: 0;
             color_class: "select";
@@ -1035,7 +1035,6 @@ group {name: "elm/genlist/item/default/default";
       }
       part { name: "text_clip";
          type: RECT;
-         repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 255;
          }
@@ -1045,7 +1044,6 @@ group {name: "elm/genlist/item/default/default";
       }
        part { name: "disclip";
          type: RECT;
-         repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }

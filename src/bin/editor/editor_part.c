@@ -332,10 +332,12 @@ editor_part_item_index_padding_left_set(Evas_Object *edit_object, Change *change
    Editor_Attribute_Change send;
    send.edit_object = edit_object;
 
-   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    edje_edit_part_item_index_padding_get(edit_object, part_name, index, &o3, &o4, &o5, &o6);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_LEFT;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_index = index;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -373,10 +375,12 @@ editor_part_item_index_padding_right_set(Evas_Object *edit_object, Change *chang
    Editor_Attribute_Change send;
    send.edit_object = edit_object;
 
-   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    edje_edit_part_item_index_padding_get(edit_object, part_name, index, &o3, &o4, &o5, &o6);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_index = index;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -414,10 +418,12 @@ editor_part_item_index_padding_top_set(Evas_Object *edit_object, Change *change,
    Editor_Attribute_Change send;
    send.edit_object = edit_object;
 
-   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_TOP;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    edje_edit_part_item_index_padding_get(edit_object, part_name, index, &o3, &o4, &o5, &o6);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_TOP;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_index = index;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -455,10 +461,12 @@ editor_part_item_index_padding_bottom_set(Evas_Object *edit_object, Change *chan
    Editor_Attribute_Change send;
    send.edit_object = edit_object;
 
-   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    edje_edit_part_item_index_padding_get(edit_object, part_name, index, &o3, &o4, &o5, &o6);
+   send.attribute = RM_ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
+   send.part_name = eina_stringshare_add(part_name);
+   send.item_index = index;
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
@@ -805,7 +813,8 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
    Eina_List *states, *l;
    Eina_Stringshare *state, *name;
    double state_val;
-   unsigned int items_count, i = 0;
+   unsigned int items_count;
+   int i = 0;
 
    assert(edit_object != NULL);
    assert(part_name != NULL);
@@ -872,7 +881,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
    if ((type == EDJE_PART_TYPE_BOX) || (type == EDJE_PART_TYPE_TABLE))
      {
         items_count = edje_edit_part_items_count_get(edit_object, part_name);
-        for (i = 0; i < items_count; i++)
+        for (i = (int)items_count - 1; i >= 0; i--)
           res = res && editor_part_item_index_del(edit_object, change, false, apply, part_name, i);
      }
 

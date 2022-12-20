@@ -1104,8 +1104,6 @@ image_manager_add(void)
    elm_panes_horizontal_set(mng.property_panes, true);
    elm_object_part_content_set(mng.panes, "right", mng.property_panes);
    elm_object_part_content_set(mng.property_panes, "right", ap.property.image_manager);
-   elm_panes_content_left_size_set(mng.property_panes, 0);
-   elm_panes_content_left_min_size_set(mng.property_panes, 400);
 #endif
 
    if (!gic)

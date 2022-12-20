@@ -1292,7 +1292,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    evas_object_size_hint_min_set(helper, COLOR_W, COLOR_H);
-   evas_object_resize(helper, COLOR_W, COLOR_H);
+   evas_object_resize(helper, COLOR_W * elm_config_scale_get(), COLOR_H * elm_config_scale_get());
 
 #if !HAVE_TIZEN
    BUTTON_ADD(fs, helper_data->button, _("Ok"))

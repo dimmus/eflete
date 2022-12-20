@@ -41,6 +41,7 @@ property_entry_script_control_add(Evas_Object *parent)
    assert(parent != NULL);
 
    ENTRY_ADD(parent, content, true);
+   elm_object_style_set(content, "script");
    btn = elm_button_add(content);
    elm_object_style_set(btn, "elipsis");
    evas_object_smart_callback_add(btn, signals.elm.button.clicked, _btn_script_manager_cb, content);

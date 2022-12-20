@@ -89,6 +89,27 @@ _color_class_manager(void *data __UNUSED__,
    if (ap.project)
      colorclass_manager_add();
 }
+
+static void
+_script_manager(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Group2 *group = tabs_current_group_get();
+
+   if (group == NULL) return;
+
+   if (group->current_selected)
+     {
+        if ((group->current_selected->common.type == RESOURCE2_TYPE_PROGRAM) &&
+            (((Program2 *)group->current_selected)->type == EDJE_ACTION_TYPE_SCRIPT))
+
+           script_manager_add(group->current_selected);
+     }
+   else
+      script_manager_add((Resource2 *)group);
+}
+
 static void
 _after_popup_close(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
@@ -165,6 +186,7 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, signals.shortcut.manager.sound, _sound_manager, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.manager.color_class, _color_class_manager, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.manager.style, _style_manager, NULL);
+   evas_object_smart_callback_add(ap.win, signals.shortcut.manager.script, _script_manager, NULL);
 
 #if 0 // turn off the eflete main cursor, while not used elementary combobox, and not fixed bug with double cursors
    if (!cursor_main_set(ap.win, CURSOR_ARROW))
@@ -214,6 +236,7 @@ ui_main_window_add(void)
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
    ap.property.group = property_add(ap.win, PROPERTY_MODE_GROUP);
+   elm_object_disabled_set(ap.property.group, true);
    ap.property.image_manager = property_add(ap.win, PROPERTY_MODE_IMAGE);
    ap.property.sound_manager = property_add(ap.win, PROPERTY_MODE_SOUND);
    ap.property.style_manager = property_add(ap.win, PROPERTY_MODE_STYLE);
@@ -249,9 +272,6 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
    Eina_Strbuf *authors_file_path = NULL;
    Eina_Strbuf *authors = NULL;
    FILE *authors_file  = NULL;
-   char *line = NULL;
-   size_t len = 0;
-   ssize_t read = 0;
 
    authors_file_path = eina_strbuf_new();
    eina_strbuf_prepend_printf(authors_file_path, "%s/AUTHORS", elm_app_data_dir_get());
@@ -269,10 +289,9 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
 
-   while ((read = getline(&line, &len, authors_file)) != -1)
-     {
-        eina_strbuf_append_printf(authors, "%s<br>", line);
-     }
+   char line [BUFF_MAX];
+   while (fgets(line, sizeof(line), authors_file ) != NULL)
+     eina_strbuf_append_printf(authors, "%s<br>", line);
 
    eina_strbuf_append_printf(authors, "</align>");
 
@@ -335,6 +354,7 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Ob
                        "<b>F8</b> - open sound manager<br>"
                        "<b>F9</b> - open style manager<br>"
                        "<b>F10</b> - open colorclass manager<br>"
+                       "<b>F11</b> - open script manager<br>"
                        "<b>ctrl + q</b> - quit<br>"
                        "<br>"
                        "Workspace:<br>"
@@ -493,6 +513,7 @@ static const Shortcut_Data global_hotkeys[] = {
        {NULL, "Open sound manager",  SHORTCUT_TYPE_TAB_SOUND_MANAGER},
        {NULL, "Open style manager",  SHORTCUT_TYPE_TAB_STYLE_MANAGER},
        {NULL, "Open colorclass manager", SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER},
+       {NULL, "Open script manager", SHORTCUT_TYPE_TAB_SCRIPT_MANAGER},
        {NULL, "Quit",                SHORTCUT_TYPE_QUIT},
        {NULL, NULL,  SHORTCUT_TYPE_NONE}
 };

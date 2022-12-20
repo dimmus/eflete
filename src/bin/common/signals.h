@@ -43,6 +43,7 @@ typedef struct {
          const char *image;
          const char *sound;
          const char *style;
+         const char *script;
       } manager;
       const struct {
          const char *cancel;

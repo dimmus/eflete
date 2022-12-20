@@ -466,7 +466,7 @@ _property_attribute_changed(void *data,
          break;
       case RM_ATTRIBUTE_PART_ITEM_SOURCE:
          part = resource_manager_find(group->parts, change->part_name);
-         item = resource_manager_find(((Part2 *)part)->items, change->item_name);
+         item = resource_manager_id_find(((Part2 *)part)->items, change->item_index);
 
          /* if old_valuye wasn't null and wasn't compared to EFLETE_INTERNAL_GROUP_NAME */
          if (change->old_value && strcmp(change->old_value, EFLETE_INTERNAL_GROUP_NAME))

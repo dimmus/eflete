@@ -139,8 +139,9 @@ _btn_save_cb(void *data,
 Evas_Object *
 script_manager_add(Resource2 *res)
 {
-   Evas_Object *ic, *search_entry, *btn_save;
+   Evas_Object *ic, *btn_save;
    char *code;
+   char buf[BUFF_MAX];
    Group2 *group;
    Program2 *program;
 
@@ -200,28 +201,21 @@ script_manager_add(Resource2 *res)
    if (res->common.type == RESOURCE2_TYPE_GROUP)
      {
         code = edje_edit_script_get(group->edit_object);
+        snprintf(buf, sizeof(buf), _("Group: %s"), res->common.name);
      }
    else
      {
         code = edje_edit_script_program_get(group->edit_object, program->common.name);
+        snprintf(buf, sizeof(buf), _("Program: %s"), res->common.name);
      }
+
+   elm_layout_text_set(mng.script_layout, "elm.text", buf);
 
    property_color_entry_set(mng.script_entry, code, ap.color_data);
 
    BUTTON_ADD(mng.win, btn_save, _("Save"))
    evas_object_smart_callback_add(btn_save, signals.elm.button.clicked, _btn_save_cb, res);
    elm_object_part_content_set(mng.win, "eflete.swallow.btn_ok", btn_save);
-
-   ENTRY_ADD(mng.script_layout, search_entry, true);
-   elm_object_part_text_set(search_entry, "guide", _("Search"));
-#if !HAVE_TIZEN
-   Evas_Object *icon;
-   ICON_STANDARD_ADD(search_entry, icon, true, "search");
-   elm_object_part_content_set(search_entry, "elm.swallow.end", icon);
-#else
-   elm_object_style_set(search_entry, "search");
-#endif
-   elm_layout_content_set(mng.script_layout, "elm.swallow.search", search_entry);
 
    elm_object_content_set(mng.win, mng.panes);
    evas_object_show(mng.win);
