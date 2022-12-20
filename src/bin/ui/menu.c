@@ -95,6 +95,9 @@ _menu_cb(void *data __UNUSED__,
 
    switch (menu_event->mid)
      {
+      case MENU_FILE:
+         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         break;
       case MENU_FILE_NEW_PROJECT:
          tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
          break;
@@ -130,29 +133,8 @@ _menu_cb(void *data __UNUSED__,
       case MENU_FILE_EXIT:
          ui_main_window_del();
          break;
-      case MENU_EDIT_PREFERENCE:
-         /* preferences_window_add(ap.project); */
-         break;
-      case MENU_VIEW_WORKSPACE_ZOOM_IN:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_IN);
-         break;
-      case MENU_VIEW_WORKSPACE_ZOOM_OUT:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_OUT);
-        break;
-      case MENU_VIEW_WORKSPACE_ZOOM_RESET:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_RESET);
-         break;
-      case MENU_VIEW_WORKSPACE_FIT:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_FIT);
-         break;
-      case MENU_VIEW_WORKSPACE_FILL:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_FILL);
-         break;
-      case MENU_VIEW_RULERS_SHOW:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
-         break;
-      case MENU_VIEW_WORKSPACE_OBJECT_AREA:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_OBJECT_AREA);
+      case MENU_EDIT:
+         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
          break;
       case MENU_EDIT_UNDO:
          shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
@@ -178,7 +160,36 @@ _menu_cb(void *data __UNUSED__,
       case MENU_EDIT_DATA_ITEM_ADD:
          shortcuts_shortcut_send(SHORTCUT_TYPE_ADD_DATA_ITEM);
          break;
-
+      case MENU_EDIT_PREFERENCE:
+         /* preferences_window_add(ap.project); */
+         break;
+      case MENU_VIEW:
+         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         break;
+      case MENU_VIEW_WORKSPACE_ZOOM_IN:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_IN);
+         break;
+      case MENU_VIEW_WORKSPACE_ZOOM_OUT:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_OUT);
+        break;
+      case MENU_VIEW_WORKSPACE_ZOOM_RESET:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_RESET);
+         break;
+      case MENU_VIEW_WORKSPACE_FIT:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_FIT);
+         break;
+      case MENU_VIEW_WORKSPACE_FILL:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_FILL);
+         break;
+      case MENU_VIEW_WORKSPACE_OBJECT_AREA:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_OBJECT_AREA);
+         break;
+      case MENU_VIEW_RULERS_SHOW:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
+         break;
+      case MENU_WINDOW:
+         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         break;
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
          break;
@@ -188,14 +199,17 @@ _menu_cb(void *data __UNUSED__,
       case MENU_WINDOW_MANAGER_SOUND:
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SOUND_MANAGER);
          break;
-      case MENU_WINDOW_MANAGER_TEXT_STYLE:
-         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_STYLE_MANAGER);
-         break;
       case MENU_WINDOW_MANAGER_COLORCLASS:
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER);
          break;
+      case MENU_WINDOW_MANAGER_TEXT_STYLE:
+         shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_STYLE_MANAGER);
+         break;
       case MENU_WINDOW_MANAGER_SCRIPT:
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SCRIPT_MANAGER);
+         break;
+      case MENU_HELP:
+         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
