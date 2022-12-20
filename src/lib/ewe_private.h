@@ -64,7 +64,8 @@ extern "C" {
 #include <Evas.h>
 #include <Efl_Ui.h>
 #include <Elementary.h>
-#include <elm_widget.h>
+
+//#include <elm_widget.h>
 #include <elm_widget_layout.h>
 #include <elm_interface_scrollable.h>
 
