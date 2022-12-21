@@ -22,10 +22,6 @@ An EDC (Edje data collection) file is a text file that contains the code describ
 
 It is aimed at simplifying the creation and editing of widget styles. No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea that its target users are not just programmers but also designers. Besides styles, Eflete is also able to create and edit custom layouts. This is a useful feature for developers who create application layouts.
 
-```
-For comfortable work with Eflete your monitor should have the HD (1366x768) resolution. If resolution is less not all UI componenets is displayed.
-```
-
 ## Requirements
 
    * efl (>= 1.23.3 && < 1.26.99)
