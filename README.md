@@ -16,7 +16,11 @@
   <i>Work in progress! Limited functionality.</i>
 </p>
 
-Efl Edje Theme Editor is a rich graphical tool that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea that its target users are not just programmers but also designers. Besides styles, Eflete is also able to create and edit custom layouts. This is a useful feature for developers who create application layouts.
+Efl Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library (EFL) that provides UI for edc markup. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
+
+An EDC (Edje data collection) file is a text file that contains the code describing the position, size, and other parameters of graphical elements that compose the visual aspect of your EFL application. In addition to graphical elements, it can also handle sounds. EDC is a description language where the objects of an interface are described using a text description. An EDC file needs to be compiled into a `.edj` file using the Edje library tools. After compiling, the `.edj` file can be used as a theme file by a native EFL-based application.
+
+It is aimed at simplifying the creation and editing of widget styles. No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea that its target users are not just programmers but also designers. Besides styles, Eflete is also able to create and edit custom layouts. This is a useful feature for developers who create application layouts.
 
 ```
 For comfortable work with Eflete your monitor should have the HD (1366x768) resolution. If resolution is less not all UI componenets is displayed.
