@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install deps
-      run: sudo apt install -y libunwind-dev libefl-all-dev
+      run: sudo apt install -y autopoint gettext libunwind-dev libefl-all-dev
     - name: autogen
       run: ./autogen.sh
     - name: make
