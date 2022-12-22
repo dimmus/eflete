@@ -17,7 +17,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y autopoint gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
-        sudo apt-get install -y check
+        # sudo apt-get install -y check
     - name: autogen
       run: ./autogen.sh
     - name: make
