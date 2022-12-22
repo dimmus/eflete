@@ -14,7 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install deps
-      run: sudo apt install -y autopoint gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
+      run: |
+        apt-get update
+        apt-get install -y autopoint gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
+        apt-get install -y check
     - name: autogen
       run: ./autogen.sh
     - name: make
