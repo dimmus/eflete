@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install deps
+      run: sudo apt install -y build-essential check libefl-all-dev
     - name: autogen
       run: ./autogen.sh
     - name: make
