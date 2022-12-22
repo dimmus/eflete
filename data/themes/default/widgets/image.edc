@@ -66,3 +66,46 @@ IM("border",   "2px",            "border_2.png",            -1 -1,   2 2 2 2,   
 
 IM("animator", "arrow-left",     "animator_arrow_left.png",  13 19,  0 0 0 0,    SCALE,   SOLID)
 IM("animator", "arrow-right",    "animator_arrow_right.png", 13 19,  0 0 0 0,    SCALE,   SOLID)
+
+// NEW STYLE for spinner (adopted from original elm theme, efl-1.26.99)
+// TODO: should be implemented as above IM. Look like a mess now.
+
+images {
+   // image: "control-bg.png" COMP;
+   // image: "control-bg-disabled.png" COMP;
+   // image: "control-shadow.png" COMP;
+   // image: "spinner-vertical-up.png" COMP;
+   // image: "spinner-vertical-up-clicked.png" COMP;
+   // image: "spinner-vertical-up-disabled.png" COMP;
+   // image: "spinner-vertical-down.png" COMP;
+   // image: "spinner-vertical-down-clicked.png" COMP;
+   // image: "spinner-vertical-down-disabled.png" COMP;
+   // image: "control-shadow.png" COMP;
+      // image: "spinner-horizontal-down.png" COMP;
+   image: "spinner-horizontal-down-clicked.png" COMP;
+   image: "spinner-horizontal-down-disabled.png" COMP;
+   // image: "spinner-horizontal-up.png" COMP;
+   image: "spinner-horizontal-up-clicked.png" COMP;
+   image: "spinner-horizontal-up-disabled.png" COMP;
+}
+
+#define IMG(_NAME, _FILE) \
+   set { name: _NAME; \
+      image { image: _FILE".png" COMP; } \
+   }
+
+IMG("i-arrow-l", "spinner-horizontal-down")
+IMG("i-arrow-lp", "spinner-horizontal-down-clicked")
+IMG("i-arrow-ld", "spinner-horizontal-down-disabled")
+IMG("i-arrow-r", "spinner-horizontal-up")
+IMG("i-arrow-rp", "spinner-horizontal-up-clicked")
+IMG("i-arrow-rd", "spinner-horizontal-up-disabled")
+IMG("i-arrow-u", "spinner-vertical-up")
+IMG("i-arrow-up", "spinner-vertical-up-clicked")
+IMG("i-arrow-ud", "spinner-vertical-up-disabled")
+IMG("i-arrow-d", "spinner-vertical-down")
+IMG("i-arrow-dp", "spinner-vertical-down-clicked")
+IMG("i-arrow-dd", "spinner-vertical-down-disabled")
+IMG("i-control-bg", "control-bg")
+IMG("i-control-bgd", "control-bg-disabled")
+IMG("i-control-shd", "control-shadow")
