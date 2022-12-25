@@ -266,7 +266,7 @@ ui_main_window_add(void)
 
 #if !HAVE_TIZEN
 Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *label = (Evas_Object *) data;
    Eina_Strbuf *authors_file_path = NULL;
@@ -286,6 +286,7 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"
                              "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
+                             "Copyright (C) 2022 Dmitri \"dimmus\" Chudinov.<br>"
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
 
@@ -301,6 +302,8 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
    eina_strbuf_free(authors_file_path);
    eina_strbuf_free(authors);
    fclose(authors_file);
+
+   elm_object_style_set(popup, "shortcuts");
 
    return label;
 }
@@ -563,7 +566,7 @@ static const Shortcut_Data popup_hotkeys[] = {
 };
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *box = data;
    Evas_Object *genlist = elm_genlist_add(ap.win);
@@ -625,11 +628,13 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Ob
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
+
    Evas_Object *layout = elm_layout_add(ap.win);
    elm_layout_theme_set(layout, "layout", "shortcuts", "default");
    elm_layout_content_set(layout, "elm.swallow.content", genlist);
    evas_object_show(layout);
    elm_box_pack_end(box, layout);
+
    elm_object_style_set(popup, "shortcuts");
    return box;
 }
