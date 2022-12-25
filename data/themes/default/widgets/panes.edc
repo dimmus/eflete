@@ -6,13 +6,11 @@ group { name: "elm/panes/vertical/default";
    parts {
       part { name: "whole";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
          }
       }
       part { name: "right_constraint";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 1 1 1;
             y: 0 0 0;
@@ -24,7 +22,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "left_constraint";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 1 1 1;
             y: 0 0 0;
@@ -36,7 +33,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "bar_area";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to_x: "left_constraint";
@@ -48,7 +44,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "elm.bar";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 1 1 0;
             y: 0 0 0;
@@ -60,7 +55,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "elm.swallow.event";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
@@ -75,7 +69,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "bar";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to_x: "elm.bar";
@@ -104,7 +97,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "hightlight";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             min: 4 0;
@@ -145,7 +137,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "dots";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 2 102;
@@ -164,7 +155,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "events";
          type: RECT;
-         scale: 1;
          dragable {
             events: "elm.bar";
          }
@@ -180,7 +170,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "clipper_left";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             rel2 {
                to_x: "bar";
@@ -199,7 +188,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "elm.swallow.left";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper_left";
          description { state: "default" 0.0;
             fixed: 1 1;
@@ -211,7 +199,6 @@ group { name: "elm/panes/vertical/default";
       }
       part { name: "elm.swallow.right";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper_right";
          description { state: "default" 0.0;
             fixed: 1 1;
@@ -299,13 +286,11 @@ group { name: "elm/panes/horizontal/default";
    parts {
       part { name: "whole";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
          }
       }
       part { name: "right_constraint";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 1;
@@ -317,7 +302,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "left_constraint";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 1;
@@ -329,7 +313,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "bar_area";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to_y: "left_constraint";
@@ -341,7 +324,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "elm.bar";
          type: SPACER;
-         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -361,7 +343,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "bar";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 6 6;
@@ -396,7 +377,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "hightlight";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 4;
             max: -1 4;
@@ -440,7 +420,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "dots";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 102 2;
@@ -459,7 +438,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          dragable {
             events: "elm.bar";
          }
@@ -476,7 +454,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "whole_left";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             rel2 {
                to_y: "elm.bar";
@@ -486,7 +463,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "whole_right";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to_y: "elm.bar";
@@ -496,7 +472,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "elm.swallow.left";
          type: SWALLOW;
-         scale: 1;
          clip_to: "whole_left";
          description { state: "default" 0.0;
             fixed: 1 1;
@@ -508,7 +483,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "elm.swallow.right";
          type: SWALLOW;
-         scale: 1;
          clip_to: "whole_right";
          description { state: "default" 0.0;
             fixed: 1 1;
@@ -520,7 +494,6 @@ group { name: "elm/panes/horizontal/default";
       }
       part { name: "elm.swallow.event";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
@@ -737,7 +710,6 @@ group { name: "elm/panes/horizontal/pan_hide";
             max: -1 4;
             color_class: "select";
             color: 255 255 255 0;
-            fixed: 1 1;
             rel1 {
                offset: 0 1;
                to: "bar";
@@ -778,7 +750,7 @@ group { name: "elm/panes/horizontal/pan_hide";
          type: IMAGE;
          description { state: "default" 0.0;
             visible: 0;
-            fixed: 1 1;
+            fixed: 1 0;
             min: 102 2;
             max: 102 2;
             rel1 {

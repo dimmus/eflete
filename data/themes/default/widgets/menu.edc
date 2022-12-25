@@ -2,44 +2,20 @@ group { name: "elm/menu/item/default";
    parts {
       part { name: "base";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 21;
             max: -1 21;
             color: 0 0 0 0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "top_left_space";
+               offset: 1 1;
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "bottom_right_space";
+               offset: -2 -2;
             }
-         }
-      }
-      part { name: "top_left_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 1;
-            min: 1 1;
-            max: 1 1;
-         }
-      }
-      part { name: "bottom_right_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            min: 1 1;
-            max: 1 1;
          }
       }
       part { name: "highlight";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             color_class: "select";
@@ -63,7 +39,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "area.content";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 32 0;
@@ -79,7 +54,6 @@ group { name: "elm/menu/item/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clipper.content";
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 16 16;
@@ -98,7 +72,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "padding.right";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 8 0;
@@ -114,7 +87,6 @@ group { name: "elm/menu/item/default";
       part { name: "elm.text";
          type: TEXT;
          clip_to: "clipper.text";
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
@@ -137,7 +109,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "padding.text";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 0;
@@ -155,7 +126,6 @@ group { name: "elm/menu/item/default";
       part { name: "elm.shortcut";
          type: TEXT;
          clip_to: "clipper.shortcut";
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             rel1 {
@@ -177,7 +147,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "clipper.content";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -199,7 +168,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "clipper.text";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -226,7 +194,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "clipper.shortcut";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main_alternative";
             rel1 {
@@ -250,7 +217,6 @@ group { name: "elm/menu/item/default";
       }
       part { name: "event";
          type: RECT;
-         scale: 1;
          ignore_flags: "ON_HOLD";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -345,43 +311,19 @@ group { name: "elm/menu/item_with_submenu/default";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 21;
             max: -1 21;
             rel1 {
-               relative: 1.0 1.0;
-               to: "top_left_space";
+               offset: 1 1;
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "bottom_right_space";
+               offset: -2 -2;
             }
-         }
-      }
-      part { name: "top_left_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 1;
-            min: 1 1;
-            max: 1 1;
-         }
-      }
-      part { name: "bottom_right_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            min: 1 1;
-            max: 1 1;
          }
       }
       part { name: "highlight";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             color_class: "select";
@@ -405,7 +347,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "area.content";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 32 0;
@@ -421,7 +362,6 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clipper.content";
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 16 16;
@@ -440,7 +380,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "padding.right";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 8 0;
@@ -456,7 +395,6 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "elm.text";
          type: TEXT;
          clip_to: "clipper.text";
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
@@ -480,7 +418,6 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "arrow";
          type: IMAGE;
          clip_to: "clipper.text";
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 4 4;
@@ -501,7 +438,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "padding.text";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 0;
@@ -518,7 +454,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "clipper.content";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -540,7 +475,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "clipper.text";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -566,7 +500,6 @@ group { name: "elm/menu/item_with_submenu/default";
       }
       part { name: "event";
          type: RECT;
-         scale: 1;
          ignore_flags: "ON_HOLD";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -677,7 +610,6 @@ group { name: "elm/menu/main_menu_submenu/default";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 19;
             max: -1 19;
@@ -691,7 +623,6 @@ group { name: "elm/menu/main_menu_submenu/default";
       }
       part { name: "bg";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             min: 19 19;
             visible: 0;
@@ -728,7 +659,6 @@ group { name: "elm/menu/main_menu_submenu/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            fixed: 1 1;
             min: 16 16;
             max: 16 16;
             rel1 {
@@ -741,7 +671,6 @@ group { name: "elm/menu/main_menu_submenu/default";
       }
       part { name: "elm.text";
          type: TEXT;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             color_class: "main";

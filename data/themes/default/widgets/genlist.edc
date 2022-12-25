@@ -16,7 +16,6 @@ group { name: "elm/genlist/item/default/default";
    parts {
       part { name: "bg";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             rel2 {
@@ -51,7 +50,6 @@ group { name: "elm/genlist/item/default/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -64,23 +62,8 @@ group { name: "elm/genlist/item/default/default";
             visible: 0;
          }
       }
-      part { name: "left_top_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.00;
-            fixed: 1 1;
-            min: 6 3;
-            max: 6 3;
-            rel1 {
-               to_x: "elm.swallow.pad";
-               relative: 1.0 0.0;
-            }
-         }
-      }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -88,8 +71,9 @@ group { name: "elm/genlist/item/default/default";
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
             rel1 {
-               to: "left_top_space";
-               relative: 1.0 1.0;
+               to_x: "elm.swallow.pad";
+               relative: 1.0 0.0;
+               offset: 6 3;
             }
             rel2 {
                relative: 0.0 1.0;
@@ -101,33 +85,20 @@ group { name: "elm/genlist/item/default/default";
             visible: 0;
          }
       }
-      part { name: "left_text_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.00;
-            fixed: 1 0;
-            min: 6 0;
-            max: 6 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "elm.swallow.icon";
-            }
-         }
-      }
       part { name: "elm.text";
          type: TEXT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
             rel1 {
                relative: 1.0 0.0;
-               to: "left_text_space";;
+               to_x: "elm.swallow.icon";
+               offset: 6 0;
             }
             rel2 {
                relative: 0.0 1.0;
-               to: "right_text_space";
+               offset: -7 -1;
+               to_x: "elm.swallow.end";
             }
             text {
                font: FN;
@@ -140,50 +111,24 @@ group { name: "elm/genlist/item/default/default";
             visible: 0;
          }
       }
-      part { name: "right_text_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.00;
-            fixed: 1 0;
-            min: 7 0;
-            max: 7 -1;
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "elm.swallow.end";
-            }
-         }
-      }
       part { name: "elm.swallow.end";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
             fixed: 1 0;
             rel1 {
-               relative: 1.0 1.0;
-               to_y: "left_top_space";
+               relative: 1.0 0.0;
+               offset: 0 3;
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "right_bottom_space";
+               offset: -7 -4;
             }
          }
          description { state: "hide" 0.0;
             inherit: "default";
             visible: 0;
-         }
-      }
-      part { name: "right_bottom_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.00;
-            fixed: 1 1;
-            min: 7 4;
-            max: 7 4;
          }
       }
    }
@@ -226,16 +171,11 @@ group { name: "elm/genlist/item/default/default";
    }
 }
 
-group { name: "elm/genlist/item/empty/default";
-   inherit: "elm/genlist/item/default/default";
-}
-
 group { name: "elm/genlist/item/aligned/default";
    inherit: "elm/genlist/item/default/default";
    parts {
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1.offset: 20 0;
@@ -278,7 +218,6 @@ group { name: "elm/genlist/item/title/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color: 214 214 214 255;
@@ -300,6 +239,10 @@ group { name: "elm/genlist/item/title/default";
          type: RECT;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -339,7 +282,6 @@ group { name: "elm/genlist/item/group_index/default";
    parts {
       part { name: "bg";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 27;
             image {
@@ -348,29 +290,16 @@ group { name: "elm/genlist/item/group_index/default";
             }
          }
       }
-      part { name: "left_text_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 0;
-            min: 25 0;
-            max: 25 -1;
-         }
-      }
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 214 214 214 255;
             rel1 {
-               relative: 1.0 0.0;
-               to: "left_text_space";
+               offset: 25 0;
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "right_text_space";
+               offset: -11 -1;
             }
             text {
                font: FN;
@@ -379,21 +308,14 @@ group { name: "elm/genlist/item/group_index/default";
             }
          }
       }
-      part { name: "right_text_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            fixed: 1 0;
-            min: 10 0;
-            max: 10 -1;
-         }
-      }
       part { name: "disclip";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -408,6 +330,10 @@ group { name: "elm/genlist/item/program_after/default";
          }
       }
    }
+}
+
+group { name: "elm/genlist/item/empty/default";
+   inherit: "elm/genlist/item/default/default";
 }
 
 group { name: "elm/genlist/tree/default/default";
@@ -434,7 +360,7 @@ group { name: "elm/genlist/tree/default/default";
                offset: -1 -2;
             }
          }
-         description { state: "reorder" 0.0;
+         description { state: "reordered" 0.0;
             color_class: "select";
             rel2 {
                offset: -1 -2;
@@ -460,7 +386,6 @@ group { name: "elm/genlist/tree/default/default";
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -497,7 +422,6 @@ group { name: "elm/genlist/tree/default/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -516,7 +440,6 @@ group { name: "elm/genlist/tree/default/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -558,7 +481,6 @@ group { name: "elm/genlist/tree/default/default";
       }
       part { name: "elm.swallow.end";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
@@ -596,7 +518,6 @@ group { name: "elm/genlist/tree/default/default";
       }
       part { name: "arrow";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 14 14;
@@ -692,7 +613,7 @@ group { name: "elm/genlist/tree/default/default";
       program { name: "reorder";
          signal: "elm,state,reorder,enabled";
          source: "elm";
-         action: STATE_SET "reorder" 0.00;
+         action: STATE_SET "reordered" 0.00;
          target: "bg";
       }
       program { name: "unreordered";
@@ -783,7 +704,6 @@ group { name: "elm/genlist/tree/part/default";
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -802,7 +722,6 @@ group { name: "elm/genlist/tree/part/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -825,7 +744,6 @@ group { name: "elm/genlist/tree/part/default";
       }
       part { name: "elm.swallow.end";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
@@ -850,6 +768,10 @@ group { name: "elm/genlist/tree/part/default";
             visible: 0;
             color: 0 0 0 0;
          }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
       }
       part { name: "events";
          type: RECT;
@@ -860,7 +782,6 @@ group { name: "elm/genlist/tree/part/default";
       }
       part { name: "arrow";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 14 14;
@@ -974,7 +895,6 @@ group { name: "elm/genlist/item/state/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -989,7 +909,6 @@ group { name: "elm/genlist/item/state/default";
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -1010,7 +929,6 @@ group { name: "elm/genlist/item/state/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -1034,6 +952,10 @@ group { name: "elm/genlist/item/state/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -1084,7 +1006,6 @@ group { name: "elm/genlist/item/item/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1099,7 +1020,6 @@ group { name: "elm/genlist/item/item/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -1123,6 +1043,10 @@ group { name: "elm/genlist/item/item/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -1214,7 +1138,6 @@ group { name: "elm/genlist/item/program/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1229,7 +1152,6 @@ group { name: "elm/genlist/item/program/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -1253,7 +1175,6 @@ group { name: "elm/genlist/item/program/default";
       part { name: "elm.swallow.end";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
@@ -1273,6 +1194,10 @@ group { name: "elm/genlist/item/program/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -1324,7 +1249,6 @@ group { name: "elm/genlist/tree/items_caption/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1336,7 +1260,6 @@ group { name: "elm/genlist/tree/items_caption/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 0 26;
@@ -1360,7 +1283,6 @@ group { name: "elm/genlist/tree/items_caption/default";
       part { name: "elm.text.end";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 0 26;
@@ -1389,7 +1311,6 @@ group { name: "elm/genlist/tree/items_caption/default";
       }
       part { name: "arrow";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 14 14;
@@ -1531,7 +1452,6 @@ group { name: "elm/genlist/tree/caption/default";
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -1550,7 +1470,6 @@ group { name: "elm/genlist/tree/caption/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 0 26;
@@ -1574,7 +1493,6 @@ group { name: "elm/genlist/tree/caption/default";
       part { name: "elm.text.end";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 0 26;
@@ -1615,14 +1533,12 @@ group { name: "elm/genlist/tree/caption/default";
       part { name: "events";
          type: RECT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
       part { name: "arrow";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 14 14;
@@ -1661,6 +1577,10 @@ group { name: "elm/genlist/tree/caption/default";
          description { state: "disabled" 0.0;
             visible: 0;
             color: 0 0 0 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -1773,7 +1693,6 @@ group { name: "elm/genlist/item/navigator/default";
    inherit: "elm/genlist/item/default/default";
    parts {
       part { name: "elm.swallow.icon";
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             rel1 {
@@ -1787,7 +1706,6 @@ group { name: "elm/genlist/item/navigator/default";
          }
       }
       part { name: "elm.swallow.pad";
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             rel1 {
@@ -1802,7 +1720,6 @@ group { name: "elm/genlist/item/navigator/default";
          }
       }
       part { name: "elm.text";
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to_x: "elm.swallow.icon";
@@ -1854,7 +1771,6 @@ group { name: "elm/genlist/item/message/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1869,7 +1785,6 @@ group { name: "elm/genlist/item/message/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 38;
             color: 214 214 214 255;
@@ -1891,7 +1806,6 @@ group { name: "elm/genlist/item/message/default";
       part { name: "elm.title.1";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 176 176 176 255;
             rel1 {
@@ -1911,7 +1825,6 @@ group { name: "elm/genlist/item/message/default";
       part { name: "elm.title.2";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 176 176 176 255;
             rel1 {
@@ -1930,9 +1843,16 @@ group { name: "elm/genlist/item/message/default";
       part { name: "disclip";
          type: RECT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
    }
@@ -1993,7 +1913,6 @@ group { name: "elm/genlist/item/mode/default";
       part { name: "elm.swallow.modeicon";
          clip_to: "disclip";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -2009,10 +1928,15 @@ group { name: "elm/genlist/item/mode/default";
                to: "end.bottom.pad";
             }
          }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
       }
       part { name: "elm.swallow.container";
          type: SWALLOW;
          clip_to: "disclip";
+         
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1 {
@@ -2025,10 +1949,14 @@ group { name: "elm/genlist/item/mode/default";
                relative: 0.0 1.0;
             }
          }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
       }
       part { name: "start.top.pad";
          type:SPACER;
-         scale: 1;
+         
          description { state: "default" 0.0;
             align: 0.0 0.0;
             SET_SIZE(5, 5);
@@ -2046,6 +1974,10 @@ group { name: "elm/genlist/item/mode/default";
             inherit: "default" 0.0;
             color: 255 255 255 255;
          }
+         description { state: "hide" 0.00;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
       }
    }
 }
@@ -2058,7 +1990,7 @@ group { name: "elm/genlist/item_compress/history/default";
    parts {
       part { name: "bg";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             color_class: "bg_main";
             rel2.offset: 0 -2;
@@ -2075,6 +2007,7 @@ group { name: "elm/genlist/item_compress/history/default";
       part { name: "base_border_top";
          type: RECT;
          mouse_events: 0;
+         
          description { state: "default" 0.0;
             min: 1 1;
             fixed: 1 1;
@@ -2092,7 +2025,7 @@ group { name: "elm/genlist/item_compress/history/default";
       part { name: "base_border_bot";
          type: RECT;
          mouse_events: 0;
-         scale: 1;
+         
          description { state: "default" 0.0;
             min: 1 1;
             fixed: 1 1;
@@ -2109,7 +2042,7 @@ group { name: "elm/genlist/item_compress/history/default";
       }
       part { name: "elm.text.message";
          type: TEXTBLOCK;
-         scale: 1;
+         
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1 {
@@ -2150,9 +2083,6 @@ group { name: "elm/genlist/item_compress/history/default";
 }
 
 group { name: "elm/genlist/base/default";
-   alias: "elm/genlist/base/combobox_vertical/default";
-   alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
-   alias: "elm/genlist/base/combobox_vertical/zoom";
    data {
       item: "focus_highlight" "on";
    }
@@ -2174,7 +2104,7 @@ group { name: "elm/genlist/base/default";
       }
       part { name: "sb_vbar";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             align: 1.0 0.0;
             fixed: 1 0;
@@ -2237,7 +2167,7 @@ group { name: "elm/genlist/base/default";
       }
       part { name: "elm.dragable.vbar";
          type: RECT;
-         scale: 1;
+         
          clip_to: "sb_vbar";
          dragable {
             x: 0 0 0;
@@ -2264,7 +2194,7 @@ group { name: "elm/genlist/base/default";
       part { name: "sb_hbar";
          type: RECT;
          mouse_events: 0;
-         scale: 1;
+         
          description { state: "default" 0.0;
             align: 0.0 1.0;
             fixed: 0 1;
@@ -2328,7 +2258,7 @@ group { name: "elm/genlist/base/default";
       }
       part { name: "elm.dragable.hbar";
          type: RECT;
-         scale: 1;
+         
          clip_to: "sb_hbar";
          dragable {
             x: 1 1 0;
@@ -2405,7 +2335,6 @@ group { name: "elm/genlist/base/default";
       part { name: "runner_vbar";
          type: IMAGE;
          mouse_events: 0;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
@@ -2453,7 +2382,6 @@ group { name: "elm/genlist/base/default";
       part { name: "runner_hbar";
          type: IMAGE;
          mouse_events: 0;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
@@ -2827,7 +2755,6 @@ group { name: "elm/genlist/item/shortcuts/default";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.00;
             align: 0.00 0.50;
             fixed: 1 0;
@@ -2838,34 +2765,9 @@ group { name: "elm/genlist/item/shortcuts/default";
             visible: 0;
          }
       }
-      part { name: "top_left_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 1;
-            min: 6 3;
-            max: 6 3;
-            rel1 {
-               relative: 1.00 0.00;
-               to_x: "elm.swallow.pad";
-            }
-         }
-      }
-      part { name: "bottom_right_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            min: 6 3;
-            max: 6 3;
-         }
-      }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.00;
             align: 0.00 0.50;
             min: 14 14;
@@ -2873,12 +2775,13 @@ group { name: "elm/genlist/item/shortcuts/default";
             aspect: 1.00 1.00;
             aspect_preference: VERTICAL;
             rel1 {
-               relative: 1.00 1.00;
-               to: "top_left_space";
+               relative: 1.00 0.00;
+               offset: 6 3;
+               to_x: "elm.swallow.pad";
             }
             rel2 {
-               relative: 0.00 0.00;
-               to_y: "bottom_right_space";
+               relative: 0.00 1.00;
+               offset: -1 -4;
             }
          }
          description { state: "hide" 0.00;
@@ -2886,22 +2789,7 @@ group { name: "elm/genlist/item/shortcuts/default";
             visible: 0;
          }
       }
-      part { name: "left_ctext_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 0;
-            min: 6 0;
-            max: 6 -1;
-            rel1 {
-               relative: 1.00 0.00;
-               to_x: "elm.swallow.icon";
-            }
-         }
-      }
       part { name: "combination.text";
-         scale: 1;
          type: TEXT;
          repeat_events: 1;
          description { state: "default" 0.00;
@@ -2918,11 +2806,13 @@ group { name: "elm/genlist/item/shortcuts/default";
             }
             rel1 {
                relative: 1.00 0.00;
-               to_x: "left_ctext_space";
+               offset: 6 0;
+               to_x: "elm.swallow.icon";
             }
             rel2 {
                relative: 0.00 1.00;
-               to_x: "left_button_space";
+               offset: -7 -1;
+               to_x: "change.button";
             }
          }
          description { state: "hide" 0.00;
@@ -2936,23 +2826,8 @@ group { name: "elm/genlist/item/shortcuts/default";
             }
          }
       }
-      part { name: "left_dtext_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 0;
-            min: 6 0;
-            max: 6 -1;
-            rel1 {
-               relative: 1.00 0.00;
-               to_x: "combination.text";
-            }
-         }
-      }
       part { name: "description.text";
          type: TEXT;
-         scale: 1;
          repeat_events: 1;
          description { state: "default" 0.00;
             align: 0.00 0.50;
@@ -2969,11 +2844,13 @@ group { name: "elm/genlist/item/shortcuts/default";
             }
             rel1 {
                relative: 1.00 0.00;
-               to_x: "left_dtext_space";
+               offset: 6 0;
+               to_x: "combination.text";
             }
             rel2 {
                relative: 0.00 1.00;
-               to_x: "left_button_space";
+               offset: -7 -1;
+               to_x: "change.button";
             }
          }
          description { state: "hide" 0.00;
@@ -2984,37 +2861,19 @@ group { name: "elm/genlist/item/shortcuts/default";
             rel1.to_x: "elm.swallow.icon";
          }
       }
-      part { name: "left_button_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            fixed: 1 0;
-            min: 6 0;
-            max: 6 -1;
-            rel2 {
-               relative: 0.00 1.00;
-               to_x: "change.button";
-            }
-         }
-      }
-      part { name: "change.button";
+     part { name: "change.button";
          type: SWALLOW;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 0.50;
             fixed: 1 0;
             aspect: 1.00 1.00;
             aspect_preference: VERTICAL;
             rel1 {
-               relative: 1.00 1.00;
-               to_y: "top_left_space";
+               relative: 1.00 0.00;
+               offset: 0 3;
             }
-            rel2 {
-               relative: 0.00 0.00;
-               to: "bottom_right_space";
-            }
+            rel2.offset: -7 -4;
          }
          description { state: "hide" 0.00;
             inherit: "default" 0.00;
@@ -3026,6 +2885,10 @@ group { name: "elm/genlist/item/shortcuts/default";
          repeat_events: 1;
          description { state: "default" 0.00;
             color: 255 255 255 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
          description { state: "hide" 0.00;
             inherit: "default" 0.00;
