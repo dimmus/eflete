@@ -604,6 +604,10 @@ _container_lock(void *data,
 
    lock = elm_check_state_get(obj);
    container_lock_set(area->container, lock);
+
+   // toggle spinner lock
+   elm_object_disabled_set(wd->toolbar.container_sizer.spinner_w, (lock != 1) ? false : true);
+   elm_object_disabled_set(wd->toolbar.container_sizer.spinner_h, (lock != 1) ? false : true);
 }
 
 static void
@@ -636,6 +640,23 @@ _container_size_controls_add(Workspace_Data *wd)
 #else
    elm_object_part_content_set(size_controls, "width", wd->toolbar.container_sizer.spinner_w);
 #endif
+
+   // start experiment
+   // Evas_Object *sp;
+   // sp = elm_spinner_add(wd->toolbar.obj);
+   // elm_spinner_editable_set(sp, EINA_TRUE);
+   // elm_spinner_label_format_set(sp, "%1.1f units");
+   // elm_spinner_step_set(sp, 1.3);
+   // elm_spinner_wrap_set(sp, EINA_TRUE);
+   // elm_spinner_min_max_set(sp, -5000.0, 5000.0);
+   // evas_object_size_hint_align_set(sp, EVAS_HINT_FILL, 0.5);
+   // evas_object_size_hint_weight_set(sp, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   // evas_object_smart_callback_add(sp, "mouse,down,1",
+   //                                _spinner_container_change, NULL);
+   // wd->toolbar.container_sizer.spinner_w = sp;
+   // tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   // elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
+   // stop experiment
 
    wd->toolbar.container_sizer.check_chain = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
