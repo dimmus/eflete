@@ -33,7 +33,7 @@ completely!
 
 Once you have met the requirements, compiling and installing is simple:
 ```sh
-./autogen.sh
+autoreconf -i
 make
 sudo make install
 ```
