@@ -20,6 +20,8 @@ jobs:
         # sudo apt-get install -y check
     - name: autoreconf
       run: autoreconf -i
+    - name: configure
+      run: ./configure
     - name: make
       run: make
     - name: make check
