@@ -17,10 +17,12 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+// #include "utc_common.h"
 #include "eflete.h"
 #include "config.h"
 #include "main_window.h"
+
+#include "../eflete_check.h"
 
 /**
  * @defgroup eflete_test

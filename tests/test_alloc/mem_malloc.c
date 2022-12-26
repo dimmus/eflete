@@ -49,7 +49,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mem_malloc_test_p)
+EFL_START_TEST (mem_malloc_test_p)
 {
    int *mm = mem_malloc(sizeof(int)*1024);
    ck_assert_msg(mm != NULL,
@@ -57,7 +57,7 @@ EFLETE_TEST (mem_malloc_test_p)
    mm[1023] = 42;
    free(mm);
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup mem_malloc
@@ -66,3 +66,8 @@ END_TEST
  * @}
  * @}
  */
+
+void mem_malloc_test(TCase *tc)
+{
+   tcase_add_test(tc, mem_malloc_test_p);
+}

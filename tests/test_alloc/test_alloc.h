@@ -17,8 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+// #include "utc_common.h"
 #include "config.h"
 
-void mem_malloc_test_p(int);
-void mem_calloc_test_p(int);
+#include "../eflete_check.h"
+
+void mem_malloc_test(TCase *tc);
+void mem_calloc_test(TCase *tc);

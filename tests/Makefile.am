@@ -3,16 +3,10 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
-ewe_ruler_test \
-eflete_test \
 alloc_test \
-diff_test \
 change_test \
-history_test \
-logger_test \
 config_test \
-cursor_test
-#project_manager_test
+ewe_ruler_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -37,6 +31,7 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/src/bin/project_manager \
 -I${top_srcdir}/tests \
+-DTESTS_BUILD_DIR=${top_srcdir}/tests/ \
 @EFL_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
@@ -48,45 +43,9 @@ ${top_builddir}/src/lib/libewe.a \
 
 ewe_ruler_test_SOURCES = \
 ../tests/test_ewe_ruler/test_ewe_ruler.c \
-../tests/test_ewe_ruler/ewe_ruler_add.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_add.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_del.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_visible_get.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_visible_set.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_get.c \
-../tests/test_ewe_ruler/ewe_ruler_scale_middle_mark_set.c \
-../tests/test_ewe_ruler/ewe_ruler_horizontal_get.c \
-../tests/test_ewe_ruler/ewe_ruler_horizontal_set.c \
-../tests/test_ewe_ruler/ewe_ruler_step_set.c \
-../tests/test_ewe_ruler/ewe_ruler_step_get.c \
-../tests/test_ewe_ruler/ewe_ruler_value_step_set.c \
-../tests/test_ewe_ruler/ewe_ruler_value_step_get.c \
-../tests/test_ewe_ruler/ewe_ruler_zero_offset_set.c \
-../tests/test_ewe_ruler/ewe_ruler_zero_offset_get.c \
-../tests/test_ewe_ruler/ewe_ruler_format_get.c \
-../tests/test_ewe_ruler/ewe_ruler_format_set.c \
-../tests/test_ewe_ruler/ewe_ruler_style_get.c \
-../tests/test_ewe_ruler/ewe_ruler_style_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_style_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_style_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_absolute_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_absolute_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_relative_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_relative_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_visible_get.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_visible_set.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_add.c \
-../tests/test_ewe_ruler/ewe_ruler_marker_del.c
-
+../tests/test_ewe_ruler/ewe_ruler_add.c
 ewe_ruler_test_CFLAGS = ${FLAGS}
 ewe_ruler_test_LDADD = ${LD}
-
-eflete_test_SOURCES = \
-../tests/test_eflete/test_eflete.c \
-../tests/test_eflete/app_init.c \
-../tests/test_eflete/app_shutdown.c
-eflete_test_CFLAGS = ${FLAGS}
-eflete_test_LDADD = ${LD}
 
 alloc_test_SOURCES = \
 ../tests/test_alloc/test_alloc.c \
@@ -94,14 +53,6 @@ alloc_test_SOURCES = \
 ../tests/test_alloc/mem_calloc.c
 alloc_test_CFLAGS = ${FLAGS}
 alloc_test_LDADD = ${LD}
-
-diff_test_SOURCES = \
-../tests/test_diff/test_diff.c \
-../tests/test_diff/diff_free.c \
-../tests/test_diff/diff_update.c \
-../tests/test_diff/diff_undo_redo.c
-diff_test_CFLAGS = ${FLAGS}
-diff_test_LDADD = ${LD}
 
 change_test_SOURCES = \
 ../tests/test_change/test_change.c \
@@ -111,28 +62,6 @@ change_test_SOURCES = \
 ../tests/test_change/change_free.c
 change_test_CFLAGS = ${FLAGS}
 change_test_LDADD = ${LD}
-
-history_test_SOURCES = \
-../tests/test_history/test_history.c \
-../tests/test_history/history_add.c \
-../tests/test_history/history_del.c \
-../tests/test_history/history_change_add.c \
-../tests/test_history/history_undo_redo.c
-history_test_CFLAGS = ${FLAGS}
-history_test_LDADD = ${LD}
-
-logger_test_SOURCES = \
-../tests/test_logger/test_logger.c \
-../tests/test_logger/logger_init.c \
-../tests/test_logger/logger_shutdown.c
-logger_test_CFLAGS = ${FLAGS}
-logger_test_LDADD = ${LD}
-
-#project_manager_test_SOURCES = \
-#../tests/test_project_manager/test_project_manager.c \
-#../tests/test_project_manager/project_manager_functional.c
-#project_manager_test_CFLAGS = ${FLAGS}
-#project_manager_test_LDADD = ${LD}
 
 config_test_SOURCES = \
 ../tests/test_config/test_config.c \
@@ -148,15 +77,6 @@ config_test_SOURCES = \
 ../tests/test_config/config_panes_sizes_data_update.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
-
-cursor_test_SOURCES = \
-../tests/test_cursor/test_cursor.c \
-../tests/test_cursor/cursor_main_set.c \
-../tests/test_cursor/cursor_main_get.c \
-../tests/test_cursor/cursor_type_set.c \
-../tests/test_cursor/cursor_type_get.c
-cursor_test_CFLAGS = ${FLAGS}
-cursor_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
@@ -181,16 +101,11 @@ coverage:
 	echo "</body></html>" >> ../coverage.html
 
 EXTRA_DIST = \
+	eflete_check.h \
 	tests_report_generator.py \
 	test_common.h \
 	utc_common.h \
-	test_ewe_ruler/test_ewe_ruler.h \
-	test_eflete/test_eflete.h \
 	test_alloc/test_alloc.h \
-	test_diff/test_diff.h \
 	test_change/test_change.h \
-	test_history/test_history.h \
-	test_logger/test_logger.h \
-	test_project_manager/test_project_manager.h \
 	test_config/test_config.h \
-	test_cursor/test_cursor.h
+	test_ewe_ruler/test_ewe_ruler.h

@@ -17,8 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+// #include "utc_common.h"
 #include "cursor.h"
+
+#include "../eflete_check.h"
 
 void cursor_main_set_test_p1(int);
 void cursor_main_set_test_p2(int);

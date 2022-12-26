@@ -48,12 +48,12 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(profiles_get_test_p)
+EFL_START_TEST(profiles_get_test_p)
 {
    Eina_List *profiles;
 
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
    config_load();
 
    profiles = profiles_get();
@@ -61,9 +61,9 @@ EFLETE_TEST(profiles_get_test_p)
 
    EINA_LIST_STRINGSHARE_FREE(profiles);
    config_shutdown();
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup profiles_get
@@ -72,3 +72,8 @@ END_TEST
  * @}
  * @}
  */
+
+void profiles_get_test(TCase *tc)
+{
+   tcase_add_test(tc, profiles_get_test_p);
+}
