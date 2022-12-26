@@ -33,7 +33,8 @@ completely!
 
 Once you have met the requirements, compiling and installing is simple:
 ```sh
-./autogen.sh
+autoreconf -i
+./configure
 make
 sudo make install
 ```
@@ -45,7 +46,7 @@ Note that if you wish to compile for older architectures than your current syste
 
 Use the --prefix option on the configure step to install the program to a specific directory:
 ```sh
-./autogen.sh --prefix=/full/path/to/some/dir
+./configure --prefix=/full/path/to/some/dir
 ```
 You will want to ensure the default prefix `/usr/local` is available to build tools. If you know what you are doing, you can change the prefix, but this assumes you do not and the above prefix is used. These environment variables are used during the build, so you may want to make them more permanent.
 ```sh
