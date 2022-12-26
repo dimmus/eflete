@@ -34,6 +34,7 @@ completely!
 Once you have met the requirements, compiling and installing is simple:
 ```sh
 autoreconf -i
+./configure
 make
 sudo make install
 ```
