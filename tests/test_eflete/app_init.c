@@ -48,16 +48,15 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (app_init_test_p)
+EFL_START_TEST (app_init_test_p)
 {
-   elm_init(0,0);
+   // elm_init(0,0);
 
    ck_assert_msg(app_init() == EINA_TRUE, "failure: libraries was failed to init");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
-
+EFL_END_TEST
 
 /**
  * @addtogroup app_init
@@ -66,3 +65,9 @@ END_TEST
  * @}
  * @}
  */
+
+void app_init_test(TCase *tc)
+{
+   tcase_add_test(tc, app_init_test_p);
+}
+

@@ -18,7 +18,7 @@
  */
 
 #include "test_cursor.h"
-#include "config.h"
+// #include "config.h"
 
 /**
  * @addtogroup cursor_test
@@ -49,11 +49,11 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_type_get_test_p)
+EFL_START_TEST(cursor_type_get_test_p)
 {
    Evas_Object *obj;
 
-   elm_init(0,0);
+   // elm_init(0,0);
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    cursor_type_set(obj, CURSOR_FLEUR);
 
@@ -61,9 +61,9 @@ EFLETE_TEST(cursor_type_get_test_p)
                  "Can not get the cursor to given object");
 
    evas_object_del(obj);
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup cursor_type_get
@@ -72,3 +72,8 @@ END_TEST
  * @}
  * @}
  */
+
+void cursor_type_get_test(TCase *tc)
+{
+   tcase_add_test(tc, cursor_type_get_test_p);
+}

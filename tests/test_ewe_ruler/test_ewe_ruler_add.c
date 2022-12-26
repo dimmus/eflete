@@ -60,7 +60,7 @@ EWE_TEST(ewe_ruler_add_test_p)
    evas_object_del(parent);
    app_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_add
@@ -91,7 +91,7 @@ EWE_TEST(ewe_ruler_add_test_n)
    ck_assert_msg(result == NULL, "Not NULL returned\n");
    app_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_add

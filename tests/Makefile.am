@@ -6,7 +6,12 @@ TESTS = \
 alloc_test \
 change_test \
 config_test \
-ewe_ruler_test
+cursor_test \
+diff_test \
+eflete_test \
+logger_test \
+ewe_ruler_test \
+history_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -78,6 +83,46 @@ config_test_SOURCES = \
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
 
+cursor_test_SOURCES = \
+../tests/test_cursor/test_cursor.c \
+../tests/test_cursor/cursor_main_set.c \
+../tests/test_cursor/cursor_main_get.c \
+../tests/test_cursor/cursor_type_set.c \
+../tests/test_cursor/cursor_type_get.c
+cursor_test_CFLAGS = ${FLAGS}
+cursor_test_LDADD = ${LD}
+
+diff_test_SOURCES = \
+../tests/test_diff/test_diff.c \
+../tests/test_diff/diff_free.c \
+../tests/test_diff/diff_update.c \
+../tests/test_diff/diff_undo_redo.c
+diff_test_CFLAGS = ${FLAGS}
+diff_test_LDADD = ${LD}
+
+eflete_test_SOURCES = \
+../tests/test_eflete/test_eflete.c \
+../tests/test_eflete/app_init.c \
+../tests/test_eflete/app_shutdown.c
+eflete_test_CFLAGS = ${FLAGS}
+eflete_test_LDADD = ${LD}
+
+history_test_SOURCES = \
+../tests/test_history/test_history.c \
+../tests/test_history/history_add.c \
+../tests/test_history/history_del.c \
+../tests/test_history/history_change_add.c \
+../tests/test_history/history_undo_redo.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
+
+logger_test_SOURCES = \
+../tests/test_logger/test_logger.c \
+../tests/test_logger/logger_init.c \
+../tests/test_logger/logger_shutdown.c
+logger_test_CFLAGS = ${FLAGS}
+logger_test_LDADD = ${LD}
+
 coverage:
 	echo "<html><body>" > ../coverage.html
 	lcov --zerocounters --directory ../src
@@ -108,4 +153,9 @@ EXTRA_DIST = \
 	test_alloc/test_alloc.h \
 	test_change/test_change.h \
 	test_config/test_config.h \
+	test_cursor/test_cursor.h \
+	test_diff/test_diff.h \
+	test_eflete/test_eflete.h \
+	test_history/test_history.h \
+	test_logger/test_logger.h \
 	test_ewe_ruler/test_ewe_ruler.h

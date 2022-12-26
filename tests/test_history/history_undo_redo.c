@@ -84,11 +84,11 @@ _function_type_int_redo_return_true(Evas_Object *obj, Change *change __UNUSED__,
  * </tr>
  * @}
  */
-EFLETE_TEST (history_undo_redo_test_p)
+EFL_START_TEST (history_undo_redo_test_p)
 {
    Change *change;
    Diff *d1;
-   eina_init();
+   // eina_init();
    int sense = 42;
    Group2 *group = mem_calloc(1, sizeof(Group2));
    pseudo_object = group->edit_object = (Evas_Object *) &sense;
@@ -114,9 +114,9 @@ EFLETE_TEST (history_undo_redo_test_p)
    ck_assert(history_undo_all(history) == true);
    ck_assert(_function_type_int_undo_return_true_called == 3);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup history_undo_redo
@@ -125,3 +125,8 @@ END_TEST
  * @}
  * @}
  */
+
+void history_undo_redo_test(TCase *tc)
+{
+   tcase_add_test(tc, history_undo_redo_test_p);
+}

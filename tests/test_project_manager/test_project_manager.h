@@ -27,4 +27,4 @@
  */
 #define TEST_NAME "project_manager"
 
-void project_manager_functional(int);
+void project_manager_functional(TCase *tc);

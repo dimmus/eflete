@@ -27,6 +27,6 @@
  * @defgroup test_logger
  */
 
-void logger_init_test_p(int);
-void logger_shutdown_test_p(int);
+void logger_init_test(TCase *tc);
+void logger_shutdown_test(TCase *tc);
 

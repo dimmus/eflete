@@ -51,7 +51,7 @@ static Evas_Object *pseudo_object;
  * </tr>
  * @}
  */
-EFLETE_TEST (diff_undo_redo_test_p1)
+EFL_START_TEST (diff_undo_redo_test_p1)
 {
    int sense = 42;
    Diff diff;
@@ -63,7 +63,7 @@ EFLETE_TEST (diff_undo_redo_test_p1)
    ck_assert(diff_undo(pseudo_object, &diff) == true);
    ck_assert(diff_redo(pseudo_object, &diff) == true);
 }
-END_TEST
+EFL_END_TEST
 
 /* test stubs that check args, return specified value, and report what function was called */
 static Eina_Bool _function_type_int_undo_return_true_called = false;
@@ -115,7 +115,7 @@ _function_type_int_redo_return_true(Evas_Object *obj, Change *change __UNUSED__,
  * </tr>
  * @}
  */
-EFLETE_TEST (diff_undo_redo_test_p2)
+EFL_START_TEST (diff_undo_redo_test_p2)
 {
    int sense = 42;
    Diff diff;
@@ -133,7 +133,7 @@ EFLETE_TEST (diff_undo_redo_test_p2)
    ck_assert(diff_redo(pseudo_object, &diff) == true);
    ck_assert(_function_type_int_redo_return_true_called);
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup diff_undo_redo
@@ -142,3 +142,9 @@ END_TEST
  * @}
  * @}
  */
+
+void diff_undo_redo_test(TCase *tc)
+{
+   tcase_add_test(tc, diff_undo_redo_test_p1);
+   tcase_add_test(tc, diff_undo_redo_test_p2);
+}

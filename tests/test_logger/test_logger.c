@@ -20,8 +20,8 @@
 #include "test_logger.h"
 
 static const Efl_Test_Case etc[] = {
-  { "Alloc", mem_malloc_test },
-  { "Calloc", mem_calloc_test },
+  { "Init", logger_init_test },
+  { "Shutdown", logger_shutdown_test },
   { NULL, NULL }
 };
 
@@ -44,7 +44,7 @@ main(int argc, char **argv)
      return 0;
 
    failed_count = _efl_suite_build_and_run(argc - 1, (const char **)argv + 1,
-                                           "Memory allocation", etc, SUITE_INIT_FN(elm), SUITE_SHUTDOWN_FN(elm));
+                                           "Logger", etc, SUITE_INIT_FN(elm), SUITE_SHUTDOWN_FN(elm));
 
    return (failed_count == 0) ? 0 : 255;
 }

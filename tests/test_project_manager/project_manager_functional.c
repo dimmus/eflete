@@ -46,10 +46,10 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(project_manager_functional)
+EFL_START_TEST(project_manager_functional)
 {
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup logger_init

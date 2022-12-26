@@ -60,7 +60,7 @@ _function_type_int_redo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSE
  * </tr>
  * @}
  */
-EFLETE_TEST (diff_update_test_p)
+EFL_START_TEST (diff_update_test_p)
 {
    Diff *d1, *d2;
 
@@ -89,7 +89,7 @@ EFLETE_TEST (diff_update_test_p)
    ck_assert(d1->redo.function == _function_type_int_redo_return_true);
    ck_assert(d1->redo.args.type_i.i1 == 42);
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup diff_update
@@ -98,3 +98,8 @@ END_TEST
  * @}
  * @}
  */
+
+void diff_update_test(TCase *tc)
+{
+   tcase_add_test(tc, diff_update_test_p);
+}
