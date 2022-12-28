@@ -63,3 +63,12 @@ To apply a theme to elementary, you should place the .edj-file in the elementary
 To enable bash autocompletion for eflete, copy `eflete_autocompletion.sh` file (you can find it in `scripts` folder) to your
 bash completion directory or add the following line to your ~/.bashrc:
 `source /YOUR/PATH/eflete_autocompletion.sh`
+
+## Translations
+You can help translate Eflete into your language. Eflete is using
+[Weblate](https://weblate.org/) for translation management.
+
+Go to the [Eflete localization project](https://hosted.weblate.org/projects/eflete/eflete/)
+to start translating. If the language you want to translate into is not already
+available, you [can add it here](https://hosted.weblate.org/new-lang/eflete/eflete/).
+
