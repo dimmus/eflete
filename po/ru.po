@@ -6,32 +6,36 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
-"Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
+"Report-Msgid-Bugs-To: dmitri.chudinov@gmail.com\n"
 "POT-Creation-Date: 2017-07-21 16:03+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-12-28 07:49+0000\n"
+"Last-Translator: Dmitri Chudinov <dmitri.chudinov@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/eflete/eflete/ru/"
+">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
 #: src/bin/project_manager/project_manager2.c:1404
 #, c-format
 msgid "Export to file '%s' successfull"
-msgstr ""
+msgstr "Экспорт в файл '%s' выполнен успешно"
 
 #: src/bin/ui/colorclass_manager.c:87
 msgid "Color class name: "
-msgstr ""
+msgstr "Название класса цвета: "
 
 #: src/bin/ui/colorclass_manager.c:91
 msgid "Type new color class name here"
-msgstr ""
+msgstr "Введите новое имя класса цвета"
 
 #: src/bin/ui/colorclass_manager.c:141 src/bin/ui/project_navigator.c:548
 msgid "Create a new layout"
-msgstr ""
+msgstr "Создать новый макет"
 
 #: src/bin/ui/colorclass_manager.c:174
 #, c-format
