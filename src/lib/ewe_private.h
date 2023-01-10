@@ -53,9 +53,9 @@ extern "C" {
 #define EFL_CANVAS_GROUP_PROTECTED
 #define EFL_CANVAS_GROUP_BETA
 
-#ifdef HAVE_CONFIG_H
-#include "eflete_config.h"
-#endif
+// #ifdef HAVE_CONFIG_H
+// #include "eflete_config.h"
+// #endif
 
 #include <math.h>
 #include <stdlib.h>
