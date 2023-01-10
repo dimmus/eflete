@@ -47,16 +47,16 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (change_add_test_p)
+EFL_START_TEST (change_add_test_p)
 {
-   eina_init();
+   // eina_init();
 
    ck_assert(change_add("test") != NULL);
    ck_assert(change_add(NULL) != NULL);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup change_add
@@ -65,3 +65,8 @@ END_TEST
  * @}
  * @}
  */
+
+void change_add_test(TCase *tc)
+{
+   tcase_add_test(tc, change_add_test_p);
+}

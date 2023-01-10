@@ -17,12 +17,14 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+// #include "utc_common.h"
 #include "config.h"
 #include "change.h"
 #include "diff.h"
 
-void change_add_test_p(int);
-void change_free_test_p(int);
-void change_diff_add_test_p(int);
-void change_diff_merge_add_test_p(int);
+#include "../eflete_check.h"
+
+void change_add_test(TCase *tc);
+void change_free_test(TCase *tc);
+void change_diff_add_test(TCase *tc);
+void change_diff_merge_add_test(TCase *tc);

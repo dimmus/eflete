@@ -52,7 +52,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_marker_absolute_get_test_p)
+EFL_START_TEST(ewe_ruler_marker_absolute_get_test_p)
 {
    logger_init();
    elm_init(0, 0);
@@ -67,7 +67,7 @@ EFLETE_TEST(ewe_ruler_marker_absolute_get_test_p)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_marker_absolute_get
@@ -97,7 +97,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_marker_absolute_get_test_n)
+EFL_START_TEST(ewe_ruler_marker_absolute_get_test_n)
 {
    logger_init();
    elm_init(0, 0);
@@ -113,7 +113,7 @@ EFLETE_TEST(ewe_ruler_marker_absolute_get_test_n)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_marker_absolute_get

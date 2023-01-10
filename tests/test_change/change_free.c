@@ -48,17 +48,17 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (change_free_test_p)
+EFL_START_TEST (change_free_test_p)
 {
    Change *change;
-   eina_init();
+   // eina_init();
    change = change_add("test");
 
    change_free(change);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup change_free
@@ -67,3 +67,8 @@ END_TEST
  * @}
  * @}
  */
+
+void change_free_test(TCase *tc)
+{
+   tcase_add_test(tc, change_free_test_p);
+}

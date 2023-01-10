@@ -51,18 +51,18 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(config_save_test_p)
+EFL_START_TEST(config_save_test_p)
 {
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
    config_load();
 
    ck_assert_msg(config_save(), "Config not saved.");
 
-   app_shutdown();
-   elm_shutdown();
+   // app_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup config_save
@@ -71,3 +71,8 @@ END_TEST
  * @}
  * @}
  */
+
+void config_save_test(TCase *tc)
+{
+   tcase_add_test(tc, config_save_test_p);
+}

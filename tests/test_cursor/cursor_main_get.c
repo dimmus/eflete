@@ -18,7 +18,7 @@
  */
 
 #include "test_cursor.h"
-#include "config.h"
+// #include "config.h"
 
 /**
  * @addtogroup cursor_test
@@ -50,11 +50,11 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_main_get_test_p1)
+EFL_START_TEST(cursor_main_get_test_p1)
 {
    Evas_Object *win;
 
-   elm_init(0,0);
+   // elm_init(0,0);
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    cursor_main_set(win, CURSOR_ARROW);
 
@@ -62,9 +62,9 @@ EFLETE_TEST(cursor_main_get_test_p1)
                  "Main cursor return not valid cursor.");
 
    evas_object_del(win);
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup cursor_main_get
@@ -85,20 +85,20 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_main_get_test_p2)
+EFL_START_TEST(cursor_main_get_test_p2)
 {
    Evas_Object *win;
 
-   elm_init(0,0);
+   // elm_init(0,0);
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    ck_assert_msg(cursor_main_get(win) == CURSOR_SYSTEM,
                  "Main cursor return not valid cursor.");
 
    evas_object_del(win);
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup cursor_main_get
@@ -107,3 +107,9 @@ END_TEST
  * @}
  * @}
  */
+
+void cursor_main_get_test(TCase *tc)
+{
+   tcase_add_test(tc, cursor_main_get_test_p1);
+   tcase_add_test(tc, cursor_main_get_test_p2);
+}

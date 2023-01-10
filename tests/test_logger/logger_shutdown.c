@@ -48,7 +48,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(logger_shutdown_test_p)
+EFL_START_TEST(logger_shutdown_test_p)
 {
    int ret = -1;
 
@@ -59,7 +59,7 @@ EFLETE_TEST(logger_shutdown_test_p)
 
    eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup logger_shutdown
@@ -69,3 +69,7 @@ END_TEST
  * @}
  */
 
+void logger_shutdown_test(TCase *tc)
+{
+   tcase_add_test(tc, logger_shutdown_test_p);
+}

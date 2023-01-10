@@ -80,9 +80,9 @@ _function_type_int_redo_return_true(Evas_Object *obj, Change *change __UNUSED__,
  * </tr>
  * @}
  */
-EFLETE_TEST (change_diff_merge_add_test_p)
+EFL_START_TEST (change_diff_merge_add_test_p)
 {
-   eina_init();
+   // eina_init();
    int sense = 42;
    Diff *d1, *d2;
    Change *change;
@@ -112,9 +112,9 @@ EFLETE_TEST (change_diff_merge_add_test_p)
    ck_assert(_function_type_int_undo_return_true_called == 1);
    ck_assert(change_redo(pseudo_object, change) == true);
    ck_assert(_function_type_int_redo_return_true_called == 1);
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup change_diff_merge_add
@@ -123,3 +123,8 @@ END_TEST
  * @}
  * @}
  */
+
+void change_diff_merge_add_test(TCase *tc)
+{
+   tcase_add_test(tc, change_diff_merge_add_test_p);
+}
