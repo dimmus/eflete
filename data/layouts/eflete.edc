@@ -1,3 +1,7 @@
+data.item: "version" "126";
+
+efl_version: 1 26;
+
 collections {
    #include "../macros.edc"
    #include "edje/editor_base.edc"

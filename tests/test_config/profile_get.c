@@ -49,17 +49,17 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_get_test_p2)
+EFL_START_TEST(profile_get_test_p2)
 {
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
 
    config_load();
    ck_assert_msg(profile_get() != NULL, "Profile not loaded.");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup profile_get
@@ -68,3 +68,8 @@ END_TEST
  * @}
  * @}
  */
+
+void profile_get_test(TCase *tc)
+{
+   tcase_add_test(tc, profile_get_test_p2);
+}

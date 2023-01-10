@@ -49,9 +49,9 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (history_del_test_p1)
+EFL_START_TEST (history_del_test_p1)
 {
-   eina_init();
+   // eina_init();
    int sense = 42;
    Group2 *group = mem_calloc(1, sizeof(Group2));
    group->edit_object = (Evas_Object *) &sense;
@@ -59,9 +59,9 @@ EFLETE_TEST (history_del_test_p1)
    History *history = history_add(group);
    history_del(history);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup history_del
@@ -84,10 +84,10 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (history_del_test_p2)
+EFL_START_TEST (history_del_test_p2)
 {
    Change *change;
-   eina_init();
+   // eina_init();
    int sense = 42;
    Group2 *group = mem_calloc(1, sizeof(Group2));
    group->edit_object = (Evas_Object *) &sense;
@@ -97,9 +97,9 @@ EFLETE_TEST (history_del_test_p2)
    history_change_add(history, change);
    history_del(history);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup history_del
@@ -108,3 +108,9 @@ END_TEST
  * @}
  * @}
  */
+
+void history_del_test(TCase *tc)
+{
+   tcase_add_test(tc, history_del_test_p1);
+   tcase_add_test(tc, history_del_test_p2);
+}

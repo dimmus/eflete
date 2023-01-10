@@ -15,7 +15,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "sb_vbar";
          type: RECT;
-         scale: 1;
+
          description { state: "default" 0.0;
             align: 1.0 0.0;
             fixed: 1 0;
@@ -50,7 +50,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "sb_vbar_p1";
          type: RECT;
-         scale: 1;
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -65,7 +64,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "sb_vbar_p2";
          type: RECT;
-         scale: 1;
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -80,7 +78,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "elm.dragable.vbar";
          type: RECT;
-         scale: 1;
+         
          clip_to: "sb_vbar";
          dragable {
             x: 0 0 0;
@@ -100,12 +98,14 @@ group { name: "elm/scroller/base/default";
                to: "sb_vbar";
             }
          }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
       }
       part { name: "sb_hbar";
          type: RECT;
-         scale: 1;
          mouse_events: 0;
-         scale: 1;
+         
          description { state: "default" 0.0;
             align: 0.0 1.0;
             fixed: 0 1;
@@ -140,7 +140,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "sb_hbar_p1";
          type: RECT;
-         scale: 1;
          clip_to: "sb_hbar";
          description { state: "default" 0.0;
             fixed: 1 1;
@@ -156,7 +155,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "sb_hbar_p2";
          type: RECT;
-         scale: 1;
          clip_to: "sb_hbar";
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -171,7 +169,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "elm.dragable.hbar";
          type: RECT;
-         scale: 1;
+         
          clip_to: "sb_hbar";
          dragable {
             x: 1 1 0;
@@ -194,7 +192,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "elm.swallow.content";
@@ -206,7 +203,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "elm.swallow.background";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             rel1 {
@@ -219,7 +215,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             rel1 {
@@ -234,7 +229,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "elm.swallow.overlay";
          type: SWALLOW;
-         scale: 1;
          repeat_events: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
@@ -248,9 +242,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "runner_vbar";
          type: IMAGE;
-         scale: 1;
          mouse_events: 0;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
@@ -297,9 +289,7 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "runner_hbar";
          type: IMAGE;
-         scale: 1;
          mouse_events: 0;
-         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
@@ -346,7 +336,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "base_vbar";
          type: IMAGE;
-         scale: 1;
          mouse_events: 0;
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
@@ -405,7 +394,6 @@ group { name: "elm/scroller/base/default";
       }
       part { name: "base_hbar";
          type: IMAGE;
-         scale: 1;
          mouse_events: 0;
          clip_to: "sb_hbar";
          description { state: "default" 0.0;

@@ -48,21 +48,21 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_load_test_p1)
+EFL_START_TEST(profile_load_test_p1)
 {
    Profile *profile;
 
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
 
    profile_load("default");
    profile = profile_get();
    ck_assert_msg(profile != NULL, "Profile not been loaded.");
 
    config_shutdown();
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup profile_load
@@ -83,21 +83,21 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_load_test_p2)
+EFL_START_TEST(profile_load_test_p2)
 {
    Profile *profile;
 
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
 
    profile_load("not_valid_name");
    profile = profile_get();
    ck_assert_msg(profile != NULL, "Profile not been loaded.");
 
    config_shutdown();
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup profile_load
@@ -106,3 +106,9 @@ END_TEST
  * @}
  * @}
  */
+
+void profile_load_test(TCase *tc)
+{
+   tcase_add_test(tc, profile_load_test_p1);
+   tcase_add_test(tc, profile_load_test_p2);
+}

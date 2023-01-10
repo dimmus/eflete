@@ -11,14 +11,15 @@ group { name: "elm/button/base/combobox_vertical/default";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             max: -1 19;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "bg";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "base";
@@ -60,7 +61,6 @@ group { name: "elm/button/base/combobox_vertical/default";
          }
       }
       rect { "icon_clip";
-         scale: 1;
          desc { "default";
          }
          desc { "disabled";
@@ -69,7 +69,6 @@ group { name: "elm/button/base/combobox_vertical/default";
          }
       }
       rect { "event";
-         scale: 1;
          desc { "default";
             color: 0 0 0 0;
          }
@@ -80,7 +79,6 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "left.offset";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 10 0;
@@ -95,7 +93,6 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "right.offset";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             min: 20 19;
@@ -107,7 +104,6 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
          clip_to: "icon_clip";
          description { state: "default" 0.0;
             align: 0.0 0.5;
@@ -125,7 +121,6 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "select_line";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             max: 6 4;
             rel1 {
@@ -165,6 +160,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       program { name: "button_click_anim";
          action: STATE_SET "clicked" 0.0;
+         target: "base";
          target: "select_line";
       }
       program { name: "button_unclick";
@@ -174,6 +170,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.0;
+         target: "base";
          target: "select_line";
       }
       program { name: "buttonactivate";
@@ -185,6 +182,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.0;
          in: 0.5 0.0;
+         target: "base";
          target: "select_line";
       }
       program {
@@ -214,7 +212,6 @@ group { name: "elm/button/base/combobox_vertical/zoom";
    parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
          clip_to: "icon_clip";
          description { state: "default" 0.0;
             align: 0.0 0.5;
@@ -249,9 +246,11 @@ group { name: "elm/button/base/combobox_vertical/color_class";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             max: -1 19;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "bg";
@@ -389,7 +388,6 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color3";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -411,7 +409,6 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color2";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -433,7 +430,6 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color1";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -543,6 +539,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       program { name: "button_click_anim";
          action: STATE_SET "clicked" 0.0;
+         target: "base";
          target: "select_line";
       }
       program { name: "button_unclick";
@@ -552,17 +549,20 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.0;
+         target: "base";
          target: "select_line";
       }
       program { name: "buttonactivate";
          signal: "elm,anim,activate"; source: "elm";
          action: STATE_SET "clicked" 0.0;
+         target: "base";
          target: "select_line";
          after: "button_unpressed_anim";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.0;
          in: 0.5 0.0;
+         target: "base";
          target: "select_line";
       }
       program {
@@ -596,7 +596,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
       public on_dismiss = 0;
    }
    parts {
-      part { name: "elm.swallow.offset"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.offset"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.relative: 0.0 0.0;
@@ -604,7 +604,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.size"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.size"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.to: "elm.swallow.offset";
@@ -614,12 +614,12 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "base"; type: RECT; mouse_events: 1; scale: 1;
+      part { name: "base"; type: RECT; mouse_events: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
-      part { name: "box"; type: RECT; mouse_events: 0; scale: 1;
+      part { name: "box"; type: RECT; mouse_events: 0;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             rel1.to: "elm.swallow.size";
@@ -628,7 +628,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             rel2.offset: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.left"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.left"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             rel1.to: "elm.swallow.slot.middle";
@@ -640,7 +640,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 0;
          }
       }
-      part { name: "elm.swallow.slot.top-left"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.top-left"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -652,7 +652,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.top"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.top"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -664,7 +664,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
          }
       }
-      part { name: "elm.swallow.slot.top-right"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.top-right"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -676,7 +676,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.right"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.right"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1.to: "elm.swallow.slot.middle";
@@ -688,7 +688,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 0;
          }
       }
-      part { name: "elm.swallow.slot.bottom-right"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.bottom-right"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -700,7 +700,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.bottom"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.bottom"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.5 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -712,7 +712,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
          }
       }
-      part { name: "elm.swallow.slot.bottom-left"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.bottom-left"; type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -724,7 +724,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.middle"; type: SWALLOW; scale: 1;
+      part { name: "elm.swallow.slot.middle"; type: SWALLOW;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.size";
             rel2.to: "elm.swallow.size";
@@ -754,6 +754,620 @@ group { name: "elm/hover/base/combobox_vertical/default";
    }
 }
 
+group { name: "elm/genlist/base/combobox_vertical/default";
+   alias: "elm/scroller/base/popup/no_inset_shadow"; /* that's for hoversel */
+   alias: "elm/genlist/base/combobox_vertical/zoom";
+   data {
+      item: "focus_highlight" "on";
+   }
+   images {
+      image: "scroll-runner-vbar.png" COMP;
+      image: "scroll-runner-hbar.png" COMP;
+      image: "scroll-bar.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "bg_scroller";
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "sb_vbar";
+         type: RECT;
+         
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 0;
+            min: 6 8;
+            max: 6 -1;
+            rel1 {
+               offset: 0 1;
+               to: "bg";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -2 -2;
+               to_x: "bg";
+               to_y: "sb_hbar";
+            }
+         }
+         description { state: "hidden" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 0;
+            max: 0 -1;
+            rel1 {
+               offset: 0 1;
+               to: "bg";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -2 -2;
+               to_x: "bg";
+               to_y: "sb_hbar";
+            }
+         }
+      }
+      part { name: "sb_vbar_p1";
+         type: RECT;
+         clip_to: "sb_vbar";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to: "sb_vbar";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "elm.dragable.vbar";
+            }
+         }
+      }
+      part { name: "sb_vbar_p2";
+         type: RECT;
+         clip_to: "sb_vbar";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.dragable.vbar";
+            }
+            rel2 {
+               to: "sb_vbar";
+            }
+         }
+      }
+      part { name: "elm.dragable.vbar";
+         type: RECT;
+         
+         clip_to: "sb_vbar";
+         dragable {
+            x: 0 0 0;
+            y: 1 1 0;
+            confine: "sb_vbar";
+         }
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 6 24;
+            max: 6 -1;
+            color: 0 0 0 0;
+            rel1 {
+               to: "sb_vbar";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "sb_vbar";
+            }
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "sb_hbar";
+         type: RECT;
+         mouse_events: 0;
+         
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            fixed: 0 1;
+            min: 0 6;
+            max: -1 6;
+            rel1 {
+               offset: 1 0;
+               to: "bg";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -2 -2;
+               to_x: "sb_vbar";
+               to_y: "bg";
+            }
+         }
+         description { state: "hidden" 0.0;
+            align: 0.0 1.0;
+            fixed: 0 1;
+            max: -1 0;
+            rel1 {
+               offset: 1 0;
+               to: "bg";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -2 -2;
+               to_x: "sb_vbar";
+               to_y: "bg";
+            }
+         }
+      }
+      part { name: "sb_hbar_p1";
+         type: RECT;
+         clip_to: "sb_hbar";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: 0 0 0 0;
+            rel1 {
+               to: "sb_hbar";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "elm.dragable.hbar";
+            }
+         }
+      }
+      part { name: "sb_hbar_p2";
+         type: RECT;
+         clip_to: "sb_hbar";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "elm.dragable.hbar";
+            }
+            rel2 {
+               to: "sb_hbar";
+            }
+         }
+      }
+      part { name: "elm.dragable.hbar";
+         type: RECT;
+         
+         clip_to: "sb_hbar";
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "sb_hbar";
+         }
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 24 6;
+            max: -1 6;
+            color: 0 0 0 0;
+            rel1 {
+               to: "sb_hbar";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "sb_hbar";
+            }
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.content";
+            }
+            rel2 {
+               to: "elm.swallow.content";
+            }
+         }
+      }
+      part { name: "elm.swallow.background";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.content";
+            }
+            rel2 {
+               to: "elm.swallow.content";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "sb_vbar";
+               to_y: "sb_hbar";
+            }
+         }
+      }
+      part { name: "elm.swallow.overlay";
+         type: SWALLOW;
+         repeat_events: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.content";
+            }
+            rel2 {
+               to: "elm.swallow.content";
+            }
+         }
+      }
+      part { name: "runner_vbar";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 8 8;
+            max: 8 -1;
+            rel1 {
+               offset: -1 -1;
+               to: "sb_vbar";
+            }
+            rel2 {
+               offset: 0 0;
+               to: "sb_vbar";
+            }
+            image {
+               normal: "scroll-runner-vbar.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            min: 8 8;
+            max: 8 -1;
+            rel1 {
+               offset: -1 -1;
+               to: "sb_vbar";
+            }
+            rel2 {
+               offset: 0 0;
+               to: "sb_vbar";
+            }
+            image {
+               normal: "scroll-runner-vbar.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "runner_hbar";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 8 8;
+            max: -1 8;
+            rel1 {
+               offset: -1 0;
+               to: "sb_hbar";
+            }
+            rel2 {
+               offset: 0 -1;
+               to: "sb_hbar";
+            }
+            image {
+               normal: "scroll-runner-hbar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            min: 8 8;
+            max: -1 8;
+            rel1 {
+               offset: -1 0;
+               to: "sb_hbar";
+            }
+            rel2 {
+               offset: 0 -1;
+               to: "sb_hbar";
+            }
+            image {
+               normal: "scroll-runner-hbar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "base_vbar";
+         type: IMAGE;
+         mouse_events: 0;
+         clip_to: "sb_vbar";
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1 {
+               to: "elm.dragable.vbar";
+            }
+            rel2 {
+               to: "elm.dragable.vbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "focused" 0.0;
+            fixed: 1 0;
+            color_class: "select_light";
+            rel1 {
+               to: "elm.dragable.vbar";
+            }
+            rel2 {
+               to: "elm.dragable.vbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "clicked" 0.0;
+            fixed: 1 0;
+            color_class: "select";
+            rel1 {
+               to: "elm.dragable.vbar";
+            }
+            rel2 {
+               to: "elm.dragable.vbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "base_hbar";
+         type: IMAGE;
+         mouse_events: 0;
+         clip_to: "sb_hbar";
+         description { state: "default" 0.0;
+            fixed: 0 1;
+            rel1 {
+               to: "elm.dragable.hbar";
+            }
+            rel2 {
+               to: "elm.dragable.hbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "focused" 0.0;
+            fixed: 0 1;
+            color_class: "select_light";
+            rel1 {
+               to: "elm.dragable.hbar";
+            }
+            rel2 {
+               to: "elm.dragable.hbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description { state: "clicked" 0.0;
+            fixed: 0 1;
+            color_class: "select";
+            rel1 {
+               to: "elm.dragable.hbar";
+            }
+            rel2 {
+               to: "elm.dragable.hbar";
+            }
+            image {
+               normal: "scroll-bar.png";
+               border: 2 2 2 2;
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "v_mouse_down";
+         signal: "mouse,down,1*";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.vbar";
+         after: "v_bar_selected";
+      }
+      program { name: "h_mouse_down";
+         signal: "mouse,down,1*";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.hbar";
+         after: "h_bar_selected";
+      }
+      program { name: "horizontal_scroll_down";
+         signal: "mouse,down,1*";
+         source: "sb_hbar_p1";
+         action: DRAG_VAL_PAGE -1.0000 0.0000;
+         target: "elm.dragable.vbar";
+      }
+      program { name: "horizontal_scroll_up";
+         signal: "mouse,down,1*";
+         source: "sb_hbar_p2";
+         action: DRAG_VAL_PAGE 1.0000 0.0000;
+         target: "elm.dragable.vbar";
+      }
+      program { name: "vertical_scroll_down";
+         signal: "mouse,down,1*";
+         source: "sb_vbar_p1";
+         action: DRAG_VAL_PAGE 0.0000 -1.0000;
+         target: "elm.dragable.hbar";
+      }
+      program { name: "vertical_scroll_up";
+         signal: "mouse,down,1*";
+         source: "sb_vbar_p2";
+         action: DRAG_VAL_PAGE 0.0000 1.0000;
+         target: "elm.dragable.hbar";
+      }
+      program { name: "reload_on_load";
+         signal: "load";
+         source: "";
+         action: SIGNAL_EMIT "reload" "elm";
+      }
+      program { name: "v_mouse_up";
+         signal: "mouse,up,1";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "default" 0.00;
+         target: "elm.dragable.vbar";
+         after: "v_bar_unselected";
+      }
+      program { name: "h_mouse_up";
+         signal: "mouse,up,1";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "default" 0.00;
+         target: "elm.dragable.hbar";
+         after: "h_bar_unselected";
+      }
+      program { name: "show_horizontal_scroll";
+         signal: "elm,action,show,hbar";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "sb_hbar";
+         target: "runner_hbar";
+      }
+      program { name: "hide_horizontal_scroll";
+         signal: "elm,action,hide,hbar";
+         source: "elm";
+         action: STATE_SET "hidden" 0.00;
+         target: "sb_hbar";
+         target: "runner_hbar";
+      }
+      program { name: "show_vertical_scroll";
+         signal: "elm,action,show,vbar";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "sb_vbar";
+         target: "runner_vbar";
+      }
+      program { name: "hide_vertical_scroll";
+         signal: "elm,action,hide,vbar";
+         source: "elm";
+         action: STATE_SET "hidden" 0.00;
+         target: "sb_vbar";
+         target: "runner_vbar";
+      }
+      program { name: "v_bar_selected";
+         action: STATE_SET "clicked" 0.00;
+         target: "base_vbar";
+      }
+      program { name: "v_bar_unselected";
+         action: STATE_SET "default" 0.00;
+         target: "base_vbar";
+      }
+      program { name: "v_mouse_in";
+         signal: "mouse,in";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "focused" 0.00;
+         target: "base_vbar";
+      }
+      program { name: "v_mouse_out";
+         signal: "mouse,out";
+         source: "elm.dragable.vbar";
+         action: STATE_SET "default" 0.00;
+         target: "base_vbar";
+      }
+      program { name: "h_bar_selected";
+         action: STATE_SET "clicked" 0.00;
+         target: "base_hbar";
+      }
+      program { name: "h_bar_unselected";
+         action: STATE_SET "default" 0.00;
+         target: "base_hbar";
+      }
+      program { name: "h_mouse_in";
+         signal: "mouse,in";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "focused" 0.00;
+         target: "base_hbar";
+      }
+      program { name: "h_mouse_out";
+         signal: "mouse,out";
+         source: "elm.dragable.hbar";
+         action: STATE_SET "default" 0.00;
+         target: "base_hbar";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "bg";
+         target: "disabler";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "disabler";
+      }
+   }
+}
+
 group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
    data {
       item: "texts" "elm.text";
@@ -762,7 +1376,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
    parts {
       part { name: "bg";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             min: 0 24;
@@ -777,7 +1390,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 213 213 213 255;
             rel1 {
@@ -801,7 +1413,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color3";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -817,7 +1428,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color2";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -835,7 +1445,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color1";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -886,7 +1495,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color1";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color1";
@@ -903,7 +1511,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color2";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color2";
@@ -920,7 +1527,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color3";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color3";
@@ -980,7 +1586,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
    parts {
       part { name: "bg";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             min: 0 24;
@@ -995,7 +1600,6 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
-         scale: 1;
          description { state: "default" 0.0;
             color: 213 213 213 255;
             rel1 {
@@ -1078,7 +1682,7 @@ group { name: "elm/entry/base-single/combobox_vertical/default";
          clip_to: "disabler";
          mouse_events: 1;
          repeat_events: 1;
-         scale: 1;
+         
          cursor_mode: BEFORE;
          multiline: 0;
          description { state: "default" 0.0;

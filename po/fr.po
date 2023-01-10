@@ -1,7 +1,6 @@
-# French translation for enlightenment
-# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
-# This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# French translation for Eflete.
+# This file is distributed under the same license as the eflete package.
+# similar <similar@orange.fr>, 2023.
 #
 msgid ""
 msgstr ""
@@ -358,6 +357,7 @@ msgstr "ça"
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:121
 msgid "!"
 msgstr "attentivement !"
+
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:143
 msgid "Text1"
@@ -2470,8 +2470,8 @@ msgstr ""
 msgid ""
 "Names of the images to be used in an animation loop. You can have none, 1, "
 "or multiple tween declarations. Images are displayed in the order they are "
-"listed, during the transition to the state they are declared in. The \"normal"
-"\" image is the final state."
+"listed, during the transition to the state they are declared in. The "
+"\"normal\" image is the final state."
 msgstr ""
 "Noms des images à utiliser dans une boucle d'animation. Ce peut être aucune, "
 "1, ou plusieurs déclarations d'images d'interpolation. Les images sont "
@@ -3095,8 +3095,8 @@ msgstr ""
 
 #: src/bin/ui/property/property_textblock.c:1166
 msgid ""
-"Overrides the width defined in \"font\". For example, the value \"Condensed"
-"\" is the same as font value \"style=Condensed\"."
+"Overrides the width defined in \"font\". For example, the value "
+"\"Condensed\" is the same as font value \"style=Condensed\"."
 msgstr ""
 "Remplace la largeur définie dans « police ». Par exemple, la valeur « "
 "Condensed » est identique à la valeur de police « style=Condensed »."

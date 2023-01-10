@@ -48,18 +48,18 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (history_add_test_p)
+EFL_START_TEST (history_add_test_p)
 {
-   eina_init();
+   // eina_init();
    int sense = 42;
    Group2 *group = mem_calloc(1, sizeof(Group2));
    group->edit_object = (Evas_Object *) &sense;
 
    ck_assert(history_add(group) != NULL);
 
-   eina_shutdown();
+   // eina_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup history_add
@@ -68,3 +68,8 @@ END_TEST
  * @}
  * @}
  */
+
+void history_add_test(TCase *tc)
+{
+   tcase_add_test(tc, history_add_test_p);
+}

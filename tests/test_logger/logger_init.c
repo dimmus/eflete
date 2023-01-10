@@ -48,7 +48,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(logger_init_test_p)
+EFL_START_TEST(logger_init_test_p)
 {
    Eina_Bool ret = EINA_FALSE;
 
@@ -56,7 +56,7 @@ EFLETE_TEST(logger_init_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed initialize logger");
 
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup logger_init
@@ -65,3 +65,8 @@ END_TEST
  * @}
  * @}
  */
+
+void logger_init_test(TCase *tc)
+{
+   tcase_add_test(tc, logger_init_test_p);
+}

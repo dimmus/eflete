@@ -9,7 +9,7 @@ group { name: "elm/toolbar/base/default";
    parts {
       part { name: "clipper_arrow_left";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
@@ -24,7 +24,7 @@ group { name: "elm/toolbar/base/default";
       }
       part { name: "arrow_left";
          type: IMAGE;
-         scale: 1;
+         
          clip_to: "clipper_arrow_left";
          description { state: "default" 0.0;
             max: 16 16;
@@ -77,7 +77,7 @@ group { name: "elm/toolbar/base/default";
       }
       part { name: "clipper_arrow_right";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             visible: 0;
             align: 1.0 0.5;
@@ -93,7 +93,7 @@ group { name: "elm/toolbar/base/default";
       }
       part { name: "arrow_right";
          type: IMAGE;
-         scale: 1;
+         
          clip_to: "clipper_arrow_right";
          description { state: "default" 0.0;
             max: 16 16;
@@ -146,7 +146,7 @@ group { name: "elm/toolbar/base/default";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             rel1 {
                to: "elm.swallow.content";
@@ -158,7 +158,7 @@ group { name: "elm/toolbar/base/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
+         
          clip_to: "clipper";
          description { state: "default" 0.0;
             min: 0 19;
@@ -471,38 +471,15 @@ group { name: "elm/toolbar/item/default";
 
 group { name: "elm/toolbar/object/default";
    parts {
-      part { name: "left_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 0;
-            min: 3 0;
-            max: 3 -1;
-         }
-      }
       part { name: "elm.swallow.object";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 1.0 0.0;
-               to: "left_space";
+               offset: 3 0;
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "right_space";
+               offset: -4 -1;
             }
-         }
-      }
-      part { name: "right_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 0;
-            min: 3 0;
-            max: 3 -1;
          }
       }
    }
@@ -541,7 +518,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
    parts {
       part { name: "base";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 27;
             max: -1 27;
@@ -565,7 +541,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "clipper_arrow_left";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 18 0;
             max: 18 -1;
@@ -581,7 +556,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "arrow_left";
          type: IMAGE;
-         scale: 1;
          clip_to: "clipper_arrow_left";
          description { state: "default" 0.0;
             max: 16 16;
@@ -631,7 +605,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "clipper_arrow_right";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             min: 18 0;
             max: 18 -1;
@@ -647,7 +620,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "arrow_right";
          type: IMAGE;
-         scale: 1;
          clip_to: "clipper_arrow_right";
          description { state: "default" 0.0;
             max: 16 16;
@@ -697,7 +669,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "elm.swallow.content";
@@ -709,7 +680,6 @@ group { name: "elm/toolbar/base/tabs_horizontal";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             min: 0 22;
@@ -846,12 +816,10 @@ group { name: "elm/toolbar/item/tabs_horizontal";
    parts {
       part { name: "bg";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             image {
                normal: "tab-head-bg.png";
                border: 5 5 10 10;
-               border_scale: 1;
             }
             rel1.offset: 1 0;
             rel2.offset: -1 0;
@@ -863,7 +831,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
@@ -874,7 +841,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
             align: 0.0 0.5;
             min: 16 16;
             max: 16 16;
-            fixed: 1 1;
             rel1 {
                offset: 6 2;
             }
@@ -886,7 +852,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
             visible: 0;
             min: 16 16;
             max: 16 16;
-            fixed: 1 1;
             rel1 {
                offset: 6 2;
             }
@@ -897,7 +862,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "icon_close";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             max: 14 14;
             align: 1.0 0.5;
@@ -916,7 +880,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "elm.text";
          type: TEXT;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             min: 0 21;
@@ -951,7 +914,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
          }
@@ -961,7 +923,6 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "event";
          type: RECT;
-         scale: 1;
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
@@ -1321,13 +1282,11 @@ group { name: "elm/toolbar/base/tabs_vertical";
    parts {
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
          }
@@ -1343,14 +1302,12 @@ group { name: "elm/toolbar/item/tabs_vertical";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
             min: 0 32;
          }
       }
       part { name: "bg";
          type: IMAGE;
-         scale: 1;
          description { state: "default" 0.0;
             min: 135 29;
             max: -1 29;
@@ -1358,7 +1315,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
             image {
                normal: "tabs-vertical-item-bg.png";
                border: 10 0 0 0;
-               border_scale: 1;
             }
          }
          description { state: "selected" 0.0;
@@ -1370,7 +1326,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
@@ -1381,7 +1336,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
             align: 0.0 0.5;
             min: 16 16;
             max: 16 16;
-            fixed: 1 1;
             rel1 {
                offset: 6 2;
                to: "bg";
@@ -1395,7 +1349,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
             visible: 0;
             min: 16 16;
             max: 16 16;
-            fixed: 1 1;
             rel1 {
                offset: 6 2;
                to: "bg";
@@ -1408,7 +1361,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
       }
       part { name: "elm.text";
          type: TEXT;
-         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
             min: 0 21;
@@ -1448,7 +1400,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
       }
       part { name: "clipper";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
          }
@@ -1458,7 +1409,6 @@ group { name: "elm/toolbar/item/tabs_vertical";
       }
       part { name: "event";
          type: RECT;
-         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }

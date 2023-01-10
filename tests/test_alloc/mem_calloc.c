@@ -49,7 +49,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mem_calloc_test_p)
+EFL_START_TEST (mem_calloc_test_p)
 {
    int *mc = mem_calloc(1024, sizeof(int));
    int i;
@@ -60,7 +60,7 @@ EFLETE_TEST (mem_calloc_test_p)
          ck_abort_msg("failure: not all elements == 0");
    free(mc);
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup mem_calloc
@@ -69,3 +69,8 @@ END_TEST
  * @}
  * @}
  */
+
+void mem_calloc_test(TCase *tc)
+{
+   tcase_add_test(tc, mem_calloc_test_p);
+}

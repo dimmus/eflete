@@ -17,19 +17,19 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+// #include "utc_common.h"
 #include "config.h"
 #include "main_window.h"
 
-void config_get_test_p1(int);
-void config_get_test_p2(int);
-void config_init_test_p(int);
-void config_load_test_p(int);
-void config_panes_sizes_data_update_test_p(int);
-void config_save_test_p(int);
-void config_shutdown_test_p(int);
-void profile_get_test_p2(int);
-void profile_load_test_p1(int);
-void profile_load_test_p2(int);
-void profile_save_test_p(int);
-void profiles_get_test_p(int);
+#include "../eflete_check.h"
+
+void config_get_test(TCase *tc);
+void config_init_test(TCase *tc);
+void config_load_test(TCase *tc);
+void config_panes_sizes_data_update_test(TCase *tc);
+void config_save_test(TCase *tc);
+void config_shutdown_test(TCase *tc);
+void profile_get_test(TCase *tc);
+void profile_load_test(TCase *tc);
+void profile_save_test(TCase *tc);
+void profiles_get_test(TCase *tc);

@@ -4,14 +4,11 @@ group { name: "elm/label/base/default";
    data.item: "min_font_size" "6";
    data.item: "max_font_size" "60";
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
+      part { name: "elm.text"; type: TEXTBLOCK;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             text {
@@ -43,6 +40,7 @@ group { name: "elm/label/base/default";
    }
 }
 
+// Animated (scrolling) text in About popup window
 group { name: "elm/label/base/slide_about";
    data {
       item: "min_font_size" "6";
@@ -50,15 +48,12 @@ group { name: "elm/label/base/slide_about";
       item: "default_font_size" "11";
    }
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
-         scale: 1;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
             min: 0 300;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
+      part { name: "elm.text"; type: TEXTBLOCK;
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
@@ -126,16 +121,13 @@ group { name: "elm/label/base/help";
       item: "default_font_size" "11";
    }
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
             rel1.to: "elm.text";
             rel2.to: "elm.text";
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
+      part { name: "elm.text"; type: TEXTBLOCK;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             text {

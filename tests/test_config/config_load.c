@@ -49,21 +49,21 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(config_load_test_p)
+EFL_START_TEST(config_load_test_p)
 {
    Config *config;
 
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
    config_load();
 
    config = config_get();
    ck_assert_msg(config != NULL, "Config not been loaded.");
 
-   app_shutdown();
-   elm_shutdown();
+   // app_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup config_load
@@ -72,3 +72,8 @@ END_TEST
  * @}
  * @}
  */
+
+void config_load_test(TCase *tc)
+{
+   tcase_add_test(tc, config_load_test_p);
+}

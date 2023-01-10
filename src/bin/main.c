@@ -56,7 +56,7 @@ static const Ecore_Getopt options = {
    "  if FILE is not specified but --name given: new project\n"
    ,
    VERSION,
-   "(C) 2013-2016 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design to create and modify Elementary widgets styles.\n",

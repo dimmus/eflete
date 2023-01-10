@@ -51,7 +51,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_horizontal_set_test_p1)
+EFL_START_TEST(ewe_ruler_horizontal_set_test_p1)
 {
    logger_init();
    elm_init(0, 0);
@@ -66,7 +66,7 @@ EFLETE_TEST(ewe_ruler_horizontal_set_test_p1)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_horizontal_set
@@ -92,7 +92,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_horizontal_set_test_p2)
+EFL_START_TEST(ewe_ruler_horizontal_set_test_p2)
 {
    logger_init();
    elm_init(0, 0);
@@ -111,7 +111,7 @@ EFLETE_TEST(ewe_ruler_horizontal_set_test_p2)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_horizontal_set
@@ -135,7 +135,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_horizontal_set_test_n)
+EFL_START_TEST(ewe_ruler_horizontal_set_test_n)
 {
    logger_init();
    elm_init(0, 0);
@@ -147,7 +147,7 @@ EFLETE_TEST(ewe_ruler_horizontal_set_test_n)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 /**
  * @addtogroup ewe_ruler_horizontal_set
  * @{

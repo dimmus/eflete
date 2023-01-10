@@ -7,7 +7,7 @@ group { name: "elm/frame/base/default";
    parts {
       part { name: "base";
          type: RECT;
-         scale: 1;
+         
          description { state: "default" 0.0;
             color: 0 0 0 0;
             rel1 {
@@ -258,7 +258,7 @@ group { name: "elm/frame/base/outdent_top";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
+         
          description { state: "default" 0.0;
             rel1 {
                offset: 6 6;
@@ -499,7 +499,7 @@ group { name: "elm/frame/base/icon";
    parts {
       part { name: "base";
          type: SPACER;
-         scale: 1;
+         
          description { state: "default" 0.0;
             rel1 {
                offset: 6 6;

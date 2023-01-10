@@ -157,6 +157,8 @@ popup_add(const char *title,
 
    pd = mem_calloc(1, sizeof(Popup_Data));
    pd->popup = elm_popup_add(ap.win);
+   TODO("Need default style here. But \"elm/popup/base/default\" does\'t dim bg")
+   elm_object_style_set(pd->popup, "shortcuts"); 
    elm_popup_orient_set(pd->popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(pd->popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(pd->popup, ELM_WRAP_WORD);
@@ -190,7 +192,8 @@ popup_add(const char *title,
    shortcuts_object_push(pd->popup);
    evas_object_show(pd->popup);
 
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   // Menu stay disabled after press ESC when Help->Shortcuts popup activated. Commented for now.
+   //ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
    elm_object_focus_set(pd->button.ok, false);
    elm_object_focus_set(pd->button.save, false);

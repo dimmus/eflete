@@ -50,16 +50,16 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (app_shutdown_test_p1)
+EFL_START_TEST (app_shutdown_test_p1)
 {
-   elm_init(0,0);
+   // elm_init(0,0);
    app_init();
 
    ck_assert_msg(app_shutdown() == EINA_TRUE, "Could not shutdown some of libraries");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup app_shutdown
@@ -81,16 +81,16 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (app_shutdown_test_p2)
+EFL_START_TEST (app_shutdown_test_p2)
 {
-   elm_init(0,0);
+   // elm_init(0,0);
    app_init();
 
    ck_assert_msg(app_shutdown() == EINA_TRUE, "Could not shutdown some of libraries");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup app_shutdown
@@ -99,3 +99,9 @@ END_TEST
  * @}
  * @}
  */
+
+void app_shutdown_test(TCase *tc)
+{
+   tcase_add_test(tc, app_shutdown_test_p1);
+   tcase_add_test(tc, app_shutdown_test_p2);
+}

@@ -51,20 +51,20 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (config_panes_sizes_data_update_test_p)
+EFL_START_TEST (config_panes_sizes_data_update_test_p)
 {
-   elm_init(0, 0);
+   // elm_init(0, 0);
    Eina_Bool result = EINA_FALSE;
 
-   app_init();
+   // app_init();
    config_load();
 
    result = config_panes_sizes_data_update();
    ck_assert_msg(result == EINA_TRUE, "Could not update Panes sizes data");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup config_panes_sizes_data_update
@@ -73,3 +73,8 @@ END_TEST
  * @}
  * @}
  */
+
+void config_panes_sizes_data_update_test(TCase *tc)
+{
+   tcase_add_test(tc, config_panes_sizes_data_update_test_p);
+}

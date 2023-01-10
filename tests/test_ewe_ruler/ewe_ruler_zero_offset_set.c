@@ -52,7 +52,7 @@
  * @}
  */
 
-EFLETE_TEST(ewe_ruler_zero_offset_set_test_p)
+EFL_START_TEST(ewe_ruler_zero_offset_set_test_p)
 {
    logger_init();
    elm_init(0, 0);
@@ -71,7 +71,7 @@ EFLETE_TEST(ewe_ruler_zero_offset_set_test_p)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 
 /**
@@ -97,7 +97,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ewe_ruler_zero_offset_set_test_n)
+EFL_START_TEST(ewe_ruler_zero_offset_set_test_n)
 {
    logger_init();
    elm_init(0, 0);
@@ -109,7 +109,7 @@ EFLETE_TEST(ewe_ruler_zero_offset_set_test_n)
    app_shutdown();
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup ewe_ruler_zero_offset_set

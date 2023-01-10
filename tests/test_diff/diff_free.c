@@ -58,7 +58,7 @@ _function_type_int_redo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSE
  * </tr>
  * @}
  */
-EFLETE_TEST (diff_free_test_p)
+EFL_START_TEST (diff_free_test_p)
 {
    Diff *d1;
 
@@ -72,7 +72,7 @@ EFLETE_TEST (diff_free_test_p)
 
    diff_free(d1);
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup diff_free
@@ -81,3 +81,8 @@ END_TEST
  * @}
  * @}
  */
+
+void diff_free_test(TCase *tc)
+{
+   tcase_add_test(tc, diff_free_test_p);
+}

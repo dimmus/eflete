@@ -49,19 +49,20 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_save_test_p)
+EFL_START_TEST(profile_save_test_p)
 {
 
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
 
    config_load();
+
    ck_assert_msg(profile_save("default"), "Profile not saved.");
 
    config_shutdown();
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup profile_save
@@ -70,3 +71,8 @@ END_TEST
  * @}
  * @}
  */
+
+void profile_save_test(TCase *tc)
+{
+   tcase_add_test(tc, profile_save_test_p);
+}

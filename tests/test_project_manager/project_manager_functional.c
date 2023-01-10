@@ -46,10 +46,10 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(project_manager_functional)
+EFL_START_TEST(project_manager_functional)
 {
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup logger_init
@@ -59,3 +59,8 @@ END_TEST
  * @}
  *
  */
+
+void project_manager_functional_test(TCase *tc)
+{
+   tcase_add_test(tc, project_manager_functional);
+}

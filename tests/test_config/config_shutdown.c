@@ -47,17 +47,17 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(config_shutdown_test_p)
+EFL_START_TEST(config_shutdown_test_p)
 {
-   elm_init(0,0);
-   app_init();
+   // elm_init(0,0);
+   // app_init();
 
    config_shutdown();
    ck_assert_msg(config_get() == NULL, "Config not initialized.");
 
-   elm_shutdown();
+   // elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 /**
  * @addtogroup config_shutdown
@@ -66,3 +66,8 @@ END_TEST
  * @}
  * @}
  */
+
+void config_shutdown_test(TCase *tc)
+{
+   tcase_add_test(tc, config_shutdown_test_p);
+}
