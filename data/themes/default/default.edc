@@ -1,4 +1,5 @@
 data.item: "version" "110";
+efl_version: 1 26;
 
 collections {
    #include "../../macros.edc"
