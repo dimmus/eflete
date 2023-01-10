@@ -1,6 +1,5 @@
 group { name: "elm/thumb/base/noframe";
    alias: "elm/progressbar/horizontal/wheel";
-   alias: "elm/progressbar/horizontal/fileselector/extended";
    images {
      image: "ProgressBar0001.png" COMP;
      image: "ProgressBar0002.png" COMP;

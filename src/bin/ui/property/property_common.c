@@ -378,6 +378,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
+         elm_object_style_set(content, "default");
          evas_object_smart_callback_add(content, signals.elm.spinner.drag_start, _start_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.spinner.drag_stop, _stop_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.spinner.changed_user, _start_change_stop_cb, pa);

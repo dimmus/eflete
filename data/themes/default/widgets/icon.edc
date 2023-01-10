@@ -1,82 +1,81 @@
-#define IC(Name, Alias1, Alias2, File, Size) \
-   group { name: "elm/icon/"##Name##"/default"; min: Size Size; \
+#define IC(Name, Alias1, Alias2, File, Min, Max) \
+   group { name: "elm/icon/"##Name##"/default"; min: Min Min; max: Max Max; \
    alias: "elm/icon/"##Alias1##"/default"; alias: "elm/icon/"##Alias2##"/default"; \
-   images.image: File COMP; parts { part { name: "base"; scale: 1; \
-   description { aspect: 1.0 1.0; aspect_preference: BOTH; min: Size Size; max: Size Size; \
+   images.image: File COMP; parts { part { name: "base"; \
+   description { aspect: 1.0 1.0; aspect_preference: BOTH; \
    image.normal: File; } } } }
-IC("go-up",             "toolbar/go-up",            "menu/go-up",             "icon_arrow_up.png",       14);
-IC("go-down",           "toolbar/go-down",          "menu/go-down",           "icon_arrow_down.png",     14);
-IC("go-previous",       "toolbar/go-previous",      "menu/go-previous",       "icon_arrow_left.png",     14);
-IC("go-next",           "toolbar/go-next",          "menu/go-next",           "icon_arrow_right.png",    14);
-IC("go-home",           "toolbar/go-home",          "menu/go-home",           "icon_home.png",           14);
-IC("image2",            "toolbar/image2",           "menu/image2",            "icon_image2.png",         14);
-IC("sound2",            "toolbar/sound2",           "menu/sound2",            "icon_sound2.png",         14);
-IC("text2",             "toolbar/text2",            "menu/text2",             "icon_text2.png",          14);
-IC("close",             "toolbar/close",            "menu/close",             "icon_close.png",          14);
-IC("apps",              "toolbar/apps",             "menu/apps",              "icon_apps.png",           14);
-IC("chat",              "toolbar/chat",             "menu/chat",              "icon_chat.png",           14);
-IC("clock",             "toolbar/clock",            "menu/clock",             "icon_clock.png",          14);
-IC("delete",            "toolbar/delete",           "menu/delete",            "icon_delete.png",         14);
-IC("edit",              "toolbar/edit",             "menu/edit",              "icon_edit.png",           14);
-IC("refresh",           "toolbar/refresh",          "menu/refresh",           "icon_refresh.png",        14);
-IC("folder",            "toolbar/folder",           "menu/folder",            "icon_folder.png",         14);
-IC("file",              "toolbar/file",             "menu/file",              "icon_file.png",           14);
-IC("save",              "toolbar/save",             "menu/save",              "icon_save.png",           14);
-IC("search",            "toolbar/search",           "menu/search",            "icon_search.png",         14);
-IC("edit-find",         "toolbar/edit-find",        "menu/edit-find",         "icon_search.png",         14);
-IC("plus",              "toolbar/plus",             "menu/plus",              "icon_plus.png",           14);
-IC("minus",             "toolbar/minus",            "menu/minus",             "icon_minus.png",          14);
-IC("animator",          "toolbar/animator",         "menu/animator",          "icon_animator.png",       14);
-IC("image",             "toolbar/image",            "menu/image",             "icon_image.png",          14);
-IC("sound",             "toolbar/sound",            "menu/sound",             "icon_sound.png",          14);
-IC("color",             "toolbar/color",            "menu/color",             "icon_color.png",          14);
-IC("text",              "toolbar/text",             "menu/text",              "icon_text.png",           14);
-IC("info",              "toolbar/info",             "menu/info",              "icon_info.png",           14);
-IC("eye",               "toolbar/eye",              "menu/eye",               "icon_eye.png",            14);
-IC("code2",             "toolbar/code",             "menu/code",              "icon_code2.png",          14);
+IC("go-up",             "toolbar/go-up",            "menu/go-up",             "icon_arrow_up.png",       14, 0);
+IC("go-down",           "toolbar/go-down",          "menu/go-down",           "icon_arrow_down.png",     14, 0);
+IC("go-previous",       "toolbar/go-previous",      "menu/go-previous",       "icon_arrow_left.png",     14, 0);
+IC("go-next",           "toolbar/go-next",          "menu/go-next",           "icon_arrow_right.png",    14, 0);
+IC("go-home",           "toolbar/go-home",          "menu/go-home",           "icon_home.png",           14, 0);
+IC("image2",            "toolbar/image2",           "menu/image2",            "icon_image2.png",         14, 0);
+IC("sound2",            "toolbar/sound2",           "menu/sound2",            "icon_sound2.png",         14, 0);
+IC("text2",             "toolbar/text2",            "menu/text2",             "icon_text2.png",          14, 0);
+IC("close",             "toolbar/close",            "menu/close",             "icon_close.png",          14, 0);
+IC("apps",              "toolbar/apps",             "menu/apps",              "icon_apps.png",           14, 0);
+IC("chat",              "toolbar/chat",             "menu/chat",              "icon_chat.png",           14, 0);
+IC("clock",             "toolbar/clock",            "menu/clock",             "icon_clock.png",          14, 0);
+IC("delete",            "toolbar/delete",           "menu/delete",            "icon_delete.png",         14, 0);
+IC("edit",              "toolbar/edit",             "menu/edit",              "icon_edit.png",           14, 0);
+IC("refresh",           "toolbar/refresh",          "menu/refresh",           "icon_refresh.png",        14, 0);
+IC("folder",            "toolbar/folder",           "menu/folder",            "icon_folder.png",         14, 0);
+IC("file",              "toolbar/file",             "menu/file",              "icon_file.png",           14, 0);
+IC("save",              "toolbar/save",             "menu/save",              "icon_save.png",           14, 0);
+IC("search",            "toolbar/search",           "menu/search",            "icon_search.png",         14, 0);
+IC("plus",              "toolbar/plus",             "menu/plus",              "icon_plus.png",           14, 0);
+IC("minus",             "toolbar/minus",            "menu/minus",             "icon_minus.png",          14, 0);
+IC("animator",          "toolbar/animator",         "menu/animator",          "icon_animator.png",       14, 0);
+IC("image",             "toolbar/image",            "menu/image",             "icon_image.png",          14, 0);
+IC("sound",             "toolbar/sound",            "menu/sound",             "icon_sound.png",          14, 0);
+IC("color",             "toolbar/color",            "menu/color",             "icon_color.png",          14, 0);
+IC("text",              "toolbar/text",             "menu/text",              "icon_text.png",           14, 0);
+IC("info",              "toolbar/info",             "menu/info",              "icon_info.png",           14, 0);
+IC("eye",               "toolbar/eye",              "menu/eye",               "icon_eye.png",            14, 0);
+IC("code2",             "toolbar/code",             "menu/code",              "icon_code2.png",          14, 0);
 
-IC("type_rectangle",    "toolbar/type_rectangle",   "menu/type_rectangle",    "icon-rectangle.png",      14);
-IC("type_text",         "toolbar/type_text",        "menu/type_text",         "icon-text.png",           14);
-IC("type_image",        "toolbar/type_image",       "menu/type_image",        "icon-image.png",          14);
-IC("type_swallow",      "toolbar/type_swallow",     "menu/type_swallow",      "icon-swallow.png",        14);
-IC("type_textblock",    "toolbar/type_textblock",   "menu/type_textblock",    "icon-textblock.png",      14);
-IC("type_group",        "toolbar/type_group",       "menu/type_group",        "icon-group.png",          14);
-IC("type_box",          "toolbar/type_box",         "menu/type_box",          "icon-box.png",            14);
-IC("type_table",        "toolbar/type_table",       "menu/type_table",        "icon-table.png",          14);
-IC("type_proxy",        "toolbar/type_proxy",       "menu/type_proxy",        "icon-proxy.png",          14);
-IC("type_spacer",       "toolbar/type_spacer",      "menu/type_spacer",       "icon-spacer.png",         14);
+IC("type_rectangle",    "toolbar/type_rectangle",   "menu/type_rectangle",    "icon-rectangle.png",      14, 0);
+IC("type_text",         "toolbar/type_text",        "menu/type_text",         "icon-text.png",           14, 0);
+IC("type_image",        "toolbar/type_image",       "menu/type_image",        "icon-image.png",          14, 0);
+IC("type_swallow",      "toolbar/type_swallow",     "menu/type_swallow",      "icon-swallow.png",        14, 0);
+IC("type_textblock",    "toolbar/type_textblock",   "menu/type_textblock",    "icon-textblock.png",      14, 0);
+IC("type_group",        "toolbar/type_group",       "menu/type_group",        "icon-group.png",          14, 0);
+IC("type_box",          "toolbar/type_box",         "menu/type_box",          "icon-box.png",            14, 0);
+IC("type_table",        "toolbar/type_table",       "menu/type_table",        "icon-table.png",          14, 0);
+IC("type_proxy",        "toolbar/type_proxy",       "menu/type_proxy",        "icon-proxy.png",          14, 0);
+IC("type_spacer",       "toolbar/type_spacer",      "menu/type_spacer",       "icon-spacer.png",         14, 0);
 
-IC("text_style",        "toolbar/text_style",       "menu/text_style",        "icon_text_style.png",     14);
-IC("text_style_tag",    "toolbar/text_style_tag",   "menu/text_style_tag",    "icon_text_style_tag.png", 14);
-IC("sound_sample",      "toolbar/sound_sample",     "menu/sound_sample",      "icon_sample.png",         14);
-IC("sound_tone",        "toolbar/sound_tone",       "menu/sound_tone",        "icon_tone.png",           14);
+IC("text_style",        "toolbar/text_style",       "menu/text_style",        "icon_text_style.png",     14, 0);
+IC("text_style_tag",    "toolbar/text_style_tag",   "menu/text_style_tag",    "icon_text_style_tag.png", 14, 0);
+IC("sound_sample",      "toolbar/sound_sample",     "menu/sound_sample",      "icon_sample.png",         14, 0);
+IC("sound_tone",        "toolbar/sound_tone",       "menu/sound_tone",        "icon_tone.png",           14, 0);
 
-IC("no_photo",          "photo/no_photo",           "anonim",                 "icon_head.png",           14);
+IC("no_photo",          "photo/no_photo",           "anonim",                 "icon_head.png",           14, 0);
 #undef IC
 
-#define IC(Name, File, Size) \
-   group { name: "elm/icon/"##Name##"/default"; min: Size Size; \
-   images.image: File COMP; parts { part { name: "base"; scale: 1; \
-   description { aspect: 1.0 1.0; aspect_preference: BOTH; min: Size Size; max: Size Size; \
+#define IC(Name, File, Min, Max) \
+   group { name: "elm/icon/"##Name##"/default"; min: Min Min; max: Max Max; \
+   images.image: File COMP; parts { part { name: "base"; \
+   description { aspect: 1.0 1.0; aspect_preference: BOTH; \
    image.normal: File; } } } }
-IC("arrow_up_left",        "icon_arrow_up_left.png",    14);
-IC("arrow_up_right",       "icon_arrow_up_right.png",   14);
-IC("arrow_down_left",      "icon_arrow_down_left.png",  14);
-IC("arrow_down_right",     "icon_arrow_down_right.png", 14);
+IC("arrow_up_left",        "icon_arrow_up_left.png",    14, 0);
+IC("arrow_up_right",       "icon_arrow_up_right.png",   14, 0);
+IC("arrow_down_left",      "icon_arrow_down_left.png",  14, 0);
+IC("arrow_down_right",     "icon_arrow_down_right.png", 14, 0);
 
-IC("impuls_in",            "icon_impuls.png",           14);
+IC("impuls_in",            "icon_impuls.png",           14, 0);
 
-IC("toolbar/more_menu",    "icon_arrow_down.png",       14);
+IC("toolbar/more_menu",    "icon_arrow_down.png",       14, 0);
 
-IC("media_player/forward", "icon_forward.png", 14);
-IC("media_player/info",    "icon_info.png",    14);
-IC("media_player/next",    "icon_next.png",    14);
-IC("media_player/pause",   "icon_pause.png",   14);
-IC("media_player/play",    "icon_play.png",    14);
-IC("media_player/prev",    "icon_prev.png",    14);
-IC("media_player/rewind",  "icon_rewind.png",  14);
-IC("media_player/stop",    "icon_stop.png",    14);
-IC("media_player/eject",   "icon_eject.png",   14);
-IC("media_player/volume",  "icon_volume.png",  14);
-IC("media_player/mute",    "icon_mute.png",    14);
+IC("media_player/forward", "icon_forward.png", 14, 0);
+IC("media_player/info",    "icon_info.png",    14, 0);
+IC("media_player/next",    "icon_next.png",    14, 0);
+IC("media_player/pause",   "icon_pause.png",   14, 0);
+IC("media_player/play",    "icon_play.png",    14, 0);
+IC("media_player/prev",    "icon_prev.png",    14, 0);
+IC("media_player/rewind",  "icon_rewind.png",  14, 0);
+IC("media_player/stop",    "icon_stop.png",    14, 0);
+IC("media_player/eject",   "icon_eject.png",   14, 0);
+IC("media_player/volume",  "icon_volume.png",  14, 0);
+IC("media_player/mute",    "icon_mute.png",    14, 0);
 #undef IC
