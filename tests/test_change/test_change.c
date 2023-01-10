@@ -50,27 +50,3 @@ main(int argc, char **argv)
 
    return (failed_count == 0) ? 0 : 255;
 }
-
-// Suite* test_suite (void) {
-//    Suite *suite = suite_create("change_test");
-//    TCase *tcase = tcase_create("TCase");
-
-//    tcase_add_test(tcase, change_add_test_p);
-//    tcase_add_test(tcase, change_free_test_p);
-//    tcase_add_test(tcase, change_diff_add_test_p);
-//    tcase_add_test(tcase, change_diff_merge_add_test_p);
-
-//    suite_add_tcase(suite, tcase);
-//    return suite;
-// }
-
-// int main(void) {
-//    int number_failed;
-//    Suite *suite = test_suite();
-//    SRunner *runner = srunner_create(suite);
-//    srunner_set_xml (runner, "test_change.xml");
-//    srunner_run_all(runner, CK_VERBOSE);
-//    number_failed = srunner_ntests_failed(runner);
-//    srunner_free(runner);
-//    return number_failed;
-// }

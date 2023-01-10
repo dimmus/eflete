@@ -59,3 +59,8 @@ EFL_END_TEST
  * @}
  *
  */
+
+void project_manager_functional_test(TCase *tc)
+{
+   tcase_add_test(tc, project_manager_functional);
+}

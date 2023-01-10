@@ -58,36 +58,3 @@ main(int argc, char **argv)
 
    return (failed_count == 0) ? 0 : 255;
 }
-
-
-// Suite* test_suite (void) {
-//    Suite *suite = suite_create("config_test");
-//    TCase *tcase = tcase_create("TCase");
-
-//    tcase_add_test(tcase, config_get_test_p1);
-//    tcase_add_test(tcase, config_get_test_p2);
-//    tcase_add_test(tcase, config_init_test_p);
-//    tcase_add_test(tcase, config_load_test_p);
-//    tcase_add_test(tcase, config_panes_sizes_data_update_test_p);
-//    tcase_add_test(tcase, config_save_test_p);
-//    tcase_add_test(tcase, config_shutdown_test_p);
-//    tcase_add_test(tcase, profile_get_test_p2);
-//    tcase_add_test(tcase, profile_load_test_p1);
-//    tcase_add_test(tcase, profile_load_test_p2);
-//    tcase_add_test(tcase, profile_save_test_p);
-//    tcase_add_test(tcase, profiles_get_test_p);
-
-//    suite_add_tcase(suite, tcase);
-//    return suite;
-// }
-
-// int main(void) {
-//    int number_failed;
-//    Suite *suite = test_suite();
-//    SRunner *runner = srunner_create(suite);
-//    srunner_set_xml (runner, "test_config.xml");
-//    srunner_run_all(runner, CK_VERBOSE);
-//    number_failed = srunner_ntests_failed(runner);
-//    srunner_free(runner);
-//    return number_failed;
-// }
