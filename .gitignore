@@ -149,7 +149,7 @@ libtool
 
 #localization
 *.gmo
-*.pot
+#*.pot
 po/en@quot.po
 
 #documentation
