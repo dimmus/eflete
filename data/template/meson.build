@@ -13,8 +13,8 @@ foreach edc_file : edc_template_files
     command     : edje_cc_exe +
                   [
                    '-beta',
-                   '-sd', join_paths(meson.source_root(), 'data/template/sounds'),
-                   '-id', join_paths(meson.source_root(), 'data/template/images'),
+                   '-sd', join_paths(meson.current_source_dir(), 'data/template/sounds'),
+                   '-id', join_paths(meson.current_source_dir(), 'data/template/images'),
                    '@INPUT@', '@OUTPUT@'
                   ],
     install     : true,
@@ -24,5 +24,5 @@ endforeach
 
 install_data(
   sources     : edc_template_files,
-  install_dir : join_paths(dir_pkgdata, 'templates')
+  install_dir : join_paths(dir_pkgdata, 'themes/default/templates')
 )

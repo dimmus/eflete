@@ -21,17 +21,11 @@ endforeach
 
 
 ewe_header_src = [
-  'Ewe.h',
-  'ewe_private.h',
-  'ewe_ruler_common.h',
-  'ewe_ruler_eo.h',
-  'ewe_ruler_legacy.h',
-  'ewe_ruler.h',
-  'ewe_widget_ruler.h'
+  'Ewe.h'
 ]
 
 install_headers(ewe_header_src,
-  install_dir : dir_pkginclude + '-' + v_maj
+  install_dir : dir_pkginclude + '-' + ete_version_major
 )
 
 ewe_src = files([
@@ -40,23 +34,12 @@ ewe_src = files([
 
 ewe_lib = library('ewe', ewe_src, eo_gen,
   c_args : [ eflete_cargs,
-             '-DHAVE_CONFIG_H',
-             '-I' + meson.source_root(),
-             '-I' + meson.current_build_dir(),
-             '-I' + join_paths(meson.source_root(), 'src/lib'),
-             '-I' + join_paths(meson.current_build_dir(), 'src/lib'),
-             '-I' + join_paths(meson.source_root(), 'src/bin/logger'),
-            #  '-DPACKAGE_DATA_DIR=' + dir_pkgdata,
-            #  '-DLOCALE_DIR=' + dir_locale,
-            #  '-DPACKAGE_LIB_DIR=' + dir_lib,
-             '-DEWE_THEME=' + join_paths(dir_pkgdata, 'themes/default/ewe.edj'),
-             '-DEFL_EO_API_SUPPORT',
-             '-DEFL_BETA_API_SUPPORT',
-             '-DELM_INTERNAL_API_ARGESFSDFEFC',
-             '-DEWE_BUILD'
+             '-DEWE_THEME="' + join_paths(dir_pkgdata, 'themes/default/ewe.edj"'),
            ],
+  # gnu_symbol_visibility : 'hidden',
   dependencies : eflete_deps,
-  include_directories : config_dir + [include_directories('.')] + [include_directories(join_paths('..','..'))] + [include_directories(join_paths('..', '..', '..'))],
+  include_directories : [ include_directories('.'),
+                          include_directories(join_paths('..','..','src/bin/logger'))],
   version : meson.project_version(),
   install : true
 )
