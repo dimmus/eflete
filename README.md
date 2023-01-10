@@ -8,7 +8,7 @@
 <p align="center">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/dimmus/eflete?style=for-the-badge">
   <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/dimmus/eflete?style=for-the-badge">
-  <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2022?style=for-the-badge">
+  <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2023?style=for-the-badge">
   <a href="https://scan.coverity.com/projects/dimmus-eflete">
     <img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/26855.svg?style=for-the-badge"/>
   </a>
