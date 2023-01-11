@@ -54,7 +54,7 @@ static const Ecore_Getopt options = {
    "%prog [OPTION]... FILE"
    ,
    VERSION,
-   "(C) 2013-2016 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design as Eflete support tool.\n",
