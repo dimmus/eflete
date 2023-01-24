@@ -41,7 +41,7 @@ case "$host_os" in
       AC_MSG_ERROR([ceGCC compiler is not supported anymore. Exiting...])
    ;;
    mingw32ce*)
-      os_remark="For this OS Eflete not been tested. Applicationmay be unstable!"
+      os_remark="For this OS Eflete not been tested. Application may be unstable!"
    ;;
    mingw*|cygwin*)
       # TODO: check cygwin* here
