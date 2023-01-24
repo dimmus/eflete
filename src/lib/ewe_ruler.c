@@ -793,7 +793,7 @@ _ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
    
    // OLD code. Save until above will be tested.
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
-   // elm_widget_sub_object_parent_add(obj); 
+   elm_widget_sub_object_parent_add(obj); 
 
    data_dir = elm_app_data_dir_get();
    if (data_dir && strcmp(data_dir, ""))

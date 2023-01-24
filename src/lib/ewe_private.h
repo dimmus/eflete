@@ -48,9 +48,8 @@ extern "C" {
 #include <Efl_Ui.h>
 #include <Elementary.h>
 
-// #include <elm_widget.h>
-// #include <elm_widget_layout.h>
-// #include <elm_interface_scrollable.h>
+#undef ELM_WIDGET_ITEM_PROTECTED // to avoid inclusion of elm_widget_item_eo.h
+#include <elm_widget.h>
 
 #include "Ewe.h"
 #include "logger.h"
