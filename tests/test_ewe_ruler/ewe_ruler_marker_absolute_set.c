@@ -41,9 +41,7 @@
  */
 EFL_START_TEST(ewe_ruler_marker_absolute_set_test_p)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
+   
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
@@ -54,8 +52,6 @@ EFL_START_TEST(ewe_ruler_marker_absolute_set_test_p)
    ck_assert_msg(ewe_ruler_marker_absolute_get(ruler, marker) == -125, "Wrong value setted");
 
    evas_object_del(win);
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -89,9 +85,7 @@ EFL_END_TEST
  */
 EFL_START_TEST(ewe_ruler_marker_absolute_set_test_n)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
+   
    Evas_Object *win = elm_win_util_standard_add("test", "test");
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
@@ -100,8 +94,6 @@ EFL_START_TEST(ewe_ruler_marker_absolute_set_test_n)
    ck_assert_msg(ewe_ruler_marker_absolute_set(ruler, NULL, 125) == EINA_FALSE, "Setted abs position for NULL marker");
    ck_assert_msg(ewe_ruler_marker_absolute_set(NULL, NULL, 125) == EINA_FALSE, "Setted abs position for NULL ruler object for NULL marker");
 
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -112,3 +104,9 @@ EFL_END_TEST
  * @}
  * @}
  */
+
+void ewe_ruler_marker_absolute_set_test(TCase *tc)
+{
+   tcase_add_test(tc, ewe_ruler_marker_absolute_set_test_p);
+   tcase_add_test(tc, ewe_ruler_marker_absolute_set_test_n);
+}

@@ -37,9 +37,7 @@
 
 EFL_START_TEST(ewe_ruler_marker_add_test_p)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
+   
    Evas_Object *ruler, *parent;
    Ewe_Ruler_Marker *result;
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
@@ -49,8 +47,6 @@ EFL_START_TEST(ewe_ruler_marker_add_test_p)
    ck_assert_msg(result != NULL, "Marker not returned");
 
    evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -78,16 +74,12 @@ EFL_END_TEST
  */
 EFL_START_TEST(ewe_ruler_marker_add_test_n)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
+   
    Ewe_Ruler_Marker *result;
 
    result = ewe_ruler_marker_add(NULL, NULL);
    ck_assert_msg(result == NULL, "Not NULL returned");
 
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -98,3 +90,9 @@ EFL_END_TEST
  * @}
  * @}
  */
+
+void ewe_ruler_marker_add_test(TCase *tc)
+{
+   tcase_add_test(tc, ewe_ruler_marker_add_test_p);
+   tcase_add_test(tc, ewe_ruler_marker_add_test_n);
+}

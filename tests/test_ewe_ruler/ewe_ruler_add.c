@@ -35,9 +35,6 @@
 
 EFL_START_TEST(ewe_ruler_add_test_p)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
    Evas_Object *result, *parent;
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
@@ -45,8 +42,6 @@ EFL_START_TEST(ewe_ruler_add_test_p)
    ck_assert_msg(result != NULL, "Not layout returned");
 
    evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -73,16 +68,10 @@ EFL_END_TEST
  */
 EFL_START_TEST(ewe_ruler_add_test_n)
 {
-   logger_init();
-   elm_init(0, 0);
-   app_init();
    Evas_Object *result;
 
    result = ewe_ruler_add(NULL);
    ck_assert_msg(result == NULL, "Not NULL returned");
-
-   app_shutdown();
-   elm_shutdown();
 }
 EFL_END_TEST
 
