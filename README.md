@@ -27,10 +27,9 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 
 ## Requirements
 
-   * efl (>= 1.23.3 && < 1.26.99)
+   * efl 1.26.99 (git)
 
-Please note that some features may not quite function correctly or
-completely!
+Please note that some features may not quite function correctly or completely!
 
 ## Compiling
 
