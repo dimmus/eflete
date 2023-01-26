@@ -15,5 +15,6 @@
 
 #include "ewe_ruler_common.h"
 #include "ewe_ruler_legacy.h"
+#include "ewe_ruler_eo.h"
 
 #endif /* EWE_RULER_H */
