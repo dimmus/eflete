@@ -19,7 +19,7 @@
   <i>Work in progress! Limited functionality.</i>
 </p>
 
-Efl Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library (EFL) that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
+Efl Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library ([EFL](https://www.enlightenment.org/about-efl)) that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
 
 An EDC (Edje data collection) file is a text file that contains the code describing the position, size, and other parameters of graphical elements that compose the visual aspect of your EFL application. In addition to graphical elements, it can also handle sounds. EDC is a description language where the objects of an interface are described using a text description. An EDC file needs to be compiled into a `.edj` file using the Edje library tools. After compiling, the `.edj` file can be used as a theme file by a native EFL-based application.
 
@@ -27,7 +27,7 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 
 ## Requirements
 
-   * efl 1.26.99 (git)
+   * EFL 1.26.99 ([git](https://git.enlightenment.org/enlightenment/efl))
 
 Please note that some features may not quite function correctly or completely!
 
