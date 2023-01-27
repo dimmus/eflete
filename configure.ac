@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-xz subdir-objects color-tests foreign])
 LT_INIT([win32-dll disable-static pic-only])
 
 m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.26.99])
+m4_define([efl_version], [1.26.3])
 m4_define([efl_version_max], [1.26.9999])
 
 m4_define([enventor_version], [1.0.0])
