@@ -1,7 +1,7 @@
 <h1 align="center">EFLETE (EFL Edge Theme Editor)</h1>
 
 <p align="center">
-  <img src="./data/images/eflete.svg" width="300" height="300" border="0"></>
+  <img src="https://www.enlightenment.org/ss/e-63d3e21d74b8e8.98377470.jpg" border="0"></>
 </p>
 
 <br/>
