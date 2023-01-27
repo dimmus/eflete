@@ -37,7 +37,7 @@ Please note that some features may not quite function correctly or completely!
 
 Once you have met the requirements, compiling and installing is simple:
 ```sh
-autoreconf -i
+./autogen.sh
 ./configure
 make
 sudo make install
