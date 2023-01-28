@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
 "Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
 "POT-Creation-Date: 2017-07-21 16:03+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-01-29 22:00+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/eflete/"
+"eflete/nb_NO/>\n"
 "Language: nb_NO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 #: src/bin/project_manager/project_manager2.c:1404
 #, c-format
@@ -46,7 +49,7 @@ msgstr ""
 #: src/bin/ui/colorclass_manager.c:249 src/bin/ui/image_manager.c:931
 #: src/bin/ui/sound_manager.c:646 src/bin/ui/style_manager.c:475
 msgid "Search"
-msgstr ""
+msgstr "Søk"
 
 #: src/bin/ui/colorclass_manager.c:436 src/bin/ui/menu.c:330
 msgid "Color class manager"
@@ -71,7 +74,7 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:248
 msgid "Unable to add a folder"
-msgstr ""
+msgstr "Kunne ikke legge til mappe"
 
 #: src/bin/ui/image_manager.c:267
 msgid "Add new image into set"
@@ -91,7 +94,7 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:703
 msgid "Choose image"
-msgstr ""
+msgstr "Velg bilde"
 
 #: src/bin/ui/image_manager.c:805
 msgid "Image set name:"
@@ -107,11 +110,11 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:960 src/bin/ui/image_manager.c:1168
 msgid "Image"
-msgstr ""
+msgstr "Bilde"
 
 #: src/bin/ui/image_manager.c:982
 msgid "Image Set"
-msgstr ""
+msgstr "Bildesett"
 
 #: src/bin/ui/image_manager.c:1001
 msgid "Vectors"
@@ -123,7 +126,7 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:1079
 msgid "Image Gallery"
-msgstr ""
+msgstr "Bildegalleri"
 
 #: src/bin/ui/image_manager.c:1169
 msgid "Image set"
