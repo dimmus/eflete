@@ -27,11 +27,11 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 
 ## Requirements
 
-   * EFL >=1.26.0
+   * EFL ≥ 1.26.0
 
 <!-- ([git](https://git.enlightenment.org/enlightenment/efl)) -->
 
-Please note that some features may not quite function correctly or completely!
+Please note that some features may not quite function correctly or completely! WIP.
 
 ## Compiling
 
