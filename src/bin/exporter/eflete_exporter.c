@@ -108,47 +108,58 @@ _edc_header_get(void)
 static Eina_Bool
 _build_script_write(void)
 {
-   FILE *f;
-   Eina_Strbuf *buf;
+  FILE *f;
+  Eina_Strbuf *buf;
+  char p[512];
 
-   // Calculate the required buffer size
-   size_t size = snprintf(NULL, 0, "%s/build.sh", path) + 1;
+  // Calculate the required buffer size
+  size_t size = snprintf(p, sizeof(p), "%s/build.sh", path);
+  if (size >= sizeof(p)) {
+      ERR("Path exceeds maximum length");
+      return false;
+  }
 
-   // Allocate a buffer of the required size
-   char* p = malloc(size);
-   if (!p) {
-       ERR("Failed to allocate memory for path");
-       return false;
-   }
+  f = fopen(p, "w");
+  if (!f) {
+      ERR("Failed to open file '%s'", p);
+      return false;
+  }
 
-   // Write the path to the buffer
-   snprintf(p, size, "%s/build.sh", path);
-   f = fopen(p, "w");
-   if (!f)
-     {
-        ERR("Could't open file '%s'", path);
-        return false;
-     }
-   if (chmod(p, S_IRWXU | S_IRWXG) < 0)
-     ERR("Bash script failed to change mode to execute");
+  if (fchmod(fileno(f), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP) < 0) {
+      ERR("Failed to set bash script permissions");
+      fclose(f);
+      return false;
+  }
 
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "#!/bin/sh\n");
-   eina_strbuf_append_printf(buf, "edje_cc -v generated.edc");
-   snprintf(p, sizeof(p), "%s/"IMAGES"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -id "IMAGES"/");
-   snprintf(p, sizeof(p), "%s/"SOUNDS"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -sd "SOUNDS"/");
-   snprintf(p, sizeof(p), "%s/"FONTS"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -fd "FONTS"/");
-   fputs(eina_strbuf_string_get(buf), f);
-   eina_strbuf_free(buf);
+  buf = eina_strbuf_new();
+  eina_strbuf_append_printf(buf, "#!/bin/sh\n");
+  eina_strbuf_append_printf(buf, "edje_cc -v generated.edc");
 
-   fclose(f);
-   return true;
+  snprintf(p, sizeof(p), "%s/" IMAGES "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -id " IMAGES "/");
+  }
+
+  snprintf(p, sizeof(p), "%s/" SOUNDS "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -sd " SOUNDS "/");
+  }
+
+  snprintf(p, sizeof(p), "%s/" FONTS "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -fd " FONTS "/");
+  }
+
+  fputs(eina_strbuf_string_get(buf), f);
+  eina_strbuf_free(buf);
+  fclose(f);
+
+  if (chmod(p, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP) < 0) {
+      ERR("Bash script failed to change mode to execute");
+      return false;
+  }
+
+  return true;
 }
 
 static void
