@@ -110,9 +110,19 @@ _build_script_write(void)
 {
    FILE *f;
    Eina_Strbuf *buf;
-   char p[512];
 
-   snprintf(p, sizeof(p), "%s/build.sh", path);
+   // Calculate the required buffer size
+   size_t size = snprintf(NULL, 0, "%s/build.sh", path) + 1;
+
+   // Allocate a buffer of the required size
+   char* p = malloc(size);
+   if (!p) {
+       ERR("Failed to allocate memory for path");
+       return false;
+   }
+
+   // Write the path to the buffer
+   snprintf(p, size, "%s/build.sh", path);
    f = fopen(p, "w");
    if (!f)
      {
