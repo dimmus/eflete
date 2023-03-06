@@ -68,7 +68,7 @@ _folder_item_label_get(void *data,
    int symbols;
    Eina_Stringshare *prefix = data;
 
-   symbols = strlen(prefix) - 1;
+   symbols = strlen_safe(prefix) - 1;
    strncpy(buf, prefix, symbols);
    buf[symbols] = '\0';
    pos = strrchr(buf, '/');

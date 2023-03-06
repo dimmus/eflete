@@ -1,4 +1,5 @@
 #include "live_elementary_widgets.h"
+#include "main_window.h" // strlen_safe
 
 static void
 _on_popup_swallow_check(void *data __UNUSED__,
@@ -13,9 +14,9 @@ _on_popup_swallow_check(void *data __UNUSED__,
 
    TODO("recheck this logic");
    pointer = strstr(part->name, "button");
-   if ((pointer) && (strlen(pointer) == strlen("button") + 1))
+   if ((pointer) && (strlen_safe(pointer) == strlen_safe("button") + 1))
      {
-        num = atoi(pointer + strlen("button"));
+        num = atoi(pointer + strlen_safe("button"));
         but_swallow = eina_stringshare_printf("button%d", num);
      }
    if (!strcmp(part->name, "elm.swallow.title.icon"))

@@ -180,7 +180,7 @@ _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
 
    unsigned long val;
    char *end;
-   int length = (int)strlen(hex);
+   int length = (int)strlen_safe(hex);
    switch (length)
      {
       case 7:
@@ -243,7 +243,7 @@ _tag_value_get(const char* text_style, char* a_tag)
    assert(text_style != NULL);
    assert(a_tag != NULL);
 
-   char *tag_list_copy = mem_malloc(strlen(text_style) + 1);
+   char *tag_list_copy = mem_malloc(strlen_safe(text_style) + 1);
    Eina_Tmpstr *result = NULL;
    char *token;
 
@@ -260,10 +260,10 @@ _tag_value_get(const char* text_style, char* a_tag)
                {
                   equals_sign++;
 
-                  if (equals_sign[strlen(equals_sign) - 1] != '\'')
+                  if (equals_sign[strlen_safe(equals_sign) - 1] != '\'')
                     result = eina_tmpstr_add(equals_sign);
                   else
-                    result = eina_tmpstr_add_length(equals_sign, strlen(equals_sign) - 1);
+                    result = eina_tmpstr_add_length(equals_sign, strlen_safe(equals_sign) - 1);
                   if (!strstr(FONT_DEFAULT, a_tag)) break;
                }
           }
@@ -1477,7 +1477,7 @@ _on_style_selected(void *data,
         /* working with wonderful glow and shadow now */
         tmp = _tag_value_get(value, "style");
         if (!tmp) tmp = eina_tmpstr_add("none");
-        style_copy = mem_malloc(strlen(tmp) + 1);
+        style_copy = mem_malloc(strlen_safe(tmp) + 1);
         strcpy(style_copy, tmp);
         token = strtok(style_copy, ",");
         TODO("replace with eina_str_split_full")

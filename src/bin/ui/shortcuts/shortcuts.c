@@ -1,4 +1,5 @@
 #include "shortcuts.h"
+#include "main_window.h" // strlen_safe
 #include "config.h"
 static Eina_List *handlers_stack = NULL;
 
@@ -386,20 +387,20 @@ _combination_string_get(Shortcut *sc)
    Eina_Strbuf *buf = eina_strbuf_new();
    char *result = NULL;
    if (sc->modifiers & MOD_CTRL)
-     eina_strbuf_append_length(buf, "Ctrl + ", strlen("Ctrl + "));
+     eina_strbuf_append_length(buf, "Ctrl + ", strlen_safe("Ctrl + "));
    if (sc->modifiers & MOD_ALT)
-     eina_strbuf_append_length(buf, "Alt + ", strlen("Alt + "));
+     eina_strbuf_append_length(buf, "Alt + ", strlen_safe("Alt + "));
    if (sc->modifiers & MOD_SHIFT)
-     eina_strbuf_append_length(buf, "Shift + ", strlen("Shift + "));
+     eina_strbuf_append_length(buf, "Shift + ", strlen_safe("Shift + "));
    if (sc->modifiers & MOD_SUPER)
-     eina_strbuf_append_length(buf, "Super + ", strlen("Super + "));
+     eina_strbuf_append_length(buf, "Super + ", strlen_safe("Super + "));
    if (sc->modifiers & MOD_META)
-     eina_strbuf_append_length(buf, "Meta + ", strlen("Meta + "));
+     eina_strbuf_append_length(buf, "Meta + ", strlen_safe("Meta + "));
    if (sc->modifiers & MOD_HYPER)
-     eina_strbuf_append_length(buf, "Hyper + ", strlen("Hyper + "));
+     eina_strbuf_append_length(buf, "Hyper + ", strlen_safe("Hyper + "));
    if (sc->modifiers & MOD_CAPS)
-     eina_strbuf_append_length(buf, "Caps Lock + ", strlen("Caps Lock + "));
-   eina_strbuf_append_length(buf, sc->keyname, strlen(sc->keyname));
+     eina_strbuf_append_length(buf, "Caps Lock + ", strlen_safe("Caps Lock + "));
+   eina_strbuf_append_length(buf, sc->keyname, strlen_safe(sc->keyname));
    result = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
    return result;

@@ -11,6 +11,11 @@
 #include "config.h"
 #include "property.h"
 
+size_t strlen_safe(const char *str)
+{
+    return (str != NULL) ? strlen(str) : 0;
+}
+
 static void
 _project_navigator_group_open(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,

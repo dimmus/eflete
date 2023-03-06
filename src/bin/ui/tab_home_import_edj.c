@@ -269,7 +269,7 @@ _genlist_label_get(void *data,
    assert (node != NULL);
    if (node->list)
      {
-        symbols = strlen(node->name) - 1;
+        symbols = strlen_safe(node->name) - 1;
         strncpy(buf, node->name, symbols);
         buf[symbols] = '\0';
         pos = strrchr(buf, '/');

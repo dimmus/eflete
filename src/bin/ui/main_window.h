@@ -20,6 +20,8 @@ TODO("Check pulse_audio on configure and add COREAUDIO support")
    #include <Ecore_Audio.h>
 #endif
 
+size_t strlen_safe(const char *str);
+
 enum Menu_Item
 {
    /* Needed as parent for top level menu items and as end mark in items lists */
