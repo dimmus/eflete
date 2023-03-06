@@ -129,7 +129,7 @@ _build_script_write(void)
         ERR("Could't open file '%s'", path);
         return false;
      }
-   if (chmod(p, S_IRWXU | S_IRWXG | S_IROTH | S_IWOTH) < 0)
+   if (chmod(p, S_IRWXU | S_IRWXG) < 0)
      ERR("Bash script failed to change mode to execute");
 
    buf = eina_strbuf_new();
