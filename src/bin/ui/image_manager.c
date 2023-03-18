@@ -636,7 +636,7 @@ _on_image_done(void *data __UNUSED__,
           }
         if (ecore_file_is_dir(selected))
           {
-             ERR(_("Unable to add folder"))
+             ERR(_("Unable to add folder"));
              continue;
           }
         file_name = ecore_file_file_get(selected);

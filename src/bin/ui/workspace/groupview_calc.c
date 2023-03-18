@@ -1123,7 +1123,7 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
    Groupview_Part *gp;
    Eina_List *l;
 
-   DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts))
+   DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts));
    sd->protrusion.x = 0;
    sd->protrusion.y = 0;
    sd->protrusion.w = 0;

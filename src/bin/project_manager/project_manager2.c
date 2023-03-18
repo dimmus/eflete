@@ -224,7 +224,7 @@ _project_create(Project_Process_Data *ppd)
 exit:
    if (PM_PROJECT_SUCCESS != last_error)
      {
-        ERR("Could't create a .pro file! ")
+        ERR("Could't create a .pro file! ");
         eina_stringshare_del(pro->name);
         eina_stringshare_del(pro->dev);
         eina_stringshare_del(pro->saved_edj);

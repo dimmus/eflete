@@ -11,7 +11,7 @@ demo_add(Evas_Object *parent, Group2 *group)
      {
         obj = live_widget_create(group, parent);
         if (!obj)
-           ERR(N_("Widget live view isn't implemented yet. Using fallback to layout"))
+           ERR(N_("Widget live view isn't implemented yet. Using fallback to layout"));
         else
         {
            Elm_Theme *theme = elm_theme_new();
@@ -24,7 +24,7 @@ demo_add(Evas_Object *parent, Group2 *group)
    /* if widget is not created, need use the layout */
    if (!obj)
      {
-        ERR(N_("Widget live view isn't implemented yet. Using fallback to layout"))
+        ERR(N_("Widget live view isn't implemented yet. Using fallback to layout"));
         obj = layout_custom_create(parent, group);
      }
 

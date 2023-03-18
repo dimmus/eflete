@@ -16,7 +16,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define CRIT(fmt, ...) \
-   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__);
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level ERROR.
@@ -24,7 +24,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define ERR(fmt, ...) \
-   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__);
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level WARNING.
@@ -32,7 +32,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define WARN(fmt, ...) \
-   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__);
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level INFO.
@@ -40,7 +40,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define INFO(fmt, ...) \
-   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__);
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level DEBUG.
@@ -48,7 +48,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define DBG(fmt, ...) \
-   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__);
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
 
 /**
  * Initialize logger

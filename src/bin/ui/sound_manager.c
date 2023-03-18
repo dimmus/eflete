@@ -209,7 +209,7 @@ _add_sample_done(void *data __UNUSED__,
      }
    if (ecore_file_is_dir(selected))
      {
-        ERR(_("Unable to add folder"))
+        ERR(_("Unable to add folder"));
         return true;
      }
 
@@ -223,7 +223,7 @@ _add_sample_done(void *data __UNUSED__,
         }
    if (exist)
      {
-        WARN(_("Sample '%s' is already added to project"), sound_name)
+        WARN(_("Sample '%s' is already added to project"), sound_name);
         eina_stringshare_del(sound_name);
         return false;
      }
