@@ -7,7 +7,7 @@ static int max_len = 4096;
 
 int strlcpy(char *dst, const char *src, int dst_size)
 {
-    size_t i;
+    int i;
 
     /* Copy up to dst_size - 1 characters from src to dst. */
     for (i = 0; i < dst_size - 1 && src[i] != '\0'; i++) {
@@ -24,7 +24,7 @@ int strlcpy(char *dst, const char *src, int dst_size)
     return i;
 }
 
-size_t strlen_safe(const char *str)
+int strlen_safe(const char *str)
 {
    if (str == NULL) {
        return 0;

@@ -36,7 +36,7 @@
    EINA_LIST_FREE(EINA_LIST, _data_) \
    eina_stringshare_del(_data_);
 
-size_t
+int
 strlen_safe(const char *str);
 
 int
