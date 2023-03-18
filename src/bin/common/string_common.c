@@ -2,6 +2,45 @@
 #include <string.h>
 #include <Eina.h>
 #include <assert.h>
+#include <stddef.h> // size_t
+
+static size_t max_len = 4096;
+
+size_t strlcpy(char *dst, const char *src, size_t dst_size)
+{
+    size_t i;
+
+    /* Copy up to dst_size - 1 characters from src to dst. */
+    for (i = 0; i < dst_size - 1 && src[i] != '\0'; i++) {
+        dst[i] = src[i];
+    }
+
+    /* Null-terminate the destination string. */
+    dst[i] = '\0';
+
+    /* Return the number of characters in src. */
+    while (src[i] != '\0') {
+        i++;
+    }
+    return i;
+}
+
+size_t strlen_safe(const char *str)
+{
+   if (str == NULL) {
+       return 0;
+   }
+
+   char *buffer = mem_malloc(max_len + 1); // allocate memory for the buffer
+   memset(buffer, 0, max_len + 1);
+   if (buffer == NULL) {
+       ERR("Failed not allocate memory for a string: %s", buffer);
+   }
+   size_t len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
+   free(buffer); // free the memory allocated for the buffer
+
+   return len;
+}
 
 int
 sort_cb(const void *data1, const void *data2)
@@ -85,12 +124,13 @@ string_backslash_insert(const char *str, char src)
    assert(str != NULL);
    char *dst;
    unsigned int i = 0, count = 1;
+   size_t str_len = strnlen(str, max_len);
 
-   for (i = 0; i < strlen(str); i++)
+   for (i = 0; i < str_len; i++)
      if (str[i] == src)
        count++;
 
-   dst = mem_calloc(strlen(str) + count, sizeof(char));
+   dst = mem_calloc(str_len + count, sizeof(char));
 
    i = 0;
    while (*str != '\0')

@@ -2,8 +2,6 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
-#include <string.h>
-
 #include "main_window.h"
 #include "history_ui.h"
 #include "project_navigator.h"
@@ -12,45 +10,6 @@
 #include "cursor.h"
 #include "config.h"
 #include "property.h"
-
-#include <stddef.h>
-
-size_t strlcpy(char *dst, const char *src, size_t dst_size)
-{
-    size_t i;
-
-    /* Copy up to dst_size - 1 characters from src to dst. */
-    for (i = 0; i < dst_size - 1 && src[i] != '\0'; i++) {
-        dst[i] = src[i];
-    }
-
-    /* Null-terminate the destination string. */
-    dst[i] = '\0';
-
-    /* Return the number of characters in src. */
-    while (src[i] != '\0') {
-        i++;
-    }
-    return i;
-}
-
-size_t strlen_safe(const char *str)
-{
-   if (str == NULL) {
-       return 0;
-   }
-
-   size_t max_len = 4096;
-   char *buffer = mem_malloc(max_len + 1); // allocate memory for the buffer
-   memset(buffer, 0, max_len + 1);
-   if (buffer == NULL) {
-       ERR("Failed not allocate memory for a string: %s", buffer);
-   }
-   size_t len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
-   free(buffer); // free the memory allocated for the buffer
-
-   return len;
-}
 
 static void
 _project_navigator_group_open(void *data __UNUSED__,
