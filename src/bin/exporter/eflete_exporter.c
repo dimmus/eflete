@@ -433,6 +433,7 @@ _group_source_code_export(const char *group)
    fputs(_edc_header_get(), f);
    fputs(code, f);
    edje_edit_string_free(code);
+   // TODO: remove edje_obj here
    fclose(f);
 
    snprintf(buf, sizeof(buf), "%s.edc", name);
