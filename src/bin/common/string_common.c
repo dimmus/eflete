@@ -4,9 +4,9 @@
 #include <assert.h>
 #include <stddef.h> // size_t
 
-static size_t max_len = 4096;
+static int max_len = 4096;
 
-size_t strlcpy(char *dst, const char *src, size_t dst_size)
+int strlcpy(char *dst, const char *src, size_t dst_size)
 {
     size_t i;
 
@@ -36,7 +36,7 @@ size_t strlen_safe(const char *str)
    if (buffer == NULL) {
        ERR("Failed not allocate memory for a string: %s", buffer);
    }
-   size_t len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
+   int len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
    free(buffer); // free the memory allocated for the buffer
 
    return len;
