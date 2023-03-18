@@ -135,6 +135,8 @@ config_recent_add(const char *name, const char *path)
 
    config->recents = eina_list_prepend(config->recents, r);
    config_save();
+
+   free(r);
 }
 
 static void
