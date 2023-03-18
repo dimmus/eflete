@@ -41,6 +41,23 @@ int strlen_safe(const char *str)
    return len;
 }
 
+char* strcpy_safe(char *dest, const char *src) {
+    if (dest == NULL || src == NULL) {
+        return NULL;
+    }
+
+    int dest_size = strnlen(src, max_len) + 1;
+    if (dest_size == max_len + 1) {
+        return NULL; // source string is too large
+    }
+
+    if (strlcpy(dest, src, dest_size) >= dest_size) {
+        return NULL; // destination buffer overflow occurred
+    }
+
+    return dest;
+}
+
 int
 sort_cb(const void *data1, const void *data2)
 {
@@ -85,7 +102,7 @@ string_cat(const char *str1, const char *str2)
 {
    char *string;
    string = mem_calloc(strlen_safe(str1) + strlen_safe(str2) + 1, sizeof(char));
-   strcpy(string, str1);
+   strcpy_safe(string, str1);
    strcat(string, str2);
 
    return string;

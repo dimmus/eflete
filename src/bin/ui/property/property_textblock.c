@@ -247,7 +247,7 @@ _tag_value_get(const char* text_style, char* a_tag)
    Eina_Tmpstr *result = NULL;
    char *token;
 
-   strcpy(tag_list_copy, text_style);
+   strcpy_safe(tag_list_copy, text_style);
    token = strtok(tag_list_copy, " ");
 
    while (token)
@@ -1478,7 +1478,7 @@ _on_style_selected(void *data,
         tmp = _tag_value_get(value, "style");
         if (!tmp) tmp = eina_tmpstr_add("none");
         style_copy = mem_malloc(strlen_safe(tmp) + 1);
-        strcpy(style_copy, tmp);
+        strcpy_safe(style_copy, tmp);
         token = strtok(style_copy, ",");
         TODO("replace with eina_str_split_full")
         while (token)

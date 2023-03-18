@@ -39,6 +39,9 @@
 int
 strlen_safe(const char *str);
 
+char *
+strcpy_safe(char *dest, const char *src);
+
 int
 sort_cb(const void *data1, const void *data2);
 
