@@ -192,12 +192,12 @@ enventor_object_file_version_update(Evas_Object *enventor, Project *project, con
          */
         if (search_ptr)
           {
-             data_len = strlen(data_str);
+             data_len = strlen_safe(data_str);
              /*
               * Calculating new size:
               * size before "version" + size of new string + size of rest code
               */
-             new_code = mem_calloc(1, (version_ptr - code) + data_len + strlen(code + concat_pos));
+             new_code = mem_calloc(1, (version_ptr - code) + data_len + strlen_safe(code + concat_pos));
 
              /* Copying code, that was before "version" */
              memcpy(new_code, code, (version_ptr - code));
@@ -207,7 +207,7 @@ enventor_object_file_version_update(Evas_Object *enventor, Project *project, con
 
              /* Add rest of source code */
              memcpy(new_code + data_len + (version_ptr - code), code + concat_pos,
-                    strlen(code + concat_pos));
+                    strlen_safe(code + concat_pos));
 
              fputs(new_code, f);
              free(new_code);

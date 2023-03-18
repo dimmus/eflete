@@ -2,11 +2,10 @@
 #include <string.h>
 #include <Eina.h>
 #include <assert.h>
-#include <stddef.h> // size_t
 
 static int max_len = 4096;
 
-int strlcpy(char *dst, const char *src, size_t dst_size)
+int strlcpy(char *dst, const char *src, int dst_size)
 {
     size_t i;
 
@@ -85,7 +84,7 @@ char *
 string_cat(const char *str1, const char *str2)
 {
    char *string;
-   string = mem_calloc(strlen(str1) + strlen(str2) + 1, sizeof(char));
+   string = mem_calloc(strlen_safe(str1) + strlen_safe(str2) + 1, sizeof(char));
    strcpy(string, str1);
    strcat(string, str2);
 
@@ -98,19 +97,19 @@ string_rstr(const char *str1, const char *str2)
    size_t str2len = 0;
    size_t i = 0, j = 0;
 
-   str2len = strlen(str2) - 1;
+   str2len = strlen_safe(str2) - 1;
 
-   for (i = strlen(str1) - 1; i != 0; i--)
+   for (i = strlen_safe(str1) - 1; i != 0; i--)
      {
         if (str1[i] == str2[str2len])
           {
              if (str2len == 0)
                return &str1[i];
-             for (j = 1; (j < strlen(str2)) & (i > j); j++)
+             for (j = 1; (j < strlen_safe(str2)) & (i > j); j++)
                {
                   if (str1[i - j] != str2[str2len - j])
                     break;
-                  if (j + 1 == strlen(str2))
+                  if (j + 1 == strlen_safe(str2))
                     return &str1[i - j];
                }
           }

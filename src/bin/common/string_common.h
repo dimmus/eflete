@@ -1,6 +1,10 @@
 #ifndef STRING_MACRO_H
 #define STRING_MACRO_H
 
+#include <stddef.h>
+#include <Eina.h>
+#include <Edje.h>
+
 #define GET_NAME_FROM_PATH(NAME, PATH) \
 { \
    char **arr; \
@@ -31,6 +35,9 @@
    Eina_Stringshare *_data_; \
    EINA_LIST_FREE(EINA_LIST, _data_) \
    eina_stringshare_del(_data_);
+
+size_t
+strlen_safe(const char *str);
 
 int
 sort_cb(const void *data1, const void *data2);

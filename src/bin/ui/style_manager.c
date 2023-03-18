@@ -410,7 +410,7 @@ _item_style_label_get(void *data,
      }
    /* 6 - <bold> */
    /*
-   formated_style_name = mem_malloc(7 + strlen(style_label));
+   formated_style_name = mem_malloc(7 + strlen_safe(style_label));
    sprintf(formated_style_name, "%s%s", "<bold>", style_label);
    return formated_style_name;
    */

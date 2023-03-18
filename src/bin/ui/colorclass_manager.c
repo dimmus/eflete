@@ -154,12 +154,12 @@ _colorclass_del_cb(void *data __UNUSED__,
    else
      {
         snprintf(buf, BUFF_MAX, _("Colorclass is used in:"));
-        symbs = strlen(buf);
+        symbs = strlen_safe(buf);
         EINA_LIST_FOREACH(res->used_in, l, state)
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
-             symbs += strlen(res->common.name);
+             symbs += strlen_safe(res->common.name);
              break; TODO("remove this break after warning style remake")
           }
         WARN("%s", buf);

@@ -150,7 +150,7 @@ _import_edj(void *data __UNUSED__)
      {
 #ifndef HAVE_TIZEN
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
 #else
         proj_name = eina_tmpstr_add("Component_Designer");
 #endif
@@ -172,7 +172,7 @@ _import_edc(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
         eina_tmpstr_del(proj_name);
      }
@@ -191,7 +191,7 @@ _new_project(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_new_data_set(proj_name, pro_path, widgets);
         eina_tmpstr_del(proj_name);
      }

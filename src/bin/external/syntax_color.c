@@ -5,6 +5,7 @@
  */
 
 #include "syntax_color.h"
+#include "string_common.h"
 
 #define COL_NUM 6
 
@@ -249,7 +250,7 @@ color_markup_insert_internal(Eina_Strbuf *strbuf, const char **src, int length,
    eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
    snprintf(buf, sizeof(buf), "<color=#%s>%s</color>", color_string, cmp);
    eina_strbuf_append(strbuf, buf);
-   *cur += strlen(cmp);
+   *cur += strlen_safe(cmp);
    if (*cur > (*src + length)) return EINA_FALSE;
    *prev = *cur;
 
@@ -298,7 +299,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         snprintf(buf, sizeof(buf), "<color=#%s>/*", color_string);
         eina_strbuf_append(strbuf, buf);
 
-        int cmp_size = 2;     //strlen("/*");
+        int cmp_size = 2;     //strlen_safe("/*");
 
         *cur += cmp_size;
 
@@ -336,7 +337,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
         eina_strbuf_append(strbuf, "*/</color>");
 
-        int cmp_size = 2;     //strlen("*/");
+        int cmp_size = 2;     //strlen_safe("*/");
 
         *cur += cmp_size;
         *inside_comment = EINA_FALSE;
@@ -363,7 +364,7 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    snprintf(buf, sizeof(buf), "<color=#%s>//", color_string);
    eina_strbuf_append(strbuf, buf);
 
-   int cmp_size = 2;    //strlen("//");
+   int cmp_size = 2;    //strlen_safe("//");
    *cur += cmp_size;
 
    if (*cur > (*src + length))
@@ -473,7 +474,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    snprintf(buf, sizeof(buf), "<color=#%s>#", color_string);
    eina_strbuf_append(strbuf, buf);
 
-   int cmp_size = 1;    //strlen("#");
+   int cmp_size = 1;    //strlen_safe("#");
    *cur += cmp_size;
 
    *prev = *cur;
@@ -600,7 +601,7 @@ macro_keys_free(color_data *cd)
           {
              EINA_INARRAY_REVERSE_FOREACH(inarray, tuple)
                {
-                  if (strlen(macro) != strlen(tuple->key)) continue;
+                  if (strlen_safe(macro) != strlen_safe(tuple->key)) continue;
                   if (!strcmp(macro, tuple->key))
                     {
                        eina_inarray_pop(inarray);
@@ -638,7 +639,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
 
    EINA_INARRAY_FOREACH(inarray, tuple)
      {
-        len = strlen(tuple->key);
+        len = strlen_safe(tuple->key);
         char *p = *cur + len;
         if (!strncmp(*cur, tuple->key, len))
           {

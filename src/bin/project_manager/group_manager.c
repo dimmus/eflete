@@ -1,3 +1,4 @@
+#include "string_common.h"
 #include "project_manager2.h"
 #include "widget_list.h"
 
@@ -221,7 +222,7 @@ _style_font_get(Evas_Object *obj, const char *style)
      {
         pch = strstr(tag_value, "font");
         if (!pch) continue;
-        pch += strlen("font");
+        pch += strlen_safe("font");
         pch = strtok(pch, " ");
         font = edje_edit_font_path_get(obj, pch);
         if (font)

@@ -300,7 +300,7 @@ _styles_tag_resources_load(Project *pro, Eina_Stringshare *name, Style2 *style)
         free(data);
         return false;
      }
-   pch += strlen("font");
+   pch += strlen_safe("font");
    tok = strtok(pch, " =");
    if (pch)
      {

@@ -628,7 +628,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_STYLE_COPY(LEN, COPY_STYLE) \
    do \
      { \
-        len = strlen(item->name) - (LEN); \
+        len = strlen_safe(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, COPY_STYLE); \
@@ -638,7 +638,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_ITEM_STYLE_COPY(LEN, COPY_STYLE, COPY_ITEM_STYLE) \
    do \
      { \
-        len = strlen(item->name) - (LEN); \
+        len = strlen_safe(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s/%s", item->name, cp_style, COPY_ITEM_STYLE, COPY_STYLE); \
@@ -671,7 +671,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen(style_name), name1)
+                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
                          }
                     }
                   else if (iname)
@@ -689,17 +689,17 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                                              GROUP_APPEND()
                                            else
                                              EINA_LIST_FOREACH(cp_style_list, l1, name2)
-                                               GROUP_STYLE_COPY(strlen(style_name), name2)
+                                               GROUP_STYLE_COPY(strlen_safe(style_name), name2)
                                         }
                                       else
                                         {
                                            EINA_LIST_FOREACH(cp_item_style_list, l1, name2)
                                              {
                                                 if (!cp_style_list)
-                                                  GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, style_name, name2)
+                                                  GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, style_name, name2)
                                                 else
                                                   EINA_LIST_FOREACH(cp_style_list, l1, name3)
-                                                    GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, name3, name2)
+                                                    GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, name3, name2)
                                              }
                                         }
                                    }
@@ -711,7 +711,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen(style_name), name1)
+                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
                          }
                     }
                   eina_stringshare_del(style_name);

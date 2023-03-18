@@ -557,7 +557,7 @@ profiles_get(void)
           {
              /* as the eina_strlcpy copied the lenght size - 1, for right string 
                 will be copied need to add ' + 1' to lenght size */
-             eina_strlcpy(tmp, f, strlen(f) - strlen(PROFILE_FILE_EXT) + 1);
+             eina_strlcpy(tmp, f, strlen_safe(f) - strlen_safe(PROFILE_FILE_EXT) + 1);
              p = eina_stringshare_add(tmp);
              profiles = eina_list_append(profiles, p);
           }
