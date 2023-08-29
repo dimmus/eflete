@@ -5,6 +5,7 @@
  */
 
 #include "syntax_color.h"
+#include "string_common.h"
 
 #define COL_NUM 6
 
@@ -249,7 +250,7 @@ color_markup_insert_internal(Eina_Strbuf *strbuf, const char **src, int length,
    eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
    snprintf(buf, sizeof(buf), "<color=#%s>%s</color>", color_string, cmp);
    eina_strbuf_append(strbuf, buf);
-   *cur += strlen(cmp);
+   *cur += strlen_safe(cmp);
    if (*cur > (*src + length)) return EINA_FALSE;
    *prev = *cur;
 
@@ -298,7 +299,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         snprintf(buf, sizeof(buf), "<color=#%s>/*", color_string);
         eina_strbuf_append(strbuf, buf);
 
-        int cmp_size = 2;     //strlen("/*");
+        int cmp_size = 2;     //strlen_safe("/*");
 
         *cur += cmp_size;
 
@@ -336,7 +337,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
         eina_strbuf_append(strbuf, "*/</color>");
 
-        int cmp_size = 2;     //strlen("*/");
+        int cmp_size = 2;     //strlen_safe("*/");
 
         *cur += cmp_size;
         *inside_comment = EINA_FALSE;
@@ -363,7 +364,7 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    snprintf(buf, sizeof(buf), "<color=#%s>//", color_string);
    eina_strbuf_append(strbuf, buf);
 
-   int cmp_size = 2;    //strlen("//");
+   int cmp_size = 2;    //strlen_safe("//");
    *cur += cmp_size;
 
    if (*cur > (*src + length))
@@ -473,7 +474,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    snprintf(buf, sizeof(buf), "<color=#%s>#", color_string);
    eina_strbuf_append(strbuf, buf);
 
-   int cmp_size = 1;    //strlen("#");
+   int cmp_size = 1;    //strlen_safe("#");
    *cur += cmp_size;
 
    *prev = *cur;
@@ -600,7 +601,7 @@ macro_keys_free(color_data *cd)
           {
              EINA_INARRAY_REVERSE_FOREACH(inarray, tuple)
                {
-                  if (strlen(macro) != strlen(tuple->key)) continue;
+                  if (strlen_safe(macro) != strlen_safe(tuple->key)) continue;
                   if (!strcmp(macro, tuple->key))
                     {
                        eina_inarray_pop(inarray);
@@ -638,7 +639,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
 
    EINA_INARRAY_FOREACH(inarray, tuple)
      {
-        len = strlen(tuple->key);
+        len = strlen_safe(tuple->key);
         char *p = *cur + len;
         if (!strncmp(*cur, tuple->key, len))
           {
@@ -663,11 +664,11 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
    return 0;
 }
 
-char *
-color_apply(color_data *cd, const char *src, int length, char *from, char *to)
+char *color_apply(color_data *cd, const char *src, int length, char *from, char *to)
 {
    Eina_Bool inside_string = EINA_FALSE;
    Eina_Bool inside_comment = EINA_FALSE;
+   int finished = 0;
 
    if (!src || (length < 1)) return NULL;
 
@@ -700,7 +701,10 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
         ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
                             &inside_comment);
         if (ret == 1) continue;
-        else if (ret == -1) goto finished;
+        else if (ret == -1) {
+            finished = 1;
+            break;
+        }
 
         //handle comment: //
         if (!from || (cur >= from))
@@ -708,7 +712,10 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
              ret = comment2_apply(strbuf, &src, length, &cur, &prev,
                                   cd->col_comment, &inside_comment);
              if (ret == 1) continue;
-             else if (ret == -1) goto finished;
+             else if (ret == -1) {
+                 finished = 1;
+                 break;
+             }
           }
 
         //escape string: " ~ "
@@ -734,29 +741,131 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           {
              ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
              if (ret == 1) continue;
-             else if (ret == -1) goto finished;
+             else if (ret == -1) {
+                 finished = 1;
+                 break;
+             }
           }
 
         cur++;
-        if (to && (cur > to)) goto finished;
+        if (to && (cur > to)) {
+            finished = 1;
+            break;
+        }
      }
 
-   //Same with origin source.
-   if (prev == src)
-     str = src;
-   //Some color syntax is applied.
-   else
-     {
-finished:
-        //append leftovers.
-        if (prev < cur) eina_strbuf_append(strbuf, prev);
-        str = eina_strbuf_string_get(strbuf);
-     }
+   if (!finished) {
+       //Same with origin source.
+       if (prev == src)
+         str = src;
+       //Some color syntax is applied.
+       else
+         {
+            //append leftovers.
+            if (prev < cur) eina_strbuf_append_length(strbuf, prev, cur - prev);
+            str = eina_strbuf_string_get(strbuf);
+         }
+   }
 
    macro_keys_free(cd);
 
    return (str == NULL) ? NULL : strdup(str);
 }
+
+// char *
+// color_apply_OLD(color_data *cd, const char *src, int length, char *from, char *to)
+// {
+//    Eina_Bool inside_string = EINA_FALSE;
+//    Eina_Bool inside_comment = EINA_FALSE;
+
+//    if (!src || (length < 1)) return NULL;
+
+//    Eina_Strbuf *strbuf = cd->cachebuf;
+//    eina_strbuf_reset(strbuf);
+
+//    const char *str = NULL;
+//    char *prev = (char *) src;
+//    char *cur = (char *) src;
+//    int ret;
+
+//    while (cur && (cur <= (src + length)))
+//      {
+//         //escape empty string
+//         if (!from || (cur >= from))
+//           {
+//              if (cur[0] == ' ')
+//                {
+//                   if (cur > prev)
+//                     eina_strbuf_append_length(strbuf, prev, (cur - prev) + 1);
+//                   else
+//                     eina_strbuf_append_char(strbuf, ' ');
+//                   ++cur;
+//                   prev = cur;
+//                   continue;
+//                }
+//           }
+
+//         //handle comment: /* ~ */
+//         ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
+//                             &inside_comment);
+//         if (ret == 1) continue;
+//         else if (ret == -1) goto finished;
+
+//         //handle comment: //
+//         if (!from || (cur >= from))
+//           {
+//              ret = comment2_apply(strbuf, &src, length, &cur, &prev,
+//                                   cd->col_comment, &inside_comment);
+//              if (ret == 1) continue;
+//              else if (ret == -1) goto finished;
+//           }
+
+//         //escape string: " ~ "
+//         ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
+//         if (ret == 1)
+//           {
+//              inside_string = !inside_string;
+//              continue;
+//           }
+
+//         if (inside_string || inside_comment)
+//           {
+//              cur++;
+//              continue;
+//           }
+
+//         //handle comment: preprocessors, #
+//         ret = macro_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
+//         if (ret == 1) continue;
+
+//         //apply color markup
+//         if (!from || (cur >= from))
+//           {
+//              ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
+//              if (ret == 1) continue;
+//              else if (ret == -1) goto finished;
+//           }
+
+//         cur++;
+//         if (to && (cur > to)) goto finished;
+//      }
+
+//    //Same with origin source.
+//    if (prev == src)
+//      str = src;
+//    //Some color syntax is applied.
+//    else
+//      {
+// finished:
+//         //append leftovers.
+//         if (prev < cur) eina_strbuf_append(strbuf, prev);
+//         str = eina_strbuf_string_get(strbuf);
+//      }
+
+//    macro_keys_free(cd);
+
+//    return (str == NULL) ? NULL : strdup(str);
+// }
 
 Eina_Bool
 color_ready(color_data *cd)

@@ -160,3 +160,10 @@ doc/*
 #coverage
 *.gcno
 *.gcda
+*.tbx
+
+.vscode
+builddir
+autom4te*
+
+checks.json

@@ -1,22 +1,3 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2016 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "property.h"
 #include "property_private.h"
 #include "project_manager2.h"
@@ -199,7 +180,7 @@ _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
 
    unsigned long val;
    char *end;
-   int length = (int)strlen(hex);
+   int length = (int)strlen_safe(hex);
    switch (length)
      {
       case 7:
@@ -262,11 +243,11 @@ _tag_value_get(const char* text_style, char* a_tag)
    assert(text_style != NULL);
    assert(a_tag != NULL);
 
-   char *tag_list_copy = mem_malloc(strlen(text_style) + 1);
+   char *tag_list_copy = mem_malloc(strlen_safe(text_style) + 1);
    Eina_Tmpstr *result = NULL;
    char *token;
 
-   strcpy(tag_list_copy, text_style);
+   strcpy_safe(tag_list_copy, text_style);
    token = strtok(tag_list_copy, " ");
 
    while (token)
@@ -279,10 +260,10 @@ _tag_value_get(const char* text_style, char* a_tag)
                {
                   equals_sign++;
 
-                  if (equals_sign[strlen(equals_sign) - 1] != '\'')
+                  if (equals_sign[strlen_safe(equals_sign) - 1] != '\'')
                     result = eina_tmpstr_add(equals_sign);
                   else
-                    result = eina_tmpstr_add_length(equals_sign, strlen(equals_sign) - 1);
+                    result = eina_tmpstr_add_length(equals_sign, strlen_safe(equals_sign) - 1);
                   if (!strstr(FONT_DEFAULT, a_tag)) break;
                }
           }
@@ -1496,8 +1477,8 @@ _on_style_selected(void *data,
         /* working with wonderful glow and shadow now */
         tmp = _tag_value_get(value, "style");
         if (!tmp) tmp = eina_tmpstr_add("none");
-        style_copy = mem_malloc(strlen(tmp) + 1);
-        strcpy(style_copy, tmp);
+        style_copy = mem_malloc(strlen_safe(tmp) + 1);
+        strcpy_safe(style_copy, tmp);
         token = strtok(style_copy, ",");
         TODO("replace with eina_str_split_full")
         while (token)

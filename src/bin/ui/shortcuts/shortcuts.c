@@ -1,23 +1,5 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "shortcuts.h"
+#include "main_window.h" // strlen_safe
 #include "config.h"
 static Eina_List *handlers_stack = NULL;
 
@@ -405,20 +387,20 @@ _combination_string_get(Shortcut *sc)
    Eina_Strbuf *buf = eina_strbuf_new();
    char *result = NULL;
    if (sc->modifiers & MOD_CTRL)
-     eina_strbuf_append_length(buf, "Ctrl + ", strlen("Ctrl + "));
+     eina_strbuf_append_length(buf, "Ctrl + ", strlen_safe("Ctrl + "));
    if (sc->modifiers & MOD_ALT)
-     eina_strbuf_append_length(buf, "Alt + ", strlen("Alt + "));
+     eina_strbuf_append_length(buf, "Alt + ", strlen_safe("Alt + "));
    if (sc->modifiers & MOD_SHIFT)
-     eina_strbuf_append_length(buf, "Shift + ", strlen("Shift + "));
+     eina_strbuf_append_length(buf, "Shift + ", strlen_safe("Shift + "));
    if (sc->modifiers & MOD_SUPER)
-     eina_strbuf_append_length(buf, "Super + ", strlen("Super + "));
+     eina_strbuf_append_length(buf, "Super + ", strlen_safe("Super + "));
    if (sc->modifiers & MOD_META)
-     eina_strbuf_append_length(buf, "Meta + ", strlen("Meta + "));
+     eina_strbuf_append_length(buf, "Meta + ", strlen_safe("Meta + "));
    if (sc->modifiers & MOD_HYPER)
-     eina_strbuf_append_length(buf, "Hyper + ", strlen("Hyper + "));
+     eina_strbuf_append_length(buf, "Hyper + ", strlen_safe("Hyper + "));
    if (sc->modifiers & MOD_CAPS)
-     eina_strbuf_append_length(buf, "Caps Lock + ", strlen("Caps Lock + "));
-   eina_strbuf_append_length(buf, sc->keyname, strlen(sc->keyname));
+     eina_strbuf_append_length(buf, "Caps Lock + ", strlen_safe("Caps Lock + "));
+   eina_strbuf_append_length(buf, sc->keyname, strlen_safe(sc->keyname));
    result = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
    return result;

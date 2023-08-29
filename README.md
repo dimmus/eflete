@@ -1,25 +1,34 @@
 <h1 align="center">EFLETE (EFL Edge Theme Editor)</h1>
 
 <p align="center">
-  <img src="./data/images/eflete.svg" width="300" height="300" border="0"></>
+  <img src="https://www.enlightenment.org/ss/e-63d3e21d74b8e8.98377470.jpg" border="0"></>
 </p>
 
 <br/>
 <p align="center">
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/dimmus/eflete?style=for-the-badge">
-  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/dimmus/eflete?style=for-the-badge">
-  <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2022?style=for-the-badge">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/dimmus/eflete">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/dimmus/eflete">
+  <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2023">
   <a href="https://scan.coverity.com/projects/dimmus-eflete">
-    <img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/26855.svg?style=for-the-badge"/>
+    <img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/26855.svg"/>
+  </a>
+  <a href="https://github.com/dimmus/eflete/actions/workflows/build.yml">
+    <img alt="Sonar Cloud" src="https://github.com/dimmus/eflete/actions/workflows/build.yml/badge.svg"/>
+  </a>
+  <a href="https://github.com/dimmus/eflete/actions/workflows/c-cpp.yml">
+    <img alt="Build" src="https://github.com/dimmus/eflete/actions/workflows/c-cpp.yml/badge.svg"/>
+  </a>
+  <a href="https://repology.org/project/eflete/versions">
+    <img src="https://repology.org/badge/tiny-repos/eflete.svg" alt="Packaging status">
   </a>
 </p>
 <br/>
 
 <p align="center">
-  <i>Work in progress! Limited functionality.</i>
+  <i>Work in progress! Limited functionality.<br/>Some features may not quite function correctly or completely! WIP.</i>
 </p>
 
-Efl Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library (EFL) that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
+EFL Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library ([EFL](https://www.enlightenment.org/about-efl)) that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
 
 An EDC (Edje data collection) file is a text file that contains the code describing the position, size, and other parameters of graphical elements that compose the visual aspect of your EFL application. In addition to graphical elements, it can also handle sounds. EDC is a description language where the objects of an interface are described using a text description. An EDC file needs to be compiled into a `.edj` file using the Edje library tools. After compiling, the `.edj` file can be used as a theme file by a native EFL-based application.
 
@@ -27,17 +36,15 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 
 ## Requirements
 
-   * efl (>= 1.23.3 && < 1.26.99)
+   * EFL ≥ 1.26.2
 
-Please note that some features may not quite function correctly or
-completely!
+<!-- ([git](https://git.enlightenment.org/enlightenment/efl)) -->
 
 ## Compiling
 
 Once you have met the requirements, compiling and installing is simple:
 ```sh
-autoreconf -i
-./configure
+./autogen.sh
 make
 sudo make install
 ```
@@ -74,4 +81,9 @@ You can help translate Eflete into your language. Eflete is using
 Go to the [Eflete localization project](https://hosted.weblate.org/projects/eflete/eflete/)
 to start translating. If the language you want to translate into is not already
 available, you [can add it here](https://hosted.weblate.org/new-lang/eflete/eflete/).
+
+<br/>
+<a href="https://repology.org/project/eflete/versions">
+    <img src="https://repology.org/badge/vertical-allrepos/eflete.svg" alt="Packaging status">
+</a>
 

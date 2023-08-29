@@ -54,7 +54,7 @@ static const Ecore_Getopt options = {
    "%prog [OPTION]... FILE"
    ,
    VERSION,
-   "(C) 2013-2016 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design as Eflete support tool.\n",
@@ -108,37 +108,58 @@ _edc_header_get(void)
 static Eina_Bool
 _build_script_write(void)
 {
-   FILE *f;
-   Eina_Strbuf *buf;
-   char p[512];
+  FILE *f;
+  Eina_Strbuf *buf;
+  char p[512];
 
-   snprintf(p, sizeof(p), "%s/build.sh", path);
-   f = fopen(p, "w");
-   if (!f)
-     {
-        ERR("Could't open file '%s'", path);
-        return false;
-     }
-   if (chmod(p, S_IRWXU | S_IRWXG | S_IROTH | S_IWOTH) < 0)
-     ERR("Bash script failed to change mode to execute");
+  // Calculate the required buffer size
+  size_t size = snprintf(p, sizeof(p), "%s/build.sh", path);
+  if (size >= sizeof(p)) {
+      ERR("Path exceeds maximum length");
+      return false;
+  }
 
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "#!/bin/sh\n");
-   eina_strbuf_append_printf(buf, "edje_cc -v generated.edc");
-   snprintf(p, sizeof(p), "%s/"IMAGES"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -id "IMAGES"/");
-   snprintf(p, sizeof(p), "%s/"SOUNDS"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -sd "SOUNDS"/");
-   snprintf(p, sizeof(p), "%s/"FONTS"/", path);
-   if (ecore_file_exists(p))
-     eina_strbuf_append_printf(buf, " -fd "FONTS"/");
-   fputs(eina_strbuf_string_get(buf), f);
-   eina_strbuf_free(buf);
+  f = fopen(p, "w");
+  if (!f) {
+      ERR("Failed to open file '%s'", p);
+      return false;
+  }
 
-   fclose(f);
-   return true;
+  if (fchmod(fileno(f), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP) < 0) {
+      ERR("Failed to set bash script permissions");
+      fclose(f);
+      return false;
+  }
+
+  buf = eina_strbuf_new();
+  eina_strbuf_append_printf(buf, "#!/bin/sh\n");
+  eina_strbuf_append_printf(buf, "edje_cc -v generated.edc");
+
+  snprintf(p, sizeof(p), "%s/" IMAGES "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -id " IMAGES "/");
+  }
+
+  snprintf(p, sizeof(p), "%s/" SOUNDS "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -sd " SOUNDS "/");
+  }
+
+  snprintf(p, sizeof(p), "%s/" FONTS "/", path);
+  if (ecore_file_exists(p)) {
+      eina_strbuf_append_printf(buf, " -fd " FONTS "/");
+  }
+
+  fputs(eina_strbuf_string_get(buf), f);
+  eina_strbuf_free(buf);
+  fclose(f);
+
+  if (chmod(p, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP) < 0) {
+      ERR("Bash script failed to change mode to execute");
+      return false;
+  }
+
+  return true;
 }
 
 static void
@@ -147,19 +168,19 @@ _terminate(PM_Project_Result error)
    char buf[256];
 
    ecore_job_del(images_job);
-   snprintf(buf, strlen(spath) + strlen("/"IMAGES) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"IMAGES) + 1,
            "%s/"IMAGES, spath);
    if (!ecore_file_exists(buf))
      ecore_file_recursive_rm(buf);
 
    ecore_job_del(sounds_job);
-   snprintf(buf, strlen(spath) + strlen("/"SOUNDS) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"SOUNDS) + 1,
             "%s/"SOUNDS, spath);
    if (!ecore_file_exists(buf))
      ecore_file_recursive_rm(buf);
 
    ecore_job_del(fonts_job);
-   snprintf(buf, strlen(spath) + strlen("/"FONTS) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"FONTS) + 1,
             "%s/"FONTS, spath);
    if (!ecore_file_exists(buf))
      ecore_file_recursive_rm(buf);
@@ -180,7 +201,7 @@ _images_resources_export(void *data __UNUSED__)
 
    total = eina_list_count(images);
    if (0 == total) return;
-   snprintf(buf, strlen(spath) + strlen("/"IMAGES) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"IMAGES) + 1,
             "%s/"IMAGES, spath);
    fprintf(stdout, "Export images. Total images for export '%i'\n", total);
 
@@ -204,7 +225,7 @@ _images_resources_export(void *data __UNUSED__)
         fprintf(stdout, "(%*i/%i) %s\n", _digist_get(total), ++proc, total, name);
         if (EDJE_EDIT_IMAGE_COMP_USER == edje_edit_image_compression_type_get(obj, name))
           {
-             snprintf(buf, strlen(spath) + strlen("/"IMAGES"/") + strlen(name) + 1,
+             snprintf(buf, strlen_safe(spath) + strlen_safe("/"IMAGES"/") + strlen_safe(name) + 1,
                       "%s/"IMAGES"/%s\n", spath, name);
              if (!eina_file_copy(name, buf, EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR, NULL, NULL))
                {
@@ -222,7 +243,7 @@ _images_resources_export(void *data __UNUSED__)
                   _terminate(PM_PROJECT_EXPORT_WRONG_IMAGE_ID);
                   return;
                }
-             snprintf(buf, strlen("edje/images/") + (_digist_get(id) + 1) + 1,
+             snprintf(buf, strlen_safe("edje/images/") + (_digist_get(id) + 1) + 1,
                      "edje/images/%i", id);
              evas_object_image_file_set(img, sedj, buf);
              if (EVAS_LOAD_ERROR_NONE != evas_object_image_load_error_get(img))
@@ -232,7 +253,7 @@ _images_resources_export(void *data __UNUSED__)
                   return;
                }
 
-             snprintf(buf, strlen(spath) + strlen("/"IMAGES"/") + strlen(name) + 1,
+             snprintf(buf, strlen_safe(spath) + strlen_safe("/"IMAGES"/") + strlen_safe(name) + 1,
                       "%s/"IMAGES"/%s", spath, name);
              file_dir = ecore_file_dir_get(buf);
              if (!ecore_file_exists(file_dir)) ecore_file_mkpath(file_dir);
@@ -265,7 +286,7 @@ _sounds_resources_export(void *data __UNUSED__)
    if (0 == total) return;
    fprintf(stdout, "Export sounds. Total sounds for export '%i'\n", total);
 
-   snprintf(buf, strlen(spath) + strlen("/"SOUNDS) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"SOUNDS) + 1,
            "%s/"SOUNDS, spath);
    if (!ecore_file_exists(buf))
      {
@@ -282,7 +303,7 @@ _sounds_resources_export(void *data __UNUSED__)
         sound_file = edje_edit_sound_samplesource_get(obj, name);
         fprintf(stdout, "(%*i/%i) %s\n", _digist_get(total), ++proc, total, sound_file);
 
-        snprintf(buf, strlen(spath) + strlen("/"SOUNDS"/") + strlen(sound_file) + 1,
+        snprintf(buf, strlen_safe(spath) + strlen_safe("/"SOUNDS"/") + strlen_safe(sound_file) + 1,
                  "%s/"SOUNDS"/%s", spath, sound_file);
         file_dir = ecore_file_dir_get(buf);
         if (!ecore_file_exists(file_dir)) ecore_file_mkpath(file_dir);
@@ -325,7 +346,7 @@ _fonts_resources_export(void *data __UNUSED__)
    if (0 == total) return;
    fprintf(stdout, "Export fonts. Total fonts for export '%i'.\n", total);
 
-   snprintf(buf, strlen(spath) + strlen("/"FONTS) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"FONTS) + 1,
             "%s/"FONTS, spath);
    if (!ecore_file_exists(buf))
      {
@@ -343,7 +364,7 @@ _fonts_resources_export(void *data __UNUSED__)
         font_file = edje_edit_font_path_get(obj, name);
         fprintf(stdout, "(%*i/%i) %s\n", _digist_get(total), ++proc, total, name);
 
-        snprintf(buf, strlen("edje/fonts/") + strlen(name) + 1,
+        snprintf(buf, strlen_safe("edje/fonts/") + strlen_safe(name) + 1,
                  "edje/fonts/%s", name);
         font = eet_read(ef, buf, &size);
         if (!font)
@@ -352,7 +373,7 @@ _fonts_resources_export(void *data __UNUSED__)
              _terminate(PM_PROJECT_EXPORT_READ_EDJ_FONT_FAILED);
              goto exit;
           }
-        snprintf(buf, strlen(spath) + strlen("/"FONTS"/") + strlen(font_file) + 1,
+        snprintf(buf, strlen_safe(spath) + strlen_safe("/"FONTS"/") + strlen_safe(font_file) + 1,
                 "%s/"FONTS"/%s", spath, font_file);
         if (!(f = fopen(buf, "wb")))
           {
@@ -388,7 +409,7 @@ _group_source_code_export(const char *group)
 
    name = strdup(group);
    string_char_replace(name, '/', '_');
-   snprintf(buf, strlen(spath) + strlen("/") + strlen(name) + strlen(".edc") + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/") + strlen_safe(name) + strlen_safe(".edc") + 1,
             "%s/%s.edc", spath, name);
 
    f = fopen(buf, "w+");
@@ -412,6 +433,7 @@ _group_source_code_export(const char *group)
    fputs(_edc_header_get(), f);
    fputs(code, f);
    edje_edit_string_free(code);
+   // TODO: remove edje_obj here
    fclose(f);
 
    snprintf(buf, sizeof(buf), "%s.edc", name);
@@ -429,7 +451,7 @@ _source_code_export(void *data __UNUSED__)
    Eina_List *files, *color_classes;
 
    fprintf(stdout, "Generate source code");
-   snprintf(buf, strlen(spath) + strlen("/"GEN_FILE_NAME) + 1,
+   snprintf(buf, strlen_safe(spath) + strlen_safe("/"GEN_FILE_NAME) + 1,
             "%s/"GEN_FILE_NAME, spath);
    f = fopen(buf, "w+");
    if (!f)

@@ -1,22 +1,3 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "main_window.h"
 #include <Ecore_Getopt.h>
 #include <regex.h>
@@ -56,7 +37,7 @@ static const Ecore_Getopt options = {
    "  if FILE is not specified but --name given: new project\n"
    ,
    VERSION,
-   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 Dmitri \"dimmus\" Chudinov\n",
+   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design to create and modify Elementary widgets styles.\n",
@@ -169,7 +150,7 @@ _import_edj(void *data __UNUSED__)
      {
 #ifndef HAVE_TIZEN
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
 #else
         proj_name = eina_tmpstr_add("Component_Designer");
 #endif
@@ -191,7 +172,7 @@ _import_edc(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
         eina_tmpstr_del(proj_name);
      }
@@ -210,7 +191,7 @@ _new_project(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_new_data_set(proj_name, pro_path, widgets);
         eina_tmpstr_del(proj_name);
      }

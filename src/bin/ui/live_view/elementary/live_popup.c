@@ -1,23 +1,5 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2015 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "live_elementary_widgets.h"
+#include "main_window.h" // strlen_safe
 
 static void
 _on_popup_swallow_check(void *data __UNUSED__,
@@ -32,9 +14,9 @@ _on_popup_swallow_check(void *data __UNUSED__,
 
    TODO("recheck this logic");
    pointer = strstr(part->name, "button");
-   if ((pointer) && (strlen(pointer) == strlen("button") + 1))
+   if (pointer && (strlen_safe(pointer) == strlen_safe("button") + 1))
      {
-        num = atoi(pointer + strlen("button"));
+        num = atoi(pointer + strlen_safe("button"));
         but_swallow = eina_stringshare_printf("button%d", num);
      }
    if (!strcmp(part->name, "elm.swallow.title.icon"))

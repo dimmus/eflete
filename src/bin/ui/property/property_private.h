@@ -1,22 +1,3 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2016 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "main_window.h"
 #include "syntax_color.h"
 
@@ -699,7 +680,7 @@ property_color_entry_set(Evas_Object *entry, const char *text, color_data *c_dat
    if (text != NULL)
      {
         markup = elm_entry_utf8_to_markup(text);
-        colored = color_apply(c_data, markup, strlen(markup), NULL, NULL);
+        colored = color_apply(c_data, markup, strlen_safe(markup), NULL, NULL);
 
         if (colored == NULL) return;
 

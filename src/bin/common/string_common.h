@@ -1,24 +1,9 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #ifndef STRING_MACRO_H
 #define STRING_MACRO_H
+
+#include <stddef.h>
+#include <Eina.h>
+#include <Edje.h>
 
 #define GET_NAME_FROM_PATH(NAME, PATH) \
 { \
@@ -50,6 +35,12 @@
    Eina_Stringshare *_data_; \
    EINA_LIST_FREE(EINA_LIST, _data_) \
    eina_stringshare_del(_data_);
+
+int
+strlen_safe(const char *str);
+
+char *
+strcpy_safe(char *dest, const char *src);
 
 int
 sort_cb(const void *data1, const void *data2);

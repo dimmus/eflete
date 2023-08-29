@@ -1,22 +1,3 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
-*/
-
 #include "config.h"
 #include "shortcuts.h"
 #include "enventor_module.h"
@@ -154,6 +135,8 @@ config_recent_add(const char *name, const char *path)
 
    config->recents = eina_list_prepend(config->recents, r);
    config_save();
+
+   free(r);
 }
 
 static void
@@ -576,7 +559,7 @@ profiles_get(void)
           {
              /* as the eina_strlcpy copied the lenght size - 1, for right string 
                 will be copied need to add ' + 1' to lenght size */
-             eina_strlcpy(tmp, f, strlen(f) - strlen(PROFILE_FILE_EXT) + 1);
+             eina_strlcpy(tmp, f, strlen_safe(f) - strlen_safe(PROFILE_FILE_EXT) + 1);
              p = eina_stringshare_add(tmp);
              profiles = eina_list_append(profiles, p);
           }

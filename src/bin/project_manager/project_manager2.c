@@ -1,23 +1,5 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2016 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #define _GNU_SOURCE
+#include "string_common.h"
 #include "project_manager2.h"
 #include <fcntl.h>
 #include <errno.h>
@@ -243,7 +225,7 @@ _project_create(Project_Process_Data *ppd)
 exit:
    if (PM_PROJECT_SUCCESS != last_error)
      {
-        ERR("Could't create a .pro file! ")
+        ERR("Could't create a .pro file! ");
         eina_stringshare_del(pro->name);
         eina_stringshare_del(pro->dev);
         eina_stringshare_del(pro->saved_edj);
@@ -448,7 +430,7 @@ _project_lock(Project *project)
 #endif /* _WIN32 */
 
    snprintf(buf, sizeof(buf), "%d\n", pid);
-   if (!write(project->fd_lock, buf, strlen(buf)))
+   if (!write(project->fd_lock, buf, strlen_safe(buf)))
      {
         close(project->fd_lock);
         return false;
@@ -735,7 +717,7 @@ _project_open_internal(Project_Process_Data *ppd, Eina_Bool recover)
 
    /* updating .dev file path */
    tmp = strdup(ppd->path);
-   tmp_len = strlen(tmp);
+   tmp_len = strlen_safe(tmp);
    tmp[tmp_len - 3] = 'd';
    tmp[tmp_len - 2] = 'e';
    tmp[tmp_len - 1] = 'v';
@@ -1276,7 +1258,7 @@ pm_project_meta_data_set(Project *project,
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
-        size = (strlen(DATA) + 1) * sizeof(char); \
+        size = (strlen_safe(DATA) + 1) * sizeof(char); \
         bytes = eet_write(ef, KEY, DATA, size, compess_level); \
         if (bytes <= 0 && size > 0) \
           { \

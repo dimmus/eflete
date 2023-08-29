@@ -1,26 +1,62 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2015 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "eflete.h"
 #include <string.h>
 #include <Eina.h>
 #include <assert.h>
+
+static int max_len = 4096;
+
+int strlcpy(char *dst, const char *src, int dst_size)
+{
+    int i;
+
+    /* Copy up to dst_size - 1 characters from src to dst. */
+    for (i = 0; i < dst_size - 1 && src[i] != '\0'; i++) {
+        dst[i] = src[i];
+    }
+
+    /* Null-terminate the destination string. */
+    dst[i] = '\0';
+
+    /* Return the number of characters in src. */
+    while (src[i] != '\0') {
+        i++;
+    }
+    return i;
+}
+
+int strlen_safe(const char *str)
+{
+   if (str == NULL) {
+       return 0;
+   }
+
+   char *buffer = mem_malloc(max_len + 1); // allocate memory for the buffer
+   memset(buffer, 0, max_len + 1);
+   if (buffer == NULL) {
+       ERR("Failed not allocate memory for a string: %s", buffer);
+   }
+   int len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
+   free(buffer); // free the memory allocated for the buffer
+
+   return len;
+}
+
+char* strcpy_safe(char *dest, const char *src) {
+    if (dest == NULL || src == NULL) {
+        return NULL;
+    }
+
+    int dest_size = strnlen(src, max_len) + 1;
+    if (dest_size == max_len + 1) {
+        return NULL; // source string is too large
+    }
+
+    if (strlcpy(dest, src, dest_size) >= dest_size) {
+        return NULL; // destination buffer overflow occurred
+    }
+
+    return dest;
+}
 
 int
 sort_cb(const void *data1, const void *data2)
@@ -65,8 +101,8 @@ char *
 string_cat(const char *str1, const char *str2)
 {
    char *string;
-   string = mem_calloc(strlen(str1) + strlen(str2) + 1, sizeof(char));
-   strcpy(string, str1);
+   string = mem_calloc(strlen_safe(str1) + strlen_safe(str2) + 1, sizeof(char));
+   strcpy_safe(string, str1);
    strcat(string, str2);
 
    return string;
@@ -78,19 +114,19 @@ string_rstr(const char *str1, const char *str2)
    size_t str2len = 0;
    size_t i = 0, j = 0;
 
-   str2len = strlen(str2) - 1;
+   str2len = strlen_safe(str2) - 1;
 
-   for (i = strlen(str1) - 1; i != 0; i--)
+   for (i = strlen_safe(str1) - 1; i != 0; i--)
      {
         if (str1[i] == str2[str2len])
           {
              if (str2len == 0)
                return &str1[i];
-             for (j = 1; (j < strlen(str2)) & (i > j); j++)
+             for (j = 1; (j < strlen_safe(str2)) & (i > j); j++)
                {
                   if (str1[i - j] != str2[str2len - j])
                     break;
-                  if (j + 1 == strlen(str2))
+                  if (j + 1 == strlen_safe(str2))
                     return &str1[i - j];
                }
           }
@@ -104,12 +140,13 @@ string_backslash_insert(const char *str, char src)
    assert(str != NULL);
    char *dst;
    unsigned int i = 0, count = 1;
+   size_t str_len = strnlen(str, max_len);
 
-   for (i = 0; i < strlen(str); i++)
+   for (i = 0; i < str_len; i++)
      if (str[i] == src)
        count++;
 
-   dst = mem_calloc(strlen(str) + count, sizeof(char));
+   dst = mem_calloc(str_len + count, sizeof(char));
 
    i = 0;
    while (*str != '\0')

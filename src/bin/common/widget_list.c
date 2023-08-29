@@ -1,22 +1,4 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2016 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
+#include "string_common.h"
 #include "resource_manager2.h"
 #include "widget_list.h"
 
@@ -55,7 +37,7 @@ static const char *exception[] =
 Eina_Stringshare *
 widget_name_get(const Eina_Stringshare *group_name)
 {
-   int len = strlen(group_name);
+   int len = strlen_safe(group_name);
    int i;
    char str[32];
 
@@ -77,7 +59,7 @@ widget_name_get(const Eina_Stringshare *group_name)
 Eina_Stringshare *
 style_name_get(const Eina_Stringshare *group_name)
 {
-   int len = strlen(group_name);
+   int len = strlen_safe(group_name);
    int ex_len;
    int first, i, j;
    char widget[32], class[32], style[256];
@@ -91,7 +73,7 @@ style_name_get(const Eina_Stringshare *group_name)
 
    for (i = 0; exception[i]; i++)
      {
-        ex_len = strlen(exception[i]);
+        ex_len = strlen_safe(exception[i]);
         if (!strncmp(exception[i], group_name, ex_len))
           {
              for (j = ex_len; j < len; j++)
@@ -136,7 +118,7 @@ style_name_get(const Eina_Stringshare *group_name)
 Eina_Stringshare *
 item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_name)
 {
-   int len = strlen(group_name);
+   int len = strlen_safe(group_name);
    int first, i;
    char widget[32], class[32], style[256];
    const char *str;
@@ -180,7 +162,7 @@ item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_
    str = string_rstr(style, style_name);
    if (str)
      {
-        style[strlen(style) - strlen(str) - 1] = '\0';
+        style[strlen_safe(style) - strlen_safe(str) - 1] = '\0';
      }
 
    return eina_stringshare_add(style);
@@ -189,7 +171,7 @@ item_style_name_get(const Eina_Stringshare *group_name, Eina_Stringshare *style_
 Eina_Stringshare *
 option_widget_name_get(const char *str, Eina_List **style_list)
 {
-   int len = strlen(str);
+   int len = strlen_safe(str);
    char widget[32], style[256];
    Eina_List *list = NULL;
    int i, first = 0;
@@ -243,7 +225,7 @@ option_widget_name_get(const char *str, Eina_List **style_list)
 Eina_Stringshare *
 option_style_name_get(const char *str, Eina_List **item_style_list, Eina_List **cp_style_list)
 {
-   int len = strlen(str);
+   int len = strlen_safe(str);
    char style[32], cp_style[256], item_style[256];
    int i, first = 0;
    Eina_Bool is_cp_style = EINA_FALSE;
@@ -327,7 +309,7 @@ option_style_name_get(const char *str, Eina_List **item_style_list, Eina_List **
 Eina_Stringshare *
 option_item_style_name_get(const char *str, Eina_List **cp_style_list)
 {
-   int len = strlen(str);
+   int len = strlen_safe(str);
    char style[32], cp_style[256];
    Eina_List *list = NULL;
    int i, first = 0;
@@ -394,7 +376,7 @@ widget_prefix_list_get(Eina_List *collections, const char *widget_name, const ch
              style = style_name_get(group_name);
              if (style && !strcmp(style, style_name))
                {
-                  end = strlen(group_name) - strlen(strrchr(group_name, '/')) + 1;
+                  end = strlen_safe(group_name) - strlen_safe(strrchr(group_name, '/')) + 1;
                   for (i = 0; i < end; i++)
                     prefix[i] = group_name[i];
                   prefix[i] = '\0';
@@ -453,7 +435,7 @@ widget_tree_items_get(Eina_List *groups,
    assert(folders_out != NULL);
    assert(groups_out != NULL);
 
-   prefix_len = strlen(prefix);
+   prefix_len = strlen_safe(prefix);
 
    pos = prefix - 1;
    while ((pos = strchr(pos + 1, '/')))
@@ -471,7 +453,7 @@ widget_tree_items_get(Eina_List *groups,
           }
         if (cmp > 0)
           {
-             if (strlen(group->common.name) < prefix_len)
+             if (strlen_safe(group->common.name) < prefix_len)
                continue;
              else
                break; /* there is no sense to check all next groups because list is sorted */

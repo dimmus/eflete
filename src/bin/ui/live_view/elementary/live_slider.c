@@ -1,23 +1,5 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2015 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #include "live_elementary_widgets.h"
+#include "main_window.h" // strlen_safe
 
 
 Evas_Object *
@@ -40,7 +22,7 @@ widget_slider_create(Evas_Object *parent, const Group2 *group)
    if (!strcmp(group->class, "range"))
      {
         elm_slider_range_enabled_set(object, true);
-        if (!strncmp(style_name, "vertical", strlen("vertical")))
+        if (!strncmp(style_name, "vertical", strlen_safe("vertical")))
           elm_slider_horizontal_set(object, false);
         elm_slider_range_set(object, 2, 8);
      }

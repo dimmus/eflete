@@ -1,22 +1,3 @@
-/*
- * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
- *
- * This file is part of Edje Theme Editor.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
-
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
@@ -285,8 +266,8 @@ _about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus
                              "This application was written for Enlightenment project.<br>"
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"
-                             "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
-                             "Copyright (C) 2022 Dmitri \"dimmus\" Chudinov.<br>"
+                             "Copyright (C) 2013 - 2017 Samsung Electronics.<br>"
+                             "Copyright (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov.<br>"
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
 
