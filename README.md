@@ -18,6 +18,9 @@
   <a href="https://github.com/dimmus/eflete/actions/workflows/c-cpp.yml">
     <img alt="Build" src="https://github.com/dimmus/eflete/actions/workflows/c-cpp.yml/badge.svg"/>
   </a>
+  <a href="https://repology.org/project/eflete/versions">
+    <img src="https://repology.org/badge/tiny-repos/eflete.svg" alt="Packaging status">
+  </a>
 </p>
 <br/>
 
@@ -78,4 +81,9 @@ You can help translate Eflete into your language. Eflete is using
 Go to the [Eflete localization project](https://hosted.weblate.org/projects/eflete/eflete/)
 to start translating. If the language you want to translate into is not already
 available, you [can add it here](https://hosted.weblate.org/new-lang/eflete/eflete/).
+
+<br/>
+<a href="https://repology.org/project/eflete/versions">
+    <img src="https://repology.org/badge/vertical-allrepos/eflete.svg" alt="Packaging status">
+</a>
 
