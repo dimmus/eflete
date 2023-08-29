@@ -165,3 +165,5 @@ doc/*
 .vscode
 builddir
 autom4te*
+
+checks.json
