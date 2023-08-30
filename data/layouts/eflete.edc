@@ -1,5 +1,4 @@
 data.item: "version" "126";
-
 efl_version: 1 26;
 
 collections {
