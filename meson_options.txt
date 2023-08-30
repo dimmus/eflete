@@ -1,6 +1,0 @@
-
-option('enable-nls',        type: 'boolean',    value: true)
-# option('enable-debug',      type: 'boolean',    value: true)
-# option('enable-todo',       type: 'boolean',    value: true)
-# option('enable-audio',      type: 'boolean',    value: true)
-# option('enable-enventor',   type: 'boolean',    value: true)
