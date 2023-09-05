@@ -172,7 +172,7 @@ _group_code_get(Workspace_Data *wd)
 
    code = edje_edit_source_generate(wd->group->edit_object);
    str = elm_entry_utf8_to_markup(code);
-   colored = color_apply(ap.color_data, str, strlen(str), NULL, NULL);
+   colored = color_apply(ap.color_data, str, strlen_safe(str), NULL, NULL);
 
    free(str);
    eina_stringshare_del(code);
@@ -604,6 +604,10 @@ _container_lock(void *data,
 
    lock = elm_check_state_get(obj);
    container_lock_set(area->container, lock);
+
+   /* toggle spinner lock */
+   elm_object_disabled_set(wd->toolbar.container_sizer.spinner_w, (lock != 1) ? false : true);
+   elm_object_disabled_set(wd->toolbar.container_sizer.spinner_h, (lock != 1) ? false : true);
 }
 
 static void

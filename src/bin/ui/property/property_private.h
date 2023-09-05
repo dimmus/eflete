@@ -699,7 +699,7 @@ property_color_entry_set(Evas_Object *entry, const char *text, color_data *c_dat
    if (text != NULL)
      {
         markup = elm_entry_utf8_to_markup(text);
-        colored = color_apply(c_data, markup, strlen(markup), NULL, NULL);
+        colored = color_apply(c_data, markup, strlen_safe(markup), NULL, NULL);
 
         if (colored == NULL) return;
 

@@ -16,9 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
-#define EO_BETA_API
-// #define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
+
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "main_window.h"
 #include "project_manager2.h"
@@ -427,7 +435,7 @@ _item_style_label_get(void *data,
      }
    /* 6 - <bold> */
    /*
-   formated_style_name = mem_malloc(7 + strlen(style_label));
+   formated_style_name = mem_malloc(7 + strlen_safe(style_label));
    sprintf(formated_style_name, "%s%s", "<bold>", style_label);
    return formated_style_name;
    */

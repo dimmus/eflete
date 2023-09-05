@@ -281,11 +281,12 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
    authors = eina_strbuf_new();
    eina_strbuf_append_printf(authors,
                              "<color=#b6b6b6>"
-                             "<b><align=center>"PACKAGE_NAME" v."PACKAGE_VERSION" (build time "BUILD_TIME")</align></b><br>"
+                             "<b><align=center>"PACKAGE_NAME" v."PACKAGE_VERSION" (build time "PACKAGE_BUILD_TIME")</align></b><br>"
                              "This application was written for Enlightenment project.<br>"
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"
                              "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
+                             "Copyright (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov.<br>"
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
 
@@ -301,6 +302,8 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
    eina_strbuf_free(authors_file_path);
    eina_strbuf_free(authors);
    fclose(authors_file);
+
+   elm_object_style_set(popup, "shortcuts");
 
    return label;
 }
@@ -320,7 +323,7 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
   elm_object_part_text_set(layout, "ver.text", PACKAGE_VERSION);
-  elm_object_part_text_set(layout, "build.text", BUILD_TIME);
+  elm_object_part_text_set(layout, "build.text", PACKAGE_BUILD_TIME);
   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
   return layout;

@@ -18,7 +18,7 @@
  */
 
 #include "live_elementary_widgets.h"
-
+#include "main_window.h" /* strlen_safe */
 
 Evas_Object *
 widget_slider_create(Evas_Object *parent, const Group2 *group)
@@ -40,7 +40,7 @@ widget_slider_create(Evas_Object *parent, const Group2 *group)
    if (!strcmp(group->class, "range"))
      {
         elm_slider_range_enabled_set(object, true);
-        if (!strncmp(style_name, "vertical", strlen("vertical")))
+        if (!strncmp(style_name, "vertical", strlen_safe("vertical")))
           elm_slider_horizontal_set(object, false);
         elm_slider_range_set(object, 2, 8);
      }

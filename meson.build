@@ -32,7 +32,7 @@ config_h.set_quoted('PACKAGE_BIN_DIR'  , join_paths(get_option('prefix'), get_op
 config_h.set_quoted('PACKAGE_LIB_DIR'  , dir_lib)
 config_h.set_quoted('PACKAGE_DATA_DIR' , dir_pkgdata)
 config_h.set_quoted('PACKAGE_DOC_DIR'  , join_paths(get_option('prefix'), get_option('infodir'), 'eflete'))
-config_h.set_quoted('BUILD_TIME'       , '30.08.23') # should be $(date +"%F\ %H:%M")
+config_h.set_quoted('PACKAGE_BUILD_TIME'       , '30.08.23') # should be $(date +"%F\ %H:%M")
 
 config_h.set('__UNUSED_RESULT__'              , '__attribute__((warn_unused_result))')
 config_h.set('__UNUSED__'                     , '__attribute__((unused))')

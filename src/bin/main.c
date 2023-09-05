@@ -58,7 +58,7 @@ static const Ecore_Getopt options = {
    "  if FILE is not specified but --name given: new project\n"
    ,
    PACKAGE_VERSION,
-   "(C) 2013-2016 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics.\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design to create and modify Elementary widgets styles.\n",
@@ -171,7 +171,7 @@ _import_edj(void *data __UNUSED__)
      {
 #ifndef HAVE_TIZEN
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
 #else
         proj_name = eina_tmpstr_add("Component_Designer");
 #endif
@@ -193,7 +193,7 @@ _import_edc(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
         eina_tmpstr_del(proj_name);
      }
@@ -212,7 +212,7 @@ _new_project(void *data __UNUSED__)
    else
      {
         name = ecore_file_file_get(file);
-        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        proj_name = eina_tmpstr_add_length(name, strlen_safe(name) - 4);
         tabs_menu_new_data_set(proj_name, pro_path, widgets);
         eina_tmpstr_del(proj_name);
      }

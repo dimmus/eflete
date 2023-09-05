@@ -259,7 +259,7 @@ _program_add(void *data,
    state2 = edje_edit_program_emit_source_get(pl->group->edit_object, program_name);
    if (!source_name) source_name = eina_stringshare_add("");
    if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
-       (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
+       (strncmp(sig_name, "mouse", strlen_safe("mouse")) != 0))
      correct = true;
 
    /* if program is not exist */
@@ -518,7 +518,7 @@ demo_group_add(Group2 *group)
         state2 = edje_edit_program_emit_source_get(pl->group->edit_object, prog_name->common.name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
-            (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
+            (strncmp(sig_name, "mouse", strlen_safe("mouse")) != 0))
           {
              demo_sig = mem_calloc(1, sizeof(Demo_Signal));
              demo_sig->prog_name = eina_stringshare_add(prog_name->common.name);
