@@ -2,7 +2,7 @@ project('eflete', 'c',
   version : '1.19.99',
   meson_version : '>= 0.50',
   default_options : [
-    'warning_level=2',
+    'warning_level=1',
     'buildtype=plain',
     'c_std=gnu99'
   ]
@@ -10,11 +10,6 @@ project('eflete', 'c',
 
 add_global_arguments('-DHAVE_CONFIG_H=1', '-DHAVE_CONFIG=1', language: 'c')
 add_global_arguments('-DEFL_BETA_API_SUPPORT=1', language: 'c')
-
-# vers = meson.project_version().split('.')
-# ete_version_major = vers[0]
-# ete_version_minor = vers[1]
-# ete_version_patch = vers[2].split('-')[0]
 
 # install paths
 dir_prefix      = get_option('prefix')
@@ -70,15 +65,13 @@ eflete_cflags_try = [
   '-Wunused-but-set-parameter',
   '-Wunused-parameter',
   '-Wimplicit-fallthrough=2',
-  '-Wno-unknown-warning-option',
+  # '-Wno-unknown-warning-option',
   '-Wno-missing-braces',
   # '-Wconversion',
   '-Wempty-body'
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
-
-# pkgconfig = import('pkgconfig')
 
 eet_exe = [find_program('eet', native: true)]
 edje_cc_exe = [find_program('edje_cc', native: true)]
@@ -99,7 +92,10 @@ if get_option('enable-audio')
 endif
 
 if get_option('enable-enventor')
-  config_h.set_quoted('HAVE_ENVENTOR', '1')
+  message('------------------------------------------')
+  message('Enventor support doesn\'t implemented yet!')
+  message('------------------------------------------')
+  # config_h.set_quoted('HAVE_ENVENTOR', '1')
 endif
 
 if get_option('enable-todo')
@@ -115,10 +111,13 @@ if get_option('build-tests')
 endif
 
 if get_option('build-doc')
-  doxygen = find_program('doxygen', required : false)
-  if doxygen.found()
-    subdir('doc')
-  endif
+  message('------------------------------------------')
+  message('Documentation not ready!')
+  message('------------------------------------------')
+  # doxygen = find_program('doxygen', required : false)
+  # if doxygen.found()
+  #   subdir('doc')
+  # endif
 endif
 
 have_nls = false
@@ -143,7 +142,6 @@ configure_file(
   install : false,
   configuration: config_h
 )
-
 
 # output
 # summary({'OS...:': host_machine.system(),
