@@ -16,16 +16,12 @@ jobs:
     - name: install deps
       run: |
         sudo apt-get update
-        sudo apt-get install -y autopoint gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
+        sudo apt-get install -y autopoint meson ninja-build gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
         # sudo apt-get install -y check
-    - name: autoreconf
-      run: autoreconf -i
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    #- name: make check
-    #  run: make check
+    - name: project setup (meson)
+      run: meson setup . build
+    - name: project build (ninja)
+      run: ninja -C build
     - name: Codecov
       uses: codecov/codecov-action@v3.1.4
       env:
