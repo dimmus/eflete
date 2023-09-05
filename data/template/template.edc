@@ -5,6 +5,8 @@
 // under LGPL, but this file specifically for the structure of your theme is
 // public-domain. This means you can take, use, re-license and otherwise
 // have zero restrictions on using this file as a base for your theme.
+efl_version: 1 26;
+
 #include "macros.edc"
 
 data.item: "version" "110";
@@ -44,7 +46,7 @@ collections {
 #include "widgets/pointer.edc"
 #include "widgets/fileselector.edc"
 #include "widgets/win.edc"
-#include "widgets/inwin.edc"
+// #include "widgets/inwin.edc"
 #include "widgets/slideshow.edc"
 #include "widgets/diskselector.edc"
 #include "widgets/ctxpopup.edc"

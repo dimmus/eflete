@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "eflete.h"
 #include "main_window.h"
 #include "shortcuts.h"
@@ -20,9 +39,9 @@ app_init()
    char buf[PATH_MAX];
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALE_DIR);
+   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
    textdomain(PACKAGE);
-#endif /* set locale */
+#endif
 
    if (!eina_init())
      {
@@ -93,7 +112,6 @@ app_init()
    ap.path.edj_path = eina_stringshare_printf("%s/themes/default/", elm_app_data_dir_get());
    ap.path.image_path = eina_stringshare_printf("%s/images/", elm_app_data_dir_get());
    ap.path.sound_path = eina_stringshare_printf("%s/sounds/", elm_app_data_dir_get());
-
 
    ap.theme = elm_theme_new();
 

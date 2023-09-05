@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "main_window.h"
 #include "widget_macro.h"
 #include "project_manager2.h"
@@ -138,8 +157,6 @@ popup_add(const char *title,
 
    pd = mem_calloc(1, sizeof(Popup_Data));
    pd->popup = elm_popup_add(ap.win);
-   TODO("Need default style here. But \"elm/popup/base/default\" does\'t dim bg")
-   elm_object_style_set(pd->popup, "shortcuts"); 
    elm_popup_orient_set(pd->popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(pd->popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(pd->popup, ELM_WRAP_WORD);
@@ -173,8 +190,7 @@ popup_add(const char *title,
    shortcuts_object_push(pd->popup);
    evas_object_show(pd->popup);
 
-   // Menu stay disabled after press ESC when Help->Shortcuts popup activated. Commented for now.
-   //ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
    elm_object_focus_set(pd->button.ok, false);
    elm_object_focus_set(pd->button.save, false);
@@ -371,7 +387,7 @@ _colorclass_done(void *data,
 #endif
 
 void
-popup_fileselector_helper_dismiss()
+popup_fileselector_helper_dismiss(void)
 {
    Evas_Object *follow_up = (Evas_Object *) helper;
 

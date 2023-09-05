@@ -1,0 +1,9 @@
+
+option('enable-nls',        type: 'boolean',    value: true)
+option('enable-debug',      type: 'boolean',    value: false)
+option('enable-todo',       type: 'boolean',    value: false)
+option('enable-audio',      type: 'boolean',    value: false)
+option('enable-enventor',   type: 'boolean',    value: false)
+
+option('build-tests',       type: 'boolean',    value: false)
+option('build-doc',         type: 'boolean',    value: false)

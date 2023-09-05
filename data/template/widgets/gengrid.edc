@@ -31,7 +31,7 @@ group { name: "elm/gengrid/item/default/default";
             color: 64 64 64 255; \
             color_class: "list_item_base"; \
          } \
-         description { state: "odd" 0.0; \
+         description { state: "odd" 1.0; \
             color: 56 56 56 255; \
             color_class: "list_item_base_odd"; \
          } \
@@ -799,27 +799,27 @@ group { name: "elm/gengrid/item/thumb/default";
          signal: "elm,state,selected"; source: "elm";
          action: STATE_SET "selected" 0.0;
          target: "base";
-         target: "icon_area";
+         // target: "icon_area";
          target: "glow";
       }
       program {
          signal: "elm,state,unselected"; source: "elm";
          action: STATE_SET "default" 0.0;
          target: "base";
-         target: "icon_area";
+         // target: "icon_area";
          target: "glow";
       }
       program {
          signal: "elm,state,disabled"; source: "elm";
          action: STATE_SET "disabled" 0.0;
          target: "base";
-         target: "icon_area";
+         // target: "icon_area";
       }
       program {
          signal: "elm,state,enabled"; source: "elm";
          action: STATE_SET "default" 0.0;
          target: "base";
-         target: "icon_area";
+         // target: "icon_area";
       }
       
       //##//
@@ -940,6 +940,9 @@ group { name: "elm/gengrid/item/thumb/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             color: 255 255 255 64;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "elm.swallow.pad"; type: SWALLOW;

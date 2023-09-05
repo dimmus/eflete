@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "property.h"
 #include "property_private.h"
 #include "property_common.h"
@@ -359,7 +378,6 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
-         elm_object_style_set(content, "default");
          evas_object_smart_callback_add(content, signals.elm.spinner.drag_start, _start_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.spinner.drag_stop, _stop_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.spinner.changed_user, _start_change_stop_cb, pa);

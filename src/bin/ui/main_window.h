@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #ifndef UI_MAIN_WINDOW_H
 #define UI_MAIN_WINDOW_H
 
@@ -369,7 +388,7 @@ void
 popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabled);
 
 void
-popup_fileselector_helper_dismiss();
+popup_fileselector_helper_dismiss(void);
 
 void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
@@ -531,7 +550,7 @@ struct _ColorClassData
  * @ingroup Window
  */
 Evas_Object *
-colorclass_manager_add();
+colorclass_manager_add(void);
 
 struct _Style_Data
 {
@@ -553,7 +572,7 @@ typedef struct _Style_Data Style_Data;
  * @ingroup Window
  */
 Evas_Object *
-style_manager_add();
+style_manager_add(void);
 
 typedef enum {
    SOUND_TYPE_SAMPLE,

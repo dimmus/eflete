@@ -4328,7 +4328,7 @@ group { "elm/genlist/item/edit/default"; nomouse;
             color: 64 64 64 255;
             color_class: "list_item_base";
          }
-         desc { "odd";
+         desc { "odd" 1.0;
             color: 56 56 56 255;
             color_class: "list_item_base_odd";
          }

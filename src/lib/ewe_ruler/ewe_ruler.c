@@ -1,3 +1,20 @@
+/* Elementary Widgets Extension
+ * Copyright (C) 2014 Samsung Electronics.
+ *
+ * This file is part of Elementary Widgets Extension.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 
 
 #define EFL_UI_WIDGET_PROTECTED
@@ -251,7 +268,7 @@ _ewe_ruler_horizontal_set(Eo *obj,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_horizontal_get(const Eo *obj __UNUSED__, Ewe_Ruler_Smart_Data *sd)
+_ewe_ruler_horizontal_get(const Eo *obj EINA_UNUSED, Ewe_Ruler_Smart_Data *sd)
 {
    return sd->horizontal;
 }
@@ -278,7 +295,7 @@ _ewe_ruler_step_set(Eo *obj,
 }
 
 EOLIAN static unsigned int
-_ewe_ruler_step_get(const Eo *obj __UNUSED__,
+_ewe_ruler_step_get(const Eo *obj EINA_UNUSED,
                     Ewe_Ruler_Smart_Data *sd,
                     Ewe_Ruler_Scale *scale)
 {
@@ -302,7 +319,7 @@ _ewe_ruler_value_step_set(Eo *obj,
 }
 
 EOLIAN static double
-_ewe_ruler_value_step_get(const Eo *obj __UNUSED__,
+_ewe_ruler_value_step_get(const Eo *obj EINA_UNUSED,
                           Ewe_Ruler_Smart_Data *sd,
                           Ewe_Ruler_Scale *scale)
 {
@@ -328,7 +345,7 @@ _ewe_ruler_zero_offset_set(Eo *obj,
 }
 
 EOLIAN static int
-_ewe_ruler_zero_offset_get(const Eo *obj __UNUSED__,
+_ewe_ruler_zero_offset_get(const Eo *obj EINA_UNUSED,
                            Ewe_Ruler_Smart_Data *sd,
                            Ewe_Ruler_Scale *scale)
 {
@@ -354,7 +371,7 @@ _ewe_ruler_format_set(Eo *obj,
 }
 
 EOLIAN static const char *
-_ewe_ruler_format_get(const Eo *obj __UNUSED__,
+_ewe_ruler_format_get(const Eo *obj EINA_UNUSED,
                       Ewe_Ruler_Smart_Data *sd,
                       Ewe_Ruler_Scale *scale)
 {
@@ -387,7 +404,7 @@ _ewe_ruler_ewe_style_set(Eo *obj,
 }
 
 EOLIAN static const char *
-_ewe_ruler_ewe_style_get(const Eo *obj __UNUSED__,
+_ewe_ruler_ewe_style_get(const Eo *obj EINA_UNUSED,
                      Ewe_Ruler_Smart_Data *sd,
                      Ewe_Ruler_Scale *scale)
 {
@@ -404,8 +421,6 @@ _ewe_ruler_scale_add(Eo *obj,
    Ewe_Ruler_Scale *ret = malloc(sizeof(Ewe_Ruler_Scale));
    if (!ret) return NULL;
    if (!style) style = DEFAULT_STYLE;
-
-   sd->scales = eina_list_append(sd->scales, ret);
 
    ret->box = elm_box_add(obj);
    elm_box_horizontal_set(ret->box, sd->horizontal);
@@ -425,11 +440,13 @@ _ewe_ruler_scale_add(Eo *obj,
    ret->show_middle_mark = EINA_FALSE;
    ret->zero_pos = 0;
 
+   sd->scales = eina_list_append(sd->scales, ret);
+
    return ret;
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_scale_del(Eo *obj __UNUSED__,
+_ewe_ruler_scale_del(Eo *obj EINA_UNUSED,
                      Ewe_Ruler_Smart_Data *sd,
                      Ewe_Ruler_Scale *scale)
 {
@@ -446,7 +463,7 @@ _ewe_ruler_scale_del(Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_scale_visible_get(const Eo *obj __UNUSED__,
+_ewe_ruler_scale_visible_get(const Eo *obj EINA_UNUSED,
                              Ewe_Ruler_Smart_Data *sd,
                              Ewe_Ruler_Scale *scale)
 {
@@ -456,7 +473,7 @@ _ewe_ruler_scale_visible_get(const Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_scale_visible_set(Eo *obj __UNUSED__,
+_ewe_ruler_scale_visible_set(Eo *obj EINA_UNUSED,
                              Ewe_Ruler_Smart_Data *sd,
                              Ewe_Ruler_Scale *scale,
                              Eina_Bool visible)
@@ -488,7 +505,7 @@ _ewe_ruler_scale_visible_set(Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_scale_middle_mark_get(const Eo *obj __UNUSED__,
+_ewe_ruler_scale_middle_mark_get(const Eo *obj EINA_UNUSED,
                                  Ewe_Ruler_Smart_Data *sd,
                                  Ewe_Ruler_Scale *scale)
 {
@@ -498,7 +515,7 @@ _ewe_ruler_scale_middle_mark_get(const Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_scale_middle_mark_set(Eo *obj __UNUSED__,
+_ewe_ruler_scale_middle_mark_set(Eo *obj EINA_UNUSED,
                                  Ewe_Ruler_Smart_Data *sd,
                                  Ewe_Ruler_Scale *scale,
                                  Eina_Bool middle_mark)
@@ -531,8 +548,6 @@ _ewe_ruler_marker_add(Eo *obj,
    if (!ret) return NULL;
    if (!style) style = DEFAULT_STYLE;
 
-   sd->markers = eina_list_append(sd->markers, ret);
-
    ret->style = eina_stringshare_add(style);
    buf = eina_strbuf_new();
    if (sd->horizontal)
@@ -556,12 +571,14 @@ _ewe_ruler_marker_add(Eo *obj,
    ret->visible = EINA_TRUE;
    ret->relative = EINA_FALSE;
 
+   sd->markers = eina_list_append(sd->markers, ret);
+
    eina_strbuf_free(buf);
    return ret;
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_marker_del(Eo *obj __UNUSED__,
+_ewe_ruler_marker_del(Eo *obj EINA_UNUSED,
                       Ewe_Ruler_Smart_Data *sd,
                       Ewe_Ruler_Marker *marker)
 {
@@ -581,7 +598,7 @@ _ewe_ruler_marker_del(Eo *obj __UNUSED__,
 
 EOLIAN static void
 _ewe_ruler_marker_size_set(Eo *obj,
-                           Ewe_Ruler_Smart_Data *sd __UNUSED__,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                            Ewe_Ruler_Marker *marker,
                            int size)
 {
@@ -590,16 +607,16 @@ _ewe_ruler_marker_size_set(Eo *obj,
 }
 
 EOLIAN static int
-_ewe_ruler_marker_size_get(const Eo *obj __UNUSED__,
-                           Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_size_get(const Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                            Ewe_Ruler_Marker *marker)
 {
    return marker->size;
 }
 
 EOLIAN static void
-_ewe_ruler_marker_text_set(Eo *obj __UNUSED__,
-                           Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_text_set(Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                            Ewe_Ruler_Marker *marker,
                            const char *text)
 {
@@ -607,16 +624,16 @@ _ewe_ruler_marker_text_set(Eo *obj __UNUSED__,
 }
 
 EOLIAN static const char *
-_ewe_ruler_marker_text_get(const Eo *obj __UNUSED__,
-                           Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_text_get(const Eo *obj EINA_UNUSED,
+                           Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                            Ewe_Ruler_Marker *marker)
 {
    return elm_layout_text_get(marker->obj, "ewe.text");
 }
 
 EOLIAN static void
-_ewe_ruler_marker_tooltip_set(Eo *obj __UNUSED__,
-                              Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_tooltip_set(Eo *obj EINA_UNUSED,
+                              Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                               Ewe_Ruler_Marker *marker,
                               const char *text)
 {
@@ -661,7 +678,7 @@ _ewe_ruler_marker_relative_set(Eo *obj,
 }
 
 EOLIAN static double
-_ewe_ruler_marker_relative_get(const Eo *obj __UNUSED__,
+_ewe_ruler_marker_relative_get(const Eo *obj EINA_UNUSED,
                                Ewe_Ruler_Smart_Data *sd,
                                Ewe_Ruler_Marker *marker,
                                Ewe_Ruler_Scale *scale)
@@ -702,8 +719,8 @@ _ewe_ruler_marker_absolute_set(Eo *obj,
 }
 
 EOLIAN static int
-_ewe_ruler_marker_absolute_get(const Eo *obj __UNUSED__,
-                               Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_absolute_get(const Eo *obj EINA_UNUSED,
+                               Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                                Ewe_Ruler_Marker *marker)
 {
    if (!marker) return EINA_FALSE;
@@ -714,8 +731,8 @@ _ewe_ruler_marker_absolute_get(const Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_marker_visible_get(const Eo *obj __UNUSED__,
-                              Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_visible_get(const Eo *obj EINA_UNUSED,
+                              Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                               Ewe_Ruler_Marker *marker)
 {
    if (!marker) return EINA_FALSE;
@@ -723,7 +740,7 @@ _ewe_ruler_marker_visible_get(const Eo *obj __UNUSED__,
 }
 
 EOLIAN static Eina_Bool
-_ewe_ruler_marker_visible_set(Eo *obj __UNUSED__,
+_ewe_ruler_marker_visible_set(Eo *obj EINA_UNUSED,
                               Ewe_Ruler_Smart_Data *sd,
                               Ewe_Ruler_Marker *marker,
                               Eina_Bool visible)
@@ -765,8 +782,8 @@ _ewe_ruler_marker_style_set(Eo *obj,
 }
 
 EOLIAN static const char *
-_ewe_ruler_marker_style_get(const Eo *obj __UNUSED__,
-                            Ewe_Ruler_Smart_Data *sd __UNUSED__,
+_ewe_ruler_marker_style_get(const Eo *obj EINA_UNUSED,
+                            Ewe_Ruler_Smart_Data *sd EINA_UNUSED,
                             Ewe_Ruler_Marker *marker)
 {
    if (!marker) return NULL;
@@ -776,24 +793,13 @@ _ewe_ruler_marker_style_get(const Eo *obj __UNUSED__,
 /*------------------------Smart functions ----------------------------*/
 
 EOLIAN static void
-// _ewe_ruler_efl_canvas_group_group_member_add(Eo *obj, Ewe_Ruler_Smart_Data *sd, Efl_Canvas_Object *sub_obj)
-// _ewe_ruler_efl_canvas_group_group_member_add(Eo *obj, Ewe_Ruler_Smart_Data *sd, Efl_Canvas_Object *member)
 _ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
    const char *data_dir = NULL;
    Eina_Strbuf *theme_path = NULL;
 
-   // NEW 26.10.22
-   // efl_canvas_group_member_add(efl_super(obj, MY_CLASS), member);
-   // if (sd->hit_rect) evas_object_raise(sd->hit_rect);
-
-   // NEW code. 
-   // efl_canvas_group_member_add(efl_super(obj, MY_CLASS), sub_obj);
-   // efl_ui_widget_sub_object_add(obj, sub_obj);
-   
-   // OLD code. Save until above will be tested.
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
-   elm_widget_sub_object_parent_add(obj); 
+   //elm_widget_sub_object_parent_add(obj);
 
    data_dir = elm_app_data_dir_get();
    if (data_dir && strcmp(data_dir, ""))
@@ -830,7 +836,6 @@ _ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 }
 
 EOLIAN static void
-//_ewe_ruler_efl_canvas_group_group_member_remove(Eo *obj, Ewe_Ruler_Smart_Data *sd, Efl_Canvas_Object *sub_obj __UNUSED__)
 _ewe_ruler_efl_canvas_group_group_del(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
    Ewe_Ruler_Scale *scale;
@@ -976,7 +981,7 @@ _ewe_ruler_efl_gfx_entity_size_set(Eo *obj,
 }
 
 EOLIAN static void
-_ewe_ruler_efl_canvas_group_group_calculate(Eo *obj __UNUSED__,
+_ewe_ruler_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED,
                                        Ewe_Ruler_Smart_Data *sd)
 {
    Eina_List *ls;

@@ -5,7 +5,8 @@
 
 static int max_len = 4096;
 
-int strlcpy(char *dst, const char *src, int dst_size)
+int 
+strlcpy(char *dst, const char *src, int dst_size)
 {
     int i;
 
@@ -24,7 +25,8 @@ int strlcpy(char *dst, const char *src, int dst_size)
     return i;
 }
 
-int strlen_safe(const char *str)
+int 
+strlen_safe(const char *str)
 {
    if (str == NULL) {
        return 0;

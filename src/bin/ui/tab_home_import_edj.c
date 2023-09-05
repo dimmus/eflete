@@ -1,5 +1,23 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 #define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
+// #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
 #include "tabs_private.h"
@@ -56,7 +74,7 @@ static void
 _tree_nodes_get(Eina_List *groups_list, Node *node);
 
 static Eina_Bool
-_validate()
+_validate(void)
 {
    if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
        !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)) ||
@@ -269,7 +287,7 @@ _genlist_label_get(void *data,
    assert (node != NULL);
    if (node->list)
      {
-        symbols = strlen_safe(node->name) - 1;
+        symbols = strlen(node->name) - 1;
         strncpy(buf, node->name, symbols);
         buf[symbols] = '\0';
         pos = strrchr(buf, '/');
@@ -528,7 +546,7 @@ _elipsis_edj(void *data __UNUSED__,
                                  false);
 }
 
-void
+static void
 _tab_import_edj_del(void *data __UNUSED__,
                     Evas *e __UNUSED__,
                     Evas_Object *obj __UNUSED__,
@@ -628,7 +646,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_STYLE_COPY(LEN, COPY_STYLE) \
    do \
      { \
-        len = strlen_safe(item->name) - (LEN); \
+        len = strlen(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, COPY_STYLE); \
@@ -638,7 +656,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_ITEM_STYLE_COPY(LEN, COPY_STYLE, COPY_ITEM_STYLE) \
    do \
      { \
-        len = strlen_safe(item->name) - (LEN); \
+        len = strlen(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s/%s", item->name, cp_style, COPY_ITEM_STYLE, COPY_STYLE); \
@@ -671,7 +689,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
                          }
                     }
                   else if (iname)
@@ -689,17 +707,17 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                                              GROUP_APPEND()
                                            else
                                              EINA_LIST_FOREACH(cp_style_list, l1, name2)
-                                               GROUP_STYLE_COPY(strlen_safe(style_name), name2)
+                                               GROUP_STYLE_COPY(strlen(style_name), name2)
                                         }
                                       else
                                         {
                                            EINA_LIST_FOREACH(cp_item_style_list, l1, name2)
                                              {
                                                 if (!cp_style_list)
-                                                  GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, style_name, name2)
+                                                  GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, style_name, name2)
                                                 else
                                                   EINA_LIST_FOREACH(cp_style_list, l1, name3)
-                                                    GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, name3, name2)
+                                                    GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, name3, name2)
                                              }
                                         }
                                    }
@@ -711,7 +729,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
                          }
                     }
                   eina_stringshare_del(style_name);

@@ -1,4 +1,21 @@
-
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 #include "demo_group.h"
 #include "main_window.h"
 #include "history.h"
@@ -209,7 +226,7 @@ _content_get(void *data,
    return button;
 }
 
-void
+static void
 _program_add(void *data,
              Evas_Object *obj __UNUSED__,
              void *ei)
@@ -242,7 +259,7 @@ _program_add(void *data,
    state2 = edje_edit_program_emit_source_get(pl->group->edit_object, program_name);
    if (!source_name) source_name = eina_stringshare_add("");
    if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
-       (strncmp(sig_name, "mouse", strlen_safe("mouse")) != 0))
+       (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
      correct = true;
 
    /* if program is not exist */
@@ -501,7 +518,7 @@ demo_group_add(Group2 *group)
         state2 = edje_edit_program_emit_source_get(pl->group->edit_object, prog_name->common.name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
-            (strncmp(sig_name, "mouse", strlen_safe("mouse")) != 0))
+            (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
              demo_sig = mem_calloc(1, sizeof(Demo_Signal));
              demo_sig->prog_name = eina_stringshare_add(prog_name->common.name);

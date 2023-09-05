@@ -1,6 +1,23 @@
-
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 #define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
+// #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
 #include "tabs_private.h"
@@ -466,7 +483,7 @@ _import(void *data __UNUSED__,
    _after_popup_close(NULL, NULL, (void *)BTN_OK);
 }
 
-void
+static void
 _tab_import_edc_del(void *data __UNUSED__,
                     Evas *e __UNUSED__,
                     Evas_Object *obj __UNUSED__,

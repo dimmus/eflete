@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
@@ -110,7 +129,7 @@ _after_popup_close(void *data __UNUSED__,
 
    config_save();
    evas_object_del(ap.property.group);
-   INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
+   INFO("%s %s - Finished...", PACKAGE_NAME, PACKAGE_VERSION);
    elm_exit();
 }
 
@@ -246,8 +265,8 @@ ui_main_window_add(void)
 }
 
 #if !HAVE_TIZEN
-Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
+static Evas_Object *
+_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *label = (Evas_Object *) data;
    Eina_Strbuf *authors_file_path = NULL;
@@ -262,12 +281,11 @@ _about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus
    authors = eina_strbuf_new();
    eina_strbuf_append_printf(authors,
                              "<color=#b6b6b6>"
-                             "<b><align=center>"PACKAGE_NAME" v."VERSION" (build time "BUILD_TIME")</align></b><br>"
+                             "<b><align=center>"PACKAGE_NAME" v."PACKAGE_VERSION" (build time "BUILD_TIME")</align></b><br>"
                              "This application was written for Enlightenment project.<br>"
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"
-                             "Copyright (C) 2013 - 2017 Samsung Electronics.<br>"
-                             "Copyright (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov.<br>"
+                             "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
 
@@ -283,8 +301,6 @@ _about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus
    eina_strbuf_free(authors_file_path);
    eina_strbuf_free(authors);
    fclose(authors_file);
-
-   elm_object_style_set(popup, "shortcuts");
 
    return label;
 }
@@ -303,7 +319,7 @@ _about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object
 {
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
-  elm_object_part_text_set(layout, "ver.text", VERSION);
+  elm_object_part_text_set(layout, "ver.text", PACKAGE_VERSION);
   elm_object_part_text_set(layout, "build.text", BUILD_TIME);
   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -547,7 +563,7 @@ static const Shortcut_Data popup_hotkeys[] = {
 };
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
 {
    Evas_Object *box = data;
    Evas_Object *genlist = elm_genlist_add(ap.win);
@@ -609,13 +625,11 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_f
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
-
    Evas_Object *layout = elm_layout_add(ap.win);
    elm_layout_theme_set(layout, "layout", "shortcuts", "default");
    elm_layout_content_set(layout, "elm.swallow.content", genlist);
    evas_object_show(layout);
    elm_box_pack_end(box, layout);
-
    elm_object_style_set(popup, "shortcuts");
    return box;
 }

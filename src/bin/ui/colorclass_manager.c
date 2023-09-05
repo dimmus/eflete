@@ -1,5 +1,23 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 #define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
+// #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
 #include "main_window.h"
@@ -154,12 +172,12 @@ _colorclass_del_cb(void *data __UNUSED__,
    else
      {
         snprintf(buf, BUFF_MAX, _("Colorclass is used in:"));
-        symbs = strlen_safe(buf);
+        symbs = strlen(buf);
         EINA_LIST_FOREACH(res->used_in, l, state)
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
-             symbs += strlen_safe(res->common.name);
+             symbs += strlen(res->common.name);
              break; TODO("remove this break after warning style remake")
           }
         WARN("%s", buf);

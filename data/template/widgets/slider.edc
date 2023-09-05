@@ -40,8 +40,8 @@ group { name: "elm/slider/horizontal/default";
    images.image: "slider_run_base_light_horiz.png" COMP;
    images.image: "horiz_glow_run.png" COMP;
    images.image: "horiz_glow_run_rev.png" COMP;
-   images.image: "knob_round_small_normal.png" COMP;
-   images.image: "knob_round_small_selected.png" COMP;
+   // images.image: "knob_round_small_normal.png" COMP; // not used
+   // images.image: "knob_round_small_selected.png" COMP; // not used
    set { name: "knob";
       // XXX: add more sizes (at least up to 128x128)
       image { image: "knob_sz_24.png"  COMP; size: 31 31 32 32; }
@@ -622,6 +622,9 @@ group { name: "elm/slider/horizontal/indicator/default";
             fixed: 1 1;
             min: 16 16;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+         }
       }
       part { name: "clip"; type: RECT;
          description { state: "default" 0.0;
@@ -746,8 +749,8 @@ group { name: "elm/slider/vertical/default";
    images.image: "slider_run_base_light_vert.png" COMP;
    images.image: "vert_glow_run.png" COMP;
    images.image: "vert_glow_run_rev.png" COMP;
-   images.image: "knob_round_small_normal.png" COMP;
-   images.image: "knob_round_small_selected.png" COMP;
+   // images.image: "knob_round_small_normal.png" COMP; // not used
+   // images.image: "knob_round_small_selected.png" COMP; // not used
    set { name: "knob";
       // XXX: add more sizes (at least up to 128x128)
       image { image: "knob_sz_24.png"  COMP; size: 31 31 32 32; }
@@ -1328,6 +1331,9 @@ group { name: "elm/slider/vertical/indicator/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 16 16;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
          }
       }
       part { name: "clip"; type: RECT;

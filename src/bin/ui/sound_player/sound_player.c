@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "sound_player.h"
 
 #define TONE_PLAYING_DURATION 2.0
@@ -42,7 +61,8 @@ _snd_file_read(void *data __UNUSED__, Eo *eo_obj __UNUSED__, void *buffer, int l
 {
    if ((offset + len) > length)
      len = length - offset;
-   memcpy(buffer, data_sound + offset, len);
+   /* memcpy(buffer, data_sound + offset, len); */ /* error: pointer of type ‘void *’ used in arithmetic [-Werror=pointer-arith] */
+   memcpy(buffer, data_sound, len);
    offset += len;
    return len;
 }
@@ -136,7 +156,7 @@ _on_rewin_cb(void *data __UNUSED__,
    ecore_audio_obj_in_seek(in, value, SEEK_SET);
 }
 static void
-_create_io_stream()
+_create_io_stream(void)
 {
    in = efl_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL);
    assert(in != NULL);
@@ -148,7 +168,7 @@ _create_io_stream()
                          _play_finished_cb, NULL);
 }
 static void
-_tone_play()
+_tone_play(void)
 {
    double value;
    Eina_Bool ret = false;
@@ -187,7 +207,7 @@ _tone_play()
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
 static void
-_sample_play()
+_sample_play(void)
 {
    double value, len = 0.0;
    Eina_Bool ret = false;
@@ -268,7 +288,7 @@ _on_play_cb(void *data __UNUSED__,
 }
 
 static void
-_interrupt_playing()
+_interrupt_playing(void)
 {
    Eina_Bool ret;
    Evas_Object *icon;
