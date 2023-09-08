@@ -1,14 +1,15 @@
 # French translation for Eflete.
 # This file is distributed under the same license as the eflete package.
+# J. Lavoie <j.lavoie@net-c.ca>, 2014.
 # similar <similar@orange.fr>, 2023.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment\n"
+"Project-Id-Version: eflete\n"
 "Report-Msgid-Bugs-To: dmitri.chudinov@gmail.com\n"
 "POT-Creation-Date: 2017-07-21 16:03+0300\n"
 "PO-Revision-Date: 2023-01-29 22:00+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Last-Translator: Philippe Jean Guillaumie <similar@orange.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/>"
 "\n"
 "Language: fr\n"
