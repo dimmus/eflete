@@ -25,7 +25,7 @@
 <br/>
 
 <p align="center">
-  <i>Work in progress! Limited functionality.<br/>Some features may not quite function correctly or completely! WIP.</i>
+  <i>Work in progress! Limited functionality.<br/>Some features may not quite function correctly or completely!</i>
 </p>
 
 EFL Edje Theme Editor is a rich graphical tool for Enlightenment Foundation Library ([EFL](https://www.enlightenment.org/about-efl)) that provides UI for edc markup. It is aimed at simplifying the creation and editing of widget styles. In addition, this is a great example of a full-fledged practical use of the amazing functionality of the EFL.
@@ -43,30 +43,28 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 ## Compiling
 
 Once you have met the requirements, compiling and installing is simple:
-```sh
-./autogen.sh
-make
-sudo make install
-```
-If you want a really debuggable piece of code where optimizations mess with little to nothing at all, use:
-```sh
-./configure CFLAGS="-O -g -ffast-math -march=native -ggdb3"
-```
-Note that if you wish to compile for older architectures than your current system, please look up the compiler documentation and replace ''-march=native'' with something appropriate.
+:
 
-Use the --prefix option on the configure step to install the program to a specific directory:
 ```sh
-./configure --prefix=/full/path/to/some/dir
+meson . build
+ninja -C build
+sudo ninja -C build install
 ```
-You will want to ensure the default prefix `/usr/local` is available to build tools. If you know what you are doing, you can change the prefix, but this assumes you do not and the above prefix is used. These environment variables are used during the build, so you may want to make them more permanent.
+
+Normal compilation is in `/usr/local`. You will want to ensure the default prefix `/usr/local` is available to build tools. If you know what you are doing, you can change the prefix, but this assumes you do not and the above prefix is used. These environment variables are used during the build, so you may want to make them more permanent.
 ```sh
 export PATH=/usr/local/bin:"$PATH"
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:"$PKG_CONFIG_PATH"
 export LD_LIBRARY_PATH=/usr/local/lib:"$LD_LIBRARY_PATH"
 ```
+
+To run tests:
+```sh
+ninja -C build test
+```
 ## Applying themes
 
-To apply a theme to elementary, you should place the .edj-file in the elementary themes directory (default: `/usr/local/share/elementary/themes)`. Note: do not forget to add read permissions to the copied file. After that, the theme will be available for selection from `elementary_config`.
+To apply a theme to elementary, you should place created edj-file in the elementary themes directory (default: `/usr/local/share/elementary/themes)`. Note: do not forget to add read permissions to the copied file. After that, the theme will be available for selection from `elementary_config`.
 
 ## Bash autocompletion
 
