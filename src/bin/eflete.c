@@ -93,15 +93,15 @@ app_init(void)
            } \
      }
 
-   PATH_CHECK("themes/default/eflete_elm.edj", "data/eflete_elm.edj",
+   PATH_CHECK("themes/default/eflete_elm.edj", "data/themes/default/eflete_elm.edj",
               elm_app_data_dir_get(), "Default theme is missing");
    ap.path.theme_edj = eina_stringshare_add(buf);
 
-   PATH_CHECK("themes/default/ewe.edj", "data/ewe.edj",
+   PATH_CHECK("themes/default/ewe.edj", "data/themes/ewe/ewe.edj",
               elm_app_data_dir_get(), "Ewe theme is missing");
    ap.path.ewe_edj = eina_stringshare_add(buf);
 
-   PATH_CHECK("layouts/eflete.edj", "data/eflete.edj",
+   PATH_CHECK("layouts/eflete.edj", "data/layouts/eflete.edj",
               elm_app_data_dir_get(), "Default layouts is missing");
    ap.path.layout_edj = eina_stringshare_add(buf);
 
