@@ -60,6 +60,7 @@ export LD_LIBRARY_PATH=/usr/local/lib:"$LD_LIBRARY_PATH"
 
 To run tests:
 ```sh
+meson --reconfigure -Dbuild-tests=true . build 
 ninja -C build test
 ```
 ## Applying themes
