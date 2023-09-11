@@ -681,7 +681,7 @@ _radio_switcher_add(Workspace_Data *wd,
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
    evas_object_smart_callback_add(radio, signals.elm.radio.changed, func, wd);
-   elm_radio_group_add(radio, group);
+   if (group) elm_radio_group_add(radio, group);
 
    return radio;
 }
