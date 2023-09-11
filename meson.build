@@ -112,7 +112,8 @@ eflete_cflags_try = [
   '-Wno-missing-field-initializers',
   '-Wno-unused-function',
   '-Wno-implicit-function-declaration',
-  '-Wno-implicit-fallthrough'
+  '-Wno-implicit-fallthrough',
+  '-Wno-error'
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
