@@ -1,8 +1,9 @@
 project('eflete', 'c',
   version : '1.19.99',
-  meson_version : '>= 0.50',
+  meson_version : '>= 0.49.2',
   default_options : [
-    'warning_level=1',
+    'warning_level=2',
+    'werror=true',
     'buildtype=plain',
     'c_std=gnu99'
   ]
@@ -11,28 +12,55 @@ project('eflete', 'c',
 add_global_arguments('-DHAVE_CONFIG_H=1', '-DHAVE_CONFIG=1', language: 'c')
 add_global_arguments('-DEFL_BETA_API_SUPPORT=1', language: 'c')
 
+# vers = meson.project_version().split('.')
+# ete_version_major = vers[0].to_int()
+# ete_version_minor = vers[1].to_int()
+# ete_version_patch = vers[2].split('-')[0]
+
+version = meson.project_version()
+if get_option('buildtype') != 'release'
+    git_command = find_program('git', required : false)
+
+    if git_command.found()
+        git_commit = run_command(
+            [git_command, 'rev-parse', 'HEAD'],
+            check : false
+        ).stdout().strip()
+
+        if git_commit != ''
+            version += ' (git-' + git_commit.substring(0, 8) + ')'
+        endif
+    endif
+endif
+
+# fs = import('fs')
+# git = find_program('git', required: false)
+# if git.found() and fs.is_dir('.git')
+#     git_rev_parse = run_command(git, 'rev-parse', '--short', '@', check: true)
+#     git_sha = git_rev_parse.stdout().strip()
+# else
+#     git_sha = ''
+# endif
+
 # install paths
 dir_prefix      = get_option('prefix')
 dir_pkgdata     = join_paths(dir_prefix, get_option('datadir'), meson.project_name())
 dir_lib         = join_paths(dir_prefix, get_option('libdir'))
+dir_bin         = join_paths(dir_prefix, get_option('bindir'))
+dir_doc         = join_paths(dir_prefix, get_option('infodir'), 'eflete')
 
 # configuration
 config_h = configuration_data()
 config_h.set_quoted('COMPILE_PATH'     , meson.current_build_dir())
 config_h.set_quoted('PACKAGE'          , meson.project_name())
-config_h.set_quoted('PACKAGE_VERSION'  , meson.project_version())
-config_h.set_quoted('PACKAGE_COPYRIGHT', 'Copyright (c) 2014-2023. EFLETE Authors (see AUTHORS).')
-config_h.set_quoted('PACKAGE_URL'      , 'https://www.enlightenment.org/about-eflete')
-config_h.set_quoted('PACKAGE_TARNAME'  , meson.project_name())
-config_h.set_quoted('PACKAGE_BUGREPORT', 'dmitri.chudinov@gmail.com')
-config_h.set_quoted('PACKAGE_STRING'   , meson.project_name() + ' ' + meson.project_version())
+config_h.set_quoted('PACKAGE_VERSION'  , version)
 config_h.set_quoted('PACKAGE_NAME'     , meson.project_name())
 # config_h.set_quoted('PACKAGE_BUILD_DIR', meson.build_root())
-config_h.set_quoted('PACKAGE_BIN_DIR'  , join_paths(get_option('prefix'), get_option('bindir')))
+config_h.set_quoted('PACKAGE_BIN_DIR'  , dir_bin)
 config_h.set_quoted('PACKAGE_LIB_DIR'  , dir_lib)
 config_h.set_quoted('PACKAGE_DATA_DIR' , dir_pkgdata)
-config_h.set_quoted('PACKAGE_DOC_DIR'  , join_paths(get_option('prefix'), get_option('infodir'), 'eflete'))
-config_h.set_quoted('PACKAGE_BUILD_TIME'       , '30.08.23') # should be $(date +"%F\ %H:%M")
+config_h.set_quoted('PACKAGE_DOC_DIR'  , dir_doc)
+config_h.set_quoted('BUILD_TIME'       , '2023') # should be $(date +"%F\ %H:%M")
 
 config_h.set('__UNUSED_RESULT__'              , '__attribute__((warn_unused_result))')
 config_h.set('__UNUSED__'                     , '__attribute__((unused))')
@@ -65,10 +93,27 @@ eflete_cflags_try = [
   '-Wunused-but-set-parameter',
   '-Wunused-parameter',
   '-Wimplicit-fallthrough=2',
-  # '-Wno-unknown-warning-option',
+  '-Wno-unknown-warning-option',
   '-Wno-missing-braces',
   # '-Wconversion',
-  '-Wempty-body'
+  '-Wempty-body',
+
+  '-Wundef',
+	'-Wlogical-op',
+	'-Wmissing-include-dirs',
+	'-Wold-style-definition',
+	'-Wpointer-arith',
+	'-Winit-self',
+	'-Wfloat-equal',
+	'-Wredundant-decls',
+	'-Wendif-labels',
+	'-Wstrict-aliasing=2',
+	'-Woverflow',
+	'-Wformat=2',
+  '-Wendif-labels',
+
+	'-Wno-missing-braces',
+	'-Wno-unused-parameter',
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
@@ -92,10 +137,7 @@ if get_option('enable-audio')
 endif
 
 if get_option('enable-enventor')
-  message('------------------------------------------')
-  message('Enventor support doesn\'t implemented yet!')
-  message('------------------------------------------')
-  # config_h.set_quoted('HAVE_ENVENTOR', '1')
+  config_h.set_quoted('HAVE_ENVENTOR', '1')
 endif
 
 if get_option('enable-todo')
@@ -111,13 +153,10 @@ if get_option('build-tests')
 endif
 
 if get_option('build-doc')
-  message('------------------------------------------')
-  message('Documentation not ready!')
-  message('------------------------------------------')
-  # doxygen = find_program('doxygen', required : false)
-  # if doxygen.found()
-  #   subdir('doc')
-  # endif
+  doxygen = find_program('doxygen', required : false)
+  if doxygen.found()
+    subdir('doc')
+  endif
 endif
 
 have_nls = false
@@ -139,31 +178,27 @@ install_data(['AUTHORS'],
 
 configure_file(
   output : 'eflete_config.h',
-  install : false,
   configuration: config_h
 )
 
-# output
-# summary({'OS...:': host_machine.system(),
-#          'NLS..:': have_nls ? 'yes' : 'no',
-#         #  'EFL..:': dependency('efl') # introduced in meson 0.57
-#         }, section: 'Configuration Options Summary:')
+summary = [
+  'Eflete',
+  '----------------',
+  '        version: @0@'.format(version),
+  '',
+  '         prefix: @0@'.format(dir_prefix),
+  '         libdir: @0@'.format(dir_lib),
+  '        datadir: @0@'.format(dir_pkgdata),
+  '         bindir: @0@'.format(dir_bin),
+  '         docdir: @0@'.format(dir_doc),
+  '',
+  '  documentation: @0@'.format(get_option('build-doc')),
+  '       enventor: @0@'.format(get_option('enable-enventor')),
+  '          audio: @0@'.format(get_option('enable-audio')),
+  '      debugging: @0@'.format(get_option('enable-debug')),
+  '           todo: @0@'.format(get_option('enable-todo')),
+  '          tests: @0@'.format(get_option('build-tests')),
+  '',
+]
 
-# summary({'prefix.....:': dir_prefix,
-#          'bindir.....:': dir_bin,
-#          'libdir.....:': dir_lib,
-#          'incdir.....:': dir_include,
-#          'pkgincdir..:': dir_pkginclude,
-#          'datadir....:': dir_data,
-#          'pkgdatadir.:': dir_pkgdata,
-#          'localedir..:': dir_locale,
-#         }, section: 'Directories:')
-
-# summary({'eolian_gen path..:': eolian_gen_exe,
-#          'edje_cc path.....:': edje_cc_exe,
-#          'eet path.........:': eet_exe,
-#         }, section: 'Binaries:')
-
-# summary({'compilation': 'ninja -C build -v',
-#          'installation': 'sudo ninja -C build install',
-#         }, section: 'Compilation')
+message('\n'.join(summary))
