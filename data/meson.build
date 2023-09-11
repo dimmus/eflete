@@ -1,5 +1,4 @@
 subdir('color')
-subdir('fonts')
 subdir('images')
 subdir('layouts')
 subdir('sounds')
