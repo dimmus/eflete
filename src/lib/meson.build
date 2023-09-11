@@ -8,7 +8,7 @@ foreach widget : widgets
    include_widgets_dir += [ include_directories(join_paths('..','..','src/lib/' + widget )) ]
 endforeach
 
-ewe_lib_lib = shared_library('ewe', ewe_src, eo_gen,
+ewe_lib_lib = static_library('ewe', ewe_src, eo_gen,
   c_args : [ eflete_cargs,
              '-DEWE_THEME="' + join_paths(dir_pkgdata, 'themes/default/ewe.edj"'),
            ],
@@ -16,8 +16,7 @@ ewe_lib_lib = shared_library('ewe', ewe_src, eo_gen,
   include_directories : [ include_directories('.'),
                           include_directories(join_paths('..','..','src/bin/logger'))] 
                           + include_widgets_dir,
-  version : meson.project_version(),
-  install : true
+  install : false
 )
 
 ewe_lib = declare_dependency(

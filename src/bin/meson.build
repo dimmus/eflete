@@ -43,10 +43,10 @@ foreach package : packages
    subdir(package)
 endforeach
 
-ete_lib_lib = library('ete', src,
+ete_lib_lib = static_library('ete', src,
   dependencies : [ eflete_deps, ewe_lib ],
   include_directories : include_dirs,
-  install : true
+  install : false
 )
 
 ete_lib = declare_dependency(
