@@ -23,7 +23,7 @@
 
 static Eina_Bool
 _on_image_done(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    const char *value;
@@ -45,8 +45,8 @@ _on_image_done(void *data,
 
 static void
 _on_image_choose(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    popup_fileselector_image_helper(NULL,
                                    data,

@@ -147,7 +147,7 @@ struct _Workspace_Data
 typedef struct _Workspace_Data Workspace_Data;
 
 Eina_Bool
-workspace_highlight_unset(Evas_Object *obj __UNUSED__)
+workspace_highlight_unset(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }
@@ -212,8 +212,8 @@ _scroll_area_get(Workspace_Data *wd)
 static void
 _rulers_pointer_move(void *data,
                      Evas *e,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    Scroll_Area *area = data;
    Evas_Coord x, y, ruler_h_x, ruler_v_y;
@@ -227,9 +227,9 @@ _rulers_pointer_move(void *data,
 
 static void
 _workspace_del(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               Evas *e EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -265,8 +265,8 @@ _object_delete_job(void *data)
 
 static void
 _code_reload(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -319,8 +319,8 @@ _members_zoom_set(Workspace_Data *wd)
 
 static void
 _fit_cb(void *data,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+        Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -328,24 +328,24 @@ _fit_cb(void *data,
 }
 
 static void
-_slider_zoom_stop_cb(void *data __UNUSED__,
+_slider_zoom_stop_cb(void *data EINA_UNUSED,
                 Evas_Object *obj,
-                void *event_info __UNUSED__)
+                void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 static void
-_slider_zoom_start_cb(void *data __UNUSED__,
+_slider_zoom_start_cb(void *data EINA_UNUSED,
                       Evas_Object *obj,
-                      void *event_info __UNUSED__)
+                      void *event_info EINA_UNUSED)
 {
    shortcuts_object_push(obj);
 }
 
 static void
 _slider_zoom_cb(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Eina_Stringshare *text;
    Workspace_Data *wd = data;
@@ -371,7 +371,7 @@ _zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
 }
 
 static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_combobox_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    return strdup(item->data);
@@ -379,7 +379,7 @@ _combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __U
 
 static void
 _combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    eina_stringshare_del(item->data);
@@ -389,8 +389,8 @@ _combobox_item_del(void *data,
 #if HAVE_TIZEN
 static void
 _btn_minus_zoom_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -404,8 +404,8 @@ _btn_minus_zoom_cb(void *data,
 
 static void
 _btn_plus_zoom_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -420,7 +420,7 @@ _btn_plus_zoom_cb(void *data,
 static void
 _spinner_zoom_cb(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -433,7 +433,7 @@ _spinner_zoom_cb(void *data,
 #else
 static void
 _zoom_selected_cb(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Workspace_Data *wd = data;
@@ -547,7 +547,7 @@ _zoom_controls_add(Workspace_Data *wd)
 static void
 _spinner_container_change(void *data,
                           Evas_Object *obj,
-                          void *event_info __UNUSED__)
+                          void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -569,7 +569,7 @@ _spinner_container_change(void *data,
 static void
 _container_aspect_change(void *data,
                          Evas_Object *obj,
-                         void *event_info __UNUSED__)
+                         void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -593,7 +593,7 @@ _container_aspect_change(void *data,
 static void
 _container_lock(void *data,
                 Evas_Object *obj,
-                void *event_info __UNUSED__)
+                void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -846,7 +846,7 @@ hide:
 
 static void
 _container_changed(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Workspace_Data *wd = data;
@@ -904,8 +904,8 @@ _container_changed(void *data,
 
 static void
 _menu_dismissed(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -916,8 +916,8 @@ _menu_dismissed(void *data,
 
 static void
 _menu_undo(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
@@ -925,8 +925,8 @@ _menu_undo(void *data,
 
 static void
 _menu_redo(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_REDO);
@@ -934,8 +934,8 @@ _menu_redo(void *data,
 
 static void
 _menu_rulers_visible(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
@@ -943,8 +943,8 @@ _menu_rulers_visible(void *data,
 
 static void
 _menu_markers(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -957,8 +957,8 @@ _menu_markers(void *data,
 
 static void
 _menu_ruler_abs(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -974,8 +974,8 @@ _menu_ruler_abs(void *data,
 
 static void
 _menu_ruler_rel(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -991,8 +991,8 @@ _menu_ruler_rel(void *data,
 
 static void
 _menu_rulers_both(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -1022,8 +1022,8 @@ _menu_rulers_both(void *data,
 
 static void
 _menu_cb(void *data,
-         Evas *e __UNUSED__,
-         Evas_Object *obj __UNUSED__,
+         Evas *e EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
          void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1125,7 +1125,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
 #if HAVE_TIZEN
 static void
-_library_select(void *data __UNUSED__,
+_library_select(void *data EINA_UNUSED,
                 Evas_Object *obj,
                 void *event_info)
 {
@@ -1155,7 +1155,7 @@ _library_select(void *data __UNUSED__,
 static void
 _mode_cb(void *data,
          Evas_Object *obj,
-         void *event_info __UNUSED__)
+         void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Workspace_Mode mode;
@@ -1251,7 +1251,7 @@ _mode_cb(void *data,
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
-       void *event_info __UNUSED__)
+       void *event_info EINA_UNUSED)
 {
    Bg_Preview bg_mode;
    Workspace_Data *wd = data;
@@ -1285,7 +1285,7 @@ _bg_cb(void *data,
 
 static void
 _part_select(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1300,7 +1300,7 @@ _part_select(void *data,
 
 static void
 _part_visible(void *data,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj EINA_UNUSED,
               void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1316,7 +1316,7 @@ _part_visible(void *data,
 /******************************************************************************/
 static void
 _groupview_clicked(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1361,7 +1361,7 @@ _groupview_hl_part_drag_start(void *data,
 
 static void
 _groupview_hl_part_changed(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1456,7 +1456,7 @@ _groupview_hl_part_drag_stop(void *data,
 static void
 _panes_h_unpress(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -1466,9 +1466,9 @@ _panes_h_unpress(void *data,
 }
 
 static void
-_panes_h_press(void *data __UNUSED__,
+_panes_h_press(void *data EINA_UNUSED,
                Evas_Object *obj,
-               void *event_info __UNUSED__)
+               void *event_info EINA_UNUSED)
 {
    shortcuts_object_push(obj);
 }
@@ -1689,7 +1689,7 @@ workspace_group_navigator_update_group_data(Evas_Object *obj, Resource2 *group_d
 }
 
 Eina_Bool
-workspace_edit_object_recalc(Evas_Object *obj __UNUSED__)
+workspace_edit_object_recalc(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }
@@ -1713,13 +1713,13 @@ workspace_groupview_soft_update(Evas_Object *obj)
 }
 
 Eina_Bool
-workspace_highlight_align_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+workspace_highlight_align_visible_set(Evas_Object *obj EINA_UNUSED, Eina_Bool flag EINA_UNUSED)
 {
    return false;
 }
 
 Eina_Bool
-workspace_highlight_align_visible_get(Evas_Object *obj __UNUSED__)
+workspace_highlight_align_visible_get(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }

@@ -659,7 +659,7 @@ _init_items(void)
 
 static void
 _on_demo_part_clicked(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    Property_Data *pd = data;
@@ -676,7 +676,7 @@ _on_demo_part_clicked(void *data,
 }
 static void
 _on_demo_program_clicked(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Property_Data *pd = data;
@@ -690,8 +690,8 @@ _on_demo_program_clicked(void *data,
 }
 static void
 _on_unclicked(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Property_Data *pd = data;
    demo_pd.part = NULL;
@@ -716,7 +716,7 @@ property_demo_init(Property_Data *pd)
 }
 
 Eina_List *
-property_demo_items_get()
+property_demo_items_get(void)
 {
    Eina_List *items = NULL;
 

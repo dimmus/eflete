@@ -695,7 +695,7 @@ editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool
 }
 
 Eina_Bool
-editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                               const char *part_name, const char *item_name, const char *source_group, unsigned int index)
 {
    Diff *diff;
@@ -754,7 +754,7 @@ editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Boo
 }
 
 Eina_Bool
-editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                            const char *part_name, unsigned int index)
 {
    Diff *diff;
@@ -893,7 +893,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 }
 
 Eina_Bool
-editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                 const char *part_name, Edje_Part_Type type)
 {
    Diff *diff;
@@ -938,7 +938,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
 }
 
 Eina_Bool
-editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                  const char *part_name, const char *part_name_copy)
 {
    Diff *diff;
@@ -974,7 +974,7 @@ editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 }
 
 Eina_Bool
-_editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+_editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply, Eina_Bool reset,
                  const char *part_name)
 {
    Diff *diff;

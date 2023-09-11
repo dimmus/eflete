@@ -170,7 +170,7 @@ _terminate(PM_Project_Result error)
 }
 
 static void
-_images_resources_export(void *data __UNUSED__)
+_images_resources_export(void *data EINA_UNUSED)
 {
    Eina_List *l;
    int id, total, proc = 0;
@@ -251,7 +251,7 @@ _images_resources_export(void *data __UNUSED__)
 }
 
 static void
-_sounds_resources_export(void *data __UNUSED__)
+_sounds_resources_export(void *data EINA_UNUSED)
 {
    Eina_List *l;
    int total, proc = 0;
@@ -310,7 +310,7 @@ _sounds_resources_export(void *data __UNUSED__)
 }
 
 static void
-_fonts_resources_export(void *data __UNUSED__)
+_fonts_resources_export(void *data EINA_UNUSED)
 {
    Eina_List *l;
    int size, total, proc = 0;
@@ -419,7 +419,7 @@ _group_source_code_export(const char *group)
 }
 
 static void
-_source_code_export(void *data __UNUSED__)
+_source_code_export(void *data EINA_UNUSED)
 {
    char buf[256];
    FILE *f;
@@ -495,7 +495,7 @@ _source_code_export(void *data __UNUSED__)
 }
 
 static void
-_loop_end(void *data __UNUSED__)
+_loop_end(void *data EINA_UNUSED)
 {
    ecore_main_loop_quit();
 }

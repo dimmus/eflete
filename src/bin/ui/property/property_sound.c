@@ -306,7 +306,7 @@ _init_items(void)
 
 static void
 _on_grid_clicked(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Property_Data *pd = data;
@@ -348,7 +348,7 @@ property_sound_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_sound_manager_items_get()
+property_sound_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

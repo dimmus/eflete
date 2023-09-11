@@ -2,8 +2,8 @@
 #include "project_manager.h"
 
 static void
-_test_end_cb(void *data __UNUSED__,
-      PM_Project_Result result __UNUSED__)
+_test_end_cb(void *data EINA_UNUSED,
+      PM_Project_Result result EINA_UNUSED)
 {
    ecore_main_loop_quit();
 }

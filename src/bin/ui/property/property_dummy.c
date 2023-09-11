@@ -44,7 +44,7 @@ typedef struct {
 static Property_Dummy_Data dummy_data;
 
 static Eina_List *
-_item2_subitems_get(Property_Attribute *pa __UNUSED__)
+_item2_subitems_get(Property_Attribute *pa EINA_UNUSED)
 {
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item2_1);
@@ -53,7 +53,7 @@ _item2_subitems_get(Property_Attribute *pa __UNUSED__)
 }
 
 static Eina_List *
-_item_controls_subitems_get(Property_Attribute *pa __UNUSED__)
+_item_controls_subitems_get(Property_Attribute *pa EINA_UNUSED)
 {
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item_controls2);
@@ -68,7 +68,7 @@ _item_controls_subitems_get(Property_Attribute *pa __UNUSED__)
 }
 
 static Eina_List *
-_item_controls2_subitems_get(Property_Attribute *pa __UNUSED__)
+_item_controls2_subitems_get(Property_Attribute *pa EINA_UNUSED)
 {
    Eina_List *items = NULL;
    int i;
@@ -79,7 +79,7 @@ _item_controls2_subitems_get(Property_Attribute *pa __UNUSED__)
 }
 
 static Eina_List *
-_item3_subitems_get(Property_Attribute *pa __UNUSED__)
+_item3_subitems_get(Property_Attribute *pa EINA_UNUSED)
 {
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item3_1);
@@ -183,7 +183,7 @@ _del_cb(Property_Attribute *pa)
 }
 
 static Eina_List *
-_dynamic_subitems_get(Property_Attribute *pa __UNUSED__)
+_dynamic_subitems_get(Property_Attribute *pa EINA_UNUSED)
 {
    Property_Attribute *new_pa;
    Eina_List *items = NULL;
@@ -203,7 +203,7 @@ _dynamic_subitems_get(Property_Attribute *pa __UNUSED__)
 }
 
 void
-property_dummy_init()
+property_dummy_init(void)
 {
    dummy_data.item1.name = eina_stringshare_add(_("Item 1"));
    dummy_data.item1.icon_name = eina_stringshare_add(_("elm/image/icon/start-point"));
@@ -324,7 +324,7 @@ property_dummy_init()
 }
 
 Eina_List *
-property_dummy_items_get()
+property_dummy_items_get(void)
 {
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item1);

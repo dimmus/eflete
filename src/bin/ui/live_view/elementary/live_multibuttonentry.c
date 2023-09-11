@@ -20,7 +20,7 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_multibutton_swallow_check(void *data __UNUSED__,
+_on_multibutton_swallow_check(void *data EINA_UNUSED,
                               Evas_Object *obj,
                               void *ei)
 {
@@ -64,7 +64,7 @@ _on_multibutton_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_multibutton_text_check(void *data __UNUSED__,
+_on_multibutton_text_check(void *data EINA_UNUSED,
                            Evas_Object *obj,
                            void *ei)
 {
@@ -79,7 +79,7 @@ _on_multibutton_text_check(void *data __UNUSED__,
 }
 
 static void
-_multibutton_send_signal(void *data __UNUSED__,
+_multibutton_send_signal(void *data EINA_UNUSED,
                          Evas_Object *obj,
                          void *ei)
 {

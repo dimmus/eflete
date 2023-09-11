@@ -76,8 +76,8 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
 
 static void
 _mouse_down_hRB_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+                   Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
@@ -92,9 +92,9 @@ _mouse_down_hRB_cb(void *data,
 
 static void
 _mouse_up_hRB_cb(void *data,
-                 Evas *e __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas *e EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    CONTAINER_DATA_GET(data, sd)
    sd->handler_BR_pressed = false;
@@ -103,8 +103,8 @@ _mouse_up_hRB_cb(void *data,
 
 static void
 _mouse_move_hBR_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+                   Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Evas_Object *o = data;

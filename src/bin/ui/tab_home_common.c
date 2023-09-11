@@ -89,7 +89,7 @@ elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
 
 Eina_Bool
 entry_path_set(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Evas_Object *entry = (Evas_Object *)data;
@@ -131,9 +131,9 @@ _tabs_progress_end(void *data, PM_Project_Result result, Project *project)
 
 void
 _tab_default_focus(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Evas_Object *target = data;
 

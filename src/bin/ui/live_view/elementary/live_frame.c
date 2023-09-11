@@ -21,7 +21,7 @@
 #include "widget_macro.h"
 
 static void
-_on_frame_swallow_check(void *data __UNUSED__,
+_on_frame_swallow_check(void *data EINA_UNUSED,
                         Evas_Object *obj,
                         void *ei)
 {
@@ -67,7 +67,7 @@ _on_frame_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_frame_text_check(void *data __UNUSED__,
+_on_frame_text_check(void *data EINA_UNUSED,
                      Evas_Object *obj,
                      void *ei)
 {
@@ -81,7 +81,7 @@ _on_frame_text_check(void *data __UNUSED__,
 }
 
 static void
-_frame_send_signal(void *data __UNUSED__,
+_frame_send_signal(void *data EINA_UNUSED,
                    Evas_Object *obj,
                    void *ei)
 {

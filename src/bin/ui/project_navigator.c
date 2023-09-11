@@ -69,8 +69,8 @@ static Eina_Bool first_group_open = EINA_FALSE;
 
 static char *
 _group_item_label_get(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      const char *part __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      const char *part EINA_UNUSED)
 {
    const char *pos;
    Group2 *group = data;
@@ -85,8 +85,8 @@ _group_item_label_get(void *data,
 
 static char *
 _folder_item_label_get(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *part __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       const char *part EINA_UNUSED)
 {
    const char *pos;
    char buf[BUFF_MAX];
@@ -102,7 +102,7 @@ _folder_item_label_get(void *data,
 }
 
 static Evas_Object *
-_folder_item_icon_get(void *data __UNUSED__,
+_folder_item_icon_get(void *data EINA_UNUSED,
                       Evas_Object *obj,
                       const char *part)
 {
@@ -175,15 +175,15 @@ _group_item_icon_get(void *data,
 
 static void
 _folder_item_del(void *data,
-                 Evas_Object *obj __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED)
 {
    Eina_Stringshare *prefix = data;
    eina_stringshare_del(prefix);
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -191,8 +191,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -200,8 +200,8 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Group2 *group, *gr1;
@@ -248,8 +248,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -257,8 +257,8 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_on_clicked_double(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
@@ -344,8 +344,8 @@ _items_compare(const void *data1, const void *data2)
 }
 
 static void
-_group_add(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
+_group_add(void *data EINA_UNUSED,
+           Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
    Group2 *group;
@@ -410,9 +410,9 @@ _group_add(void *data __UNUSED__,
 }
 
 static void
-_alias_ch(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_alias_ch(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    if (elm_check_state_get(layout_p.check))
      elm_layout_text_set(layout_p.layout_combo, NULL, _("Alias of"));
@@ -421,7 +421,7 @@ _alias_ch(void *data __UNUSED__,
 }
 
 static void
-_group_sel(void *data __UNUSED__,
+_group_sel(void *data EINA_UNUSED,
            Evas_Object *obj,
            void *event_info)
 {
@@ -435,8 +435,8 @@ _group_sel(void *data __UNUSED__,
 
 static void
 _group_validate(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
    assert(popup != NULL);
@@ -453,7 +453,7 @@ _group_validate(void *data,
 }
 
 static Evas_Object *
-_add_group_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+_add_group_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
    Group2 *group;
@@ -513,8 +513,8 @@ _add_group_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **
 }
 
 static void
-_add_group_popup_close_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+_add_group_popup_close_cb(void *data EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -541,9 +541,9 @@ _add_group_popup_close_cb(void *data __UNUSED__,
 
 
 static void
-_btn_add_group_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_btn_add_group_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -668,8 +668,8 @@ _folder_del(Elm_Object_Item *item)
 }
 
 static void
-_group_del(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
+_group_del(void *data EINA_UNUSED,
+           Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
    Eina_Stringshare *group_name;
@@ -706,7 +706,7 @@ static Eina_Bool _item_fully_expanded_get(Elm_Object_Item *item)
 
 static void
 _folder_del_popup_close_cb(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    Elm_Object_Item *glit = data;
@@ -724,7 +724,7 @@ _folder_del_popup_close_cb(void *data,
 
 static void
 _group_del_popup_close_cb(void *data,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    Group2 *group = data;
@@ -737,9 +737,9 @@ _group_del_popup_close_cb(void *data,
 }
 
 static void
-_btn_del_group_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_btn_del_group_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    Group2 *group, *alias_group;
    Evas_Object *popup;
@@ -804,8 +804,8 @@ _btn_del_group_cb(void *data __UNUSED__,
 }
 
 static void
-_selected_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+_selected_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    const Elm_Object_Item *it = event_info;
@@ -815,17 +815,17 @@ _selected_cb(void *data __UNUSED__,
 }
 
 static void
-_unselected_cb(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_unselected_cb(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
 static void
-_shortcut_save_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_shortcut_save_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    if (!ap.project) return; /* when pressing ctrl + s without open project */
 
@@ -833,7 +833,7 @@ _shortcut_save_cb(void *data __UNUSED__,
 }
 
 static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_combobox_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    return strdup(item->data);
@@ -841,7 +841,7 @@ _combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __U
 
 static void
 _combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    eina_stringshare_del(item->data);

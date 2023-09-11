@@ -27,9 +27,9 @@
 
 /* hack to disable spinner value changes when scrolling */
 static void
-_on_spinner_mouse_wheel(void *data __UNUSED__,
-                        Evas *e __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
+_on_spinner_mouse_wheel(void *data EINA_UNUSED,
+                        Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
                         void *event_info)
 {
    Evas_Event_Mouse_Wheel *mev = event_info;
@@ -98,7 +98,7 @@ _change(Property_Data *pd, Property_Attribute *pa, Property_Action *action)
 static void
 _start_cb(void *data,
           Evas_Object *obj,
-          void *event_info __UNUSED__)
+          void *event_info EINA_UNUSED)
 {
    PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
@@ -135,7 +135,7 @@ _start_cb(void *data,
 static void
 _stop_cb(void *data,
          Evas_Object *obj,
-         void *event_info __UNUSED__)
+         void *event_info EINA_UNUSED)
 {
    PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
@@ -167,7 +167,7 @@ _stop_cb(void *data,
 static void
 _start_change_stop_cb(void *data,
                       Evas_Object *obj,
-                      void *event_info __UNUSED__)
+                      void *event_info EINA_UNUSED)
 {
    PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
@@ -201,7 +201,7 @@ _start_change_stop_cb(void *data,
 static void
 _start_change_cb(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
@@ -231,7 +231,7 @@ _start_change_cb(void *data,
 }
 
 static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_combobox_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    return strdup(item->data);
@@ -258,7 +258,7 @@ _combobox_cc_content_get(void *data, Evas_Object *obj, const char *part)
 
 static void
 _combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    eina_stringshare_del(item->data);
@@ -267,7 +267,7 @@ _combobox_item_del(void *data,
 
 static void
 _combobox_cc_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Cc_Item *item = (Combobox_Cc_Item *)data;
    eina_stringshare_del(item->data);
@@ -299,17 +299,17 @@ _combobox_item_pressed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-_combobox_expanded_cb(void *data __UNUSED__,
+_combobox_expanded_cb(void *data EINA_UNUSED,
                            Evas_Object *obj,
-                           void *event_info __UNUSED__)
+                           void *event_info EINA_UNUSED)
 {
    shortcuts_object_push(obj);
 }
 
 static void
-_combobox_dismissed_cb(void *data __UNUSED__,
+_combobox_dismissed_cb(void *data EINA_UNUSED,
                        Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                       void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
    TODO("remove this dirty hack");
@@ -603,7 +603,7 @@ _2swallow_content_get(void *data,
 /****************** text_get functions ****************************************/
 static char *
 _caption_text_get(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   const char *part)
 {
    Property_Attribute *pa = data;
@@ -620,7 +620,7 @@ _caption_text_get(void *data,
 
 static char *
 _1swallow_text_get(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    const char *part)
 {
    Property_Attribute *pa = data;
@@ -645,7 +645,7 @@ _1swallow_text_get(void *data,
 
 static char *
 _2swallow_text_get(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    const char *part)
 {
    Property_Attribute *pa = data;
@@ -678,7 +678,7 @@ _2swallow_text_get(void *data,
 
 static void
 _del(void *data,
-     Evas_Object *obj __UNUSED__)
+     Evas_Object *obj EINA_UNUSED)
 {
    Property_Attribute *pa = data;
 
@@ -693,8 +693,8 @@ _del(void *data,
 
 static Eina_Bool
 _filter(void *data,
-        Evas_Object *obj __UNUSED__,
-        void *key __UNUSED__)
+        Evas_Object *obj EINA_UNUSED,
+        void *key EINA_UNUSED)
 {
    Property_Attribute *pa = data;
 
@@ -707,7 +707,7 @@ _filter(void *data,
 
 static Eina_Bool
 _state_get(void *data,
-           Evas_Object *obj __UNUSED__,
+           Evas_Object *obj EINA_UNUSED,
            const char *state)
 {
    Property_Attribute *pa = data;

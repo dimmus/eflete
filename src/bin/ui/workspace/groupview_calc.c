@@ -204,8 +204,8 @@ _part_item_search(Eina_List *items, const char *item_name)
 
 static void
 _part_select(void *data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+             Evas *e EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Groupview_Part *gp = (Groupview_Part *)data;
@@ -1133,8 +1133,8 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 }
 
 void
-_parts_stack_layout(Evas_Object          *o __UNUSED__,
-                    Evas_Object_Box_Data *p __UNUSED__,
+_parts_stack_layout(Evas_Object          *o EINA_UNUSED,
+                    Evas_Object_Box_Data *p EINA_UNUSED,
                     void                 *data)
 
 {

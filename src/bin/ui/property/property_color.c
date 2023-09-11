@@ -75,7 +75,7 @@ _colorclass_update(ColorClassData *selected)
 /* Colorselector widget callbacks */
 #define COLORSELECTOR_CALLBACK(NUMBER) \
 static Eina_Bool \
-_update_##NUMBER##_cb(Property_Attribute *pa __UNUSED__, Property_Action *action) \
+_update_##NUMBER##_cb(Property_Attribute *pa EINA_UNUSED, Property_Action *action) \
 { \
    if (property_color_data.selected) \
      {\
@@ -89,7 +89,7 @@ _update_##NUMBER##_cb(Property_Attribute *pa __UNUSED__, Property_Action *action
    return true; \
 } \
 static void \
-_on_changed_##NUMBER(Property_Attribute *pa __UNUSED__, Property_Action *action) \
+_on_changed_##NUMBER(Property_Attribute *pa EINA_UNUSED, Property_Action *action) \
 { \
    Colorclass_Item *cc_it = property_color_data.selected->current_ccl; \
    elm_colorselector_color_get(action->control, \
@@ -107,7 +107,7 @@ COLORSELECTOR_CALLBACK(3)
 #undef COLORSELECTOR_CALLBACK
 
 static void
-_change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
+_change_cb(Property_Attribute *pa EINA_UNUSED, Property_Action *action)
 {
    Eina_Stringshare *text;
 
@@ -121,7 +121,7 @@ _change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 }
 
 static Eina_Bool
-_update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
+_update_cb(Property_Attribute *pa EINA_UNUSED, Property_Action *action)
 {
    Eina_Stringshare *description;
    if (property_color_data.selected)
@@ -140,7 +140,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 }
 
 static void
-_init_cb(Property_Attribute *pa, Property_Action *action __UNUSED__)
+_init_cb(Property_Attribute *pa, Property_Action *action EINA_UNUSED)
 {
    if (!property_color_data.selected)
      elm_object_item_disabled_set(pa->glit, true);
@@ -148,7 +148,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action __UNUSED__)
 
 static void
 _color_class_selected(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    Property_Data *pd = data;
@@ -176,7 +176,7 @@ _color_class_selected(void *data,
 }
 
 static Eina_Bool
-_filter_cb(Property_Attribute *pa __UNUSED__)
+_filter_cb(Property_Attribute *pa EINA_UNUSED)
 {
    return property_color_data.selected != NULL;
 }
@@ -226,7 +226,7 @@ property_color_class_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_color_class_manager_items_get()
+property_color_class_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

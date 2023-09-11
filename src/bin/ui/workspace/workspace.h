@@ -82,7 +82,7 @@ void
 workspace_group_navigator_update_group_data(Evas_Object *obj, Resource2 *group_data);
 
 Eina_Bool
-workspace_edit_object_recalc(Evas_Object *obj __UNUSED__);
+workspace_edit_object_recalc(Evas_Object *obj EINA_UNUSED);
 
 /**
  * Update the parts attributes, with recalculation.

@@ -30,14 +30,14 @@ struct _Export_Data
 typedef struct _Export_Data Export_Data;
 
 static Eina_Bool
-_export_teardown(void *data, Splash_Status status __UNUSED__)
+_export_teardown(void *data, Splash_Status status EINA_UNUSED)
 {
    eina_stringshare_del(data);
    return true;
 }
 
 static Eina_Bool
-_export_develop_setup(void *data, Splash_Status status __UNUSED__)
+_export_develop_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -76,8 +76,8 @@ _after_export_dev_check(void *data)
 }
 
 static Eina_Bool
-_export_dev(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+_export_dev(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
             void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
@@ -129,7 +129,7 @@ project_export_develop(void)
 }
 
 static Eina_Bool
-_export_release_setup(void *data, Splash_Status status __UNUSED__)
+_export_release_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -158,7 +158,7 @@ _after_export_release_check(void *data)
 }
 
 static Eina_Bool
-_export_release(void *data __UNUSED__,
+_export_release(void *data EINA_UNUSED,
                 Evas_Object *obj, /* this is fileselector from popup */
                 void *event_info)
 {
@@ -206,7 +206,7 @@ project_export_release(void)
 }
 
 static Eina_Bool
-_export_source_code_setup(void *data, Splash_Status status __UNUSED__)
+_export_source_code_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -239,7 +239,7 @@ _after_export_source_code_check(void *data)
 
 static Eina_Bool
 _export_source_code(void *data,
-                    Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+                    Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
                     void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
@@ -278,7 +278,7 @@ project_export_edc_project(Eina_List *groups)
 }
 
 static Eina_Bool
-_export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
+_export_group_source_code_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    Eina_Stringshare *path = (Eina_Stringshare *)data;
    PM_Project_Result result;
@@ -314,8 +314,8 @@ _after_group_source_check(void *data)
 }
 
 static Eina_Bool
-_export_group_source_code(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+_export_group_source_code(void *data EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
                           void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;

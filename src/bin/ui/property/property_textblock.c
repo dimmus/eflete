@@ -1361,7 +1361,7 @@ _init_items(void)
 
 static void
 _on_style_selected(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Property_Data *pd = (Property_Data *)data;
@@ -1679,7 +1679,7 @@ property_textblock_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_textblock_manager_items_get()
+property_textblock_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

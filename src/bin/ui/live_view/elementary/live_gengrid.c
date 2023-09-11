@@ -20,7 +20,7 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_gengrid_swallow_check(void *data __UNUSED__,
+_on_gengrid_swallow_check(void *data EINA_UNUSED,
                           Evas_Object *obj,
                           void *ei)
 {
@@ -41,7 +41,7 @@ _on_gengrid_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_gengrid_text_check(void *data __UNUSED__,
+_on_gengrid_text_check(void *data EINA_UNUSED,
                        Evas_Object *obj,
                        void *ei)
 {
@@ -62,7 +62,7 @@ _on_gengrid_text_check(void *data __UNUSED__,
 }
 
 static void
-_gengrid_send_signal(void *data __UNUSED__,
+_gengrid_send_signal(void *data EINA_UNUSED,
                      Evas_Object *obj,
                      void *ei)
 {
@@ -84,7 +84,7 @@ _gengrid_send_signal(void *data __UNUSED__,
 
 /*********** GEN GRID CREATING FUNCTIONS ****************/
 static char *
-_grid_text_get(void *data __UNUSED__,
+_grid_text_get(void *data EINA_UNUSED,
                Evas_Object *obj,
                const char  *part)
 {
@@ -107,7 +107,7 @@ _grid_text_get(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_grid_content_get(void *data __UNUSED__,
+_grid_content_get(void *data EINA_UNUSED,
                   Evas_Object *obj,
                   const char  *part)
 {

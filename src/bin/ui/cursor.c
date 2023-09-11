@@ -59,8 +59,8 @@ _ecore_evas_cursor_set(Ecore_Evas *ee, Evas_Object *cursor)
 }
 
 static void
-_eflete_cursor_mouse_in(void *data __UNUSED__,
-                        Evas *e __UNUSED__,
+_eflete_cursor_mouse_in(void *data EINA_UNUSED,
+                        Evas *e EINA_UNUSED,
                         Evas_Object *obj,
                         void *event_info)
 {
@@ -80,7 +80,7 @@ _eflete_cursor_mouse_in(void *data __UNUSED__,
 }
 
 static void
-_eflete_cursor_mouse_out(void *data __UNUSED__,
+_eflete_cursor_mouse_out(void *data EINA_UNUSED,
                          Evas *e,
                          Evas_Object *obj,
                          void *event_info)
@@ -109,9 +109,9 @@ _eflete_cursor_mouse_out(void *data __UNUSED__,
 
 static void
 _eflete_object_cursor_del(void *data,
-                          Evas *e __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+                          Evas *e EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Cursor *cursor = (Cursor *)data;
 
@@ -121,7 +121,7 @@ _eflete_object_cursor_del(void *data,
 }
 
 Eina_Bool
-cursor_main_free()
+cursor_main_free(void)
 {
    Cursor *cursor;
    Evas *e;

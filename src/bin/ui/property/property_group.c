@@ -346,7 +346,7 @@ _expand_later_job(void *data)
 
 static void
 _on_group_changed(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Property_Data *pd = data;
@@ -412,8 +412,8 @@ _on_group_changed(void *data,
 }
 
 static void
-_on_editor_attribute_changed(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_on_editor_attribute_changed(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    Attribute *attribute = event_info;
@@ -789,10 +789,10 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
 }
 
 static void
-_ccl_control_free(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
+_ccl_control_free(void *data EINA_UNUSED,
+                  Evas *e EINA_UNUSED,
                   Evas_Object *obj,
-                  void *event_info __UNUSED__)
+                  void *event_info EINA_UNUSED)
 {
    Evas_Object *color = NULL;
 
@@ -807,9 +807,9 @@ _ccl_control_free(void *data __UNUSED__,
 }
 
 static void
-_btn_script_manager_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_btn_script_manager_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (group_pd.group->current_selected)
      script_manager_add(group_pd.group->current_selected);
@@ -819,9 +819,9 @@ _btn_script_manager_cb(void *data __UNUSED__,
 
 /*
 static void
-_color_class_colors_fill(void *data __UNUSED__,
+_color_class_colors_fill(void *data EINA_UNUSED,
                          Evas_Object *combo,
-                         void *event_info __UNUSED__)
+                         void *event_info EINA_UNUSED)
 {
    int cc_val[12];
    Evas_Object *color;
@@ -1647,7 +1647,7 @@ _afters_change_cb(Property_Attribute *pa, Property_Action *action)
 }
 
 static Eina_List *
-_afters_get(Property_Attribute *pa __UNUSED__)
+_afters_get(Property_Attribute *pa EINA_UNUSED)
 {
    Property_Attribute *new_pa;
    Eina_List *afters, *l, *items = NULL;
@@ -1747,7 +1747,7 @@ _targets_change_cb(Property_Attribute *pa, Property_Action *action)
 
 
 static Eina_List *
-_targets_get(Property_Attribute *pa __UNUSED__)
+_targets_get(Property_Attribute *pa EINA_UNUSED)
 {
    Property_Attribute *new_pa;
    Eina_List *targets, *l, *items = NULL;
@@ -6187,7 +6187,7 @@ property_group_init(Property_Data *pd)
 }
 
 Eina_List *
-property_group_items_get()
+property_group_items_get(void)
 {
    Eina_List *items = NULL;
 

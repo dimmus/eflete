@@ -33,7 +33,7 @@
 App_Data ap;
 
 Eina_Bool
-app_init()
+app_init(void)
 {
    Eina_Stringshare *conf_path;
    char buf[PATH_MAX];
@@ -135,7 +135,7 @@ app_init()
 }
 
 Eina_Bool
-app_shutdown()
+app_shutdown(void)
 {
    if(ap.color_data)
      color_term(ap.color_data);

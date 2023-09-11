@@ -79,7 +79,7 @@ you_shall_pass_editor_signals(Change *change)
 }
 
 void
-_editor_project_changed()
+_editor_project_changed(void)
 {
    /* avoid changes not opened project while we create fake diffs for import
     * groups from custom groups */

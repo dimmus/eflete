@@ -21,7 +21,7 @@
 
 static void
 _on_notify_swallow_check(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
@@ -62,7 +62,7 @@ _on_notify_swallow_check(void *data,
 }
 
 static void
-_notify_send_signal(void *data __UNUSED__,
+_notify_send_signal(void *data EINA_UNUSED,
                     Evas_Object *obj,
                     void *ei)
 {
@@ -136,8 +136,8 @@ _notify_orient_get(const char *class, double *horizontal, double *vertical)
 
 static void
 _on_click(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    Evas_Object *notify = data;
 

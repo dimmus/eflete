@@ -21,7 +21,7 @@
 #include "main_window.h" /* strlen_safe */
 
 static void
-_on_popup_swallow_check(void *data __UNUSED__,
+_on_popup_swallow_check(void *data EINA_UNUSED,
                         Evas_Object *obj,
                         void *ei)
 {

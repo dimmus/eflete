@@ -91,7 +91,7 @@ _popup_del_job(void *data)
 static void
 _popup_btn_cb(void *data,
               Evas_Object *obj,
-              void *ei __UNUSED__)
+              void *ei EINA_UNUSED)
 {
    Popup_Data *pd = evas_object_data_get(obj, POPUP_DATA);
 
@@ -132,8 +132,8 @@ _button_add(Popup_Data *pd, int *btn_pos, const char *text, Popup_Button pb)
 
 static void
 _popup_button_click(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    Evas_Object *btn = data;
 
@@ -255,10 +255,10 @@ popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabl
 #define COLOR_H 300
 
 static void
-_helper_obj_follow(void *data __UNUSED__,
-                   Evas *e __UNUSED__,
+_helper_obj_follow(void *data EINA_UNUSED,
+                   Evas *e EINA_UNUSED,
                    Evas_Object *obj,
-                   void *event_info __UNUSED__)
+                   void *event_info EINA_UNUSED)
 {
    int w, h; /* window */
    int nx, ny, nh, nw; /* follow object */
@@ -280,10 +280,10 @@ _helper_obj_follow(void *data __UNUSED__,
 }
 
 static void
-_helper_win_follow(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_helper_win_follow(void *data EINA_UNUSED,
+                  Evas *e EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    int w, h, nx, ny;
 
@@ -294,10 +294,10 @@ _helper_win_follow(void *data __UNUSED__,
 }
 
 static void
-_helper_property_follow(void *data __UNUSED__,
-                        Evas *e __UNUSED__,
+_helper_property_follow(void *data EINA_UNUSED,
+                        Evas *e EINA_UNUSED,
                         Evas_Object *obj,
-                        void *event_info __UNUSED__)
+                        void *event_info EINA_UNUSED)
 {
    int w, h; /* window */
    int nx, ny, nh, nw; /* follow object */
@@ -319,10 +319,10 @@ _helper_property_follow(void *data __UNUSED__,
 }
 
 static void
-_helper_property_color_follow(void *data __UNUSED__,
-                              Evas *e __UNUSED__,
+_helper_property_color_follow(void *data EINA_UNUSED,
+                              Evas *e EINA_UNUSED,
                               Evas_Object *obj,
-                              void *event_info __UNUSED__)
+                              void *event_info EINA_UNUSED)
 {
    int w, h; /* window */
    int nx, ny, nh, nw; /* follow object */
@@ -345,9 +345,9 @@ _helper_property_color_follow(void *data __UNUSED__,
 
 static void
 _helper_colorclass_dismiss(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           const char *signal __UNUSED__,
-                           const char *source __UNUSED__)
+                           Evas_Object *obj EINA_UNUSED,
+                           const char *signal EINA_UNUSED,
+                           const char *source EINA_UNUSED)
 {
    Helper_Data *helper_data = (Helper_Data *)data;
 
@@ -382,8 +382,8 @@ _helper_colorclass_dismiss(void *data,
 #if !HAVE_TIZEN
 static void
 _colorclass_done(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    _helper_colorclass_dismiss(data, helper, NULL, NULL);
 }
@@ -409,10 +409,10 @@ popup_fileselector_helper_dismiss(void)
 }
 
 static void
-_helper_dismiss(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                const char *signal __UNUSED__,
-                const char *source __UNUSED__)
+_helper_dismiss(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                const char *signal EINA_UNUSED,
+                const char *source EINA_UNUSED)
 {
    Evas_Object *follow_up = (Evas_Object *) data;
 
@@ -431,7 +431,7 @@ _helper_dismiss(void *data __UNUSED__,
 }
 
 static void
-_done(void *data __UNUSED__,
+_done(void *data EINA_UNUSED,
       Evas_Object *obj,
       void *event_info)
 {
@@ -474,9 +474,9 @@ _done(void *data __UNUSED__,
 }
 
 static void
-_fs_mode_cb(void *data __UNUSED__,
+_fs_mode_cb(void *data EINA_UNUSED,
             Evas_Object *obj,
-            void *event_info __UNUSED__)
+            void *event_info EINA_UNUSED)
 {
    int mode = elm_radio_value_get(obj);
 
@@ -586,7 +586,7 @@ popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, cons
 static Eina_Bool
 _edj_filter(const char *path,
             Eina_Bool dir,
-            void *data __UNUSED__)
+            void *data EINA_UNUSED)
 {
    if (dir) return true;
 
@@ -607,7 +607,7 @@ popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const c
 static Eina_Bool
 _edc_filter(const char *path,
             Eina_Bool dir,
-            void *data __UNUSED__)
+            void *data EINA_UNUSED)
 {
    if (dir) return true;
 
@@ -628,7 +628,7 @@ popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const c
 static Eina_Bool
 _images_filter(const char *path,
                Eina_Bool dir,
-               void *data __UNUSED__)
+               void *data EINA_UNUSED)
 {
    int i;
    Eina_Bool res;
@@ -659,7 +659,7 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
 static Eina_Bool
 _sounds_filter(const char *path,
                Eina_Bool dir,
-               void *data __UNUSED__)
+               void *data EINA_UNUSED)
 {
    int i;
    Eina_Bool res;
@@ -701,8 +701,8 @@ popup_fileselector_file_set(const char *file)
 
 static void
 _done_image(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Eina_Bool res = true;
    Item *item = NULL;
@@ -741,7 +741,7 @@ _done_image(void *data,
 /* deletion callback */
 static void
 _grid_del(void *data,
-          Evas_Object *obj __UNUSED__)
+          Evas_Object *obj EINA_UNUSED)
 {
    Item *it = data;
 
@@ -862,8 +862,8 @@ _image_gengrid_init(Helper_Data *helper_data)
 
 static char *
 _grid_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char  *part __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                const char  *part EINA_UNUSED)
 {
    const Item *it = data;
    Resource2 *res;
@@ -1046,8 +1046,8 @@ ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
 _on_images_search_entry_changed_cb(void *data,
-                                   Evas_Object *obj __UNUSED__,
-                                   void *event_info __UNUSED__)
+                                   Evas_Object *obj EINA_UNUSED,
+                                   void *event_info EINA_UNUSED)
 {
    Helper_Data *helper_data = data;
 
@@ -1059,8 +1059,8 @@ _on_images_search_entry_changed_cb(void *data,
 
 static void
 _search_next_gengrid_item_cb(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
 {
    Helper_Data *helper_data = data;
    Elm_Object_Item *start_from = NULL;
@@ -1078,15 +1078,15 @@ _search_next_gengrid_item_cb(void *data,
 }
 
 static void
-_image_manager_add_job(void *data __UNUSED__)
+_image_manager_add_job(void *data EINA_UNUSED)
 {
    image_manager_add();
 }
 
 static void
-_btn_image_manager_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_btn_image_manager_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    _helper_dismiss(NULL, helper, NULL, NULL);
    ecore_job_add(_image_manager_add_job, NULL);
@@ -1355,9 +1355,9 @@ popup_log_message_helper(const char *msg)
 
 void
 popup_active_helper_close(void *data,
-                          Evas *e __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+                          Evas *e EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Popup_Current request = ((Popup_Current)(uintptr_t)data);
    if (request == current)

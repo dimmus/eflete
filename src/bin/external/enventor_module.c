@@ -27,8 +27,8 @@
 #define STEP_SCALE 0.1f
 
 static void
-_on_enventor_mouse_wheel(void *data __UNUSED__,
-                         Evas *evas __UNUSED__,
+_on_enventor_mouse_wheel(void *data EINA_UNUSED,
+                         Evas *evas EINA_UNUSED,
                          Evas_Object *enventor,
                          void *event_info)
 {

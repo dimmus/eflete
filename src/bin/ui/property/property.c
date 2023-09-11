@@ -83,8 +83,8 @@ property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -92,8 +92,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -101,7 +101,7 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
              Evas_Object *obj,
              void *event_info)
 {
@@ -118,8 +118,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -132,8 +132,8 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_realized_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+_realized_cb(void *data EINA_UNUSED,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -148,7 +148,7 @@ _realized_cb(void *data __UNUSED__,
 
 static void
 _unrealized_cb(void *data,
-               Evas_Object *o __UNUSED__,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Property_Data *pd = data;
@@ -180,9 +180,9 @@ _unrealized_cb(void *data,
 
 static void
 _property_del(void *data,
-              Evas *e __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              Evas *e EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Property_Data *pd = (Property_Data *)data;
 

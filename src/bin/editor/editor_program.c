@@ -936,7 +936,7 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 }
 
 Eina_Bool
-editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                    const char *program_name, Edje_Action_Type type)
 {
    Diff *diff;
@@ -978,7 +978,7 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 }
 
 Eina_Bool
-_editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+_editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply, Eina_Bool reset,
                     const char *program_name)
 {
    Diff *diff;

@@ -380,7 +380,7 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 }
 
 Eina_Bool
-editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;
@@ -416,7 +416,7 @@ editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge 
 }
 
 Eina_Bool
-editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;

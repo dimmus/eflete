@@ -209,8 +209,8 @@ hack_spinner_add(Evas_Object *parent);
 void
 hack_spinner_value_set(Evas_Object *spinner, double val);
 /* saving function pointers to use later in tizen_hack* functions to avoid infonote recursion on call */
-static void (* _elm_spinner_value_set)(Evas_Object *, double) __UNUSED__ = elm_spinner_value_set;
-static Evas_Object * (* _elm_spinner_add)(Evas_Object *)  __UNUSED__ = elm_spinner_add;
+static void (* _elm_spinner_value_set)(Evas_Object *, double) EINA_UNUSED = elm_spinner_value_set;
+static Evas_Object * (* _elm_spinner_add)(Evas_Object *)  EINA_UNUSED = elm_spinner_add;
 /* replacing functions with hack-version */
 #define elm_spinner_value_set    hack_spinner_value_set
 #define elm_spinner_add          hack_spinner_add

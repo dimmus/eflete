@@ -62,8 +62,8 @@ _list_cleanup(History_New_UI_data *hd)
 
 static void
 _expanded_undo(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *ei __UNUSED__)
+               Evas_Object *obj EINA_UNUSED,
+               void *ei EINA_UNUSED)
 {
    History_New_UI_data *hd = data;
    Change *change = NULL;
@@ -89,8 +89,8 @@ _expanded_undo(void *data,
 
 static void
 _expanded_redo(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *ei __UNUSED__)
+               Evas_Object *obj EINA_UNUSED,
+               void *ei EINA_UNUSED)
 {
    History_New_UI_data *hd = data;
    Change *change = NULL;
@@ -116,8 +116,8 @@ _expanded_redo(void *data,
 
 static void
 _undo_item_cleanup(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *ei __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *ei EINA_UNUSED)
 {
    History_New_UI_data *hd = data;
    _list_cleanup(hd);
@@ -125,7 +125,7 @@ _undo_item_cleanup(void *data,
 }
 static void
 _undo_item_selected(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *ei)
 {
    History_New_UI_data *hd = data;
@@ -145,8 +145,8 @@ _undo_item_selected(void *data,
 
 static void
 _redo_item_cleanup(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *ei __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *ei EINA_UNUSED)
 {
    History_New_UI_data *hd = data;
    _list_cleanup(hd);
@@ -154,7 +154,7 @@ _redo_item_cleanup(void *data,
 }
 static void
 _redo_item_selected(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj EINA_UNUSED,
                     void *ei)
 {
    History_New_UI_data *hd = data;
@@ -205,8 +205,8 @@ history_ui_update(Evas_Object *obj)
 
 static void
 _btn_undo_cb(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *eo __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *eo EINA_UNUSED)
 {
    History_New_UI_data *hd = (History_New_UI_data *) data;
    history_ui_undo(hd->layout);
@@ -214,8 +214,8 @@ _btn_undo_cb(void *data,
 
 static void
 _btn_redo_cb(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *eo __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *eo EINA_UNUSED)
 {
    History_New_UI_data *hd = (History_New_UI_data *) data;
    history_ui_redo(hd->layout);

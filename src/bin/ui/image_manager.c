@@ -91,7 +91,7 @@ struct _Image_Manager
    Elm_Object_Item *vector_header;
 };
 
-static Eina_Bool _on_image_done(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info);
+static Eina_Bool _on_image_done(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
 static void _image_info_setup(const Image_Item* it);
 
 static Image_Manager mng;
@@ -102,7 +102,7 @@ static Elm_Gengrid_Item_Class *gic_set = NULL;
 
 static char *
 _grid_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj EINA_UNUSED,
                 const char  *part)
 {
    const Image_Item *it = data;
@@ -125,8 +125,8 @@ _grid_label_get(void *data,
 
 static char *
 _grid_vector_label_get(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char  *part __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       const char  *part EINA_UNUSED)
 {
    const Eina_Stringshare *vector_name = data;
 
@@ -225,8 +225,8 @@ _grid_content_get(void *data,
 
 static void
 _grid_image_set_image_sel(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Image_Item *it = (Image_Item *)data;
 
@@ -237,7 +237,7 @@ _grid_image_set_image_sel(void *data,
 
 static Eina_Bool
 _on_image_set_image_done(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    const Eina_List *images = NULL, *l = NULL;
@@ -267,8 +267,8 @@ _on_image_set_image_done(void *data,
 
 static void
 _image_set_image_add(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
 #if HAVE_TIZEN
    popup_fileselector_image_helper(_("Add new image into set"),
@@ -290,9 +290,9 @@ _image_set_image_add(void *data,
 }
 
 static void
-_image_set_image_del(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+_image_set_image_del(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    Image_Item *image_set = (Image_Item *)data;
    Image_Item *image = NULL;
@@ -462,7 +462,7 @@ empty_content:
 /* deletion callback */
 static void
 _grid_vector_del(void *data,
-                 Evas_Object *obj __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED)
 {
    Eina_Stringshare *vector_name = data;
 
@@ -473,7 +473,7 @@ _grid_vector_del(void *data,
 
 static void
 _grid_del(void *data,
-          Evas_Object *obj __UNUSED__)
+          Evas_Object *obj EINA_UNUSED)
 {
    Image_Item *it = data;
 
@@ -486,15 +486,15 @@ _grid_del(void *data,
 
 static char *
 _grid_group_label_get(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      const char  *part __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      const char  *part EINA_UNUSED)
 {
    return strdup(data);
 }
 
 static void
 _grid_group_del(void *data,
-                Evas_Object *obj __UNUSED__)
+                Evas_Object *obj EINA_UNUSED)
 {
    eina_stringshare_del(data);
 }
@@ -518,9 +518,9 @@ _image_info_setup(const Image_Item* it)
 
 /* item selection change callback */
 static void
-_grid_sel_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_grid_sel_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    Image_Item *item = NULL;
    Eina_List *l;
@@ -637,8 +637,8 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 }
 
 static Eina_Bool
-_on_image_done(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+_on_image_done(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Image_Item *it = NULL;
@@ -703,7 +703,7 @@ _on_image_done(void *data __UNUSED__,
 static void
 _new_image_add_cb(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 #if HAVE_TIZEN
@@ -726,17 +726,17 @@ _new_image_add_cb(void *data,
 }
 
 static void
-_menu_dismissed_cb(void *data __UNUSED__,
+_menu_dismissed_cb(void *data EINA_UNUSED,
                    Evas_Object *obj,
-                   void *event_info __UNUSED__)
+                   void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 
 static void
-_menu_dismiss_cb(void *data __UNUSED__,
+_menu_dismiss_cb(void *data EINA_UNUSED,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    elm_menu_close(obj);
    shortcuts_object_check_pop(obj);
@@ -746,8 +746,8 @@ _menu_dismiss_cb(void *data __UNUSED__,
 
 static void
 _validation(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
    Eina_Bool validate = EINA_FALSE;
@@ -788,8 +788,8 @@ _image_set_add(void)
 }
 
 static void
-_image_set_add_popup_close_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_image_set_add_popup_close_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -803,7 +803,7 @@ _image_set_add_popup_close_cb(void *data __UNUSED__,
 
 
 static Evas_Object *
-_add_image_set_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+_add_image_set_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item, *box;
 
@@ -826,9 +826,9 @@ _add_image_set_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Objec
 }
 
 static void
-_new_image_set_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_new_image_set_add_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -843,9 +843,9 @@ _new_image_set_add_cb(void *data __UNUSED__,
 }
 
 static void
-_image_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_image_add_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Coord x, y, h;
 
@@ -857,9 +857,9 @@ _image_add_cb(void *data __UNUSED__,
 }
 
 static void
-_image_del_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_image_del_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *grid_item = NULL;
    Image_Item *it = NULL;
@@ -906,18 +906,18 @@ _image_del_cb(void *data __UNUSED__,
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
-_entry_changed_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_entry_changed_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    _gengrid_item_search(mng.gengrid, &(mng.image_search_data),
                         mng.image_search_data.last_item_found);
 }
 
 static void
-_find_next_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_find_next_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *start_from = NULL;
 
@@ -1024,9 +1024,9 @@ _image_manager_init(void)
 }
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -1036,9 +1036,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -1048,9 +1048,9 @@ _mw_done_cb(void *data __UNUSED__,
 }
 
 static void
-_project_closed_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_project_closed_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    evas_object_del(mng.image);
    elm_gengrid_clear(mng.gengrid);

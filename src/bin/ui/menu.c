@@ -68,8 +68,8 @@ struct _menu_event
 typedef struct _menu_event Menu_Event;
 
 static Eina_Bool
-_menu_cb(void *data __UNUSED__,
-         int type __UNUSED__,
+_menu_cb(void *data EINA_UNUSED,
+         int type EINA_UNUSED,
          void *event)
 {
    Menu_Event *menu_event = (Menu_Event *)event;
@@ -207,8 +207,8 @@ _menu_cb(void *data __UNUSED__,
 
 static void
 _delay_menu_cb(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
 
@@ -219,9 +219,9 @@ _delay_menu_cb(void *data,
 }
 
 static void
-_project_changed(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_project_changed(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
 }

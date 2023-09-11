@@ -29,7 +29,7 @@ typedef struct {
 static void
 _on_color_change(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Color *c;
    Evas_Object *control = data;
@@ -45,7 +45,7 @@ _on_color_change(void *data,
 static Eina_Bool
 _on_dismissed(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *control = data;
 
@@ -59,10 +59,10 @@ _on_dismissed(void *data,
 }
 
 static void
-_on_color_clicked(void *data __UNUSED__,
+_on_color_clicked(void *data EINA_UNUSED,
                   Evas_Object *control,
-                  const char *emission __UNUSED__,
-                  const char *source __UNUSED__)
+                  const char *emission EINA_UNUSED,
+                  const char *source EINA_UNUSED)
 {
    int r, g, b, a;
 
@@ -78,9 +78,9 @@ _on_color_clicked(void *data __UNUSED__,
 
 static void
 _color_free(void *data,
-            Evas *e __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas *e EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Color *c = data;
 

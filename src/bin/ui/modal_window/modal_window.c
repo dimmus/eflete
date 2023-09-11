@@ -24,8 +24,8 @@
 
 static void
 _response_cb(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -35,7 +35,7 @@ _response_cb(void *data,
 static void
 _mw_info(void *data,
          Evas_Object *obj,
-         void *event_info __UNUSED__)
+         void *event_info EINA_UNUSED)
 {
    Evas_Object *popup, *content, *bt;
    char *info = (char *)data;
@@ -61,8 +61,8 @@ _mw_info(void *data,
 /* PLEASE, see comment below
 static void
 _on_key_down(void *data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+             Evas *e EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
@@ -75,8 +75,8 @@ _on_key_down(void *data,
 static void
 _anim_show_finish(void *data,
                   Evas_Object *obj,
-                  const char *emission __UNUSED__,
-                  const char *source __UNUSED__)
+                  const char *emission EINA_UNUSED,
+                  const char *source EINA_UNUSED)
 {
    Evas_Object *img, *mw;
 
@@ -95,8 +95,8 @@ _anim_show_finish(void *data,
 static void
 _anim_hide_finish(void *data,
                   Evas_Object *obj,
-                  const char *emission __UNUSED__,
-                  const char *source __UNUSED__)
+                  const char *emission EINA_UNUSED,
+                  const char *source EINA_UNUSED)
 {
    Evas_Object *img, *mw;
 
@@ -118,7 +118,7 @@ static void \
 _anim_##NAME(void *data, \
              Evas *e, \
              Evas_Object *obj, \
-             void *event_info __UNUSED__) \
+             void *event_info EINA_UNUSED) \
 { \
    Evas_Object *parent, *helper, *img; \
    parent = (Evas_Object *)data; \
@@ -146,8 +146,8 @@ ANIM_ACTION(hide)
 
 static void
 _mw_close(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    Evas_Object *mw = data;
 
@@ -160,8 +160,8 @@ _mw_close(void *data,
 
 static void
 _mw_done(void *data,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    Evas_Object *mw = data;
 

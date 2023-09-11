@@ -216,7 +216,7 @@ _shortcut_handle(Shortcut_Type type)
 }
 
 static Eina_Bool
-_mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_mouse_wheel_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev = event;
 
@@ -235,7 +235,7 @@ _mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_key_press_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
@@ -325,7 +325,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_key_unpress_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
@@ -390,9 +390,9 @@ _key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static void
-_win_unfocused_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_win_unfocused_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    Shortcut *shortcut;
 
@@ -563,7 +563,7 @@ _default_shortcuts_add(void)
 /*               PUBLIC API                    */
 /*=============================================*/
 Eina_Bool
-shortcuts_profile_load(Profile *profile __UNUSED__)
+shortcuts_profile_load(Profile *profile EINA_UNUSED)
 {
    return false;
 }

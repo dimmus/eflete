@@ -93,7 +93,7 @@ eddc_term(void)
 }
 
 static void
-color_load(color_data *cd __UNUSED__)
+color_load(color_data *cd EINA_UNUSED)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%scolor/color.eet", ap.path.edj_path);
@@ -161,7 +161,7 @@ color_table_init(color_data *cd)
 }
 
 static void
-macro_key_push(color_data *cd, char *str, int len __UNUSED__)
+macro_key_push(color_data *cd, char *str, int len EINA_UNUSED)
 {
    char *key = str;
 

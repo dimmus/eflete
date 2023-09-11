@@ -214,7 +214,7 @@ _handler_pos_recalc(Highlight *highlight)
 static void
 _handler_down_cb(void *data,
                  Evas *evas,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj EINA_UNUSED,
                  void *event_info)
 {
    Handler *handler = (Handler *)data;
@@ -242,8 +242,8 @@ _handler_down_cb(void *data,
 static void
 _handler_move_cb(void *data,
                  Evas *evas,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    Handler *handler = (Handler *)data;
 
@@ -413,8 +413,8 @@ _handler_move_cb(void *data,
 
 static void
 _handler_up_cb(void *data,
-               Evas *evas __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+               Evas *evas EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Handler *handler = (Handler *)data;
@@ -444,9 +444,9 @@ _handler_up_cb(void *data,
  */
 static void
 _handler_mouse_in_cb(void *data,
-                    Evas *evas __UNUSED__,
+                    Evas *evas EINA_UNUSED,
                     Evas_Object *obj,
-                    void *event_info __UNUSED__)
+                    void *event_info EINA_UNUSED)
 {
    Highlight *highlight = (Highlight *)data;
 
@@ -469,9 +469,9 @@ _handler_mouse_in_cb(void *data,
  */
 static void
 _handler_mouse_out_cb(void *data,
-                      Evas *evas __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+                      Evas *evas EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    Highlight *highlight = (Highlight *)data;
 

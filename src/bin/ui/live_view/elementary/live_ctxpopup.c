@@ -20,7 +20,7 @@
 #include "live_elementary_widgets.h"
 
 static void
-_dismissed_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
+_dismissed_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    evas_object_del(obj);
 }

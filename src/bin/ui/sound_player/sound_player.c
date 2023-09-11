@@ -37,7 +37,7 @@ static Evas_Object *rewin;
 static Evas_Object *play;
 
 static int
-_snd_file_seek(void *data __UNUSED__, Eo *eo_obj __UNUSED__, int ofset, int whence)
+_snd_file_seek(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, int ofset, int whence)
 {
    switch (whence)
      {
@@ -57,7 +57,7 @@ _snd_file_seek(void *data __UNUSED__, Eo *eo_obj __UNUSED__, int ofset, int when
 }
 
 static int
-_snd_file_read(void *data __UNUSED__, Eo *eo_obj __UNUSED__, void *buffer, int len)
+_snd_file_read(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, void *buffer, int len)
 {
    if ((offset + len) > length)
      len = length - offset;
@@ -68,13 +68,13 @@ _snd_file_read(void *data __UNUSED__, Eo *eo_obj __UNUSED__, void *buffer, int l
 }
 
 static int
-_snd_file_get_length(void *data __UNUSED__, Eo *eo_obj __UNUSED__)
+_snd_file_get_length(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED)
 {
    return length;
 }
 
 static int
-_snd_file_tell(void *data __UNUSED__, Eo *eo_obj __UNUSED__)
+_snd_file_tell(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED)
 {
    return offset;
 }
@@ -111,7 +111,7 @@ _player_units_free(char *str)
    evas_object_show(ITEM);
 
 static void
-_play_finished_cb(void *data __UNUSED__, const Efl_Event *event __UNUSED__)
+_play_finished_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 {
    efl_unref(in);
    in = NULL;
@@ -120,13 +120,13 @@ _play_finished_cb(void *data __UNUSED__, const Efl_Event *event __UNUSED__)
 }
 
 static void
-_out_fail(void *data __UNUSED__, const Efl_Event *event)
+_out_fail(void *data EINA_UNUSED, const Efl_Event *event)
 {
    efl_unref(event->object);
 }
 
 static Eina_Bool
-_rewind_cb(void *data __UNUSED__)
+_rewind_cb(void *data EINA_UNUSED)
 {
    double value, max;
 
@@ -148,9 +148,9 @@ _rewind_cb(void *data __UNUSED__)
 }
 
 static void
-_on_rewin_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_on_rewin_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    double value = elm_slider_value_get(rewin);
    ecore_audio_obj_in_seek(in, value, SEEK_SET);
@@ -244,9 +244,9 @@ _sample_play(void)
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
 static void
-_on_play_cb(void *data __UNUSED__,
+_on_play_cb(void *data EINA_UNUSED,
            Evas_Object *obj,
-           void *event_info __UNUSED__)
+           void *event_info EINA_UNUSED)
 {
    Evas_Object *icon = elm_object_part_content_get(obj, NULL);
    Eina_Bool paused;

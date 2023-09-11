@@ -784,7 +784,7 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 }
 
 Eina_Bool
-editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                  const char *part_name, const char *state_name, double state_val)
 {
    Diff *diff;
@@ -835,7 +835,7 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 }
 
 Eina_Bool
-editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                   const char *part_name, const char *from_name, double from_val,
                                          const char *state_name, double state_val)
 {
@@ -877,7 +877,7 @@ editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
 }
 
 Eina_Bool
-editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                  const char *part_name, const char *state_name, double state_val)
 {
    Diff *diff;

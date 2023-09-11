@@ -31,69 +31,69 @@
 #include "property.h"
 
 static void
-_project_navigator_group_open(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
+_project_navigator_group_open(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    tabs_tab_add((Group2 *)event_info);
 }
 
 static void
-_close_request(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_close_request(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    ui_main_window_del();
 }
 
 static void
-_help(void *data __UNUSED__,
-      Evas_Object *obj __UNUSED__,
-      void *event_info __UNUSED__)
+_help(void *data EINA_UNUSED,
+      Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
    shortcuts_window_add();
 }
 
 static void
-_image_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_image_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      image_manager_add();
 }
 
 static void
-_sound_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_sound_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      sound_manager_add();
 }
 
 static void
-_style_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_style_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      style_manager_add();
 }
 
 static void
-_color_class_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_color_class_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      colorclass_manager_add();
 }
 
 static void
-_script_manager(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_script_manager(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Group2 *group = tabs_current_group_get();
 
@@ -111,8 +111,8 @@ _script_manager(void *data __UNUSED__,
 }
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Popup_Button pbtn = (Popup_Button) event_info;
@@ -266,7 +266,7 @@ ui_main_window_add(void)
 
 #if !HAVE_TIZEN
 static Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *label = (Evas_Object *) data;
    Eina_Strbuf *authors_file_path = NULL;
@@ -318,7 +318,7 @@ about_window_add(void)
 
 #else
 Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
@@ -342,7 +342,7 @@ about_window_add(void)
 #if 0
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *box = data;
    Evas_Object *scroller = elm_scroller_add(ap.win);
@@ -420,7 +420,7 @@ typedef struct {
 
 static void
 _shortcut_change_request(void *data,
-                         Evas *e __UNUSED__,
+                         Evas *e EINA_UNUSED,
                          Evas_Object *obj,
                          void *event)
 {
@@ -445,7 +445,7 @@ _shortcut_change_request(void *data,
 }
 
 static void
-_change_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_change_shortcut(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Shortcut_Data *sc = (Shortcut_Data *)data;
    Evas_Object *layout =  evas_object_data_get(obj, "layout");
@@ -458,7 +458,7 @@ _change_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event
 }
 
 static void
-_reset_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_reset_shortcut(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
    if (btn_res == BTN_RESET)
@@ -468,7 +468,7 @@ _reset_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_
 }
 
 static char *
-_label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
+_label_get(void *data, Evas_Object *obj EINA_UNUSED, const char *pr EINA_UNUSED)
 {
    if (!pr) return strdup(" ");
    if (!strcmp(pr, "combination.text"))
@@ -491,7 +491,7 @@ _label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
 }
 
 static Evas_Object *
-_content_get(void *data __UNUSED__, Evas_Object *obj, const char *pr __UNUSED__)
+_content_get(void *data EINA_UNUSED, Evas_Object *obj, const char *pr EINA_UNUSED)
 {
    if (!pr) return NULL;
 
@@ -566,7 +566,7 @@ static const Shortcut_Data popup_hotkeys[] = {
 };
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *box = data;
    Evas_Object *genlist = elm_genlist_add(ap.win);

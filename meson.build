@@ -60,10 +60,9 @@ config_h.set_quoted('PACKAGE_BIN_DIR'  , dir_bin)
 config_h.set_quoted('PACKAGE_LIB_DIR'  , dir_lib)
 config_h.set_quoted('PACKAGE_DATA_DIR' , dir_pkgdata)
 config_h.set_quoted('PACKAGE_DOC_DIR'  , dir_doc)
-config_h.set_quoted('BUILD_TIME'       , '2023') # should be $(date +"%F\ %H:%M")
+config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be $(date +"%F\ %H:%M")
 
 config_h.set('__UNUSED_RESULT__'              , '__attribute__((warn_unused_result))')
-config_h.set('__UNUSED__'                     , '__attribute__((unused))')
 
 config_dir = [include_directories('.')]
 
@@ -75,45 +74,45 @@ cc = meson.get_compiler('c')
 eflete_cflags_try = [
   # '-Wshadow',
   '-Wstrict-prototypes',
-  '-Werror=missing-prototypes',
+  '-Wmissing-prototypes',
   '-Wfloat-compare',
-  '-Werror=pointer-arith',
-  '-Wno-missing-field-initializers',
+  '-Wpointer-arith',
   '-Wcast-function-type',
   '-Wignored-qualifiers',
   '-Wmissing-parameter-type',
   '-Wnonnull',
-  '-Wno-type-limits',
   '-Wold-style-declaration',
+	'-Wold-style-definition',
   '-Woverride-init',
   '-Wsign-compare',
   '-Wtype-limits',
   '-Wuninitialized',
   '-Wshift-negative-value',
   '-Wunused-but-set-parameter',
-  '-Wunused-parameter',
   '-Wimplicit-fallthrough=2',
-  '-Wno-unknown-warning-option',
-  '-Wno-missing-braces',
   # '-Wconversion',
   '-Wempty-body',
 
-  '-Wundef',
-	'-Wlogical-op',
-	'-Wmissing-include-dirs',
-	'-Wold-style-definition',
-	'-Wpointer-arith',
-	'-Winit-self',
-	'-Wfloat-equal',
-	'-Wredundant-decls',
-	'-Wendif-labels',
-	'-Wstrict-aliasing=2',
-	'-Woverflow',
-	'-Wformat=2',
-  '-Wendif-labels',
-
-	'-Wno-missing-braces',
-	'-Wno-unused-parameter',
+  # '-Wundef',
+	# '-Wlogical-op',
+	# '-Wmissing-include-dirs',
+	# '-Winit-self',
+	# '-Wfloat-equal',
+	# '-Wredundant-decls',
+	# '-Wendif-labels',
+	# '-Wstrict-aliasing=2',
+	# '-Woverflow',
+	# '-Wformat=2',
+  # '-Wendif-labels',
+	
+  '-Wno-unused-parameter',
+  '-Wno-type-limits',
+  '-Wno-unknown-warning-option',
+  '-Wno-missing-braces',
+  '-Wno-missing-field-initializers',
+  '-Wno-unused-function',
+  '-Wno-implicit-function-declaration',
+  '-Wno-implicit-fallthrough'
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')

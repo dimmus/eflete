@@ -104,17 +104,17 @@ static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
 static void
-_on_unselected_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_on_unselected_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(mng.button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 }
 
 static void
-_on_glit_selected(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_on_glit_selected(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    const char *style_name, *tag, *value;
@@ -173,7 +173,7 @@ _on_glit_selected(void *data __UNUSED__,
 static void
 _validate(void *data,
           Evas_Object *obj,
-          void *event_info __UNUSED__)
+          void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
    assert(popup != NULL);
@@ -190,7 +190,7 @@ _validate(void *data,
 }
 
 static Evas_Object *
-_add_style_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+_add_style_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
@@ -209,8 +209,8 @@ _add_style_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **
 }
 
 static void
-_style_add_popup_close_cb_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_style_add_popup_close_cb_cb(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    Attribute attribute = ATTRIBUTE_STATE_TEXT_STYLE;
@@ -247,9 +247,9 @@ close:
 }
 
 static void
-_style_add_cb(void *data __UNUSED__,
+_style_add_cb(void *data EINA_UNUSED,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -263,7 +263,7 @@ _style_add_cb(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+_add_tag_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item;
 
@@ -281,17 +281,17 @@ _add_tag_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to
 }
 
 static void
-_menu_dismissed_cb(void *data __UNUSED__,
+_menu_dismissed_cb(void *data EINA_UNUSED,
                    Evas_Object *obj,
-                   void *event_info __UNUSED__)
+                   void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 
 static void
-_menu_dismiss_cb(void *data __UNUSED__,
+_menu_dismiss_cb(void *data EINA_UNUSED,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    elm_menu_close(obj);
    shortcuts_object_check_pop(obj);
@@ -304,7 +304,7 @@ typedef struct {
 
 static void
 _tag_add_popup_close_cb(void *data,
-                        Evas_Object *obj __UNUSED__,
+                        Evas_Object *obj EINA_UNUSED,
                         void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -335,9 +335,9 @@ close:
    free(tpd);
 }
 static void
-_tag_add_cb(void *data __UNUSED__,
+_tag_add_cb(void *data EINA_UNUSED,
             Evas_Object *obj,
-            void *event_info __UNUSED__)
+            void *event_info EINA_UNUSED)
 {
    Style2 *res;
    Eina_Stringshare *buf;
@@ -371,9 +371,9 @@ _tag_add_cb(void *data __UNUSED__,
 }
 
 static void
-_btn_del_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_btn_del_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
@@ -408,8 +408,8 @@ _btn_del_cb(void *data __UNUSED__,
 /* For GenList, getting the content for showing. Tag Names. */
 static char *
 _item_tags_label_get(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     const char *part __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     const char *part EINA_UNUSED)
 {
    char *tag_label = (char *)data;
    if (!tag_label)
@@ -423,8 +423,8 @@ _item_tags_label_get(void *data,
 /* For Style names. */
 static char *
 _item_style_label_get(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      const char *part __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      const char *part EINA_UNUSED)
 {
    char *style_label = (char *)data;
    /* char *formated_style_name; */
@@ -443,7 +443,7 @@ _item_style_label_get(void *data,
 }
 
 static Evas_Object *
-_item_style_icon_get(void *data __UNUSED__,
+_item_style_icon_get(void *data EINA_UNUSED,
                      Evas_Object *obj,
                      const char *part)
 {
@@ -458,7 +458,7 @@ _item_style_icon_get(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_item_tags_icon_get(void *data __UNUSED__,
+_item_tags_icon_get(void *data EINA_UNUSED,
                     Evas_Object *obj,
                     const char *part)
 {
@@ -594,9 +594,9 @@ _genlist_item_search_next_search(Evas_Object *obj,
 }
 
 static void
-_search_changed(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_search_changed(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    if (elm_entry_is_empty(mng.style_search_data.search_entry))
      {
@@ -620,9 +620,9 @@ _search_changed(void *data __UNUSED__,
 }
 
 static void
-_search_nxt_gd_item(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_search_nxt_gd_item(void *data EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    if (mng.style_search_data.last_item_found)
      {
@@ -637,8 +637,8 @@ _search_nxt_gd_item(void *data __UNUSED__,
 
 static void
 _search_reset_cb(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    Search_Data *search_data = data;
 
@@ -647,8 +647,8 @@ _search_reset_cb(void *data,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -656,8 +656,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
@@ -687,8 +687,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -696,8 +696,8 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -705,9 +705,9 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_btn_add_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_btn_add_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Coord x, y, h;
 
@@ -726,7 +726,7 @@ _btn_add_cb(void *data __UNUSED__,
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
-       void *event_info __UNUSED__)
+       void *event_info EINA_UNUSED)
 {
    Bg_Preview bg_mode;
    const char *signal = NULL;
@@ -795,9 +795,9 @@ _add_box_bg(void)
 #endif
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -807,9 +807,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -835,9 +835,9 @@ _style_mamanger_init(void)
 }
 
 static void
-_project_closed_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_project_closed_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
    //elm_entry_entry_set(mng.entry_prev, "");

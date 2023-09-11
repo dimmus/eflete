@@ -130,8 +130,8 @@ static const char *program_actions[] = {
 
 static char *
 _item_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                const char *pr EINA_UNUSED)
 {
    Eina_Strbuf *buf;
    Resource2 *res = data;
@@ -151,8 +151,8 @@ _item_label_get(void *data,
 
 static char *
 _resource_label_get(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    const char *pr __UNUSED__)
+                    Evas_Object *obj EINA_UNUSED,
+                    const char *pr EINA_UNUSED)
 {
    Resource2 *res = data;
 
@@ -164,8 +164,8 @@ _resource_label_get(void *data,
 
 static char *
 _state_resource_label_get(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          const char *pr __UNUSED__)
+                          Evas_Object *obj EINA_UNUSED,
+                          const char *pr EINA_UNUSED)
 {
    char *ret;
    State2 *res = data;
@@ -182,7 +182,7 @@ _state_resource_label_get(void *data,
 
 static char *
 _item_caption_label_get(void *data,
-                        Evas_Object *obj __UNUSED__,
+                        Evas_Object *obj EINA_UNUSED,
                         const char *pr)
 {
    Part2 *part = data;
@@ -243,9 +243,9 @@ _all_parts_visible(Part_List *pl)
 }
 
 static void
-_on_parts_eye_clicked(void *data __UNUSED__,
+_on_parts_eye_clicked(void *data EINA_UNUSED,
                       Evas_Object *obj,
-                      void *event_data __UNUSED__)
+                      void *event_data EINA_UNUSED)
 {
    Evas_Object *eye;
    Part2 *part;
@@ -276,7 +276,7 @@ _on_parts_eye_clicked(void *data __UNUSED__,
 static void
 _on_eye_clicked(void *data,
                 Evas_Object *obj,
-                void *event_data __UNUSED__)
+                void *event_data EINA_UNUSED)
 {
    Evas_Object *eye;
    Part2 *part = data;
@@ -485,8 +485,8 @@ _part_content_get(void *data,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -494,8 +494,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -542,7 +542,7 @@ group_navigator_part_state_select(Evas_Object *obj, State2 *state)
 
 static void
 _expanded_cb(void *data,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -655,8 +655,8 @@ _expanded_cb(void *data,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -774,7 +774,7 @@ _unselected_cb(void *data,
 
 static void
 _selected_cb(void *data,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -831,7 +831,7 @@ _selected_cb(void *data,
 static void
 _on_part_name_changed(void *data,
                       Evas_Object *obj,
-                      void *event_info __UNUSED__)
+                      void *event_info EINA_UNUSED)
 {
    Part_List *pl = data;
 
@@ -852,7 +852,7 @@ _on_part_name_changed(void *data,
 static void
 _state_validate(void *data,
                 Evas_Object *obj,
-                void *event_info __UNUSED__)
+                void *event_info EINA_UNUSED)
 {
    Part_List *pl = data;
    const char *name;
@@ -880,7 +880,7 @@ _state_validate(void *data,
 
 static void
 _item_selected(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Part_List *pl = data;
@@ -895,7 +895,7 @@ _item_selected(void *data,
 
 static void
 _item_validate(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Part_List *pl = data;
@@ -939,8 +939,8 @@ item_data_invalidated:
 
 static void
 _program_validate(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    Part_List *pl = data;
 
@@ -960,7 +960,7 @@ _program_validate(void *data,
 
 static void
 _popup_add_part_close_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *ei)
 {
    Popup_Button pb = (Popup_Button)ei;
@@ -1033,7 +1033,7 @@ group_navigator_part_add(Evas_Object *obj, Part2 *part)
 
 static void
 _part_selected_cb(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Part_List *pl = data;
@@ -1059,7 +1059,7 @@ _part_selected_cb(void *data,
 
 static void
 _state_selected_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Part_List *pl = data;
@@ -1073,7 +1073,7 @@ _state_selected_cb(void *data,
 
 static void
 _program_selected_cb(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Part_List *pl = data;
@@ -1087,7 +1087,7 @@ _program_selected_cb(void *data,
 
 static void
 _type_selected_cb(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Part_List *pl = data;
@@ -1100,14 +1100,14 @@ _type_selected_cb(void *data,
 }
 
 static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_combobox_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    return strdup(item->data);
 }
 
 static void
-_combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
+_combobox_item_pressed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           void *event_info)
 {
    Combobox_Item *item = elm_object_item_data_get(event_info);
@@ -1117,7 +1117,7 @@ _combobox_item_pressed_cb(void *data __UNUSED__, Evas_Object *obj,
 }
 
 static Evas_Object *
-_add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
+_add_part_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus)
 {
    Combobox_Item *combobox_item;
    unsigned int i = 0;
@@ -1190,9 +1190,9 @@ _add_part_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
 }
 
 static void
-_on_menu_add_part_clicked(void *data __UNUSED__,
+_on_menu_add_part_clicked(void *data EINA_UNUSED,
                           Evas_Object *obj,
-                          void *ei __UNUSED__)
+                          void *ei EINA_UNUSED)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Stringshare *title;
@@ -1212,8 +1212,8 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
 static void
 _on_group_data_name_changed(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
+                            Evas_Object *obj EINA_UNUSED,
+                            void *event_info EINA_UNUSED)
 {
    Part_List *pl = data;
 
@@ -1233,7 +1233,7 @@ _on_group_data_name_changed(void *data,
 
 static void
 _popup_add_group_data_close_cb(void *data,
-                               Evas_Object *obj __UNUSED__,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    Popup_Button pb = (Popup_Button)event_info;
@@ -1256,7 +1256,7 @@ _popup_add_group_data_close_cb(void *data,
 }
 
 static Evas_Object *
-_add_group_data_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
+_add_group_data_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
@@ -1280,9 +1280,9 @@ _add_group_data_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Obje
 }
 
 static void
-_on_menu_add_group_data_clicked(void *data __UNUSED__,
+_on_menu_add_group_data_clicked(void *data EINA_UNUSED,
                                 Evas_Object *obj,
-                                void *ei __UNUSED__)
+                                void *ei EINA_UNUSED)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
@@ -1301,7 +1301,7 @@ _on_menu_add_group_data_clicked(void *data __UNUSED__,
 
 static void
 _popup_add_state_close_cb(void *data,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    Popup_Button pb = (Popup_Button)event_info;
@@ -1388,7 +1388,7 @@ group_navigator_part_state_add(Evas_Object *obj, Part2 *part, State2 *state)
 }
 
 static Evas_Object *
-_add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
+_add_state_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Evas_Object *box, *item;
@@ -1455,9 +1455,9 @@ _add_state_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **
 }
 
 static void
-_on_menu_add_state_clicked(void *data __UNUSED__,
+_on_menu_add_state_clicked(void *data EINA_UNUSED,
                            Evas_Object *obj,
-                           void *ei __UNUSED__)
+                           void *ei EINA_UNUSED)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Stringshare *title;
@@ -1476,7 +1476,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 
 static void
 _popup_add_item_close_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Popup_Button pb = (Popup_Button) event_info;
@@ -1539,7 +1539,7 @@ group_navigator_part_item_add(Evas_Object *obj, Part2 *part, unsigned int index)
 }
 
 static Evas_Object *
-_add_item_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
+_add_item_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *)data;
    Combobox_Item *combobox_item;
@@ -1592,9 +1592,9 @@ _add_item_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **t
 }
 
 static void
-_on_menu_add_item_clicked(void *data __UNUSED__,
+_on_menu_add_item_clicked(void *data EINA_UNUSED,
                           Evas_Object *obj,
-                          void *ei __UNUSED__)
+                          void *ei EINA_UNUSED)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Stringshare *title;
@@ -1613,7 +1613,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
 
 static void
 _popup_add_program_close_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    Popup_Button pb = (Popup_Button) event_info;
@@ -1672,7 +1672,7 @@ _popup_add_program_close_cb(void *data,
 }
 
 static Evas_Object *
-_add_program_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus)
+_add_program_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus)
 {
    Part_List *pl = (Part_List *) data;
    Evas_Object *box, *item;
@@ -1717,9 +1717,9 @@ _add_program_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object 
 }
 
 static void
-_on_menu_add_program_clicked(void *data __UNUSED__,
+_on_menu_add_program_clicked(void *data EINA_UNUSED,
                              Evas_Object *obj,
-                             void *ei __UNUSED__)
+                             void *ei EINA_UNUSED)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Stringshare *title;
@@ -1886,8 +1886,8 @@ group_navigator_group_data_del(Evas_Object *obj, Resource2 *data)
 
 static void
 _on_btn_plus_clicked(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *ei __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *ei EINA_UNUSED)
 {
    Part_List *pl = data;
    Evas_Coord x, y, h;
@@ -2104,7 +2104,7 @@ _state_del(Part_List *pl,
 }
 
 void
-group_navigator_part_state_del(Evas_Object *obj, Part2 *part __UNUSED__, State2 *state)
+group_navigator_part_state_del(Evas_Object *obj, Part2 *part EINA_UNUSED, State2 *state)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit;
@@ -2215,8 +2215,8 @@ group_navigator_part_item_del(Evas_Object *obj, Part_Item2 *item)
 
 static void
 _on_btn_minus_clicked(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *ei __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      void *ei EINA_UNUSED)
 {
    Part_List *pl = data;
    Elm_Object_Item *glit;
@@ -2376,7 +2376,7 @@ void
 group_navigator_part_item_restack(Evas_Object *obj,
                                   Part2 *part,
                                   unsigned int item_index,
-                                  Eina_Bool move_up __UNUSED__)
+                                  Eina_Bool move_up EINA_UNUSED)
 {
    Elm_Object_Item *part_glit;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
@@ -2416,8 +2416,8 @@ group_navigator_part_item_restack(Evas_Object *obj,
 
 static void
 _on_btn_down_clicked(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *ei __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *ei EINA_UNUSED)
 {
    Part_List *pl = data;
    Elm_Object_Item *glit;
@@ -2439,8 +2439,8 @@ _on_btn_down_clicked(void *data,
 
 static void
 _on_btn_up_clicked(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *ei __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *ei EINA_UNUSED)
 {
    Part_List *pl = data;
    Elm_Object_Item *glit;
@@ -2462,7 +2462,7 @@ _on_btn_up_clicked(void *data,
 
 static void
 _combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    eina_stringshare_del(item->data);
@@ -2471,9 +2471,9 @@ _combobox_item_del(void *data,
 
 static void
 _group_navigator_del(void *data,
-                     Evas *e __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas *e EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    Part_List *pl = (Part_List *)data;
 

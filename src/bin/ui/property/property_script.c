@@ -23,8 +23,8 @@
 
 static void
 _btn_script_manager_cb(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    Evas_Object *content = data;
 

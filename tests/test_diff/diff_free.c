@@ -13,12 +13,12 @@
 
 /* test stubs that return true and never will be actual called */
 static Eina_Bool
-_function_type_int_undo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSED__)
+_function_type_int_undo_return_true(Evas_Object *obj EINA_UNUSED, int val EINA_UNUSED)
 {
    return true;
 }
 static Eina_Bool
-_function_type_int_redo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSED__)
+_function_type_int_redo_return_true(Evas_Object *obj EINA_UNUSED, int val EINA_UNUSED)
 {
    return true;
 }

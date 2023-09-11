@@ -23,7 +23,7 @@
 
 static Eina_Bool
 _on_image_editor_done(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    const char *value;
@@ -49,8 +49,8 @@ TODO("apply after helper popup would be fixed")
 
 static void
 _on_state_image_choose(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       void *ei EINA_UNUSED)
 {
    popup_gengrid_image_helper(NULL,
                               data,
@@ -89,8 +89,8 @@ property_image_normal_control_add(Evas_Object *parent)
 
 static void
 _on_state_vector_choose(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       void *ei EINA_UNUSED)
 {
    popup_gengrid_image_helper(NULL,
                               data,

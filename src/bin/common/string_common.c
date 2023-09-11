@@ -113,8 +113,8 @@ string_cat(const char *str1, const char *str2)
 const char *
 string_rstr(const char *str1, const char *str2)
 {
-   size_t str2len = 0;
-   size_t i = 0, j = 0;
+   int str2len = 0;
+   int i = 0, j = 0;
 
    str2len = strlen_safe(str2) - 1;
 

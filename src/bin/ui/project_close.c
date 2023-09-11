@@ -24,7 +24,7 @@
 #include "project_common.h"
 
 static Eina_Bool
-_progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
+_progress_print(void *data EINA_UNUSED, Eina_Stringshare *progress_string)
 {
    elm_object_part_text_set(ap.splash, "label.info", progress_string);
 
@@ -32,7 +32,7 @@ _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 }
 
 static void
-_progress_export_edj_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
+_progress_export_edj_end(void *data EINA_UNUSED, PM_Project_Result result, Project *project EINA_UNUSED)
 {
    char buf[BUFF_MAX];
 
@@ -53,7 +53,7 @@ _progress_export_edj_end(void *data __UNUSED__, PM_Project_Result result, Projec
 }
 
 static void
-_progress_save_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
+_progress_save_end(void *data EINA_UNUSED, PM_Project_Result result, Project *project EINA_UNUSED)
 {
    char buf[BUFF_MAX];
 
@@ -93,7 +93,7 @@ _progress_save_end(void *data __UNUSED__, PM_Project_Result result, Project *pro
 }
 
 static Eina_Bool
-_setup_save_splash(void *data, Splash_Status status __UNUSED__)
+_setup_save_splash(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -123,7 +123,7 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_save_splash(void *data __UNUSED__, Splash_Status status)
+_teardown_save_splash(void *data EINA_UNUSED, Splash_Status status)
 {
 
    if (status == SPLASH_SUCCESS)
@@ -151,8 +151,8 @@ project_save(void)
 
 #ifndef HAVE_TIZEN
 static void
-_popup_close_cb(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
+_popup_close_cb(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
                 void *ei)
 {
    Popup_Button btn_res = (Popup_Button) ei;

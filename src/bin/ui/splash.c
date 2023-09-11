@@ -16,19 +16,19 @@ typedef struct _Splash_Data Splash_Data;
 static Splash_Data sdata;
 
 static void
-_on_teardown(void *data __UNUSED__,
+_on_teardown(void *data EINA_UNUSED,
              Evas_Object *obj,
-             const char *emission __UNUSED__,
-             const char *source __UNUSED__)
+             const char *emission EINA_UNUSED,
+             const char *source EINA_UNUSED)
 {
    if (sdata.teardown) sdata.teardown(sdata.data, sdata.status);
    evas_object_del(obj);
 }
 
 static void
-_on_splash_close(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_on_splash_close(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    if (sdata.cancel) sdata.cancel(sdata.data, sdata.status);
    sdata.status = SPLASH_CANCEL;
@@ -36,10 +36,10 @@ _on_splash_close(void *data __UNUSED__,
 }
 
 static void
-_on_setup(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          const char *emission __UNUSED__,
-          const char *source __UNUSED__)
+_on_setup(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          const char *emission EINA_UNUSED,
+          const char *source EINA_UNUSED)
 {
    elm_object_focus_set(elm_object_focused_object_get(ap.win), false);
    elm_layout_signal_emit(sdata.win, "start", "eflete");

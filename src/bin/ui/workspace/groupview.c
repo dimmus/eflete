@@ -52,7 +52,7 @@ _grouopview_hl_event_new(Highlight_Events *event, Groupview_Smart_Data *sd)
 
 static void
 _hl_part_drag_start_cb(void *data,
-                       Evas_Object *obj __UNUSED__,
+                       Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -65,7 +65,7 @@ _hl_part_drag_start_cb(void *data,
 
 static void
 _hl_part_changed_cb(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj EINA_UNUSED,
                     void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -78,7 +78,7 @@ _hl_part_changed_cb(void *data,
 
 static void
 _hl_part_drag_stop_cb(void *data,
-                      Evas_Object * obj __UNUSED__,
+                      Evas_Object * obj EINA_UNUSED,
                       void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -92,8 +92,8 @@ _hl_part_drag_stop_cb(void *data,
 
 static void
 _unselect_part(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+               Evas *e EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Evas_Object *o = (Evas_Object *)data;
@@ -459,8 +459,8 @@ groupview_part_object_area_visible_get(Evas_Object *obj)
 }
 
 Eina_Bool
-groupview_parts_separated(Evas_Object *obj __UNUSED__,
-                          Eina_Bool separated __UNUSED__)
+groupview_parts_separated(Evas_Object *obj EINA_UNUSED,
+                          Eina_Bool separated EINA_UNUSED)
 {
 #if 0
    int w, h, count;

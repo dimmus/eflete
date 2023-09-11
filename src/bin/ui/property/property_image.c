@@ -96,7 +96,7 @@ _image_info_type_setup(Property_Action *action, const char *image_name)
 }
 
 static Eina_Bool
-_update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
+_update_cb(Property_Attribute *pa EINA_UNUSED, Property_Action *action)
 {
    Eina_Stringshare *str;
 
@@ -180,7 +180,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 
 static void
 _on_image_selected(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Property_Data *pd = (Property_Data *)data;
@@ -533,7 +533,7 @@ property_image_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_image_manager_items_get()
+property_image_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

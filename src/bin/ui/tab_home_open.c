@@ -36,7 +36,7 @@ static Eina_Bool recover = false;
 static Eina_Bool
 _eflete_filter(const char *path,
                Eina_Bool dir,
-               void *data __UNUSED__)
+               void *data EINA_UNUSED)
 {
    if (dir) return true;
    if (eina_str_has_extension(path, ".pro")) return true;
@@ -44,7 +44,7 @@ _eflete_filter(const char *path,
 }
 
 static Eina_Bool
-_setup_open_splash(void *data, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    Eina_Stringshare *path = data;
@@ -67,13 +67,13 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    return true;
 }
 
-__UNUSED__ static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+EINA_UNUSED static Eina_Bool
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    return true;
@@ -81,7 +81,7 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 
 static void
 _popup_recover_cb(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Eina_Stringshare *file = data;
@@ -100,9 +100,9 @@ _popup_recover_cb(void *data,
 }
 
 static void
-_open_after_popup_close(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+_open_after_popup_close(void *data EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
 {
    const char *selected;
    PM_Project_Result result;
@@ -135,9 +135,9 @@ _open_after_popup_close(void *data __UNUSED__,
 }
 
 static void
-_open_done(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_open_done(void *data EINA_UNUSED,
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    if (ap.project)
      if (!project_close(_open_after_popup_close, NULL))
@@ -147,8 +147,8 @@ _open_done(void *data __UNUSED__,
 }
 
 static void
-_selected(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
+_selected(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
           void *event_info)
 {
    const char *selected = event_info;
@@ -161,16 +161,16 @@ _selected(void *data __UNUSED__,
 }
 /* because selected doesn't work with folders */
 static void
-_unselected(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_unselected(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
 }
 
 static void
-_recent_clear_popup_close_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_recent_clear_popup_close_cb(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -181,9 +181,9 @@ _recent_clear_popup_close_cb(void *data __UNUSED__,
 }
 
 static void
-_recent_clear(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_recent_clear(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = popup_add(_("Confirm clear recent list"),
                                   _("Are you sure you want to clear list of "
@@ -193,9 +193,9 @@ _recent_clear(void *data __UNUSED__,
 }
 
 static void
-_fs_mode_cb(void *data __UNUSED__,
+_fs_mode_cb(void *data EINA_UNUSED,
             Evas_Object *obj,
-            void *event_info __UNUSED__)
+            void *event_info EINA_UNUSED)
 {
    int mode = elm_radio_value_get(obj);
 
@@ -263,7 +263,7 @@ _tab_open_project_add(void)
 
 static void
 _recent_after_popup_close(void *data,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    Recent *r = (Recent *)data;
@@ -298,8 +298,8 @@ _recent_after_popup_close(void *data,
 
 static void
 _open_recent(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
 
    if (ap.project)

@@ -100,9 +100,9 @@ static void
 _data_dir_del(void *data, Evas_Object *obj, void *event_info);
 
 static void
-_validate(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_validate(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    if ((elm_validator_regexp_status_get(tab_edc.name_validator) != ELM_REG_NOERROR) ||
        !eina_str_has_extension(elm_entry_entry_get(tab_edc.edc), ".edc") ||
@@ -114,8 +114,8 @@ _validate(void *data __UNUSED__,
 
 static void
 _elipsis(void *data,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    popup_fileselector_folder_helper(NULL,
                                     NULL,
@@ -127,9 +127,9 @@ _elipsis(void *data,
 }
 
 static void
-_elipsis_edc(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_elipsis_edc(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    popup_fileselector_edc_helper(NULL,
                                  NULL,
@@ -183,24 +183,24 @@ _dir_del(Eina_List **dirs_list, Dir_Data *dir_data,
 
 static void
 _img_dir_del(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_del(&tab_edc.img_dirs, (Dir_Data *)data, _("Images directories:"), _img_dir_add);
 }
 
 static void
 _fnt_dir_del(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_del(&tab_edc.fnt_dirs, (Dir_Data *)data, _("Fonts directories:"), _fnt_dir_add);
 }
 
 static void
 _snd_dir_del(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_del(&tab_edc.snd_dirs, (Dir_Data *)data, _("Sounds directories:"), _snd_dir_add);
 }
@@ -208,8 +208,8 @@ _snd_dir_del(void *data,
 /*
 static void
 _vbr_dir_del(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_del(&tab_edc.vbr_dirs, (Dir_Data *)data, _("Vibrations directories:"), _vbr_dir_add);
 }
@@ -217,8 +217,8 @@ _vbr_dir_del(void *data,
 
 static void
 _data_dir_del(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_del(&tab_edc.data_dirs, (Dir_Data *)data, _("Data directories:"), _data_dir_add);
 }
@@ -265,43 +265,43 @@ _dir_add(Eina_List **dirs_list, Evas_Smart_Cb del_func)
 }
 
 static void
-_img_dir_add(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_img_dir_add(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_add(&tab_edc.img_dirs, _img_dir_del);
 }
 
 static void
-_fnt_dir_add(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_fnt_dir_add(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_add(&tab_edc.fnt_dirs, _fnt_dir_del);
 }
 
 static void
-_snd_dir_add(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_snd_dir_add(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_add(&tab_edc.snd_dirs, _snd_dir_del);
 }
 
 /*
 static void
-_vbr_dir_add(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_vbr_dir_add(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    _dir_add(&tab_edc.vbr_dirs, _vbr_dir_del);
 }
 */
 
 static void
-_data_dir_add(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_data_dir_add(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    _dir_add(&tab_edc.data_dirs, _data_dir_del);
 }
@@ -388,7 +388,7 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 }
 
 static Eina_Bool
-_setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    Eina_Bool ret = true;
@@ -415,14 +415,14 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
    return true;
 }
 
 static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
 //   pm_project_thread_cancel();
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
@@ -430,7 +430,7 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
-_after_import_check(void *data __UNUSED__)
+_after_import_check(void *data EINA_UNUSED)
 {
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
@@ -442,8 +442,8 @@ _after_import_check(void *data __UNUSED__)
 }
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Eina_Strbuf *buf;
@@ -480,9 +480,9 @@ _after_popup_close(void *data __UNUSED__,
 }
 
 static void
-_import(void *data __UNUSED__,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+_import(void *data EINA_UNUSED,
+        Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    if (ap.project)
      if (!project_close(_after_popup_close, NULL))
@@ -492,10 +492,10 @@ _import(void *data __UNUSED__,
 }
 
 static void
-_tab_import_edc_del(void *data __UNUSED__,
-                    Evas *e __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_tab_import_edc_del(void *data EINA_UNUSED,
+                    Evas *e EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    elm_validator_regexp_free(tab_edc.name_validator);
 }

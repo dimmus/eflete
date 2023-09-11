@@ -105,9 +105,9 @@ validation_edj_failed:
 }
 
 static void
-_name_changed_cb(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_name_changed_cb(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    _validate();
 }
@@ -137,9 +137,9 @@ _tree_nodes_get(Eina_List *groups_list, Node *node)
 }
 
 static void
-_edj_changed_cb(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_edj_changed_cb(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Eina_List *collections, *l, *groups_list = NULL;
    Eina_List *folders = NULL, *groups = NULL;
@@ -245,7 +245,7 @@ _node_selected_set(Node *node)
 static void
 _check_widget(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Node *node = data;
 
@@ -260,9 +260,9 @@ _check_widget(void *data,
 }
 
 static void
-_on_check_all(void *data __UNUSED__,
+_on_check_all(void *data EINA_UNUSED,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *item;
    Node *node;
@@ -284,8 +284,8 @@ _on_check_all(void *data __UNUSED__,
 
 static char *
 _genlist_label_get(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   const char  *part __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   const char  *part EINA_UNUSED)
 {
    Node *node = data;
    const char *pos;
@@ -330,8 +330,8 @@ _genlist_content_get(void *data,
 }
 
 static void
-_on_item_activated(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_on_item_activated(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *it = (Elm_Object_Item *)event_info;
@@ -344,8 +344,8 @@ _on_item_activated(void *data __UNUSED__,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -353,8 +353,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -362,8 +362,8 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -394,8 +394,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -420,7 +420,7 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 }
 
 static Eina_Bool
-_setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    PM_Project_Result result;
@@ -444,15 +444,15 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
    elm_check_state_set(tab_edj.ch_all, false);
    return true;
 }
 
-__UNUSED__ static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+EINA_UNUSED static Eina_Bool
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
@@ -460,7 +460,7 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
-_after_import_check(void *data __UNUSED__)
+_after_import_check(void *data EINA_UNUSED)
 {
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
@@ -473,8 +473,8 @@ _after_import_check(void *data __UNUSED__)
 
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Eina_Strbuf *buf;
@@ -515,9 +515,9 @@ _after_popup_close(void *data __UNUSED__,
 }
 
 static void
-_import(void *data __UNUSED__,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+_import(void *data EINA_UNUSED,
+        Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    if (ap.project)
      if (!project_close(_after_popup_close, NULL))
@@ -527,9 +527,9 @@ _import(void *data __UNUSED__,
 }
 
 static void
-_elipsis(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_elipsis(void *data EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    popup_fileselector_folder_helper(NULL,
                                     NULL,
@@ -541,9 +541,9 @@ _elipsis(void *data __UNUSED__,
 }
 
 static void
-_elipsis_edj(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_elipsis_edj(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    popup_fileselector_edj_helper(NULL,
                                  NULL,
@@ -555,10 +555,10 @@ _elipsis_edj(void *data __UNUSED__,
 }
 
 static void
-_tab_import_edj_del(void *data __UNUSED__,
-                    Evas *e __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_tab_import_edj_del(void *data EINA_UNUSED,
+                    Evas *e EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    elm_validator_regexp_free(tab_edj.name_validator);
 }

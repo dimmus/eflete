@@ -84,7 +84,7 @@ static const Ecore_Getopt options = {
 };
 
 static Eina_Bool
-_setup_open_splash(void *data, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    Eina_Stringshare *path = data;
@@ -106,21 +106,21 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    return true;
 }
 
-__UNUSED__ static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+EINA_UNUSED static Eina_Bool
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    return true;
 }
 
 static void
-_popup_recover_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_popup_recover_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Popup_Button btn_res = (Popup_Button)event_info;
@@ -137,7 +137,7 @@ _popup_recover_cb(void *data __UNUSED__,
 }
 
 static void
-_open_project(void *data __UNUSED__)
+_open_project(void *data EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -159,7 +159,7 @@ _open_project(void *data __UNUSED__)
 }
 
 static void
-_import_edj(void *data __UNUSED__)
+_import_edj(void *data EINA_UNUSED)
 {
    const char *name;
    Eina_Tmpstr *proj_name;
@@ -182,7 +182,7 @@ _import_edj(void *data __UNUSED__)
 }
 
 static void
-_import_edc(void *data __UNUSED__)
+_import_edc(void *data EINA_UNUSED)
 {
    const char *name;
    Eina_Tmpstr *proj_name;
@@ -201,7 +201,7 @@ _import_edc(void *data __UNUSED__)
 }
 
 static void
-_new_project(void *data __UNUSED__)
+_new_project(void *data EINA_UNUSED)
 {
    const char *name;
    Eina_Tmpstr *proj_name;

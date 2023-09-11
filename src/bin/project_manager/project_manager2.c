@@ -610,7 +610,7 @@ _project_trylock(const char *pro_path)
 
 static Eina_Bool
 _exe_output_handler(void *data,
-                    int type __UNUSED__,
+                    int type EINA_UNUSED,
                     void *event_info)
 {
    int i;
@@ -627,8 +627,8 @@ _exe_output_handler(void *data,
 
 static Eina_Bool
 _exporter_finish_handler(void *data,
-                         int type __UNUSED__,
-                         void *event_info __UNUSED__)
+                         int type EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
    Project *project = (Project *) ppd->project;
@@ -871,8 +871,8 @@ pm_project_open(const char *path,
 
 static Eina_Bool
 _edje_pick_finish_handler(void *data,
-                          int type __UNUSED__,
-                          void *event_info __UNUSED__)
+                          int type EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1059,7 +1059,7 @@ pm_project_import_edj(const char *name,
 
 static Eina_Bool
 _finish_from_edje_cc(void *data,
-                     int type __UNUSED__,
+                     int type EINA_UNUSED,
                      void *event_info)
 {
    Project_Process_Data *ppd = data;
@@ -1296,8 +1296,8 @@ pm_project_meta_data_set(Project *project,
 
 static Eina_Bool
 _group_export_finish_handler(void *data,
-                             int type __UNUSED__,
-                             void *event_info __UNUSED__)
+                             int type EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1376,7 +1376,7 @@ pm_project_source_code_export(Project *project,
 
 static Eina_Bool
 _develop_export_finish_handler(void *data,
-                               int type __UNUSED__,
+                               int type EINA_UNUSED,
                                void *event_info)
 {
    Project_Process_Data *ppd = data;
@@ -1470,8 +1470,8 @@ pm_project_develop_export(Project *project,
 
 static Eina_Bool
 _release_export_build_finish_handler(void *data,
-                                     int type __UNUSED__,
-                                     void *event_info __UNUSED__)
+                                     int type EINA_UNUSED,
+                                     void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1485,8 +1485,8 @@ _release_export_build_finish_handler(void *data,
 
 static Eina_Bool
 _release_export_finish_handler(void *data,
-                             int type __UNUSED__,
-                             void *event_info __UNUSED__)
+                             int type EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
    Eina_Strbuf *buf;

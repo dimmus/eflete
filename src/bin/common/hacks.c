@@ -2,7 +2,7 @@
 
 static int _spinner_changed_from_code = 0;
 static void
-_spinner_changed_hack(void *data __UNUSED__, Evas_Object *obj, void *ei)
+_spinner_changed_hack(void *data EINA_UNUSED, Evas_Object *obj, void *ei)
 {
    /* don't call callback if we are setting value to spinner from code */
    if (!_spinner_changed_from_code)

@@ -20,7 +20,7 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_scroller_swallow_check(void *data __UNUSED__,
+_on_scroller_swallow_check(void *data EINA_UNUSED,
                            Evas_Object *obj,
                            void *ei)
 {

@@ -20,7 +20,7 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_list_swallow_check(void *data __UNUSED__,
+_on_list_swallow_check(void *data EINA_UNUSED,
                        Evas_Object *obj,
                        void *ei)
 {
@@ -70,7 +70,7 @@ _on_list_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_list_text_check(void *data __UNUSED__,
+_on_list_text_check(void *data EINA_UNUSED,
                     Evas_Object *obj,
                     void *ei)
 {
@@ -86,7 +86,7 @@ _on_list_text_check(void *data __UNUSED__,
 }
 
 static void
-_list_send_signal(void *data __UNUSED__,
+_list_send_signal(void *data EINA_UNUSED,
                   Evas_Object *obj,
                   void *ei)
 {

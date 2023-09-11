@@ -134,9 +134,9 @@ _checks_set(Eina_Bool check_val)
 }
 
 static void
-_on_check_all(void *data __UNUSED__,
+_on_check_all(void *data EINA_UNUSED,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    _checks_set(elm_check_state_get(obj));
 }
@@ -145,7 +145,7 @@ _on_check_all(void *data __UNUSED__,
 static void
 _check_widget(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    assert(widget_data != NULL);
@@ -154,8 +154,8 @@ _check_widget(void *data,
 
 static char *
 _genlist_label_get(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   const char  *part __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   const char  *part EINA_UNUSED)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    assert(widget_data != NULL);
@@ -164,7 +164,7 @@ _genlist_label_get(void *data,
 
 static Evas_Object *
 _genlist_content_get(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      const char *part)
 {
    Evas_Object *check;
@@ -182,8 +182,8 @@ _genlist_content_get(void *data,
 }
 
 static void
-_on_item_activated(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_on_item_activated(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *it = (Elm_Object_Item *)event_info;
@@ -454,7 +454,7 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 }
 
 static Eina_Bool
-_setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    Eina_Tmpstr *tmp_dir;
@@ -512,7 +512,7 @@ exit:
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    ecore_file_recursive_rm(tab_new.tmp_dir_path);
    eina_stringshare_del(tab_new.tmp_dir_path);
@@ -523,7 +523,7 @@ _teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
@@ -532,7 +532,7 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 
 /* TAB_HOME_NEW LAYOUT */
 static void
-_after_on_create_check(void *data __UNUSED__)
+_after_on_create_check(void *data EINA_UNUSED)
 {
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
@@ -545,8 +545,8 @@ _after_on_create_check(void *data __UNUSED__)
 }
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Eina_Strbuf *buf;
@@ -572,9 +572,9 @@ _after_popup_close(void *data __UNUSED__,
 }
 
 static void
-_on_create(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_on_create(void *data EINA_UNUSED,
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    if (ap.project)
      if (!project_close(_after_popup_close, NULL))
@@ -584,9 +584,9 @@ _on_create(void *data __UNUSED__,
 }
 
 static void
-_validate(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_validate(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    if (elm_validator_regexp_status_get(tab_new.name_validator) != ELM_REG_NOERROR)
      elm_object_disabled_set(tab_new.btn_create, true);
@@ -595,9 +595,9 @@ _validate(void *data __UNUSED__,
 }
 
 static void
-_elipsis(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_elipsis(void *data EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    popup_fileselector_folder_helper(NULL,
                                     NULL,
@@ -609,10 +609,10 @@ _elipsis(void *data __UNUSED__,
 }
 
 static void
-_tab_new_del(void *data __UNUSED__,
-                    Evas *e __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_tab_new_del(void *data EINA_UNUSED,
+                    Evas *e EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    elm_validator_regexp_free(tab_new.name_validator);
 }
