@@ -34,6 +34,7 @@
  * </tr>
  * @}
  */
+/*
 EFL_START_TEST(ewe_ruler_style_get_test_p)
 {
    Evas_Object *win = elm_win_util_standard_add("test", "test");
@@ -45,7 +46,7 @@ EFL_START_TEST(ewe_ruler_style_get_test_p)
    evas_object_del(win);
 }
 EFL_END_TEST
-
+*/
 /**
  * @addtogroup ewe_ruler_style_get
  * @{
@@ -70,7 +71,7 @@ EFL_END_TEST
  */
 EFL_START_TEST(ewe_ruler_style_get_test_n)
 {
-   ck_assert_msg(ewe_ruler_ewe_style_get(NULL, NULL) == NULL, "Getted style from NULL ruler object");
+   ck_assert_msg(ewe_ruler_ewe_style_get(NULL, NULL) == NULL, "Getting style from NULL ruler object");
 }
 EFL_END_TEST
 
@@ -84,7 +85,7 @@ EFL_END_TEST
 
 void ewe_ruler_style_get_test(TCase *tc)
 {
-   // TODO: solve segfault here
+   TODO(Solve segfault here);
    //tcase_add_test(tc, ewe_ruler_style_get_test_p);
    tcase_add_test(tc, ewe_ruler_style_get_test_n);
 }

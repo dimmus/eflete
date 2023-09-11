@@ -1,4 +1,4 @@
-src_test_ewe_ruler = files([
+src = files([
     'test_ewe_ruler.c',
     'ewe_ruler_add.c',
     'ewe_ruler_scale_add.c',
@@ -31,32 +31,11 @@ src_test_ewe_ruler = files([
     'ewe_ruler_marker_del.c',
 ])
 
-exe_ewe = executable('test_ewe_ruler', src_test_ewe_ruler,
+exe = executable('test_ewe_ruler', src,
   dependencies : test_deps,
-  include_directories : [ include_directories('.'),
-                          include_directories('..'), 
-                          include_directories(join_paths('..','..')),                      
-                          include_directories(join_paths('..','..','src/lib')),
-                          include_directories(join_paths('..','..','src/bin')),
-                          include_directories(join_paths('..','..','src/bin/alloc')),
-                          include_directories(join_paths('..','..','src/bin/common')), 
-                          include_directories(join_paths('..','..','src/bin/config')),
-                          include_directories(join_paths('..','..','src/bin/editor')),
-                          include_directories(join_paths('..','..','src/bin/external')),
-                          include_directories(join_paths('..','..','src/bin/logger')),
-                          include_directories(join_paths('..','..','src/bin/project_manager')),
-                          include_directories(join_paths('..','..','src/bin/resource_manager')),
-                          include_directories(join_paths('..','..','src/bin/ui')),
-                          include_directories(join_paths('..','..','src/bin/ui/live_view')),
-                          include_directories(join_paths('..','..','src/bin/ui/modal_window')),
-                          include_directories(join_paths('..','..','src/bin/ui/live_view/elementary')),
-                          include_directories(join_paths('..','..','src/bin/ui/property')),
-                          include_directories(join_paths('..','..','src/bin/ui/shortcuts')),
-                          include_directories(join_paths('..','..','src/bin/ui/sound_player')),
-                          include_directories(join_paths('..','..','src/bin/ui/workspace')),
-                          include_directories(join_paths('..','..','src/bin/ui/workspace')),
-                          include_directories(join_paths('..','..','tests')),
-                        ],
+  include_directories : test_include_dirs + 
+                        [ include_directories(join_paths('..','..','build/src/lib/ewe_ruler')) ],
   install : false
 )
-test('Eflete - EWE Test Suit', exe_ewe)
+
+test('Eflete Test Suit - EWE', exe)
