@@ -131,7 +131,7 @@ app_init(void)
    ap.color_data = color_init(eina_strbuf_new());
 
    eina_stringshare_del(conf_path);
-   return true;
+   return EINA_TRUE;
 }
 
 Eina_Bool
@@ -162,7 +162,7 @@ app_shutdown(void)
    edje_shutdown();
    logger_shutdown();
 
-   return true;
+   return EINA_TRUE;
 }
 
 #undef CHECK_AP
