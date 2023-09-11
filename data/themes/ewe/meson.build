@@ -9,7 +9,6 @@ foreach edc_file : edc_theme_files
     output      : 'ewe.edj',
     command     : edje_cc_exe +
                   [
-                   '-id', join_paths(meson.current_source_dir(), '../default/images'),
                    '-id', join_paths(meson.current_source_dir(), 'widgets/images'),
                    '-fd', join_paths(meson.current_source_dir(),'fonts'),
                    '@INPUT@', '@OUTPUT@'
