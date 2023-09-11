@@ -1,6 +1,7 @@
 
 //#include "utc_common.h"
 #include "eflete.h"
+#include "ewe_ruler.eo.h"
 
 #include "../eflete_check.h"
 
