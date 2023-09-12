@@ -337,6 +337,9 @@ _tab_open_project_recents_update(void)
         evas_object_smart_callback_add(btn, signals.elm.button.clicked, _open_recent, r);
         elm_box_pack_end(box, btn);
         evas_object_show(btn);
-     }
+     } 
    evas_object_show(box);
+   
+   /* free 'r' created in config_recent_add (see _tabs_progress_end as well) */
+   free(r);
 }
