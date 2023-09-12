@@ -15,7 +15,7 @@ foreach edc_file : template_files
                    '@INPUT@', '@OUTPUT@'
                   ],
     install     : true,
-    install_dir : join_paths(dir_pkgdata, 'themes/default/templates'),
+    install_dir : join_paths(dir_pkgdata, 'themes/default/template/edj'),
   )
 endforeach
 
@@ -74,11 +74,14 @@ template_edc_files = [
   'widgets/pointer.edc',
   'widgets/segment_control.edc',
   'widgets/thumb.edc',
+  'macros.edc',
+  'fonts.edc',
+  'colorclasses.edc'
 ]
 
 install_data(
   sources     : template_edc_files,
-  install_dir : join_paths(dir_pkgdata, 'themes/default/templates/edc')
+  install_dir : join_paths(dir_pkgdata, 'themes/default/template/edc')
 )
 
 template_image_files = [
@@ -363,7 +366,7 @@ template_image_files = [
 
 install_data(
   sources     : template_image_files,
-  install_dir : join_paths(dir_pkgdata, 'themes/default/templates/images')
+  install_dir : join_paths(dir_pkgdata, 'themes/default/template/images')
 )
 
 template_sound_files = [
@@ -376,5 +379,5 @@ template_sound_files = [
 
 install_data(
   sources     : template_sound_files,
-  install_dir : join_paths(dir_pkgdata, 'themes/default/templates/sounds')
+  install_dir : join_paths(dir_pkgdata, 'themes/default/template/sounds')
 )
