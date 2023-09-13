@@ -22,4 +22,15 @@ po/en@quot.po
 builddir
 checks.json
 
-sonar-project.properties
+#sonar
+*.properties
+
+#pvs
+*.json
+*.sarif
+*.log
+strace_*
+.PVS-Studio
+
+#clion
+.idea
