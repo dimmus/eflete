@@ -39,8 +39,10 @@ app_init(void)
    char buf[PATH_MAX];
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
+  #ifdef HAVE_GETTEXT
    bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
    textdomain(PACKAGE);
+  #endif
 #endif
 
    if (!eina_init())
