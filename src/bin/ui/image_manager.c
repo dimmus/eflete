@@ -644,7 +644,6 @@ _on_image_done(void *data EINA_UNUSED,
    Image_Item *it = NULL;
    const Eina_List *images, *l;
    const char *selected;
-   Uns_List *image = NULL;
    const char *file_name;
    Evas_Object *img;
    Eina_Stringshare *res_path;
