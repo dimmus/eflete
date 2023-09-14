@@ -34,3 +34,6 @@ strace_*
 
 #clion
 .idea
+
+#git
+*.patch
