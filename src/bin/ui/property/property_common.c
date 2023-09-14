@@ -412,7 +412,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, signals.elm.colorselector.changed_user, _start_change_stop_cb, pa);
          evas_object_smart_callback_add(content, signals.elm.colorselector.color_item_selected, _start_change_stop_cb, pa);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          /* Dirty hack for set size to color picker */
          Evas_Object *picker_base = elm_layout_content_get(content, "elm.picker");
          Evas_Object *picker_box = elm_layout_content_get(picker_base, "elm.swallow.picker");

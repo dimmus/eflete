@@ -589,14 +589,14 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET);
 #endif
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
@@ -621,7 +621,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_34);
          break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE);
@@ -629,7 +629,7 @@ _subitems_get(Property_Attribute *pa)
 #endif
         break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
@@ -650,24 +650,24 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TYPE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET);
 #endif
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET);
 #endif
          break;
       case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET);
 #endif
          break;
       case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET);
 #endif
@@ -2644,17 +2644,17 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &double_val1, NULL, NULL);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &double_val1, NULL);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &double_val1);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);

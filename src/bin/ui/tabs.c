@@ -821,7 +821,7 @@ _shortcut_tab_num_cb(void *data EINA_UNUSED,
    int num = *((int *)event_info);
    Tabs_Item *item;
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    /*In tizen mode "Home tab" is hidden*/
    item = eina_list_nth(tabs.items, num);
 #else
@@ -851,7 +851,7 @@ _shortcut_mode_normal_cb(void *data EINA_UNUSED,
      workspace_mode_set(tabs.current_workspace, MODE_NORMAL);
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static void
 _shortcut_mode_code_cb(void *data EINA_UNUSED,
                        Evas_Object *obj EINA_UNUSED,
@@ -1058,7 +1058,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, signals.shortcut.tab.num, _shortcut_tab_num_cb, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.tab.close, _shortcut_tab_close_cb, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.normal, _shortcut_mode_normal_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.code, _shortcut_mode_code_cb, NULL);
 #endif
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.demo, _shortcut_mode_demo_cb, NULL);

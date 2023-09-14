@@ -42,7 +42,7 @@ EFL_START_TEST(ewe_ruler_marker_relative_get_test_p)
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
 
-   ck_assert_msg(ewe_ruler_marker_relative_get(ruler, marker, NULL) == 0, "Wrong default rel position value returned");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(ruler, marker, NULL), 0), "Wrong default rel position value returned");
 
    evas_object_del(win);
 }
@@ -83,9 +83,9 @@ EFL_START_TEST(ewe_ruler_marker_relative_get_test_n)
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
 
-   ck_assert_msg(ewe_ruler_marker_relative_get(NULL, marker, NULL) == 0, "Getted rel position from NULL ruler object");
-   ck_assert_msg(ewe_ruler_marker_relative_get(ruler, NULL, NULL) == 0, "Getted rel position for NULL marker");
-   ck_assert_msg(ewe_ruler_marker_relative_get(NULL, NULL, NULL) == 0, "Getted rel position from NULL ruler object for NULL marker");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(NULL, marker, NULL), 0), "Getted rel position from NULL ruler object");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(ruler, NULL, NULL), 0), "Getted rel position for NULL marker");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(NULL, NULL, NULL), 0), "Getted rel position from NULL ruler object for NULL marker");
 
 }
 EFL_END_TEST

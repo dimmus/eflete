@@ -792,7 +792,7 @@ _image_proxy_common_param_update(Evas_Object *image, Groupview_Part *gp, Evas_Ob
         evas_object_image_filled_set(image, false);
         evas_object_image_fill_set(image, x, y, w, h);
      }
-   else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
+   else if (!EINA_DBL_EQ(fill_x, 0) || !EINA_DBL_EQ(fill_y, 0) || !EINA_DBL_EQ(fill_w, 1) || !EINA_DBL_EQ(fill_h, 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
             fill_size_offset_x || fill_size_offset_y)
      {

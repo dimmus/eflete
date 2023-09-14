@@ -212,7 +212,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    property_common_itc_init(pd);
 
    pd->layout = elm_layout_add(parent);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *icon;
    switch (mode)
      {

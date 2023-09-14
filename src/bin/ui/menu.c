@@ -268,7 +268,7 @@ ui_menu_add(void)
    snprintf(buf, sizeof(buf), "%sicon-save.png", ap.path.image_path);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"), "Ctrl-O")
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
@@ -276,7 +276,7 @@ ui_menu_add(void)
       ___(MENU_FILE);
 #endif /* if !HAVE_TIZEN */
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, buf, _("Save"), "Ctrl-S")
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)
@@ -315,7 +315,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_WINDOW, NULL, _("Window"), NULL)
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_TAB_HOME, NULL, _("Home"), NULL)
       ___(MENU_WINDOW);
 #endif /* if !HAVE_TIZEN */

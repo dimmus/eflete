@@ -163,7 +163,7 @@ script_manager_add(Resource2 *res)
    mw_title_set(mng.win, _("Script manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "code2");
 #else

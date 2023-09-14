@@ -46,9 +46,9 @@ EFL_START_TEST(ewe_ruler_value_step_set_test_p)
    Ewe_Ruler_Scale *scale = ewe_ruler_scale_add(ruler, NULL);
 
    ck_assert_msg(ewe_ruler_value_step_set(ruler, scale, 42.0) == EINA_TRUE, "EINA_FALSE returned");
-   ck_assert_msg(ewe_ruler_value_step_get(ruler, scale) == 42.0, "Value not setted");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_value_step_get(ruler, scale), 42.0), "Value not setted");
    ck_assert_msg(ewe_ruler_value_step_set(ruler, scale, 3.14) == EINA_TRUE, "EINA_FALSE returned");
-   ck_assert_msg(ewe_ruler_value_step_get(ruler, scale) == 3.14, "Value not setted");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_value_step_get(ruler, scale), 3.14), "Value not setted");
 
    evas_object_del(win);
 }

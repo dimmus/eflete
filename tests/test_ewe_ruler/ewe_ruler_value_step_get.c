@@ -41,7 +41,7 @@ EFL_START_TEST(ewe_ruler_value_step_get_test_p)
    Evas_Object *ruler = ewe_ruler_add(win);
    Ewe_Ruler_Scale *scale = ewe_ruler_scale_add(ruler, NULL);
 
-   ck_assert_msg(ewe_ruler_value_step_get(ruler, scale) == 50, "Wrong default visibility value returned");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_value_step_get(ruler, scale), 50), "Wrong default visibility value returned");
 
    evas_object_del(win);
 }
@@ -73,7 +73,7 @@ EFL_START_TEST(ewe_ruler_value_step_get_test_n)
 {
    
 
-   ck_assert_msg(ewe_ruler_value_step_get(NULL, NULL) == EINA_FALSE, "Getted visibility from NULL ruler object");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_value_step_get(NULL, NULL), EINA_FALSE), "Getted visibility from NULL ruler object");
 
 }
 EFL_END_TEST

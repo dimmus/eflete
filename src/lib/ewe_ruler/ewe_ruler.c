@@ -173,7 +173,7 @@ _place_markers(Ewe_Ruler_Smart_Data *sd)
           {
              scale = (marker->scale) ? marker->scale : eina_list_data_get(sd->scales);
              if (!scale->visible) continue;
-             marker->abs_position = (scale->mark_value_step) ? ((marker->rel_position / scale->mark_value_step) * scale->mark_step + scale->zero_pos) : scale->zero_pos;
+             marker->abs_position = !EINA_DBL_EQ(scale->mark_value_step, 0) ? ((marker->rel_position / scale->mark_value_step) * scale->mark_step + scale->zero_pos) : scale->zero_pos;
           }
 
         if (sd->horizontal)
@@ -687,7 +687,7 @@ _ewe_ruler_marker_relative_get(const Eo *obj EINA_UNUSED,
    if (!scale) scale = eina_list_data_get(sd->scales);
    if (!scale) return 0;
    if (marker->relative)
-     marker->abs_position = (marker->scale->mark_value_step) ? ((marker->rel_position / marker->scale->mark_value_step) * marker->scale->mark_step + marker->scale->zero_pos) : marker->scale->zero_pos;
+     marker->abs_position = !EINA_DBL_EQ(marker->scale->mark_value_step, 0) ? ((marker->rel_position / marker->scale->mark_value_step) * marker->scale->mark_step + marker->scale->zero_pos) : marker->scale->zero_pos;
 
    if (marker->scale == scale)
      return marker->rel_position;
@@ -725,7 +725,7 @@ _ewe_ruler_marker_absolute_get(const Eo *obj EINA_UNUSED,
 {
    if (!marker) return EINA_FALSE;
    if (marker->relative)
-     marker->abs_position = (marker->scale->mark_value_step) ? ((marker->rel_position / marker->scale->mark_value_step) * marker->scale->mark_step + marker->scale->zero_pos) : marker->scale->zero_pos;
+     marker->abs_position = !EINA_DBL_EQ(marker->scale->mark_value_step, 0) ? ((marker->rel_position / marker->scale->mark_value_step) * marker->scale->mark_step + marker->scale->zero_pos) : marker->scale->zero_pos;
 
    return marker->abs_position;
 }

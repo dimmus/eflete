@@ -87,7 +87,7 @@ Eina_Bool \
 editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   return (edje_edit_##FUNC##_get(edit_object, ARGS) == DEF_VAL); \
+   return EINA_DBL_EQ(edje_edit_##FUNC##_get(edit_object, ARGS), DEF_VAL); \
 }
 
 #define EDITOR_STATE_SIMPLE_RESET(FUNC, DEF_VAL) \

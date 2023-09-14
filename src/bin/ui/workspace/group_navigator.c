@@ -567,7 +567,7 @@ _expanded_cb(void *data,
         EINA_LIST_FOREACH(part->states, l, state)
           {
              /* default state should be listed first */
-             if ((first_item) || ((strcmp(state->common.name, "default") != 0) || (state->val != 0)))
+             if ((first_item) || ((strcmp(state->common.name, "default") != 0) || !EINA_DBL_NONZERO(state->val)))
                {
                   elm_genlist_item_append(pl->genlist,
                                           (state->part->current_state == state) ? pl->itc_state_selected : pl->itc_state,
@@ -668,7 +668,7 @@ _unselect_internal(Part_List *pl)
 {
    assert(pl != NULL);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    if (pl->group->current_selected != NULL)
    if (pl->group->current_selected->common.type == RESOURCE2_TYPE_PART)
      {
@@ -715,7 +715,7 @@ _enable_buttons(Part_List *pl, Elm_Object_Item *glit)
    if (pl->group->current_selected)
      {
         if ((pl->group->current_selected->common.type != RESOURCE2_TYPE_STATE) ||
-            (((State2 *)pl->group->current_selected)->val != 0) ||
+            !EINA_DBL_EQ(((State2 *)pl->group->current_selected)->val, 0) ||
             (strcmp(pl->group->current_selected->common.name, "default") != 0))
         elm_object_disabled_set(pl->btn_del, false);
 
@@ -799,7 +799,7 @@ _selected_cb(void *data,
           {
              pl->part = (Part2 *)pl->group->current_selected;
              evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, pl->part);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
              Evas_Object *check = elm_object_item_part_content_get(glit, "elm.swallow.icon");
              if (check)
                elm_object_signal_emit(check, "selected", "eflete");
@@ -1894,7 +1894,7 @@ _on_btn_plus_clicked(void *data,
 
    assert(pl != NULL);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
 #else
    evas_object_geometry_get(pl->btn_down, &x, &y, NULL, &h);
@@ -2088,7 +2088,7 @@ _state_del(Part_List *pl,
    state = elm_object_item_data_get(glit);
 
    assert(state != NULL);
-   assert((strcmp(state->common.name, "default") || (state->val != 0))); /* default state can't be deleted */
+   assert((strcmp(state->common.name, "default") || !EINA_DBL_EQ(state->val, 0))); /* default state can't be deleted */
 
    msg = eina_stringshare_printf(_("deleted state \"%s\" %.2f"), state->common.name, state->val);
    change = change_add(msg);
@@ -2622,7 +2622,7 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
 #endif
 
@@ -2634,13 +2634,13 @@ group_navigator_add(Evas_Object *parent, Group2 *group)
    elm_object_part_text_set(elm_menu_item_object_get(pl->add_part_item_menu_item), "elm.shortcut", "e");
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    ui_menu_disable_set(ap.menu, MENU_EDIT_ITEM_ADD, true);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
 #endif
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
 #endif
 

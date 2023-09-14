@@ -481,7 +481,7 @@ _style_manager_search_field_create(Evas_Object *parent)
 
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
- #if !HAVE_TIZEN
+ #ifndef HAVE_TIZEN
    Evas_Object *icon;
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -859,7 +859,7 @@ style_manager_add(void)
    mw_title_set(mng.win, _("Textblock style manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "image2");
 #else

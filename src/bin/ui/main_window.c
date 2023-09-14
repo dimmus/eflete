@@ -258,13 +258,13 @@ ui_main_window_add(void)
 
    elm_config_window_auto_focus_enable_set(false);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_config_tooltip_delay_set(0.2);
 #endif
     return true;
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static Evas_Object *
 _about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {

@@ -45,7 +45,7 @@ widget_colorselector_create(Evas_Object *parent, const Group2 *group)
         free(style_parsed);
      }
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_colorselector_palette_clear(object);
    elm_colorselector_palette_name_set(object, "eflete_tizen");
    elm_colorselector_palette_color_add(object, 229, 3, 3, 255);

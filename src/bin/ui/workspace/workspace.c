@@ -40,7 +40,7 @@
    Workspace_Data *wd = evas_object_data_get(OBJ, WORKSPACE_DATA); \
    assert(wd != NULL);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
 #endif
 
@@ -97,7 +97,7 @@ struct _Workspace_Data
          Evas_Object *cmb_zoom;
          Evas_Object *slider;
       } zoom;
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       struct {
          Evas_Object *normal;
          Evas_Object *code;
@@ -117,7 +117,7 @@ struct _Workspace_Data
          Evas_Object *tile;
          Evas_Object *white;
       } bg_switcher;
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
       Evas_Object *libraries_switcher;
       Elm_Genlist_Item_Class *libraries_itc;
 #endif
@@ -386,7 +386,7 @@ _combobox_item_del(void *data,
    free(item);
 }
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
 static void
 _btn_minus_zoom_cb(void *data,
                    Evas_Object *obj EINA_UNUSED,
@@ -457,7 +457,7 @@ _zoom_controls_add(Workspace_Data *wd)
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
    evas_object_smart_callback_add(wd->toolbar.zoom.fit, signals.elm.button.clicked, _fit_cb, wd);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_object_style_set(wd->toolbar.zoom.fit, "fit");
 #else
    Evas_Object *img;
@@ -475,7 +475,7 @@ _zoom_controls_add(Workspace_Data *wd)
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_start, _slider_zoom_start_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.changed, _slider_zoom_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_stop, _slider_zoom_stop_cb, wd);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *btn = elm_button_add(wd->toolbar.obj);
    elm_object_style_set(btn, "minus_zoom");
    evas_object_show(btn);
@@ -492,7 +492,7 @@ _zoom_controls_add(Workspace_Data *wd)
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
 #endif
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    evas_object_size_hint_min_set(wd->toolbar.zoom.slider, 134, 0);
    Evas_Object *zoom_layout = elm_layout_add(wd->toolbar.obj);
    elm_layout_theme_set(zoom_layout, "layout", "zoom", "controls");
@@ -503,7 +503,7 @@ _zoom_controls_add(Workspace_Data *wd)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
 #endif
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom, 10, 1000, 10, true);
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 76, 0);
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, 100);
@@ -615,7 +615,7 @@ _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *size_controls = elm_layout_add(wd->toolbar.obj);
    elm_layout_theme_set(size_controls, "layout", "container/controls", "default");
    evas_object_show(size_controls);
@@ -634,7 +634,7 @@ _container_size_controls_add(Workspace_Data *wd)
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_w, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_w, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, signals.elm.spinner.changed_user, _spinner_container_change, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
 #else
@@ -645,7 +645,7 @@ _container_size_controls_add(Workspace_Data *wd)
    elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, signals.elm.check.changed, _container_aspect_change, wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_chain);
 #else
@@ -655,7 +655,7 @@ _container_size_controls_add(Workspace_Data *wd)
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_h, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_h, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, signals.elm.spinner.changed_user, _spinner_container_change, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
 #else
@@ -1062,7 +1062,7 @@ _menu_add(Workspace_Data *wd)
    elm_menu_item_separator_add(wd->menu.obj, NULL);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
 #endif
    wd->menu.scale_abs = _radio_switcher_add(wd, NULL, NULL, 0, NULL);
@@ -1071,7 +1071,7 @@ _menu_add(Workspace_Data *wd)
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_ruler_rel, NULL, wd->menu.scale_rel, wd);
    wd->menu.scale_both = _radio_switcher_add(wd, NULL, NULL, 2, wd->menu.scale_abs);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_both, NULL, wd->menu.scale_both, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
 #endif
    wd->menu.markers = elm_check_add(wd->layout);
@@ -1093,7 +1093,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    ewe_ruler_horizontal_set(area->ruler_v.obj, false);
    elm_layout_content_set(area->layout, "elm.swallow.ruler_v", area->ruler_v.obj);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, false);
    ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, false);
 #endif
@@ -1123,7 +1123,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
      evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, wd);
 }
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
 static void
 _library_select(void *data EINA_UNUSED,
                 Evas_Object *obj,
@@ -1163,7 +1163,7 @@ _mode_cb(void *data,
    Scroll_Area *area = NULL;
    const Container_Geom *geom;
    char *color_code = NULL;
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    mode = elm_radio_value_get(obj);
 #else
    // Tizen spceific code. Here uses check instead radio button.
@@ -1189,7 +1189,7 @@ _mode_cb(void *data,
       case MODE_CODE:
          color_code =_group_code_get(wd);
          elm_panes_fixed_set(wd->panes_h, false);
-         if (wd->code.size == -1) wd->code.size = 0.5;
+         if (EINA_DBL_EQ(wd->code.size, -1)) wd->code.size = 0.5;
          elm_panes_content_right_size_set(wd->panes_h, wd->code.size);
          elm_entry_entry_set(wd->code.obj, color_code);
          free(color_code);
@@ -1247,7 +1247,7 @@ _mode_cb(void *data,
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
@@ -1436,7 +1436,7 @@ _groupview_hl_part_drag_stop(void *data,
                                                      event->part->common.name,
                                                      event->part->current_state->common.name,
                                                      event->part->current_state->val);
-        if ((align_x == part_align_x) && (align_y == part_align_y))
+        if (EINA_DBL_EQ(align_x, part_align_x) && EINA_DBL_EQ(align_y, part_align_y))
           change_free(change);
         else
           {
@@ -1520,7 +1520,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Combobox_Item *combobox_item;
    /* Combobox for a choose libraries. */
    COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
@@ -1564,7 +1564,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    elm_toolbar_item_separator_set(tb_it, true);
 #endif
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    /* add to toolbar modes switcher */
    wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1592,7 +1592,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    wd->zoom_factor = 1.0;
    _zoom_controls_add(wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    /* add to toolbar bg switcher */
    wd->toolbar.bg_switcher.white = _radio_switcher_add(wd, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1654,7 +1654,7 @@ workspace_mode_set(Evas_Object *obj, Workspace_Mode mode)
 {
    WS_DATA_GET(obj);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_radio_value_set(wd->toolbar.mode_switcher.normal, mode);
    _mode_cb(wd, wd->toolbar.mode_switcher.normal, NULL);
 #else

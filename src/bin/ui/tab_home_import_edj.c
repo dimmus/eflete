@@ -505,7 +505,7 @@ _after_popup_close(void *data EINA_UNUSED,
    exist_permission_check(elm_entry_entry_get(tab_edj.path),
                                elm_entry_entry_get(tab_edj.name),
                                _("Import edj-file"), eina_strbuf_string_get(buf),
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
                                FILE_SAVE_ASK,
 #else
                                FILE_SAVE_REPLACE,

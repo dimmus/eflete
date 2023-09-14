@@ -142,8 +142,6 @@ endif
 
 if get_option('enable-tizen')
   config_h.set('HAVE_TIZEN', '1')
-else
-  config_h.set('HAVE_TIZEN', '0')
 endif
 
 if get_option('enable-todo')

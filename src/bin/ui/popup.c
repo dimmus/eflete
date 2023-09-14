@@ -240,7 +240,7 @@ popup_button_disabled_set(Evas_Object *popup, Popup_Button btn, Eina_Bool disabl
 }
 /* end of async popup */
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
 #define FS_W 510
 #define FS_H 500
 #else
@@ -379,7 +379,7 @@ _helper_colorclass_dismiss(void *data,
    ecore_job_add(_delete_object_job, helper);
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static void
 _colorclass_done(void *data,
                  Evas_Object *obj EINA_UNUSED,
@@ -514,7 +514,7 @@ _fileselector_helper(const char *title,
 
    fs = elm_fileselector_add(ap.win);
    elm_object_style_set(fs, "extended");
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    /* Dirty Hack */
    Evas_Object *files_list;
    files_list = elm_object_part_content_get(fs, "elm.swallow.files");
@@ -1175,7 +1175,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    ENTRY_ADD(fs, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
 #else
@@ -1250,7 +1250,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
    helper = elm_layout_add(ap.win);
 
    current = POPUP_COLORSELECTOR_HELPER;
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_layout_theme_set(helper, "layout", "popup", "colorselector");
 #else
    elm_layout_theme_set(helper, "layout", "popup", "hint");
@@ -1266,7 +1266,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(fs);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    /* Dirty hack for set size to color picker */
    Evas_Object *picker_base = elm_layout_content_get(fs, "elm.picker");
    Evas_Object *picker_box = elm_layout_content_get(picker_base, "elm.swallow.picker");
@@ -1297,7 +1297,7 @@ popup_colorselector_helper(Evas_Object *follow_up,
    evas_object_size_hint_min_set(helper, COLOR_W, COLOR_H);
    evas_object_resize(helper, COLOR_W * elm_config_scale_get(), COLOR_H * elm_config_scale_get());
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    BUTTON_ADD(fs, helper_data->button, _("Ok"))
    elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
    evas_object_smart_callback_add(helper_data->button, signals.elm.button.clicked, _colorclass_done, helper_data);
