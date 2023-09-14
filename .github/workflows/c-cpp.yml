@@ -8,22 +8,32 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-22.04
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: '3.10'
     steps:
-    - uses: actions/checkout@v3
-    - name: install deps
+    - uses: actions/checkout@master
+    - name: install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y autopoint meson ninja-build gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
-        # sudo apt-get install -y check
+        sudo apt-get install -y check
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with:
+        python-version: 3.10
     - name: project setup (meson)
       run: meson setup . build
     - name: project build (ninja)
       run: ninja -C build
     - name: generate coverage report
-      run: ninja -C build coverage
+      run: |
+        pip install coverage|
+        ninja -C build coverage
     - name: upload to codecov
       uses: codecov/codecov-action@v3.1.4
       env:
