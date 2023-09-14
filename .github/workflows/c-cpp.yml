@@ -22,14 +22,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y autopoint meson ninja-build gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
         sudo apt-get install -y check lcov
-    # - name: Setup python
-    #   uses: actions/setup-python@master
+    - name: Setup python
+      uses: actions/setup-python@master
       # with:
       #   python-version: 3.10
-    # - name: Install coverage
-    #   run: | 
-    #     pip install coverage
-    #     export PATH=~/.local/bin:"$PATH"
+    - name: Install python dependencies
+      run: pip install lxml
     - name: Setup project (meson)
       run: meson setup . build -Db_coverage=true -Dbuild-tests=true
     - name: Build project (ninja)
