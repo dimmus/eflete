@@ -31,9 +31,11 @@ jobs:
         pip install coverage
         export PATH=~/.local/bin:"$PATH"
     - name: Setup project (meson)
-      run: meson setup . build -Db_coverage=true
-    - name: Buil project (ninja)
+      run: meson setup . build -Db_coverage=true -Dbuild-tests=true
+    - name: Build project (ninja)
       run: ninja -C build
+    - name: Run tests (ninja)
+      run: ninja -C build tests
     - name: Generate coverage report
       run: ninja -C build coverage
     - name: Upload to Codecov
