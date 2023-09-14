@@ -302,7 +302,7 @@ _sounds_resources_export(void *data EINA_UNUSED)
              fclose(f);
              return;
           }
-        if (f) fclose(f);
+        fclose(f);
         eina_binbuf_free(sound_bin);
         edje_edit_string_free(sound_file);
      }
@@ -367,7 +367,7 @@ _fonts_resources_export(void *data EINA_UNUSED)
              fclose(f);
              goto exit;
           }
-        if (f) fclose(f);
+        fclose(f);
         free(font);
 
         edje_edit_string_free(font_file);
