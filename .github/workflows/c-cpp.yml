@@ -29,7 +29,7 @@ jobs:
     - name: Install coverage
       run: pip install coverage
     - name: Setup project (meson)
-      run: meson setup . build
+      run: meson setup . build -Db_coverage=true
     - name: Buil project (ninja)
       run: ninja -C build
     - name: Generate coverage report
