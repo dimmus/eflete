@@ -103,13 +103,8 @@ eflete_cflags_try = [
 	'-Woverflow',
 	'-Wformat=1',
   '-Wendif-labels',
-  # '-Wconversion',
-	# '-Wmissing-include-dirs',
-	# '-Wredundant-decls',
 
   '-Wno-implicit-fallthrough',
-
-  '-Wno-error'
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
