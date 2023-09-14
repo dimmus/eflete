@@ -119,7 +119,7 @@ _setup_save_splash(void *data, Splash_Status status EINA_UNUSED)
         return false;
      }
 
-   return true;
+   /*return true*/;
 }
 
 static Eina_Bool
