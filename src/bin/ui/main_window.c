@@ -480,7 +480,6 @@ _label_get(void *data, Evas_Object *obj EINA_UNUSED, const char *pr EINA_UNUSED)
    else if (!strcmp(pr, "description.text"))
      {
         Shortcut_Data *sc = (Shortcut_Data *)data;
-        return strdup(sc->description);
         return  sc->description != NULL ? strdup(sc->description) : strdup("NONE");
      }
    else if (!strcmp(pr, "elm.text"))
