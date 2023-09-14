@@ -13,6 +13,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     env:
+      build-folder: build
       OS: ${{ matrix.os }}
       # PYTHON: '3.10'
     steps:
@@ -28,7 +29,7 @@ jobs:
       #   python-version: 3.10
     - name: Install coverage
       run: | 
-        pip install coverage
+        pip install coverage -i ${{ env.build-folder }}
         export PATH=~/.local/bin:"$PATH"
     - name: Setup project (meson)
       run: meson setup . build -Db_coverage=true -Dbuild-tests=true
