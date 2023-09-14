@@ -161,7 +161,9 @@ _open_project(void *data EINA_UNUSED)
 static void
 _import_edj(void *data EINA_UNUSED)
 {
+#ifndef HAVE_TIZEN
    const char *name;
+#endif
    Eina_Tmpstr *proj_name;
    if (pro_name)
      {

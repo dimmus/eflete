@@ -93,7 +93,7 @@ eflete_cflags_try = [
   # '-Wconversion',
   '-Wempty-body',
 
-  # '-Wundef',
+  '-Wundef',
 	# '-Wlogical-op',
 	# '-Wmissing-include-dirs',
 	# '-Winit-self',
@@ -138,6 +138,12 @@ endif
 
 if get_option('enable-enventor')
   config_h.set_quoted('HAVE_ENVENTOR', '1')
+endif
+
+if get_option('enable-tizen')
+  config_h.set('HAVE_TIZEN', '1')
+else
+  config_h.set('HAVE_TIZEN', '0')
 endif
 
 if get_option('enable-todo')
