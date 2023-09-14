@@ -58,6 +58,7 @@ property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item
    Eina_List *subitems;
 
    assert(pa != NULL);
+   assert(pd->genlist != NULL);
    assert(pd->item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
 
    /* item is already added */
