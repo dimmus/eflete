@@ -40,8 +40,8 @@ app_init(void)
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
   #ifdef HAVE_GETTEXT
-   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
-   textdomain(PACKAGE);
+   bindtextdomain(PACKAGE_NAME, PACKAGE_LOCALE_DIR);
+   textdomain(PACKAGE_NAME);
   #endif
 #endif
 
@@ -87,7 +87,7 @@ app_init(void)
    snprintf(buf, sizeof(buf), "%s/%s", DIR_PATH, LOCALE); \
    if (!ecore_file_exists(buf)) \
      { \
-         snprintf(buf, sizeof(buf), "%s/%s", COMPILE_PATH, CURRENT); \
+         snprintf(buf, sizeof(buf), "%s/%s", PACKAGE_BUILD_DIR, CURRENT); \
          if (!ecore_file_exists(buf)) \
            { \
               CRIT(MESSAGE" '%s'", buf); \

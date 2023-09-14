@@ -34,16 +34,10 @@ dir_doc         = join_paths(dir_prefix, get_option('infodir'), 'eflete')
 
 # configuration
 config_h = configuration_data()
-config_h.set_quoted('COMPILE_PATH'     , meson.current_build_dir())
-config_h.set_quoted('PACKAGE'          , meson.project_name())
-config_h.set_quoted('PACKAGE_VERSION'  , version)
 config_h.set_quoted('PACKAGE_NAME'     , meson.project_name())
-# config_h.set_quoted('PACKAGE_BUILD_DIR', meson.build_root())
-config_h.set_quoted('PACKAGE_BIN_DIR'  , dir_bin)
-config_h.set_quoted('PACKAGE_LIB_DIR'  , dir_lib)
-config_h.set_quoted('PACKAGE_DATA_DIR' , dir_pkgdata)
-config_h.set_quoted('PACKAGE_DOC_DIR'  , dir_doc)
-config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be $(date +"%F\ %H:%M")
+config_h.set_quoted('PACKAGE_VERSION'  , version)
+config_h.set_quoted('PACKAGE_BUILD_DIR', meson.current_build_dir())
+config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be the time like $(date +"%F\ %H:%M")
 
 config_h.set('__UNUSED_RESULT__'              , '__attribute__((warn_unused_result))')
 
@@ -86,7 +80,7 @@ eflete_cflags_try = [
 	'-Woverflow',
 	'-Wformat=1',
   '-Wendif-labels',
-
+ 
   '-Wno-implicit-fallthrough',
 ]
 
