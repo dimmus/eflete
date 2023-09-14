@@ -16,9 +16,11 @@
 
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#endif
+
 #include "common_macro.h"
 #include "logger.h"
+#include <assert.h>
 
 #define IMAGES "images"
 #define SOUNDS "sounds"
@@ -54,7 +56,7 @@ static const Ecore_Getopt options = {
    "%prog [OPTION]... FILE"
    ,
    PACKAGE_VERSION,
-   "(C) 2013-2016 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics\n(C) 2022-2023 Dmitri Chudinov.",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design as Eflete support tool.\n",
@@ -379,49 +381,56 @@ exit:
 static char *
 _group_source_code_export(const char *group)
 {
-   char *name;
-   char buf[256];
-   FILE *f;
-   Eina_Stringshare *code;
-   Evas_Object *edje_obj;
-   Edje_Load_Error edje_error;
+  assert(group != NULL);
 
-   name = strdup(group);
-   string_char_replace(name, '/', '_');
-   snprintf(buf, strlen(spath) + strlen("/") + strlen(name) + strlen(".edc") + 1,
-            "%s/%s.edc", spath, name);
+  char *name;
+  char *header;
+  char buf[256];
+  FILE *f;
+  Eina_Stringshare *code;
+  Evas_Object *edje_obj;
+  Edje_Load_Error edje_error;
 
-   f = fopen(buf, "w+");
-   if (!f)
-     {
-        //ERR("Could't open file '%s'", eina_strbuf_string_get(buf));
-        _terminate(PM_PROJECT_EXPORT_CREATE_FILE_FAILED);
-        return NULL;
-     }
+  name = strdup(group);
+  if (!name) return NULL;
+  
+  string_char_replace(name, '/', '_');
+  snprintf(buf, strlen(spath) + strlen("/") + strlen(name) + strlen(".edc") + 1,
+          "%s/%s.edc", spath, name);
 
-   edje_obj = edje_edit_object_add(ecore_evas_get(ee));
-   edje_object_file_set(edje_obj, sedj, group);
-   edje_error = edje_object_load_error_get(edje_obj);
-   if (EDJE_LOAD_ERROR_NONE != edje_error)
-     {
-        fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
-        fclose(f);
-        return NULL;
-     }
-   code = edje_edit_object_source_generate(edje_obj);
-   fputs(_edc_header_get(), f);
-   fputs(code, f);
-   edje_edit_string_free(code);
-   fclose(f);
+  f = fopen(buf, "w+");
+  if (!f)
+    {
+      //ERR("Could't open file '%s'", eina_strbuf_string_get(buf));
+      _terminate(PM_PROJECT_EXPORT_CREATE_FILE_FAILED);
+      return NULL;
+    }
 
-   snprintf(buf, sizeof(buf), "%s.edc", name);
-   return strdup(buf);
+  edje_obj = edje_edit_object_add(ecore_evas_get(ee));
+  edje_object_file_set(edje_obj, sedj, group);
+  edje_error = edje_object_load_error_get(edje_obj);
+  if (EDJE_LOAD_ERROR_NONE != edje_error)
+    {
+      fprintf(stderr, "ERROR: Edje object load error: %s\n", edje_load_error_str(edje_error));
+      fclose(f);
+      return NULL;
+    }
+  code = edje_edit_object_source_generate(edje_obj);
+  header = _edc_header_get();
+  if (header) fputs(header, f);
+  if (code) fputs(code, f);
+  edje_edit_string_free(code);
+  fclose(f);
+
+  snprintf(buf, sizeof(buf), "%s.edc", name);
+  return strdup(buf);
 }
 
 static void
 _source_code_export(void *data EINA_UNUSED)
 {
    char buf[256];
+   char *header;
    FILE *f;
    Eina_List *l;
    const char *g;
@@ -439,7 +448,8 @@ _source_code_export(void *data EINA_UNUSED)
         return;
      }
    rewind(f);
-   fputs(_edc_header_get(), f);
+   header = _edc_header_get();
+   if (header) fputs(header, f);
 
    if (!groups)
      {
