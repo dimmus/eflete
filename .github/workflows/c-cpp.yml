@@ -22,7 +22,9 @@ jobs:
       run: meson setup . build
     - name: project build (ninja)
       run: ninja -C build
-    - name: Codecov
+    - name: generate coverage report
+      run: ninja -C build coverage
+    - name: upload to codecov
       uses: codecov/codecov-action@v3.1.4
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
