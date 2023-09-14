@@ -7,8 +7,8 @@ foreach edc_file : edc_theme_files
     input       : edc_file,
     depfile     : '@BASENAME@.edj.d',
     output      : 'eflete_elm.edj',
-    command     : edje_cc_exe +
-                  [
+    command     : [
+                    edje_cc_exe,
                    '-id', join_paths(meson.current_source_dir(), 'images'),
                    '-id', join_paths(meson.current_source_dir(), 'images/splash'),
                    '-fd', join_paths(meson.current_source_dir(),'../../fonts'),

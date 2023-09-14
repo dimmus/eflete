@@ -75,11 +75,12 @@ eflete_cflags_try = [
   # '-Wshadow',
   '-Wstrict-prototypes',
   '-Wmissing-prototypes',
-  '-Wfloat-compare',
+  '-Wmissing-parameter-type',
+  '-Wmissing-braces',
+  '-Wmissing-field-initializers',
   '-Wpointer-arith',
   '-Wcast-function-type',
   '-Wignored-qualifiers',
-  '-Wmissing-parameter-type',
   '-Wnonnull',
   '-Wold-style-declaration',
 	'-Wold-style-definition',
@@ -89,37 +90,32 @@ eflete_cflags_try = [
   '-Wuninitialized',
   '-Wshift-negative-value',
   '-Wunused-but-set-parameter',
-  '-Wimplicit-fallthrough=2',
-  # '-Wconversion',
+  '-Wunused-parameter',
+  '-Wunused-function',
+  '-Wimplicit-function-declaration',
   '-Wempty-body',
-
   '-Wundef',
-	# '-Wlogical-op',
+	'-Wlogical-op',
+	'-Winit-self',
+	'-Wfloat-equal',
+	'-Wendif-labels',
+	'-Wstrict-aliasing=2',
+	'-Woverflow',
+	'-Wformat=1',
+  '-Wendif-labels',
+  # '-Wconversion',
 	# '-Wmissing-include-dirs',
-	# '-Winit-self',
-	# '-Wfloat-equal',
 	# '-Wredundant-decls',
-	# '-Wendif-labels',
-	# '-Wstrict-aliasing=2',
-	# '-Woverflow',
-	# '-Wformat=2',
-  # '-Wendif-labels',
-	
-  '-Wno-unused-parameter',
-  '-Wno-type-limits',
-  '-Wno-unknown-warning-option',
-  '-Wno-missing-braces',
-  '-Wno-missing-field-initializers',
-  '-Wno-unused-function',
-  '-Wno-implicit-function-declaration',
+
   '-Wno-implicit-fallthrough',
+
   '-Wno-error'
 ]
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
 
-eet_exe = [find_program('eet', native: true)]
-edje_cc_exe = [find_program('edje_cc', native: true)]
+eet_exe = find_program('eet', native: true)
+edje_cc_exe = find_program('edje_cc', native: true)
 eolian_gen_exe = find_program('eolian_gen')
 
 efl_req = '>= 1.26.2'

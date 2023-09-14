@@ -9,8 +9,7 @@ foreach color_file : color_files
     input       : color_file,
     # depfile     : '@BASENAME@.edj.d',
     output      : '@BASENAME@.eet',
-    command     : eet_exe +
-                  [
+    command     : [ eet_exe,
                    '-e', '@OUTPUT@',
                    'color', '@INPUT@',
                    '1'

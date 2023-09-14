@@ -7,8 +7,8 @@ foreach edc_file : template_files
     input       : edc_file,
     depfile     : '@BASENAME@.edj.d',
     output      : '@BASENAME@.edj',
-    command     : edje_cc_exe +
-                  [
+    command     : [
+                   edje_cc_exe,
                    '-beta',
                    '-sd', join_paths(meson.current_source_dir(), 'sounds'),
                    '-id', join_paths(meson.current_source_dir(), 'images'),

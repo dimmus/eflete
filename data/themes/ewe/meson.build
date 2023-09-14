@@ -7,8 +7,8 @@ foreach edc_file : edc_theme_files
     input       : edc_file,
     depfile     : '@BASENAME@.edj.d',
     output      : 'ewe.edj',
-    command     : edje_cc_exe +
-                  [
+    command     : [
+                    edje_cc_exe,
                    '-id', join_paths(meson.current_source_dir(), 'widgets/images'),
                    '-fd', join_paths(meson.current_source_dir(),'fonts'),
                    '@INPUT@', '@OUTPUT@'
