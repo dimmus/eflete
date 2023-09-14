@@ -28,36 +28,36 @@ strlcpy(char *dst, const char *src, int dst_size)
 int 
 strlen_safe(const char *str)
 {
-   if (str == NULL) {
-       return 0;
-   }
+   assert(str != NULL);
 
-   char *buffer = mem_malloc(max_len + 1); // allocate memory for the buffer
+   char *buffer = mem_malloc(max_len + 1);
    memset(buffer, 0, max_len + 1);
-   if (buffer == NULL) {
-       ERR("Failed not allocate memory for a string: %s", buffer);
-   }
-   int len = strlcpy(buffer, str, max_len + 1); // copy the string to the buffer
-   free(buffer); // free the memory allocated for the buffer
+   if (!buffer)
+       ERR("Failed to allocate memory for a string: %s", str);
+
+   int len = strlcpy(buffer, str, max_len + 1);
+   free(buffer);
 
    return len;
 }
 
-char* strcpy_safe(char *dest, const char *src) {
-    if (dest == NULL || src == NULL) {
-        return NULL;
-    }
+char * 
+strcpy_safe(char *dest, const char *src) {
+   assert(dest != NULL);
+   assert(src != NULL);
 
-    int dest_size = strnlen(src, max_len) + 1;
-    if (dest_size == max_len + 1) {
-        return NULL; // source string is too large
-    }
+   int dest_size = strnlen(src, max_len) + 1;
+   if (dest_size == max_len + 1) {
+      ERR("Source string is too large: %s", src); 
+      return NULL;
+   }
 
-    if (strlcpy(dest, src, dest_size) >= dest_size) {
-        return NULL; // destination buffer overflow occurred
-    }
+   if (strlcpy(dest, src, dest_size) >= dest_size) {
+      ERR("Destination buffer overflow occurred: %s", src);
+      return NULL;
+   }
 
-    return dest;
+   return dest;
 }
 
 int
