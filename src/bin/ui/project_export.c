@@ -332,10 +332,13 @@ _export_group_source_code(void *data EINA_UNUSED,
 
    path = eina_stringshare_add((const char *)eina_list_data_get(selected));
    buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf,
-                             _("<font_size=16>A project file '%s/%s' already exist."
-                               "Do you want to replace it?</font_size>"),
-                             path, name);
+   if (name)
+      eina_strbuf_append_printf(buf,
+                              _("<font_size=16>A project file '%s/%s' already exist."
+                                 "Do you want to replace it?</font_size>"),
+                              path, name);
+   else
+      ERR("Path name is NULL: %s", name);
    exist_permission_check(path, name,
                           _("Export group source code"),
                           eina_strbuf_string_get(buf), FILE_SAVE_ASK, _after_group_source_check, path);
