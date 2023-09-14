@@ -12,35 +12,18 @@ project('eflete', 'c',
 add_global_arguments('-DHAVE_CONFIG_H=1', '-DHAVE_CONFIG=1', language: 'c')
 add_global_arguments('-DEFL_BETA_API_SUPPORT=1', language: 'c')
 
-# vers = meson.project_version().split('.')
-# ete_version_major = vers[0].to_int()
-# ete_version_minor = vers[1].to_int()
-# ete_version_patch = vers[2].split('-')[0]
-
 version = meson.project_version()
 if get_option('buildtype') != 'release'
     git_command = find_program('git', required : false)
 
     if git_command.found()
-        git_commit = run_command(
-            [git_command, 'rev-parse', 'HEAD'],
-            check : false
-        ).stdout().strip()
+        git_commit = run_command(git_command, 'rev-parse', '--short', '@', check: true).stdout().strip()
 
         if git_commit != ''
-            version += ' (git-' + git_commit.substring(0, 8) + ')'
+            version += ' (git-' + git_commit + ')'
         endif
     endif
 endif
-
-# fs = import('fs')
-# git = find_program('git', required: false)
-# if git.found() and fs.is_dir('.git')
-#     git_rev_parse = run_command(git, 'rev-parse', '--short', '@', check: true)
-#     git_sha = git_rev_parse.stdout().strip()
-# else
-#     git_sha = ''
-# endif
 
 # install paths
 dir_prefix      = get_option('prefix')
@@ -72,7 +55,7 @@ eflete_cargs = [
 
 cc = meson.get_compiler('c')
 eflete_cflags_try = [
-  # '-Wshadow',
+  '-Wshadow',
   '-Wstrict-prototypes',
   '-Wmissing-prototypes',
   '-Wmissing-parameter-type',
