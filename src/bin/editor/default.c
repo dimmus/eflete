@@ -56,9 +56,9 @@ editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
    Eina_Bool res = true; \
    double val1, val2, val3; \
    edje_edit_##FUNC##_get(edit_object, ARGS, &val1, &val2, &val3); \
-   res = res & !(fabs(val1 - DEF_VAL1) > DBL_EPSILON); \
-   res = res & !(fabs(val2 - DEF_VAL2) > DBL_EPSILON); \
-   res = res & !(fabs(val3 - DEF_VAL3) > DBL_EPSILON); \
+   res = (res) & (!(fabs(val1 - DEF_VAL1) > DBL_EPSILON)); \
+   res = (res) & (!(fabs(val2 - DEF_VAL2) > DBL_EPSILON)); \
+   res = (res) & (!(fabs(val3 - DEF_VAL3) > DBL_EPSILON)); \
    return res; \
 }
 #define EDITOR_THREE_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL1, RESET_VAL2, RESET_VAL3) \
@@ -68,9 +68,9 @@ editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
    assert(edit_object != NULL); \
    Eina_Bool res = true; \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   res = res & editor_##FUNC##_x_set(edit_object, change, false, apply, ARGS, RESET_VAL1); \
-   res = res & editor_##FUNC##_y_set(edit_object, change, false, apply, ARGS, RESET_VAL2); \
-   res = res & editor_##FUNC##_z_set(edit_object, change, false, apply, ARGS, RESET_VAL3); \
+   res = (res) & (editor_##FUNC##_x_set(edit_object, change, false, apply, ARGS, RESET_VAL1)); \
+   res = (res) & (editor_##FUNC##_y_set(edit_object, change, false, apply, ARGS, RESET_VAL2)); \
+   res = (res) & (editor_##FUNC##_z_set(edit_object, change, false, apply, ARGS, RESET_VAL3)); \
    if (res) return true; \
    CRIT("reset failed"); \
    abort(); \
