@@ -1,7 +1,7 @@
 <h1 align="center">EFLETE (EFL Edge Theme Editor)</h1>
 
 <p align="center">
-  <img src="./data/images/screenshot.png" border="0"></>
+  <img src="./data/images/screenshot.png" border="0">
 </p>
 
 <br/>
@@ -65,7 +65,7 @@ ninja -C build test
 ```
 ## Applying themes
 
-To apply a theme to elementary, you should place created edj-file in the elementary themes directory (default: `/usr/local/share/elementary/themes)`. Note: do not forget to add read permissions to the copied file. After that, the theme will be available for selection from `elementary_config`.
+To apply a theme to elementary, you should place created edj-file in the elementary themes directory (default: `/usr/local/share/elementary/themes`). Note: do not forget to add read permissions to the copied file. After that, the theme will be available for selection from `elementary_config`.
 
 ## Bash autocompletion
 
