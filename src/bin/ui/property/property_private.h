@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 #include "syntax_color.h"
-
+#include "property.h"
 
 #ifndef PROPERTY_PRIVATE_H
 #define PROPERTY_PRIVATE_H

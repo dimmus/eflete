@@ -18,12 +18,10 @@
  */
 
 #include "tabs_private.h"
-#include "tabs.h"
 #include "main_window.h"
 #include "project_navigator.h"
 #include "config.h"
 #include "project_common.h"
-#include "widget_list.h"
 
 void
 meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)

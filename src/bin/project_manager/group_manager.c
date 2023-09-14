@@ -18,8 +18,6 @@
  */
 
 #include "project_manager2.h"
-#include "widget_list.h"
-
 #include "group_manager.h"
 #include "group_manager_resources.h"
 

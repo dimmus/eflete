@@ -18,7 +18,6 @@
  */
 
 #include "live_elementary_widgets.h"
-#include "main_window.h" /* strlen_safe */
 
 static void
 _on_popup_swallow_check(void *data EINA_UNUSED,

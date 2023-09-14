@@ -18,7 +18,6 @@
  */
 
 #include "live_elementary_widgets.h"
-#include "widget_macro.h"
 
 static void
 _on_genlist_swallow_check(void *data EINA_UNUSED,

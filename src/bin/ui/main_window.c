@@ -19,7 +19,7 @@
 
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#endif
 
 #include "main_window.h"
 #include "history_ui.h"

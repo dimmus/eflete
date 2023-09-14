@@ -18,7 +18,6 @@
  */
 
 #include "live_elementary_widgets.h"
-#include "main_window.h" /* strlen_safe */
 
 Evas_Object *
 widget_slider_create(Evas_Object *parent, const Group2 *group)

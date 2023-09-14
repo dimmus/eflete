@@ -18,7 +18,6 @@
    #include "eflete_config.h"
 #endif
 
-#include "common_macro.h"
 #include "logger.h"
 #include <assert.h>
 

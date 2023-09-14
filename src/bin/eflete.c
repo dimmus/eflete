@@ -18,8 +18,6 @@
  */
 
 #include "eflete.h"
-#include "main_window.h"
-#include "shortcuts.h"
 #include "config.h"
 #include "syntax_color.h"
 

@@ -29,12 +29,9 @@
 #endif
 
 #include "modal_window.h"
-#include "property.h"
 #include "property_private.h"
 #include "history.h"
 #include "change.h"
-#include "syntax_color.h"
-#include "eflete.h"
 
 typedef struct _Script_Manager Script_Manager;
 

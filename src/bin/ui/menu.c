@@ -1,6 +1,5 @@
 #include "main_window.h"
 #include "tabs.h"
-#include "workspace.h"
 #include "shortcuts.h"
 #include "project_manager2.h"
 

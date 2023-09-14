@@ -19,7 +19,6 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "main_window.h"
 
 static void
 _btn_script_manager_cb(void *data,

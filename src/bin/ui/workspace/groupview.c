@@ -19,7 +19,6 @@
 
 #include "groupview.h"
 #include "groupview_private.h"
-#include "cursor.h"
 #include "project_manager2.h"
 
 #define MY_CLASS_NAME "Groupview"

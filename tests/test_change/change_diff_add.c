@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 #include "test_change.h"
 
 /**

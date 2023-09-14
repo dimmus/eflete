@@ -2,8 +2,6 @@
 #include "change.h"
 #include "project_manager2.h"
 #include "history.h"
-#include "widget_macro.h"
-#include "main_window.h"
 #include "shortcuts.h"
 
 typedef struct {

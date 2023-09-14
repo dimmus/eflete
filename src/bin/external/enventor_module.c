@@ -17,9 +17,6 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "project_manager2.h"
-#include "enventor_module.h"
-
 #ifdef HAVE_ENVENTOR
 
 #define MAX_SCALE 3.0

@@ -19,7 +19,6 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "main_window.h"
 
 static Eina_Bool
 _on_image_done(void *data,

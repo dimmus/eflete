@@ -1,7 +1,6 @@
 #include "resource_manager2.h"
 #include "resource_manager_private.h"
 #include "project_manager2.h"
-#include "string_common.h"
 
 Eina_Bool
 _global_data_resources_load(Project *project)

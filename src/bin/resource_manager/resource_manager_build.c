@@ -1,9 +1,6 @@
 #include "resource_manager2.h"
 #include "resource_manager_private.h"
 #include "project_manager2.h"
-#include "string_common.h"
-
-/***********************************************/
 
 Eina_Bool
 _resource_usage_resource_add(Resource2 *origin, Resource2 *used)

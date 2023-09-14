@@ -19,7 +19,6 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "main_window.h"
 
 typedef struct {
    int r, g, b, a;

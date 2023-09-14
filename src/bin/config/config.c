@@ -1,6 +1,5 @@
 #include "config.h"
 #include "shortcuts.h"
-#include "enventor_module.h"
 
 #define CONFIG_FILE        "eflete.cfg"
 #define CONFIG_FILE_KEY    "config"

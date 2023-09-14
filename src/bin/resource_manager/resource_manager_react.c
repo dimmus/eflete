@@ -22,7 +22,6 @@
 #include "resource_manager_private.h"
 #include "project_manager2.h"
 #include "tabs.h"
-#include "string_common.h"
 
 /* CALLBACK FUNCTIONS */
 

@@ -21,7 +21,6 @@
 #include "workspace.h"
 #include "tabs.h"
 #include "history.h"
-#include "project_manager2.h"
 #include "main_window.h"
 #include "change.h"
 

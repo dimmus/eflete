@@ -20,10 +20,8 @@
 #include "property.h"
 #include "property_private.h"
 #include "property_common.h"
-#include "widget_macro.h"
 #include "sound_player.h"
 #include "shortcuts.h"
-#include "main_window.h"
 
 /* hack to disable spinner value changes when scrolling */
 static void
