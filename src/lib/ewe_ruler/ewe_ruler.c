@@ -835,6 +835,7 @@ _ewe_ruler_efl_canvas_group_group_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
    ewe_ruler_scale_add(obj, NULL);
 }
 
+#if 0
 EOLIAN static void
 _ewe_ruler_efl_canvas_group_group_del(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
@@ -859,6 +860,7 @@ _ewe_ruler_efl_canvas_group_group_del(Eo *obj, Ewe_Ruler_Smart_Data *sd)
    // efl_canvas_group_member_remove(efl_super(obj, MY_CLASS), sub_obj);
    // efl_unref(obj);
 }
+#endif
 
 static void
 _ewe_ruler_show(Eo* obj, Ewe_Ruler_Smart_Data *sd)
