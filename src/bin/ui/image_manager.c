@@ -674,7 +674,6 @@ _on_image_done(void *data EINA_UNUSED,
         else
           {
              ERR(_("File exist"));
-             free(image);
              eina_stringshare_del(res_path);
              continue;
           }
