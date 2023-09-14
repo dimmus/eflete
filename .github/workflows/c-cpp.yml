@@ -35,7 +35,7 @@ jobs:
     - name: Build project (ninja)
       run: ninja -C build
     - name: Run tests (ninja)
-      run: ninja -C build tests
+      run: ninja -C build test
     - name: Generate coverage report
       run: ninja -C build coverage
     - name: Upload to Codecov
