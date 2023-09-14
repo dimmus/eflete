@@ -21,6 +21,9 @@
   <a href="https://repology.org/project/eflete/versions">
     <img src="https://repology.org/badge/tiny-repos/eflete.svg" alt="Packaging status">
   </a>
+  <a href="https://codecov.io/gh/dimmus/eflete" > 
+   <img src="https://codecov.io/gh/dimmus/eflete/graph/badge.svg?token=hEYZBQMaEQ"/> 
+  </a>
 </p>
 <br/>
 
