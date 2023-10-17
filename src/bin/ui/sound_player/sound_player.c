@@ -18,6 +18,7 @@
  */
 
 #include "sound_player.h"
+#include "eina_util.h"
 
 #define TONE_PLAYING_DURATION 2.0
 #define UPDATE_FREQUENCY 1.0 / 30.0
@@ -133,7 +134,7 @@ _rewind_cb(void *data EINA_UNUSED)
    value = elm_slider_value_get(rewin);
    elm_slider_min_max_get(rewin, NULL, &max);
 
-   if (max == value)
+   if (EINA_DBL_EQ(max, value))
      {
         Evas_Object *icon = elm_object_part_content_get(play, NULL);
         elm_icon_standard_set(icon, "media_player/play");
@@ -201,7 +202,7 @@ _tone_play(void)
    elm_slider_value_set(rewin, 0.0);
 
    value = elm_slider_value_get(rewin);
-   if (value)
+   if (EINA_DBL_NONZERO(value))
      ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
@@ -238,7 +239,7 @@ _sample_play(void)
      }
 
    value = elm_slider_value_get(rewin);
-   if (value)
+   if (EINA_DBL_NONZERO(value))
      ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
