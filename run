@@ -1,0 +1,103 @@
+#!/bin/bash
+
+NAME=eflete
+BD=./build
+
+remove_build_dir()
+{
+    [ -d ${BD} ] && rm -rf $BD
+}
+
+meson_setup()
+{
+    meson setup . $BD
+}
+
+meson_compile()
+{
+    meson compile -C $BD
+}
+
+meson_install()
+{
+    meson install -C $BD
+}
+
+meson_uninstall()
+{
+
+    if [ -d ${BD} ]; then 
+        sudo ninja -C $BD uninstall
+    else
+        echo "Nothing to be done! At first build and install it by './run c && ./run i'"
+    fi
+}
+
+meson_test()
+{
+    if [ -d ${BD} ]; then 
+        meson test -C $BD
+    else
+        echo "Nothing to be done! Needs to be compiled by './run c'"
+    fi
+}
+
+case "$1" in
+    s|setup)
+        remove_build_dir
+        meson_setup
+        ;;
+    c|compile)
+        echo "$NAME: Compilation started"
+        remove_build_dir
+        meson_setup
+        meson_compile
+        echo "$NAME: Compilation finished"
+        ;;
+    i|install)
+        meson_install
+        ;;
+    u|uninstall)
+        meson_uninstall
+        ;;
+    r|run)
+        exec $BD/src/bin/$NAME
+        ;;
+    cl|clear)
+        rm -rf ~/.config/$NAME
+        ;;
+    t|test)
+        meson_test
+        ;;
+    cc|cocci)
+        exec ./scripts/coccinelle/coccicheck.sh
+        ;;
+    cv|coverage)
+        remove_build_dir
+        meson setup . $BD -Db_coverage=true
+        meson_compile
+        meson_test
+        ninja coverage-text -C $BD
+        # ninja coverage-html -C $BD
+        ;;
+    po|translation)
+        ninja -C $BD po
+        ;;
+    ts|timestamp)
+        find . -exec touch {} \;
+        ;;
+    *)
+        echo "Usage: $0 [cmd]"
+        echo "     s|setup        setup meson build system"
+        echo "     c|compile      compile project using meson"
+        echo "     i|install      install project"
+        echo "     u|uninstall    uninstall project"
+        echo "     r|run          run local executable (in build dir)"
+        echo "    cl|clear        clear (remove) home config dir"
+        echo "     t|test         build tests"
+        echo "    cc|cocci        run coccinelle analysis"
+        echo "    cv|coverage     build coverage report"
+        echo "    po|translation  build localization files"
+        echo "    ts|timestemp    update access time of each file"
+        ;;
+esac
