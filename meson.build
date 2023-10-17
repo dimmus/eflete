@@ -2,9 +2,9 @@ project('eflete', 'c',
   version : '1.19.99',
   meson_version : '>= 0.49.2',
   default_options : [
-    'warning_level=2',
-    'werror=true',
-    'buildtype=debug',
+    'buildtype=release',
+    'warning_level=0',
+    'werror=false',
     'c_std=gnu99'
   ]
 )
@@ -49,39 +49,43 @@ eflete_cargs = [
 cc = meson.get_compiler('c')
 eflete_cflags_try = [
   '-Wshadow',
-  '-Wstrict-prototypes',
-  '-Wmissing-prototypes',
-  '-Wmissing-parameter-type',
-  '-Wmissing-braces',
-  '-Wmissing-field-initializers',
-  '-Wpointer-arith',
-  '-Wcast-function-type',
-  '-Wignored-qualifiers',
-  '-Wnonnull',
-  '-Wold-style-declaration',
-	'-Wold-style-definition',
-  '-Woverride-init',
-  '-Wsign-compare',
-  '-Wtype-limits',
-  '-Wuninitialized',
-  '-Wshift-negative-value',
-  '-Wunused-but-set-parameter',
-  '-Wunused-parameter',
-  '-Wunused-function',
-  '-Wimplicit-function-declaration',
-  '-Wempty-body',
-  '-Wundef',
-	'-Wlogical-op',
-	'-Winit-self',
-	'-Wfloat-equal',
-	'-Wendif-labels',
-	'-Wstrict-aliasing=2',
-	'-Woverflow',
-	'-Wformat=1',
-  '-Wendif-labels',
-  
   '-Wno-implicit-fallthrough',
 ]
+
+if get_option('buildtype') != 'release'
+  eflete_cflags_try += [
+    '-Wstrict-prototypes',
+    '-Wmissing-prototypes',
+    '-Wmissing-parameter-type',
+    '-Wmissing-braces',
+    '-Wmissing-field-initializers',
+    '-Wpointer-arith',
+    '-Wcast-function-type',
+    '-Wignored-qualifiers',
+    '-Wnonnull',
+    '-Wold-style-declaration',
+    '-Wold-style-definition',
+    '-Woverride-init',
+    '-Wsign-compare',
+    '-Wtype-limits',
+    '-Wuninitialized',
+    '-Wshift-negative-value',
+    '-Wunused-but-set-parameter',
+    '-Wunused-parameter',
+    '-Wunused-function',
+    '-Wimplicit-function-declaration',
+    '-Wempty-body',
+    '-Wundef',
+    '-Wlogical-op',
+    '-Winit-self',
+    '-Wfloat-equal',
+    '-Wendif-labels',
+    '-Wstrict-aliasing=2',
+    '-Woverflow',
+    '-Wformat=1',
+    '-Wendif-labels',
+  ]
+endif
 
 add_project_arguments(cc.get_supported_arguments(eflete_cflags_try), language: 'c')
 
