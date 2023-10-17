@@ -4,7 +4,7 @@ project('eflete', 'c',
   default_options : [
     'warning_level=2',
     'werror=true',
-    'buildtype=plain',
+    'buildtype=debug',
     'c_std=gnu99'
   ]
 )
@@ -26,11 +26,11 @@ if get_option('buildtype') != 'release'
 endif
 
 # install paths
-dir_prefix      = get_option('prefix')
-dir_pkgdata     = join_paths(dir_prefix, get_option('datadir'), meson.project_name())
-dir_lib         = join_paths(dir_prefix, get_option('libdir'))
-dir_bin         = join_paths(dir_prefix, get_option('bindir'))
-dir_doc         = join_paths(dir_prefix, get_option('infodir'), 'eflete')
+dir_prefix  = get_option('prefix')
+dir_pkgdata = join_paths(dir_prefix, get_option('datadir'), meson.project_name())
+dir_lib     = join_paths(dir_prefix, get_option('libdir'))
+dir_bin     = join_paths(dir_prefix, get_option('bindir'))
+dir_doc     = join_paths(dir_prefix, get_option('infodir'), 'eflete')
 
 # configuration
 config_h = configuration_data()
@@ -38,8 +38,7 @@ config_h.set_quoted('PACKAGE_NAME'     , meson.project_name())
 config_h.set_quoted('PACKAGE_VERSION'  , version)
 config_h.set_quoted('PACKAGE_BUILD_DIR', meson.current_build_dir())
 config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be the time like $(date +"%F\ %H:%M")
-
-config_h.set('__UNUSED_RESULT__'              , '__attribute__((warn_unused_result))')
+config_h.set('__UNUSED_RESULT__', '__attribute__((warn_unused_result))')
 
 config_dir = [include_directories('.')]
 
@@ -80,7 +79,7 @@ eflete_cflags_try = [
 	'-Woverflow',
 	'-Wformat=1',
   '-Wendif-labels',
- 
+  
   '-Wno-implicit-fallthrough',
 ]
 
@@ -91,9 +90,7 @@ edje_cc_exe = find_program('edje_cc', native: true)
 eolian_gen_exe = find_program('eolian_gen')
 
 efl_req = '>= 1.26.2'
-eflete_deps = [
-  dependency('elementary'  , version : efl_req),
-]
+eflete_deps = [ dependency('elementary', version : efl_req) ]
 
 if get_option('enable-debug')
   config_h.set_quoted('HAVE_EFLETE_DEBUG', '1')
@@ -104,12 +101,16 @@ if get_option('enable-audio')
   config_h.set_quoted('HAVE_AUDIO', '1')
 endif
 
+enventor_support = '       enventor: @0@'.format(get_option('enable-enventor'))
 if get_option('enable-enventor')
-  config_h.set_quoted('HAVE_ENVENTOR', '1')
+  enventor_support = '       enventor: false (sorry, does not implemented yet) '
+  # config_h.set_quoted('HAVE_ENVENTOR', '1')
 endif
 
+tizen_support = '          tizen: @0@'.format(get_option('enable-tizen'))
 if get_option('enable-tizen')
-  config_h.set('HAVE_TIZEN', '1')
+  tizen_support = '          tizen: false (sorry, does not implemented yet) '
+  # config_h.set('HAVE_TIZEN', '1')
 endif
 
 if get_option('enable-todo')
@@ -120,15 +121,18 @@ subdir('src')
 subdir('data')
 
 if get_option('build-tests')
+  config_h.set_quoted('HAVE_GETTIMEOFDAY' , '1')
   check = dependency('check')
   subdir('tests')
 endif
 
+documentation_support = '  documentation: @0@'.format(get_option('build-doc'))
 if get_option('build-doc')
-  doxygen = find_program('doxygen', required : false)
-  if doxygen.found()
-    subdir('doc')
-  endif
+  documentation_support = '  documentation: false (sorry, does not implemented yet)'
+  # doxygen = find_program('doxygen', required : false)
+  # if doxygen.found()
+    # subdir('doc')
+  # endif
 endif
 
 have_nls = false
@@ -164,8 +168,9 @@ summary = [
   '         bindir: @0@'.format(dir_bin),
   '         docdir: @0@'.format(dir_doc),
   '',
-  '  documentation: @0@'.format(get_option('build-doc')),
-  '       enventor: @0@'.format(get_option('enable-enventor')),
+  documentation_support,
+  enventor_support,
+  tizen_support,
   '          audio: @0@'.format(get_option('enable-audio')),
   '      debugging: @0@'.format(get_option('enable-debug')),
   '           todo: @0@'.format(get_option('enable-todo')),
