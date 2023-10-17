@@ -10,7 +10,7 @@ remove_build_dir()
 
 meson_setup()
 {
-    meson setup . $BD
+    meson setup . $BD -Dbuildtype=debug -Dwarning_level=2 -Dwerror=true
 }
 
 meson_compile()
