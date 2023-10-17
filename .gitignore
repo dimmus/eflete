@@ -37,3 +37,7 @@ strace_*
 
 #git
 *.patch
+
+#clang
+.cache
+compile-C
