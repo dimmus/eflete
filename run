@@ -36,7 +36,7 @@ meson_uninstall()
 meson_test()
 {
     if [ -d ${BD} ]; then 
-        meson test -C $BD
+        meson test -C $BD # be sure that build-tests is true in meson options
     else
         echo "Nothing to be done! Needs to be compiled by './run c'"
     fi
