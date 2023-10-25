@@ -3,7 +3,7 @@ group { name: "elm/slider/hidden/limit";
       part { name: "elm.units.min";
          type: TEXT;
          mouse_events: 0;
-         
+         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             align: 1.0 0.5;
@@ -21,7 +21,7 @@ group { name: "elm/slider/hidden/limit";
       part { name: "elm.units.max";
          type: TEXT;
          mouse_events: 0;
-         
+         scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             align: 1.0 0.5;
@@ -45,7 +45,7 @@ group { name: "elm/slider/horizontal/indicator/default";
    parts {
       part { name: "base";
          type: SPACER;
-         
+         scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 16 16;
@@ -125,7 +125,7 @@ group { name: "elm/slider/horizontal/indicator/default";
       part { name: "elm.indicator";
          type: TEXT;
          mouse_events: 0;
-         
+         scale: 1;
          clip_to: "clip";
          effect: SHADOW BOTTOM;
          description { state: "default" 0.0;
@@ -249,7 +249,7 @@ group { name: "elm/slider/horizontal/default";
       alias: "elm.units.min" "limits:elm.units.min";
       part { name: "elm.swallow.bar";
          type: SWALLOW;
-         
+         scale: 1;
          description { state: "default" 0.0;
             min: 120 14;
             max: 9999 14;
@@ -388,7 +388,7 @@ group { name: "elm/slider/horizontal/default";
       part { name: "elm.units";
          type: TEXT;
          mouse_events: 0;
-         
+         scale: 1;
          clip_to: "dis_clip";
          effect: SHADOW BOTTOM;
          description { state: "default" 0.0;
@@ -432,7 +432,7 @@ group { name: "elm/slider/horizontal/default";
       part { name: "elm.text";
          type: TEXT;
          mouse_events: 0;
-         
+         scale: 1;
          clip_to: "dis_clip";
          effect: SHADOW BOTTOM;
          description { state: "default" 0.0;
@@ -505,7 +505,7 @@ group { name: "elm/slider/horizontal/default";
       }
       part { name: "elm.dragable.slider";
          type: RECT;
-         
+         scale: 1;
          dragable {
             x: 1 1 0;
             y: 0 0 0;

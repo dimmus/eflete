@@ -11,6 +11,7 @@ group { name: "elm/button/base/combobox_vertical/default";
    parts {
       part { name: "base";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             max: -1 19;
          }
@@ -20,6 +21,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "bg";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "base";
@@ -61,6 +63,7 @@ group { name: "elm/button/base/combobox_vertical/default";
          }
       }
       rect { "icon_clip";
+         scale: 1;
          desc { "default";
          }
          desc { "disabled";
@@ -69,6 +72,7 @@ group { name: "elm/button/base/combobox_vertical/default";
          }
       }
       rect { "event";
+         scale: 1;
          desc { "default";
             color: 0 0 0 0;
          }
@@ -79,6 +83,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "left.offset";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 10 0;
@@ -93,6 +98,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "right.offset";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             min: 20 19;
@@ -104,6 +110,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          clip_to: "icon_clip";
          description { state: "default" 0.0;
             align: 0.0 0.5;
@@ -121,6 +128,7 @@ group { name: "elm/button/base/combobox_vertical/default";
       }
       part { name: "select_line";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             max: 6 4;
             rel1 {
@@ -212,6 +220,7 @@ group { name: "elm/button/base/combobox_vertical/zoom";
    parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          clip_to: "icon_clip";
          description { state: "default" 0.0;
             align: 0.0 0.5;
@@ -246,6 +255,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
    parts {
       part { name: "base";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
             max: -1 19;
          }
@@ -388,6 +398,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color3";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -409,6 +420,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color2";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -430,6 +442,7 @@ group { name: "elm/button/base/combobox_vertical/color_class";
       }
       part { name: "bg.color1";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -596,7 +609,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
       public on_dismiss = 0;
    }
    parts {
-      part { name: "elm.swallow.offset"; type: SWALLOW;
+      part { name: "elm.swallow.offset"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.relative: 0.0 0.0;
@@ -604,7 +617,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.size"; type: SWALLOW;
+      part { name: "elm.swallow.size"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.to: "elm.swallow.offset";
@@ -614,12 +627,12 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "base"; type: RECT; mouse_events: 1;
+      part { name: "base"; type: RECT; mouse_events: 1; scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
-      part { name: "box"; type: RECT; mouse_events: 0;
+      part { name: "box"; type: RECT; mouse_events: 0; scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             rel1.to: "elm.swallow.size";
@@ -628,7 +641,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             rel2.offset: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.left"; type: SWALLOW;
+      part { name: "elm.swallow.slot.left"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             rel1.to: "elm.swallow.slot.middle";
@@ -640,7 +653,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 0;
          }
       }
-      part { name: "elm.swallow.slot.top-left"; type: SWALLOW;
+      part { name: "elm.swallow.slot.top-left"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -652,7 +665,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.top"; type: SWALLOW;
+      part { name: "elm.swallow.slot.top"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -664,7 +677,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
          }
       }
-      part { name: "elm.swallow.slot.top-right"; type: SWALLOW;
+      part { name: "elm.swallow.slot.top-right"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.0 1.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -676,7 +689,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.right"; type: SWALLOW;
+      part { name: "elm.swallow.slot.right"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1.to: "elm.swallow.slot.middle";
@@ -688,7 +701,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 0;
          }
       }
-      part { name: "elm.swallow.slot.bottom-right"; type: SWALLOW;
+      part { name: "elm.swallow.slot.bottom-right"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -700,7 +713,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.bottom"; type: SWALLOW;
+      part { name: "elm.swallow.slot.bottom"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -712,7 +725,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 0 1;
          }
       }
-      part { name: "elm.swallow.slot.bottom-left"; type: SWALLOW;
+      part { name: "elm.swallow.slot.bottom-left"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             rel1.to: "elm.swallow.slot.middle";
@@ -724,7 +737,7 @@ group { name: "elm/hover/base/combobox_vertical/default";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.slot.middle"; type: SWALLOW;
+      part { name: "elm.swallow.slot.middle"; type: SWALLOW; scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.size";
             rel2.to: "elm.swallow.size";
@@ -777,7 +790,7 @@ group { name: "elm/genlist/base/combobox_vertical/default";
       }
       part { name: "sb_vbar";
          type: RECT;
-         
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             fixed: 1 0;
@@ -840,7 +853,7 @@ group { name: "elm/genlist/base/combobox_vertical/default";
       }
       part { name: "elm.dragable.vbar";
          type: RECT;
-         
+         scale: 1;
          clip_to: "sb_vbar";
          dragable {
             x: 0 0 0;
@@ -867,7 +880,7 @@ group { name: "elm/genlist/base/combobox_vertical/default";
       part { name: "sb_hbar";
          type: RECT;
          mouse_events: 0;
-         
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 1.0;
             fixed: 0 1;
@@ -931,7 +944,7 @@ group { name: "elm/genlist/base/combobox_vertical/default";
       }
       part { name: "elm.dragable.hbar";
          type: RECT;
-         
+         scale: 1;
          clip_to: "sb_hbar";
          dragable {
             x: 1 1 0;
@@ -1376,6 +1389,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
    parts {
       part { name: "bg";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             min: 0 24;
@@ -1390,6 +1404,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             color: 213 213 213 255;
             rel1 {
@@ -1413,6 +1428,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color3";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -1428,6 +1444,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color2";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -1445,6 +1462,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "bg.color1";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             min: 16 13;
@@ -1495,6 +1513,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color1";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color1";
@@ -1511,6 +1530,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color2";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color2";
@@ -1527,6 +1547,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/color_class";
       }
       part { name: "shadow.color3";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "bg.color3";
@@ -1586,6 +1607,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
    parts {
       part { name: "bg";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
             min: 0 24;
@@ -1600,6 +1622,7 @@ group { name: "elm/genlist/item_compress/default/combobox_vertical/default";
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             color: 213 213 213 255;
             rel1 {
@@ -1682,7 +1705,7 @@ group { name: "elm/entry/base-single/combobox_vertical/default";
          clip_to: "disabler";
          mouse_events: 1;
          repeat_events: 1;
-         
+         scale: 1;
          cursor_mode: BEFORE;
          multiline: 0;
          description { state: "default" 0.0;
