@@ -5,8 +5,8 @@
 
 static int max_len = 4096;
 
-int 
-strlcpy(char *dst, const char *src, int dst_size)
+static int 
+strlcpy_safe(char *dst, const char *src, int dst_size)
 {
     int i;
 
@@ -35,7 +35,7 @@ strlen_safe(const char *str)
    if (!buffer)
        ERR("Failed to allocate memory for a string: %s", str);
 
-   int len = strlcpy(buffer, str, max_len + 1);
+   int len = strlcpy_safe(buffer, str, max_len + 1);
    free(buffer);
 
    return len;
@@ -52,7 +52,7 @@ strcpy_safe(char *dest, const char *src) {
       return NULL;
    }
 
-   if (strlcpy(dest, src, dest_size) >= dest_size) {
+   if (strlcpy_safe(dest, src, dest_size) >= dest_size) {
       ERR("Destination buffer overflow occurred: %s", src);
       return NULL;
    }
