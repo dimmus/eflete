@@ -21,7 +21,7 @@ _on_teardown(void *data EINA_UNUSED,
              const char *source EINA_UNUSED)
 {
    if (sdata.teardown) sdata.teardown(sdata.data, sdata.status);
-   evas_object_del(obj);
+   if (obj) evas_object_del(obj);
 }
 
 static void
