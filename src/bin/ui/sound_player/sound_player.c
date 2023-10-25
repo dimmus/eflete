@@ -62,7 +62,7 @@ _snd_file_read(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, void *buffer, int
 {
    if ((offset + len) > length)
      len = length - offset;
-   memcpy(buffer, data_sound + offset, len);
+   memcpy(buffer, (int *)(data_sound) + offset, len);
    offset += len;
    return len;
 }
