@@ -62,8 +62,7 @@ _snd_file_read(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, void *buffer, int
 {
    if ((offset + len) > length)
      len = length - offset;
-   /* memcpy(buffer, data_sound + offset, len); */ /* error: pointer of type ‘void *’ used in arithmetic [-Werror=pointer-arith] */
-   memcpy(buffer, data_sound, len);
+   memcpy(buffer, data_sound + offset, len);
    offset += len;
    return len;
 }
