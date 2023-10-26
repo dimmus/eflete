@@ -19,11 +19,11 @@ if version[2] == '99'
   git_version = '0'
   git = find_program('git', required: false)
   if git.found() == true
-    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD', check: true)
+    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD', check: false)
     if git_cmd.returncode() == 0
       git_version = git_cmd.stdout().strip()
     endif
-    git_commit = run_command(git_program, 'rev-parse', '@', check: true).stdout().strip()
+    git_commit = run_command(git_program, 'rev-parse', '@', check: false).stdout().strip()
   endif
   version_rev = '.'.join([version, git_version])
   release = 'dev-@0@.@1@.@2@'.format(version[0], version[1], version[2])
