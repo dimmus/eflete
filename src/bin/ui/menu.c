@@ -76,7 +76,7 @@ _menu_cb(void *data EINA_UNUSED,
    switch (menu_event->mid)
      {
       case MENU_FILE:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_FILE_NEW_PROJECT:
          tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
@@ -114,7 +114,7 @@ _menu_cb(void *data EINA_UNUSED,
          ui_main_window_del();
          break;
       case MENU_EDIT:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_EDIT_UNDO:
          shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
@@ -144,7 +144,7 @@ _menu_cb(void *data EINA_UNUSED,
          /* preferences_window_add(ap.project); */
          break;
       case MENU_VIEW:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
          shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_IN);
@@ -168,7 +168,7 @@ _menu_cb(void *data EINA_UNUSED,
          shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
          break;
       case MENU_WINDOW:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
@@ -189,7 +189,7 @@ _menu_cb(void *data EINA_UNUSED,
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SCRIPT_MANAGER);
          break;
       case MENU_HELP:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
