@@ -9,34 +9,46 @@ project('eflete', 'c',
   ]
 )
 
-add_global_arguments('-DHAVE_CONFIG_H=1', '-DHAVE_CONFIG=1', language: 'c')
+add_global_arguments('-DHAVE_CONFIG_H=1', language: 'c')
 add_global_arguments('-DEFL_BETA_API_SUPPORT=1', language: 'c')
 
-version = meson.project_version()
-if get_option('buildtype') != 'release'
-    git_command = find_program('git', required : false)
+version = meson.project_version().split('.')
 
-    if git_command.found()
-        git_commit = run_command(git_command, 'rev-parse', '--short', '@', check: true).stdout().strip()
-
-        if git_commit != ''
-            version += ' (git-' + git_commit + ')'
-        endif
+git_program = find_program('git', required : false)
+if version[2] == '99'
+  git_version = '0'
+  git = find_program('git', required: false)
+  if git.found() == true
+    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD')
+    if git_cmd.returncode() == 0
+      git_version = git_cmd.stdout().strip()
     endif
+    git_commit = run_command(git_program, 'rev-parse', '@', check: true).stdout().strip()
+  endif
+  version_rev = '.'.join([version, git_version])
+  release = 'dev-@0@.@1@.@2@'.format(version[0], version[1], version[2])
+else
+  version_rev = version
+  release = '@0@.@1@.@2@'.format(version[0], version[1], version[2])
+  config_h.set('EFLETE_RELEASE_BUILD', '1') # unused
 endif
 
 # install paths
 dir_prefix  = get_option('prefix')
+dir_data    = join_paths(dir_prefix, get_option('datadir'))
 dir_pkgdata = join_paths(dir_prefix, get_option('datadir'), meson.project_name())
 dir_lib     = join_paths(dir_prefix, get_option('libdir'))
 dir_bin     = join_paths(dir_prefix, get_option('bindir'))
 dir_doc     = join_paths(dir_prefix, get_option('infodir'), 'eflete')
+dir_locale  = join_paths(get_option('prefix'), get_option('localedir'))
 
 # configuration
 config_h = configuration_data()
 config_h.set_quoted('PACKAGE_NAME'     , meson.project_name())
-config_h.set_quoted('PACKAGE_VERSION'  , version)
+config_h.set_quoted('PACKAGE_VERSION'  , version_rev)
+config_h.set_quoted('PACKAGE_COMMIT'   , git_commit)
 config_h.set_quoted('PACKAGE_BUILD_DIR', meson.current_build_dir())
+config_h.set_quoted('PACKAGE_OS'       , host_machine.system())
 config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be the time like $(date +"%F\ %H:%M")
 config_h.set('__UNUSED_RESULT__', '__attribute__((warn_unused_result))')
 
@@ -95,6 +107,7 @@ eolian_gen_exe = find_program('eolian_gen')
 
 efl_req = '>= 1.26.2'
 eflete_deps = [ dependency('elementary', version : efl_req) ]
+config_h.set_quoted('PACKAGE_EFL', dependency('elementary').version())
 
 if get_option('enable-debug')
   config_h.set_quoted('HAVE_EFLETE_DEBUG', '1')
@@ -148,7 +161,7 @@ if get_option('enable-nls')
     have_nls = true
   endif
   config_h.set('ENABLE_NLS', 1)
-  config_h.set_quoted('PACKAGE_LOCALE_DIR', join_paths(get_option('prefix'), get_option('localedir')))
+  config_h.set_quoted('PACKAGE_LOCALE_DIR', dir_locale)
   subdir('po')
 endif
 
@@ -164,13 +177,16 @@ configure_file(
 summary = [
   'Eflete',
   '----------------',
-  '        version: @0@'.format(version),
+  '        version: @0@'.format(version_rev),
+  '         commit: @0@'.format(git_commit),
   '',
   '         prefix: @0@'.format(dir_prefix),
-  '         libdir: @0@'.format(dir_lib),
-  '        datadir: @0@'.format(dir_pkgdata),
-  '         bindir: @0@'.format(dir_bin),
-  '         docdir: @0@'.format(dir_doc),
+  '            lib: @0@'.format(dir_lib),
+  '           data: @0@'.format(dir_data),
+  '        pkgdata: @0@'.format(dir_pkgdata),
+  '            bin: @0@'.format(dir_bin),
+  '            doc: @0@'.format(dir_doc),
+  '         locale: @0@'.format(dir_locale),
   '',
   documentation_support,
   enventor_support,

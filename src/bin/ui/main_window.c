@@ -280,8 +280,14 @@ _about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Objec
 
    authors = eina_strbuf_new();
    eina_strbuf_append_printf(authors,
-                             "<color=#b6b6b6>"
-                             "<b><align=center>"PACKAGE_NAME" v."PACKAGE_VERSION" (build time "PACKAGE_BUILD_TIME")</align></b><br>"
+                             /* "<color=#b6b6b6>" */
+                             "<b><align=center>EFLETE (EFL Edge Theme Editor)</align></b><br>"
+			     "<b>Version:</b> "PACKAGE_VERSION"<br>"
+			     "<b>Commit:</b> "PACKAGE_COMMIT"<br>"
+			     "<b>Date:</b> "PACKAGE_BUILD_TIME"<br>"
+			     "<b>EFL:</b> "PACKAGE_EFL"<br>"
+			     "<b>OS:</b> "PACKAGE_OS"<br>"
+			     "<br>"	
                              "This application was written for Enlightenment project.<br>"
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"

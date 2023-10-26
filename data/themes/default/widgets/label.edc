@@ -107,7 +107,7 @@ group { name: "elm/label/base/slide_about";
       }
       program { name: "animation_sliding";
          action: STATE_SET "sliding" 0.00;
-         transition: LINEAR 16.0;
+         transition: LINEAR 26.0;
          target: "elm.text";
          after: "animation_bottom";
       }
