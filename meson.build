@@ -19,7 +19,7 @@ if version[2] == '99'
   git_version = '0'
   git = find_program('git', required: false)
   if git.found() == true
-    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD')
+    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD', check: true)
     if git_cmd.returncode() == 0
       git_version = git_cmd.stdout().strip()
     endif
