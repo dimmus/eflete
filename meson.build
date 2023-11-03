@@ -14,16 +14,15 @@ add_global_arguments('-DEFL_BETA_API_SUPPORT=1', language: 'c')
 
 version = meson.project_version().split('.')
 
-git_program = find_program('git', required : false)
 if version[2] == '99'
   git_version = '0'
   git = find_program('git', required: false)
   if git.found() == true
-    git_cmd = run_command(git_program, 'rev-list', '--count', 'HEAD', check: false)
+    git_cmd = run_command(git, 'rev-list', '--count', 'HEAD', check: false)
     if git_cmd.returncode() == 0
       git_version = git_cmd.stdout().strip()
     endif
-    git_commit = run_command(git_program, 'rev-parse', '@', check: false).stdout().strip()
+    git_commit = run_command(git, 'rev-parse', '@', check: false).stdout().strip()
   endif
   version_rev = '@0@.@1@'.format(meson.project_version(), git_version)
   release = 'dev-@0@.@1@.@2@'.format(version[0], version[1], version[2])
@@ -138,7 +137,7 @@ subdir('src')
 subdir('data')
 
 if get_option('build-tests')
-  config_h.set_quoted('HAVE_GETTIMEOFDAY' , '1')
+  config_h.set_quoted('HAVE_GETTIMEOFDAY', '1')
   check = dependency('check')
   subdir('tests')
 endif
@@ -154,29 +153,25 @@ endif
 
 have_nls = false
 if get_option('enable-nls')
-  intl_dep = cc.find_library('intl', required: false)
-  if intl_dep.found() and cc.has_header('libintl.h')
-    eflete_deps += cc.find_library('intl', required: true)
-    eflete_cargs += '-DENABLE_NLS'
-    have_nls = true
-  endif
   config_h.set('ENABLE_NLS', 1)
   config_h.set_quoted('PACKAGE_LOCALE_DIR', dir_locale)
   subdir('po')
 endif
 
 install_data(['AUTHORS'],
-  install_dir :  dir_pkgdata
+  install_dir: dir_pkgdata
 )
 
 configure_file(
-  output : 'eflete_config.h',
+  output: 'eflete_config.h',
   configuration: config_h
 )
 
 summary = [
-  'Eflete',
-  '----------------',
+  '',
+  '',
+  '              Eflete setup',
+  '----------------------------------------',
   '        version: @0@'.format(version_rev),
   '         commit: @0@'.format(git_commit),
   '',

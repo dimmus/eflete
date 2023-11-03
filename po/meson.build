@@ -17,6 +17,11 @@ if get_option('enable-nls')
               ])
   config_h.set('HAVE_GETTEXT', '1')
   dep_intl = cc.find_library('intl', required : false)
+  if dep_intl.found() and cc.has_header('libintl.h')
+    eflete_deps += cc.find_library('intl', required: true)
+    eflete_cargs += '-DENABLE_NLS'
+    have_nls = true
+  endif
 endif
 
 # maintainer shortcut for updating po stuff
