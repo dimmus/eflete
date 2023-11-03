@@ -111,7 +111,7 @@ eet_exe = find_program('eet', native: true)
 edje_cc_exe = find_program('edje_cc', native: true)
 eolian_gen_exe = find_program('eolian_gen')
 
-efl_req = '>= 1.26.2'
+efl_req = '>= 1.23.3'
 eflete_deps = [ dependency('elementary', version : efl_req) ]
 config_h.set_quoted('PACKAGE_EFL', dependency('elementary').version())
 

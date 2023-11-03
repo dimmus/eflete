@@ -39,7 +39,7 @@ No one, for sure, wants to learn EDC syntax. Eflete was designed with the idea t
 
 ## Requirements
 
-   * EFL ≥ 1.26.2
+   * EFL ≥ 1.23.3
 
 <!-- ([git](https://git.enlightenment.org/enlightenment/efl)) -->
 
