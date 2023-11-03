@@ -5,7 +5,7 @@ if get_option('enable-nls')
 #   add_project_arguments('-DGETTEXT_PACKAGE="ensen"', language:'c')
   i18n.gettext(meson.project_name(),
              args: [
-                '--directory=' + meson.source_root(),
+                # '--directory=' + meson.source_root(),
                 '--keyword=_',
                 '--keyword=d_:1',
                 '--keyword=P_:1,2',
@@ -25,8 +25,16 @@ if get_option('enable-nls')
 endif
 
 # maintainer shortcut for updating po stuff
-run_target ('po',
-  command: ['ninja', '-C', meson.build_root(),
-    meson.project_name() + '-pot',
-    meson.project_name() + '-update-po']
-)
+# if (meson.version().split('.')[1] < 56)
+  run_target ('po',
+    command: ['ninja', '-C', meson.current_build_dir(),
+      meson.project_name() + '-pot',
+      meson.project_name() + '-update-po']
+  )
+# else
+#   run_target ('po',
+#     command: ['ninja', '-C', meson.project_build_root(),
+#       meson.project_name() + '-pot',
+#       meson.project_name() + '-update-po']
+#   )
+# endif
