@@ -81,6 +81,7 @@ case "$1" in
         # ninja coverage-html -C $BD
         ;;
     po|translation)
+        ./po/potfiles-update.sh
         ninja -C $BD po
         ;;
     ts|timestamp)
@@ -97,7 +98,7 @@ case "$1" in
         echo "     t|test         build tests"
         echo "    cc|cocci        run coccinelle analysis"
         echo "    cv|coverage     build coverage report"
-        echo "    po|translation  build localization files"
+        echo "    po|translation  build (update) localization files"
         echo "    ts|timestemp    update access time of each file"
         ;;
 esac

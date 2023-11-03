@@ -1,16 +1,17 @@
 # French translation for Eflete.
+# Copyright (C) Enlightenment
 # This file is distributed under the same license as the eflete package.
-# similar <similar@orange.fr>, 2023.
+# Similar <similar@orange.fr>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: dmitri.chudinov@gmail.com\n"
-"POT-Creation-Date: 2017-07-21 16:03+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-03 12:58+0500\n"
 "PO-Revision-Date: 2023-01-29 22:00+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/>"
-"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,226 +20,304 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 "X-Launchpad-Export-Date: 2014-08-25 07:02+0000\n"
 
-#: src/bin/project_manager/project_manager2.c:1404
+#: src/bin/common/common_macro.h:63
+msgid "Last saved: %d %b %Y %H:%M"
+msgstr ""
+
+#: src/bin/main.c:47
+#, c-format
+msgid "ERROR: "
+msgstr "ERREUR : "
+
+#: src/bin/main.c:49
+#, c-format
+msgid ""
+"\n"
+"ERROR: invalid options found. See --help.\n"
+msgstr ""
+"\n"
+"ERREUR : options invalides détectées. Voir --help.\n"
+
+#: src/bin/main.c:67
+msgid "Name for new project"
+msgstr "Nom du nouveau projet"
+
+#: src/bin/main.c:68
+msgid "Path to project directory"
+msgstr "Chemin vers le répertoire du projet"
+
+#: src/bin/main.c:69
+msgid ""
+"Export edj file path. The path should contain the edj file name. The edj "
+"file will be write by this path on every save. If file missed will be "
+"created, if file exist, changed groups will be add."
+msgstr ""
+"Exporte le chemin du fichier edj. Le chemin doit contenir le nom du fichier "
+"edj. Ce chemin sera utilisé par le fichier edj à chaque sauvegarde. Si le "
+"fichier n'existe pas, il sera créé ; si le fichier existe, les groupes "
+"modifiés seront ajoutés."
+
+#: src/bin/main.c:70
+msgid ""
+"Export edc file path. It should be path folder. On every save will generate "
+"source code of changed groups. If folder is missed it will be created, if "
+"folder exist new source code will be add."
+msgstr ""
+"Exporte le chemin du fichier edc. Il doit être dans le chemin vers le "
+"dossier. À chaque sauvegarde, le code source des groupes modifiés sera "
+"généré. Si le dossier n'existe pas, il sera créé ; si le dossier existe, un "
+"nouveau code source sera ajouté."
+
+#: src/bin/main.c:100 src/bin/main.c:155 src/bin/ui/menu.c:272
+#: src/bin/ui/tab_home_open.c:117 src/bin/ui/tab_home_open.c:124
+#: src/bin/ui/tab_home_open.c:279 src/bin/ui/tab_home_open.c:286
+#: src/bin/ui/tabs.c:1211
+msgid "Open project"
+msgstr "Ouvrir un projet"
+
+#: src/bin/main.c:155 src/bin/ui/tab_home_open.c:117
+#: src/bin/ui/tab_home_open.c:279
+msgid "Given project is dameged. Do you want to recover project?"
+msgstr "Le projet indiqué est endommagé. Voulez-vous récupérer ce projet ?"
+
+#: src/bin/main.c:264
+msgid "Only one file should be specified."
+msgstr "Un fichier seulement doit être indiqué."
+
+#: src/bin/main.c:308
+msgid "--export-edj value have not extension '.edj'. Wrong value."
+msgstr ""
+"la valeur --export-edj n'a pas d'extension en « .edj ». Valeur erronée."
+
+#: src/bin/main.c:313
+msgid "--reopen is given but file specified."
+msgstr "--reopen est donné mais un fichier est spécifié."
+
+#: src/bin/main.c:315
+msgid "--reopen is given but --name specified."
+msgstr "--reopen est donné mais --name spécifié."
+
+#: src/bin/main.c:317
+msgid "--repoen is given but --path specified."
+msgstr "--reopen est donné mais --path spécifié."
+
+#: src/bin/main.c:319
+msgid "--reopen is given but --id specified."
+msgstr "--reopen est donné mais --id spécifié."
+
+#: src/bin/main.c:321
+msgid "--reopen is given but --sd specified."
+msgstr "--reopen est donné mais --sd spécifié."
+
+#: src/bin/main.c:323
+msgid "--reopen is given but --fd specified."
+msgstr "--reopen est donné mais --fd spécifié."
+
+#: src/bin/main.c:325
+msgid "--reopen is given but --dd specified."
+msgstr "--reopen est donné mais --dd spécifié."
+
+#: src/bin/main.c:327 src/bin/main.c:365 src/bin/main.c:418
+msgid "widgets can be added only to new project."
+msgstr ""
+"les objets graphiques (widgets) ne peuvent être ajoutés qu'à un nouveau "
+"projet."
+
+#: src/bin/main.c:331
+msgid "There are no previously opened projects yet."
+msgstr "Pas encore de projets déjà ouverts."
+
+#: src/bin/main.c:346
+#, c-format
+msgid "File '%s' doesn't exists."
+msgstr "Le fichier « %s » n'existe pas."
+
+#: src/bin/main.c:348
+#, c-format
+msgid "'%s' is a directory."
+msgstr "« %s » est un répertoire."
+
+#: src/bin/main.c:353
+msgid "*.pro file is given but --name specified."
+msgstr "fichier *.pro donné mais --name est spécifié."
+
+#: src/bin/main.c:355
+msgid "*.pro file is given but --path specified."
+msgstr "fichier *.pro donné mais --path est spécifié."
+
+#: src/bin/main.c:357
+msgid "*.pro file is given but --id specified."
+msgstr "fichier *.pro donné mais --id est spécifié."
+
+#: src/bin/main.c:359
+msgid "*.pro file is given but --sd specified."
+msgstr "fichier *.pro donné mais --sd est spécifié."
+
+#: src/bin/main.c:361
+msgid "*.pro file is given but --fd specified."
+msgstr "fichier *.pro donné mais --fd est spécifié."
+
+#: src/bin/main.c:363
+msgid "*.pro file is given but --dd specified."
+msgstr "fichier *.pro donné mais --dd est spécifié."
+
+#: src/bin/main.c:378
+msgid "*.edj file is given but --id specified."
+msgstr "fichier *.edj donné mais --id est spécifié."
+
+#: src/bin/main.c:380
+msgid "*.edj file is given but --sd specified."
+msgstr "fichier *.edj donné mais --sd est spécifié."
+
+#: src/bin/main.c:382
+msgid "*.edj file is given but --fd specified."
+msgstr "fichier *.edj donné mais --fd est spécifié."
+
+#: src/bin/main.c:384
+msgid "*.edj file is given but --dd specified."
+msgstr "fichier *.edj donné mais --dd est spécifié."
+
+#: src/bin/main.c:397
+msgid "Wrong file extension."
+msgstr "Extension de fichier erronée."
+
+#: src/bin/main.c:402
+msgid "no file or --name are given but --path specified."
+msgstr "pas de fichier ou --name donné mais --path spécifié."
+
+#: src/bin/main.c:404
+msgid "no file is given but --id specified."
+msgstr "pas de fichier donné mais --id spécifié."
+
+#: src/bin/main.c:406
+msgid "no file is given but --sd specified."
+msgstr "pas de fichier donné mais --sd spécifié."
+
+#: src/bin/main.c:408
+msgid "no file is given but --fd specified."
+msgstr "pas de fichier donné mais --fd spécifié."
+
+#: src/bin/main.c:410
+msgid "no file is given but --dd specified."
+msgstr "pas de fichier donné mais --dd spécifié."
+
+#: src/bin/project_manager/project_manager2.c:1403
 #, c-format
 msgid "Export to file '%s' successfull"
 msgstr "Succès de l'exportation vers le fichier « %s »"
 
-#: src/bin/ui/colorclass_manager.c:87
+#: src/bin/ui/colorclass_manager.c:95
 msgid "Color class name: "
 msgstr "Nom de la classe de couleur : "
 
-#: src/bin/ui/colorclass_manager.c:91
+#: src/bin/ui/colorclass_manager.c:99
 msgid "Type new color class name here"
 msgstr "Entrez ici nouveau nom pour la classe de couleur"
 
-#: src/bin/ui/colorclass_manager.c:141 src/bin/ui/project_navigator.c:548
+#: src/bin/ui/colorclass_manager.c:149 src/bin/ui/project_navigator.c:556
 msgid "Create a new layout"
 msgstr "Créer une nouvelle composition"
 
-#: src/bin/ui/colorclass_manager.c:174
+#: src/bin/ui/colorclass_manager.c:182
 #, c-format
 msgid "Colorclass is used in:"
 msgstr "La classe de couleur est utilisée dans :"
 
-#: src/bin/ui/colorclass_manager.c:178
+#: src/bin/ui/colorclass_manager.c:186
 #, c-format
 msgid "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"
 msgstr "<br>groupe : %s<br>partie : %s<br>état : « %s » %2.1f"
 
-#: src/bin/ui/colorclass_manager.c:249 src/bin/ui/image_manager.c:931
-#: src/bin/ui/sound_manager.c:646 src/bin/ui/style_manager.c:475
+#: src/bin/ui/colorclass_manager.c:257 src/bin/ui/image_manager.c:936
+#: src/bin/ui/popup.c:1176 src/bin/ui/sound_manager.c:654
+#: src/bin/ui/style_manager.c:483
 msgid "Search"
 msgstr "Rechercher"
 
-#: src/bin/ui/colorclass_manager.c:436 src/bin/ui/menu.c:330
+#: src/bin/ui/colorclass_manager.c:444 src/bin/ui/menu.c:324
 msgid "Color class manager"
 msgstr "Gestionnaire de classes de couleur"
 
-#: src/bin/ui/colorclass_manager.c:448 src/bin/ui/image_manager.c:1078
-#: src/bin/ui/sound_manager.c:579 src/bin/ui/style_manager.c:867
+#: src/bin/ui/colorclass_manager.c:456 src/bin/ui/image_manager.c:1083
+#: src/bin/ui/sound_manager.c:587 src/bin/ui/style_manager.c:875
 msgid "Preview"
 msgstr "Aperçu"
 
-#: src/bin/ui/colorclass_manager.c:449
+#: src/bin/ui/colorclass_manager.c:457
 msgid "Color classes list"
 msgstr "Listes des classes de couleur"
 
-#: src/bin/ui/colorclass_manager.c:505
+#: src/bin/ui/colorclass_manager.c:513
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr "Portez ce vieux whisky au juge blond qui fume"
 
-#: src/bin/ui/colorclass_manager.c:535
+#: src/bin/ui/colorclass_manager.c:543
 msgid "Failed initialize colorclasses manager"
 msgstr "L'initialisation du gestionnaire de classes de couleur a échoué"
 
-#: src/bin/ui/image_manager.c:248
+#: src/bin/ui/image_manager.c:255
 msgid "Unable to add a folder"
 msgstr "Impossible d'ajouter un fichier"
 
-#: src/bin/ui/image_manager.c:267
+#: src/bin/ui/image_manager.c:274
 msgid "Add new image into set"
 msgstr "Ajouter nouvelle image dans l'ensemble"
 
-#: src/bin/ui/image_manager.c:651
+#: src/bin/ui/image_manager.c:657
 msgid "File not exist"
 msgstr "Le fichier n'existe pas"
 
-#: src/bin/ui/image_manager.c:656 src/bin/ui/sound_manager.c:229
+#: src/bin/ui/image_manager.c:662 src/bin/ui/sound_manager.c:237
 msgid "Unable to add folder"
 msgstr "Impossible d'ajouter un dossier"
 
-#: src/bin/ui/image_manager.c:669
+#: src/bin/ui/image_manager.c:675
 msgid "File exist"
 msgstr "Le fichier existe"
 
-#: src/bin/ui/image_manager.c:703
+#: src/bin/ui/image_manager.c:708
 msgid "Choose image"
 msgstr "Choisir une image"
 
-#: src/bin/ui/image_manager.c:805
+#: src/bin/ui/image_manager.c:810
 msgid "Image set name:"
 msgstr "Nom de l'ensemble d'images :"
 
-#: src/bin/ui/image_manager.c:810
+#: src/bin/ui/image_manager.c:815
 msgid "Type a new image set name"
 msgstr "Entrez nouveau nom pour l'ensemble d'images"
 
-#: src/bin/ui/image_manager.c:833
+#: src/bin/ui/image_manager.c:838
 msgid "Create a new image set"
 msgstr "Créer un nouvel ensemble d'images"
 
-#: src/bin/ui/image_manager.c:960 src/bin/ui/image_manager.c:1168
+#: src/bin/ui/image_manager.c:965 src/bin/ui/image_manager.c:1173
 msgid "Image"
 msgstr "Image"
 
-#: src/bin/ui/image_manager.c:982
+#: src/bin/ui/image_manager.c:987
 msgid "Image Set"
 msgstr "Ensemble d'images"
 
-#: src/bin/ui/image_manager.c:1001
+#: src/bin/ui/image_manager.c:1006
 msgid "Vectors"
 msgstr "Vecteurs"
 
-#: src/bin/ui/image_manager.c:1060 src/bin/ui/menu.c:327
+#: src/bin/ui/image_manager.c:1065 src/bin/ui/menu.c:321
 msgid "Image manager"
 msgstr "Gestionnaire d'images"
 
-#: src/bin/ui/image_manager.c:1079
+#: src/bin/ui/image_manager.c:1084
 msgid "Image Gallery"
 msgstr "Collection d'images"
 
-#: src/bin/ui/image_manager.c:1169
+#: src/bin/ui/image_manager.c:1174
 msgid "Image set"
 msgstr "Ensemble d'images"
 
-#: src/bin/ui/sound_manager.c:119
-msgid "UNKNOWN"
-msgstr "INCONNU"
-
-#: src/bin/ui/sound_manager.c:169
-msgid "Sound Samples"
-msgstr "Échantillons sonores"
-
-#: src/bin/ui/sound_manager.c:182
-msgid "Sound Tones"
-msgstr "Tonalités sonores"
-
-#: src/bin/ui/sound_manager.c:224
-#, c-format
-msgid "File '%s' is not exist"
-msgstr "Le fichier « %s » n'existe pas"
-
-#: src/bin/ui/sound_manager.c:243
-#, c-format
-msgid "Sample '%s' is already added to project"
-msgstr "L'échantillon « %s » a déjà été ajouté"
-
-#: src/bin/ui/sound_manager.c:256
-#, c-format
-msgid "File '%s' exist"
-msgstr "Le fichier « %s » existe"
-
-#: src/bin/ui/sound_manager.c:307
-msgid "Choose a sound"
-msgstr "Choisissez un son"
-
-#: src/bin/ui/sound_manager.c:373
-msgid "Tone name:"
-msgstr "Nom de la tonalité :"
-
-#: src/bin/ui/sound_manager.c:377
-msgid "Type a new tone name"
-msgstr "Entrez nouveau nom pour la tonalité"
-
-#: src/bin/ui/sound_manager.c:383
-msgid "Frequency:"
-msgstr "Fréquence :"
-
-#: src/bin/ui/sound_manager.c:389
-msgid "Type a frequency (20 - 20000)"
-msgstr "Entrez fréquence (20 à 20 000 Hz)"
-
-#: src/bin/ui/sound_manager.c:429
-msgid "Create a new tone"
-msgstr "Créer nouvelle tonalité"
-
-#: src/bin/ui/sound_manager.c:561 src/bin/ui/menu.c:328
-msgid "Sound manager"
-msgstr "Gestionnaire de sons"
-
-#: src/bin/ui/sound_manager.c:580
-msgid "Sound Gallery"
-msgstr "Collection de sons"
-
-#: src/bin/ui/sound_manager.c:640
-msgid "Sample"
-msgstr "Échantillon"
-
-#: src/bin/ui/sound_manager.c:641
-msgid "Tone"
-msgstr "Tonalité"
-
-#: src/bin/ui/style_manager.c:189
-msgid "Style name:"
-msgstr "Nom du style :"
-
-#: src/bin/ui/style_manager.c:194
-msgid "Type a new style name"
-msgstr "Entrez nouveau nom de style"
-
-#: src/bin/ui/style_manager.c:221 src/bin/ui/style_manager.c:312
-msgid "Failed to add tag value. Tag will be deleted"
-msgstr "Impossible d'ajouter une valeur à la balise. La balise a été supprimée."
-
-#: src/bin/ui/style_manager.c:253
-msgid "Add textblock style"
-msgstr "Ajouter un style de bloc de texte"
-
-#: src/bin/ui/style_manager.c:266
-msgid "Type a new tag name."
-msgstr "Entrez nouveau nom pour la balise."
-
-#: src/bin/ui/style_manager.c:359
-#, c-format
-msgid "Add tag for style: %s"
-msgstr "Ajouter une balise pour le style : %s"
-
-#: src/bin/ui/style_manager.c:851
-msgid "Textblock style manager"
-msgstr "Gestionnaire de styles de bloc de texte"
-
-#: src/bin/ui/style_manager.c:868
-msgid "Textblock styles list"
-msgstr "Liste des styles de bloc de texte"
-
-#: src/bin/ui/style_manager.c:930
-msgid "Style"
-msgstr "Style"
-
-#: src/bin/ui/style_manager.c:931
-msgid "Tag"
-msgstr "Balise"
+#: src/bin/ui/live_view/demo.c:35 src/bin/ui/live_view/demo.c:48
+msgid "Widget live view isn't implemented yet. Using fallback to layout"
+msgstr ""
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:190
 msgid "Click to show vertical ctxpopup with icons and labels (3 items)"
@@ -261,8 +340,8 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:196
 msgid "Click to show vertical ctxpopup with icons and no labels (30 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup vertical avec icônes et sans étiquettes ("
-"30 éléments)"
+"Cliquez pour afficher un ctxpopup vertical avec icônes et sans étiquettes "
+"(30 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:198
 msgid "Click to show vertical ctxpopup with labels and no icons (3 items)"
@@ -273,8 +352,8 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:200
 msgid "Click to show vertical ctxpopup with labels and no icons (30 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup vertical avec étiquettes et sans icônes ("
-"30 éléments)"
+"Cliquez pour afficher un ctxpopup vertical avec étiquettes et sans icônes "
+"(30 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:202
 msgid "Click to show horizontal ctxpopup with icons and labels (3 items)"
@@ -291,26 +370,26 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:206
 msgid "Click to show horizontal ctxpopup with icons and no labels (3 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup horizontal avec icônes et sans étiquettes ("
-"3 éléments)"
+"Cliquez pour afficher un ctxpopup horizontal avec icônes et sans étiquettes "
+"(3 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:208
 msgid "Click to show horizontal ctxpopup with icons and no labels (30 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup horizontal avec icônes et sans étiquettes ("
-"30 éléments)"
+"Cliquez pour afficher un ctxpopup horizontal avec icônes et sans étiquettes "
+"(30 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:210
 msgid "Click to show horizontal ctxpopup with labels and no icons (3 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup horizontal avec étiquettes et sans icônes ("
-"3 éléments)"
+"Cliquez pour afficher un ctxpopup horizontal avec étiquettes et sans icônes "
+"(3 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:212
 msgid "Click to show horizontal ctxpopup with labels and no icons (30 items)"
 msgstr ""
-"Cliquez pour afficher un ctxpopup horizontal avec étiquettes et sans icônes ("
-"30 éléments)"
+"Cliquez pour afficher un ctxpopup horizontal avec étiquettes et sans icônes "
+"(30 éléments)"
 
 #: src/bin/ui/live_view/elementary/live_custom_layout.c:30
 #, c-format
@@ -466,15 +545,15 @@ msgstr "Dernière sauvegarde : aucune"
 msgid "Project path: none"
 msgstr "Chemin du projet : aucun"
 
-#: src/bin/ui/main_window.c:312 src/bin/ui/menu.c:335
+#: src/bin/ui/main_window.c:321 src/bin/ui/menu.c:329
 msgid "About"
 msgstr "À propos"
 
-#: src/bin/ui/main_window.c:333
+#: src/bin/ui/main_window.c:342
 msgid "About Component Designer"
 msgstr "À propos de Component Designer"
 
-#: src/bin/ui/main_window.c:348
+#: src/bin/ui/main_window.c:357
 msgid ""
 "Global:<br><b>F1</b> - show shortcuts list (this dialog)<br><b>F2</b> - "
 "normal mode<br><b>F3</b> - code mode<br><b>F4</b> - demo mode<br><b>F7</b> - "
@@ -505,8 +584,8 @@ msgstr ""
 "rétablir<br><b>Ctrl + N</b> - ajouter un nouveau groupe<br><b>Q</b> - "
 "ajouter une nouvelle partie<br><b>W</b> - ajouter un nouvel état<br><b>E</b> "
 "- ajouter un nouvel élément<br><b>R</b> - ajouter un nouveau "
-"programme<br><b>T</b> - ajouter un nouvel élément de donnée<br><b>Suppr</b> -"
-" supprimer partie/état/élément/programme/élément de donnée "
+"programme<br><b>T</b> - ajouter un nouvel élément de donnée<br><b>Suppr</b> "
+"- supprimer partie/état/élément/programme/élément de donnée "
 "sélectionné<br><b>S</b> - Sélectionner l'état suivant de la partie "
 "active<br><b>Z</b> - sélectionner partie précédente<br><b>X</b> - "
 "sélectionner partie suivante<br><b>Échap</b> - désélectionner<br><b>O</b> - "
@@ -516,169 +595,170 @@ msgstr ""
 "%<br><br>Onglets :<br><b>Ctrl + W</b> - fermer l'onglet<br><b>Ctrl + touches "
 "numérotées</b> - basculer vers l'onglet de 1 à 10<br><b>Tab</b> / <b>Ctrl + "
 "Pg.Suiv</b> - basculer vers l'onglet suivant<br><b>Majuscule + Tab</b> / "
-"<b>Ctrl + Pg.Préc</b> - basculer vers l'onglet précédent<br><br>Pop-up "
-":<br><b>Entrée</b> - OK<br><b>Échap</b> - annuler<br>"
+"<b>Ctrl + Pg.Préc</b> - basculer vers l'onglet précédent<br><br>Pop-up :"
+"<br><b>Entrée</b> - OK<br><b>Échap</b> - annuler<br>"
 
-#: src/bin/ui/main_window.c:407 src/bin/ui/main_window.c:645
+#: src/bin/ui/main_window.c:416 src/bin/ui/main_window.c:653
 msgid "Help: shortcuts"
 msgstr "Aide : raccourcis"
 
-#: src/bin/ui/main_window.c:435
+#: src/bin/ui/main_window.c:444
 msgid "Sequence already binded."
 msgstr "Séquence déjà attribuée."
 
-#: src/bin/ui/main_window.c:452
+#: src/bin/ui/main_window.c:461
 msgid "Please press key sequence"
 msgstr "Composez la séquence au clavier"
 
-#: src/bin/ui/menu.c:275
+#: src/bin/ui/menu.c:269
 msgid "File"
 msgstr "Fichier"
 
-#: src/bin/ui/menu.c:277 src/bin/ui/tabs.c:1214
+#: src/bin/ui/menu.c:271 src/bin/ui/tab_home_new.c:569
+#: src/bin/ui/tab_home_new.c:686 src/bin/ui/tabs.c:1213
 msgid "New project"
 msgstr "Nouveau projet"
 
-#: src/bin/ui/menu.c:278 src/bin/ui/tab_home_open.c:117
-#: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:279
-#: src/bin/ui/tab_home_open.c:286 src/bin/ui/tabs.c:1212 src/bin/main.c:98
-#: src/bin/main.c:153
-msgid "Open project"
-msgstr "Ouvrir un projet"
-
-#: src/bin/ui/menu.c:279 src/bin/ui/tabs.c:1216
+#: src/bin/ui/menu.c:273 src/bin/ui/tab_home_import_edj.c:507
+#: src/bin/ui/tab_home_import_edj.c:635 src/bin/ui/tabs.c:1215
 msgid "Import edj-file"
 msgstr "Importer fichier EDJ"
 
-#: src/bin/ui/menu.c:280 src/bin/ui/tabs.c:1218
+#: src/bin/ui/menu.c:274 src/bin/ui/tab_home_import_edc.c:477
+#: src/bin/ui/tabs.c:1217
 msgid "Import edc-file"
 msgstr "Importer fichier EDC"
 
-#: src/bin/ui/menu.c:283
+#: src/bin/ui/menu.c:277 src/bin/ui/popup.c:169 src/bin/ui/script_manager.c:221
+#: src/bin/ui/tab_home_info.c:107
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/bin/ui/menu.c:285
+#: src/bin/ui/menu.c:279
 msgid "Export as edc"
 msgstr "Exporter en EDC"
 
-#: src/bin/ui/menu.c:286
+#: src/bin/ui/menu.c:280
 msgid "Group"
 msgstr "Groupe"
 
-#: src/bin/ui/menu.c:287
+#: src/bin/ui/menu.c:281
 msgid "Project"
 msgstr "Projet"
 
-#: src/bin/ui/menu.c:288
+#: src/bin/ui/menu.c:282
 msgid "Export as edj"
 msgstr "Exporter en EDJ"
 
-#: src/bin/ui/menu.c:289
+#: src/bin/ui/menu.c:283
 msgid "Develop"
 msgstr "Développement"
 
-#: src/bin/ui/menu.c:290
+#: src/bin/ui/menu.c:284
 msgid "Release"
 msgstr "Publication"
 
-#: src/bin/ui/menu.c:292
+#: src/bin/ui/menu.c:286
 msgid "Close project"
 msgstr "Fermer le projet"
 
-#: src/bin/ui/menu.c:295
+#: src/bin/ui/menu.c:289
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/bin/ui/menu.c:297
+#: src/bin/ui/menu.c:291
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/bin/ui/menu.c:298 src/bin/ui/workspace/workspace.c:1056
+#: src/bin/ui/menu.c:292 src/bin/ui/workspace/workspace.c:1059
 msgid "Undo"
 msgstr "Annuler"
 
-#: src/bin/ui/menu.c:299 src/bin/ui/workspace/workspace.c:1057
+#: src/bin/ui/menu.c:293 src/bin/ui/workspace/workspace.c:1060
 msgid "Redo"
 msgstr "Rétablir"
 
-#: src/bin/ui/menu.c:301
+#: src/bin/ui/menu.c:295
 msgid "Add group"
 msgstr "Ajouter un groupe"
 
-#: src/bin/ui/menu.c:303
+#: src/bin/ui/menu.c:297
 msgid "Add part"
 msgstr "Ajouter une partie"
 
-#: src/bin/ui/menu.c:304
+#: src/bin/ui/menu.c:298
 msgid "Add state"
 msgstr "Ajouter un état"
 
-#: src/bin/ui/menu.c:305
+#: src/bin/ui/menu.c:299
 msgid "Add item"
 msgstr "Ajouter un élément"
 
-#: src/bin/ui/menu.c:306
+#: src/bin/ui/menu.c:300
 msgid "Add program"
 msgstr "Ajouter un programme"
 
-#: src/bin/ui/menu.c:307
+#: src/bin/ui/menu.c:301
 msgid "Add data item"
 msgstr "Ajouter un élément de donnée"
 
-#: src/bin/ui/menu.c:310
+#: src/bin/ui/menu.c:304
 msgid "View"
 msgstr "Vue"
 
-#: src/bin/ui/menu.c:311
+#: src/bin/ui/menu.c:305
 msgid "Zoom in"
 msgstr "Agrandir"
 
-#: src/bin/ui/menu.c:312
+#: src/bin/ui/menu.c:306
 msgid "Zoom out"
 msgstr "Réduire"
 
-#: src/bin/ui/menu.c:313
+#: src/bin/ui/menu.c:307
 msgid "Reset zoom"
 msgstr "Rétablir le zoom"
 
-#: src/bin/ui/menu.c:314
+#: src/bin/ui/menu.c:308
 msgid "Zoom to fit in Workspace"
 msgstr "Adapter à l'espace de travail"
 
-#: src/bin/ui/menu.c:315
+#: src/bin/ui/menu.c:309
 msgid "Resize to fill workspace"
 msgstr "Remplir l'espace de travail"
 
-#: src/bin/ui/menu.c:318
+#: src/bin/ui/menu.c:312
 msgid "Show object area"
 msgstr "Afficher la zone d'objet"
 
-#: src/bin/ui/menu.c:320 src/bin/ui/workspace/workspace.c:1059
+#: src/bin/ui/menu.c:314 src/bin/ui/workspace/workspace.c:1062
 msgid "Show rulers"
 msgstr "Afficher les règles"
 
-#: src/bin/ui/menu.c:322
+#: src/bin/ui/menu.c:316
 msgid "Window"
 msgstr "Fenêtre"
 
-#: src/bin/ui/menu.c:324 src/bin/ui/tabs.c:1226
+#: src/bin/ui/menu.c:318 src/bin/ui/tabs.c:1225
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/bin/ui/menu.c:329
+#: src/bin/ui/menu.c:322 src/bin/ui/sound_manager.c:569
+msgid "Sound manager"
+msgstr "Gestionnaire de sons"
+
+#: src/bin/ui/menu.c:323
 msgid "Textblock styles manager"
 msgstr "Gestionnaire de styles textblock"
 
-#: src/bin/ui/menu.c:331
+#: src/bin/ui/menu.c:325 src/bin/ui/script_manager.c:160
 msgid "Script manager"
 msgstr "Gestionnaire de scripts"
 
-#: src/bin/ui/menu.c:333
+#: src/bin/ui/menu.c:327
 msgid "Help"
 msgstr "Aide"
 
-#: src/bin/ui/menu.c:334
+#: src/bin/ui/menu.c:328
 msgid "Shortcuts"
 msgstr "Raccourcis"
 
@@ -687,111 +767,40 @@ msgid "Title will be deleted"
 msgstr "Le titre va être supprimé"
 
 #: src/bin/ui/modal_window/modal_window.c:55
-#: src/bin/ui/modal_window/modal_window.c:207
+#: src/bin/ui/modal_window/modal_window.c:207 src/bin/ui/popup.c:168
+#: src/bin/ui/popup.c:1125 src/bin/ui/popup.c:1300
 msgid "Ok"
 msgstr "OK"
 
-#: src/bin/ui/modal_window/modal_window.c:203
+#: src/bin/ui/modal_window/modal_window.c:203 src/bin/ui/popup.c:172
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/bin/ui/project_navigator.c:410
-msgid "Alias of"
-msgstr "Alias de"
-
-#: src/bin/ui/project_navigator.c:412 src/bin/ui/project_navigator.c:470
-msgid "Copy of"
-msgstr "Copie de"
-
-#: src/bin/ui/project_navigator.c:460
-#: src/bin/ui/workspace/group_navigator.c:1546
-msgid "Name"
-msgstr "Nom"
-
-#: src/bin/ui/project_navigator.c:477
-msgid "Alias"
-msgstr "Alias"
-
-#: src/bin/ui/project_navigator.c:487 src/bin/ui/project_navigator.c:500
-#: src/bin/ui/project_navigator.c:903 src/bin/ui/project_navigator.c:938
-#: src/bin/ui/property/property_group.c:1826
-#: src/bin/ui/property/property_group.c:2544
-#: src/bin/ui/property/property_group.c:2728
-#: src/bin/ui/property/property_group.c:3229
-#: src/bin/ui/workspace/group_navigator.c:106
-#: src/bin/ui/workspace/group_navigator.c:1159
-#: src/bin/ui/workspace/group_navigator.c:1417
-#: src/bin/ui/workspace/group_navigator.c:1420
-msgid "None"
-msgstr "Aucun(e)"
-
-#: src/bin/ui/project_navigator.c:595
-#, c-format
-msgid "Can't remove layout \"%s\""
-msgstr "Impossible de supprimer la composition « %s »"
-
-#: src/bin/ui/project_navigator.c:596 src/bin/ui/property/property_group.c:3776
-msgid "Error"
-msgstr "Erreur"
-
-#: src/bin/ui/project_navigator.c:640 src/bin/ui/project_navigator.c:747
-#: src/bin/ui/project_navigator.c:769 src/bin/ui/project_navigator.c:782
-msgid "Warning: Delete layout"
-msgstr "Avertissement de suppression"
-
-#: src/bin/ui/project_navigator.c:641 src/bin/ui/project_navigator.c:770
-msgid ""
-"Can't delete the opened layout. Please, close the layout tab before delete "
-"it."
+#: src/bin/ui/popup.c:170
+msgid "Replace"
 msgstr ""
-"Impossible de supprimer la composition actuelle. Fermez l'onglet de celle-ci "
-"avant de la supprimer."
 
-#: src/bin/ui/project_navigator.c:748
-msgid ""
-"Can't delete one of those opened layouts. Please, close the layout tab "
-"before delete it."
-msgstr ""
-"Impossible de supprimer l'une des compositions actuelles. Fermez l'onglet de "
-"celle-ci avant de la supprimer."
+#: src/bin/ui/popup.c:171
+#, fuzzy
+msgid "Don't save"
+msgstr "Enregistrement du projet"
 
-#: src/bin/ui/project_navigator.c:755
-msgid "Confirm delete layouts"
-msgstr "Confirmez les suppressions"
+#: src/bin/ui/popup.c:173
+#, fuzzy
+msgid "Reset"
+msgstr "Rétablir le zoom"
 
-#: src/bin/ui/project_navigator.c:756
-msgid ""
-"Are you sure you want to delete the selected layouts?<br>All aliases will be "
-"delete too."
-msgstr ""
-"Voulez-vous vraiment supprimer les compositions sélectionnées ?<br>Les alias "
-"seront également supprimés."
-
-#: src/bin/ui/project_navigator.c:783
-msgid ""
-"One or few of the aliases of this group are opened.Please, close the alias "
-"tab/tabs before delete it."
-msgstr ""
-"Un ou plusieurs alias de ce groupe sont ouverts. Fermez le ou les onglets "
-"d'alias avant de le(s) supprimer."
-
-#: src/bin/ui/project_navigator.c:790
-msgid "Confirm delete layout"
-msgstr "Confirmer la suppression"
-
-#: src/bin/ui/project_navigator.c:791
-msgid ""
-"Are you sure you want to delete the selected layout?<br>All aliases will be "
-"delete too."
-msgstr ""
-"Voulez-vous vraiment supprimer la composition sélectionnée ?<br>Les alias "
-"seront également supprimés."
+#: src/bin/ui/popup.c:1338
+#, fuzzy
+msgid "<font_size=14>Import edc-file error"
+msgstr "Importer fichier EDC"
 
 #: src/bin/ui/project_close.c:48 src/bin/ui/project_close.c:86
+#: src/bin/ui/project_export.c:224
 msgid "Export source code"
 msgstr "Exporter le code source"
 
-#: src/bin/ui/project_close.c:72
+#: src/bin/ui/project_close.c:72 src/bin/ui/project_export.c:53
 msgid "Export develop edj"
 msgstr "Exporter fichier de dév. EDJ"
 
@@ -812,19 +821,343 @@ msgstr "Voulez-vous enregistrer les modifications ?"
 msgid "Project close"
 msgstr "Fermeture du projet"
 
-#: src/bin/ui/property/property_group.c:1184
+#: src/bin/ui/project_common.c:40
+#, c-format
+msgid "Haven't permision to overwrite '%s' in '%s'"
+msgstr ""
+
+#: src/bin/ui/project_common.c:98
+#, c-format
+msgid "Haven't permision to write '%s'"
+msgstr ""
+
+#: src/bin/ui/project_common.c:157
+#, fuzzy, c-format
+msgid "Project '%s' is opened."
+msgstr "Ouvrir un projet"
+
+#: src/bin/ui/project_common.c:192
+#, fuzzy
+msgid "Project progress"
+msgstr "Ouvrir un projet"
+
+#: src/bin/ui/project_export.c:94 src/bin/ui/project_export.c:175
+msgid "Please type in actual .edj file"
+msgstr ""
+
+#: src/bin/ui/project_export.c:95 src/bin/ui/project_export.c:109
+#: src/bin/ui/project_export.c:176 src/bin/ui/project_export.c:266
+#, fuzzy
+msgid "Export to develop edj-file"
+msgstr "Exporter fichier de dév. EDJ"
+
+#: src/bin/ui/project_export.c:102 src/bin/ui/project_export.c:183
+#, c-format
+msgid ""
+"<font_size=16>A project file '%s' already exist.Do you want to replace it?</"
+"font_size>"
+msgstr ""
+
+#: src/bin/ui/project_export.c:145
+#, fuzzy
+msgid "Export release edj"
+msgstr "Exporter en EDJ"
+
+#: src/bin/ui/project_export.c:187
+#, fuzzy
+msgid "Export to release edj-file"
+msgstr "Exporter en EDJ"
+
+#: src/bin/ui/project_export.c:256
+#, c-format
+msgid ""
+"<font_size=16>A project folder '%s' already exist.Do you want to replace it?"
+"</font_size>"
+msgstr ""
+
+#: src/bin/ui/project_export.c:301
+#, fuzzy
+msgid "Export source edc"
+msgstr "Exporter le code source"
+
+#: src/bin/ui/project_export.c:337
+#, c-format
+msgid ""
+"<font_size=16>A project file '%s/%s' already exist.Do you want to replace it?"
+"</font_size>"
+msgstr ""
+
+#: src/bin/ui/project_export.c:343
+#, fuzzy
+msgid "Export group source code"
+msgstr "Exporter le code source"
+
+#: src/bin/ui/project_navigator.c:418
+msgid "Alias of"
+msgstr "Alias de"
+
+#: src/bin/ui/project_navigator.c:420 src/bin/ui/project_navigator.c:478
+msgid "Copy of"
+msgstr "Copie de"
+
+#: src/bin/ui/project_navigator.c:468 src/bin/ui/property/property_image.c:439
+#: src/bin/ui/workspace/group_navigator.c:1554
+msgid "Name"
+msgstr "Nom"
+
+#: src/bin/ui/project_navigator.c:485
+msgid "Alias"
+msgstr "Alias"
+
+#: src/bin/ui/project_navigator.c:495 src/bin/ui/project_navigator.c:508
+#: src/bin/ui/project_navigator.c:911 src/bin/ui/project_navigator.c:946
+#: src/bin/ui/property/property_group.c:1832
+#: src/bin/ui/property/property_group.c:2550
+#: src/bin/ui/property/property_group.c:2734
+#: src/bin/ui/property/property_group.c:3235
+#: src/bin/ui/workspace/group_navigator.c:114
+#: src/bin/ui/workspace/group_navigator.c:1167
+#: src/bin/ui/workspace/group_navigator.c:1425
+#: src/bin/ui/workspace/group_navigator.c:1428
+msgid "None"
+msgstr "Aucun(e)"
+
+#: src/bin/ui/project_navigator.c:603
+#, c-format
+msgid "Can't remove layout \"%s\""
+msgstr "Impossible de supprimer la composition « %s »"
+
+#: src/bin/ui/project_navigator.c:604 src/bin/ui/property/property_group.c:3782
+msgid "Error"
+msgstr "Erreur"
+
+#: src/bin/ui/project_navigator.c:648 src/bin/ui/project_navigator.c:755
+#: src/bin/ui/project_navigator.c:777 src/bin/ui/project_navigator.c:790
+msgid "Warning: Delete layout"
+msgstr "Avertissement de suppression"
+
+#: src/bin/ui/project_navigator.c:649 src/bin/ui/project_navigator.c:778
+msgid ""
+"Can't delete the opened layout. Please, close the layout tab before delete "
+"it."
+msgstr ""
+"Impossible de supprimer la composition actuelle. Fermez l'onglet de celle-ci "
+"avant de la supprimer."
+
+#: src/bin/ui/project_navigator.c:756
+msgid ""
+"Can't delete one of those opened layouts. Please, close the layout tab "
+"before delete it."
+msgstr ""
+"Impossible de supprimer l'une des compositions actuelles. Fermez l'onglet de "
+"celle-ci avant de la supprimer."
+
+#: src/bin/ui/project_navigator.c:763
+msgid "Confirm delete layouts"
+msgstr "Confirmez les suppressions"
+
+#: src/bin/ui/project_navigator.c:764
+msgid ""
+"Are you sure you want to delete the selected layouts?<br>All aliases will be "
+"delete too."
+msgstr ""
+"Voulez-vous vraiment supprimer les compositions sélectionnées ?<br>Les alias "
+"seront également supprimés."
+
+#: src/bin/ui/project_navigator.c:791
+msgid ""
+"One or few of the aliases of this group are opened.Please, close the alias "
+"tab/tabs before delete it."
+msgstr ""
+"Un ou plusieurs alias de ce groupe sont ouverts. Fermez le ou les onglets "
+"d'alias avant de le(s) supprimer."
+
+#: src/bin/ui/project_navigator.c:798
+msgid "Confirm delete layout"
+msgstr "Confirmer la suppression"
+
+#: src/bin/ui/project_navigator.c:799
+msgid ""
+"Are you sure you want to delete the selected layout?<br>All aliases will be "
+"delete too."
+msgstr ""
+"Voulez-vous vraiment supprimer la composition sélectionnée ?<br>Les alias "
+"seront également supprimés."
+
+#: src/bin/ui/property/property_color.c:193
+msgid "Provides a descriptive name for the effect of the color class"
+msgstr "Fournit un nom descriptif pour l'effet de la classe de couleur"
+
+#: src/bin/ui/property/property_dummy.c:174
+msgid "default 0.0"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:208
+#, fuzzy
+msgid "Item 1"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:209
+#: src/bin/ui/property/property_dummy.c:216
+#: src/bin/ui/property/property_group.c:5385
+#: src/bin/ui/property/property_group.c:5563
+msgid "elm/image/icon/start-point"
+msgstr "elm/image/icon/start-point"
+
+#: src/bin/ui/property/property_dummy.c:211
+#: src/bin/ui/property/property_dummy.c:290
+#: src/bin/ui/property/property_dummy.c:294
+#, fuzzy
+msgid "Item 2"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:213
+#: src/bin/ui/property/property_dummy.c:219
+#: src/bin/ui/property/property_dummy.c:260
+#: src/bin/ui/property/property_dummy.c:292
+#: src/bin/ui/property/property_group.c:5426
+#: src/bin/ui/property/property_group.c:5586
+msgid "elm/image/icon/end-point"
+msgstr "elm/image/icon/end-point"
+
+#: src/bin/ui/property/property_dummy.c:215
+#, fuzzy
+msgid "Item 2_1"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:218
+#, fuzzy
+msgid "Item 2_2"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:221
+#, fuzzy
+msgid "Item 3"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:226
+msgid "Item 3_1 with dynamic subitems"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:230
+#, fuzzy
+msgid "Item 3_2"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:234
+#, fuzzy
+msgid "Item 4"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:235
+#, fuzzy
+msgid "entry"
+msgstr "-entry"
+
+#: src/bin/ui/property/property_dummy.c:243
+#, fuzzy
+msgid "Item 5"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:244
+msgid "comb"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:251
+#, fuzzy
+msgid "Item 6"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:252
+#: src/bin/ui/property/property_dummy.c:261
+#: src/bin/ui/property/property_dummy.c:266
+#: src/bin/ui/property/property_dummy.c:317
+#, fuzzy
+msgid "min"
+msgstr "Agrandir"
+
+#: src/bin/ui/property/property_dummy.c:254
+#: src/bin/ui/property/property_dummy.c:257
+#: src/bin/ui/property/property_dummy.c:263
+#: src/bin/ui/property/property_dummy.c:268
+#: src/bin/ui/property/property_dummy.c:271
+#: src/bin/ui/property/property_image.c:489
+#: src/bin/ui/property/property_image.c:490
+#: src/bin/ui/property/property_image.c:495
+#: src/bin/ui/property/property_image.c:496
+#: src/bin/ui/property/property_image.c:501
+#: src/bin/ui/property/property_image.c:502
+#: src/bin/ui/property/property_image.c:507
+#: src/bin/ui/property/property_image.c:508
+msgid "px"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:255
+#: src/bin/ui/property/property_dummy.c:269
+#: src/bin/ui/property/property_dummy.c:320
+msgid "max"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:259
+#, fuzzy
+msgid "Item 7"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:265
+#, fuzzy
+msgid "Item 8"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:273
+#, fuzzy
+msgid "Item 9"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:280
+#, fuzzy
+msgid "Item 10"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:286
+#: src/bin/ui/workspace/group_navigator.c:2629
+msgid "State"
+msgstr "État"
+
+#: src/bin/ui/property/property_dummy.c:305
+#: src/bin/ui/property/property_dummy.c:315
+#: src/bin/ui/workspace/group_navigator.c:2633
+msgid "Item"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_dummy.c:306
+msgid "x"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:309
+msgid "y"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:318
+msgid "p1"
+msgstr ""
+
+#: src/bin/ui/property/property_dummy.c:321
+msgid "p2"
+msgstr ""
+
+#: src/bin/ui/property/property_group.c:1190
 msgid "< Style manager >"
 msgstr "< Gestionnaire de styles >"
 
-#: src/bin/ui/property/property_group.c:1273
+#: src/bin/ui/property/property_group.c:1279
 msgid "< Sound manager >"
 msgstr "< Gestionnaire de sons >"
 
-#: src/bin/ui/property/property_group.c:1523
+#: src/bin/ui/property/property_group.c:1529
 msgid "< Color class manager >"
 msgstr "< Gestionnaire de classes de couleur >"
 
-#: src/bin/ui/property/property_group.c:1667
+#: src/bin/ui/property/property_group.c:1673
 msgid ""
 "Specifies a program to run after the current<br>program completes. The "
 "source and signal parameters<br>of a program run as an \"after\" are ignored."
@@ -833,938 +1166,940 @@ msgstr ""
 "paramètres source et signal d'un<br>programme exécuté en « after » sont "
 "ignorés."
 
-#: src/bin/ui/property/property_group.c:1766
+#: src/bin/ui/property/property_group.c:1772
 msgid "Program or part on which the specified action acts."
 msgstr "Programme ou partie sur lequel/laquelle agit l'action spécifiée."
 
-#: src/bin/ui/property/property_group.c:2704
+#: src/bin/ui/property/property_group.c:2710
 #, c-format
 msgid "group name changed from \"%s\" to \"%s\""
 msgstr "nom du groupe modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2708
+#: src/bin/ui/property/property_group.c:2714
 #, c-format
 msgid "state name changed from \"%s\" to \"%s\""
 msgstr "nom de l'état modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2712
+#: src/bin/ui/property/property_group.c:2718
 #, c-format
 msgid "program name changed from \"%s\" to \"%s\""
 msgstr "nom du programme modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2719
+#: src/bin/ui/property/property_group.c:2725
 #, c-format
 msgid "part item's name changed from \"%s\" to \"%s\""
 msgstr "nom de l'élément de partie modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2723
+#: src/bin/ui/property/property_group.c:2729
 #, c-format
 msgid "image changed from \"%s\" to \"%s\""
 msgstr "image modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2733
+#: src/bin/ui/property/property_group.c:2739
 #, c-format
 msgid "vector changed from \"%s\" to \"%s\""
 msgstr "vecteur modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2738
+#: src/bin/ui/property/property_group.c:2744
 #, c-format
 msgid "changed \"%d\" tween images"
 msgstr "%d images d'interpolation (tween) modifiées"
 
-#: src/bin/ui/property/property_group.c:2741
+#: src/bin/ui/property/property_group.c:2747
 #, c-format
 msgid "group.min_w changed from %d to %d"
 msgstr "group.min_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2745
+#: src/bin/ui/property/property_group.c:2751
 #, c-format
 msgid "group.min_h changed from %d to %d"
 msgstr "group.min_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2749
+#: src/bin/ui/property/property_group.c:2755
 #, c-format
 msgid "group.max_w changed from %d to %d"
 msgstr "group.max_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2753
+#: src/bin/ui/property/property_group.c:2759
 #, c-format
 msgid "group.max_h changed from %d to %d"
 msgstr "group.max_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2757
+#: src/bin/ui/property/property_group.c:2763
 #, c-format
 msgid "part name changed from \"%s\" to \"%s\""
 msgstr "nom de la partie modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2761
+#: src/bin/ui/property/property_group.c:2767
 #, c-format
 msgid "data item name changed from \"%s\" to \"%s\""
 msgstr "nom de l'élément de donnée modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2765
+#: src/bin/ui/property/property_group.c:2771
 #, c-format
 msgid "data item value changed from \"%s\" to \"%s\""
 msgstr "valeur de l'élément de donnée modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2775
+#: src/bin/ui/property/property_group.c:2781
 #, c-format
 msgid "part scale %s"
 msgstr "échelle de la partie %s"
 
-#: src/bin/ui/property/property_group.c:2778
+#: src/bin/ui/property/property_group.c:2784
 #, c-format
 msgid "mouse events %s"
 msgstr "événements de souris %s"
 
-#: src/bin/ui/property/property_group.c:2781
+#: src/bin/ui/property/property_group.c:2787
 #, c-format
 msgid "repeat events %s"
 msgstr "transmission d'événements (repeat) %s"
 
-#: src/bin/ui/property/property_group.c:2784
+#: src/bin/ui/property/property_group.c:2790
 #, c-format
 msgid "clip to changed from \"%s\" to \"%s\""
 msgstr "ajuster à (clip) modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2788
+#: src/bin/ui/property/property_group.c:2794
 #, c-format
 msgid "proxy source changed from \"%s\" to \"%s\""
 msgstr "source proxy modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2792
+#: src/bin/ui/property/property_group.c:2798
 #, c-format
 msgid "ignore_flags changed from \"%s\" to \"%s\""
 msgstr "ignore_flags modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2797
+#: src/bin/ui/property/property_group.c:2803
 #, c-format
 msgid "pointer mode changed from \"%s\" to \"%s\""
 msgstr "mode pointeur modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2802
+#: src/bin/ui/property/property_group.c:2808
 #, c-format
 msgid "select mode changed from \"%s\" to \"%s\""
 msgstr "mode sélecteur modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2807
+#: src/bin/ui/property/property_group.c:2813
 #, c-format
 msgid "entry mode changed from \"%s\" to \"%s\""
 msgstr "mode entrée modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2812
+#: src/bin/ui/property/property_group.c:2818
 #, c-format
 msgid "cursor mode changed from \"%s\" to \"%s\""
 msgstr "mode curseur modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2817
+#: src/bin/ui/property/property_group.c:2823
 #, c-format
 msgid "fill type changed from \"%s\" to \"%s\""
 msgstr "type de remplissage modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2822
+#: src/bin/ui/property/property_group.c:2828
 #, c-format
 msgid "text effect changed from \"%s\" to \"%s\""
 msgstr "effet de texte modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2827
+#: src/bin/ui/property/property_group.c:2833
 #, c-format
 msgid "shadow direction changed from \"%s\" to \"%s\""
 msgstr "direction d'ombre modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2833
+#: src/bin/ui/property/property_group.c:2839
 #, c-format
 msgid "dragable enable x changed from %d to %d"
 msgstr "déplacement (dragable) en x actif modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2837
+#: src/bin/ui/property/property_group.c:2843
 #, c-format
 msgid "dragable enable y changed from %d to %d"
 msgstr "déplacement (dragable) en y actif modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2841
+#: src/bin/ui/property/property_group.c:2847
 #, c-format
 msgid "dragable step x changed from %d to %d"
 msgstr "pas de déplacement (dragable step) en x modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2845
+#: src/bin/ui/property/property_group.c:2851
 #, c-format
 msgid "dragable step y changed from %d to %d"
 msgstr "pas de déplacement (dragable step) en y modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2849
+#: src/bin/ui/property/property_group.c:2855
 #, c-format
 msgid "dragable count x changed from %d to %d"
 msgstr "comptage de déplacement (dragable) en x modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2853
+#: src/bin/ui/property/property_group.c:2859
 #, c-format
 msgid "dragable count y changed from %d to %d"
 msgstr "comptage de déplacement (dragable) en y modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2857
+#: src/bin/ui/property/property_group.c:2863
 #, c-format
 msgid "dragable confine changed from \"%s\" to \"%s\""
 msgstr "confinement de déplacement (dragable) modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2861
+#: src/bin/ui/property/property_group.c:2867
 #, c-format
 msgid "dragable threshold changed from \"%s\" to \"%s\""
 msgstr "seuil de déplacement (dragable) modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2865
+#: src/bin/ui/property/property_group.c:2871
 #, c-format
 msgid "dragable event changed from \"%s\" to \"%s\""
 msgstr "événement de déplacement modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2869
+#: src/bin/ui/property/property_group.c:2875
 #, c-format
 msgid "source changed from \"%s\" to \"%s\""
 msgstr "source modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2873
+#: src/bin/ui/property/property_group.c:2879
 #, c-format
 msgid "selection under changed from \"%s\" to \"%s\""
 msgstr "sélection dessous modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2877
+#: src/bin/ui/property/property_group.c:2883
 #, c-format
 msgid "cursor under changed from \"%s\" to \"%s\""
 msgstr "curseur dessous modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2881
+#: src/bin/ui/property/property_group.c:2887
 #, c-format
 msgid "anchors under changed from \"%s\" to \"%s\""
 msgstr "ancres dessous modifiées de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2885
+#: src/bin/ui/property/property_group.c:2891
 #, c-format
 msgid "selection over changed from \"%s\" to \"%s\""
 msgstr "sélection dessus modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2889
+#: src/bin/ui/property/property_group.c:2895
 #, c-format
 msgid "cursor over changed from \"%s\" to \"%s\""
 msgstr "curseur dessus modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2893
+#: src/bin/ui/property/property_group.c:2899
 #, c-format
 msgid "anchors over changed from \"%s\" to \"%s\""
 msgstr "ancres dessus modifiées de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2897
+#: src/bin/ui/property/property_group.c:2903
 #, c-format
 msgid "text source changed from \"%s\" to \"%s\""
 msgstr "source du texte modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2901
+#: src/bin/ui/property/property_group.c:2907
 #, c-format
 msgid "text text_source changed from \"%s\" to \"%s\""
 msgstr "texte du text_source modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2905
+#: src/bin/ui/property/property_group.c:2911
 #, c-format
 msgid "text style changed from \"%s\" to \"%s\""
 msgstr "style du texte modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2909
+#: src/bin/ui/property/property_group.c:2915
 #, c-format
 msgid "multiline %s"
 msgstr "multiligne %s"
 
-#: src/bin/ui/property/property_group.c:2912
+#: src/bin/ui/property/property_group.c:2918
 #, c-format
 msgid "state visible %s"
 msgstr "état visible %s"
 
-#: src/bin/ui/property/property_group.c:2915
+#: src/bin/ui/property/property_group.c:2921
 #, c-format
 msgid "fill smooth %s"
 msgstr "remplissage lissé %s"
 
-#: src/bin/ui/property/property_group.c:2918
+#: src/bin/ui/property/property_group.c:2924
 #, c-format
 msgid "state min_w changed from %d to %d"
 msgstr "état min_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2922
+#: src/bin/ui/property/property_group.c:2928
 #, c-format
 msgid "state min_h changed from %d to %d"
 msgstr "état min_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2926
+#: src/bin/ui/property/property_group.c:2932
 #, c-format
 msgid "state minmul_w changed from %d to %d"
 msgstr "état minmul_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2930
+#: src/bin/ui/property/property_group.c:2936
 #, c-format
 msgid "state minmul_h changed from %d to %d"
 msgstr "état minmul_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2934
+#: src/bin/ui/property/property_group.c:2940
 #, c-format
 msgid "state fixed_w %s"
 msgstr "état fixed_w %s"
 
-#: src/bin/ui/property/property_group.c:2937
+#: src/bin/ui/property/property_group.c:2943
 #, c-format
 msgid "state fixed_h %s"
 msgstr "état fixed_h %s"
 
-#: src/bin/ui/property/property_group.c:2940
+#: src/bin/ui/property/property_group.c:2946
 #, c-format
 msgid "state max_w changed from %d to %d"
 msgstr "état max_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2944
+#: src/bin/ui/property/property_group.c:2950
 #, c-format
 msgid "state max_h changed from %d to %d"
 msgstr "état min_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:2948
+#: src/bin/ui/property/property_group.c:2954
 #, c-format
 msgid "state aspect_min changed from %.2f to %.2f"
 msgstr "état aspect_min modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2952
+#: src/bin/ui/property/property_group.c:2958
 #, c-format
 msgid "state aspect_max changed from %.2f to %.2f"
 msgstr "état aspect_max modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2956
+#: src/bin/ui/property/property_group.c:2962
 #, c-format
 msgid "aspect preference changed from \"%s\" to \"%s\""
 msgstr "préférence d'aspect modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2961
+#: src/bin/ui/property/property_group.c:2967
 #, c-format
 msgid "align x changed from %.2f to %.2f"
 msgstr "align x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2965
+#: src/bin/ui/property/property_group.c:2971
 #, c-format
 msgid "align y changed from %.2f to %.2f"
 msgstr "align y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2969
+#: src/bin/ui/property/property_group.c:2975
 #, c-format
 msgid "rel1 to_x changed from \"%s\" to \"%s\""
 msgstr "rel1 to_x modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2973
+#: src/bin/ui/property/property_group.c:2979
 #, c-format
 msgid "rel1 to_y changed from \"%s\" to \"%s\""
 msgstr "rel1 to_y modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2977
+#: src/bin/ui/property/property_group.c:2983
 #, c-format
 msgid "rel1 relative x changed from %.2f to %.2f"
 msgstr "rel1 relative x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2981
+#: src/bin/ui/property/property_group.c:2987
 #, c-format
 msgid "rel1 relative y changed from %.2f to %.2f"
 msgstr "rel1 relative y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:2985
+#: src/bin/ui/property/property_group.c:2991
 #, c-format
 msgid "rel1 offset x changed from %d to %d"
 msgstr "rel1 offset x modifié %d en %d"
 
-#: src/bin/ui/property/property_group.c:2989
+#: src/bin/ui/property/property_group.c:2995
 #, c-format
 msgid "rel1 offset y changed from %d to %d"
 msgstr "rel1 offset y modifié %d en %d"
 
-#: src/bin/ui/property/property_group.c:2993
+#: src/bin/ui/property/property_group.c:2999
 #, c-format
 msgid "rel2 to_x changed from \"%s\" to \"%s\""
 msgstr "rel2 to_x modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:2997
+#: src/bin/ui/property/property_group.c:3003
 #, c-format
 msgid "rel2 to_y changed from \"%s\" to \"%s\""
 msgstr "rel2 to_y modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3001
+#: src/bin/ui/property/property_group.c:3007
 #, c-format
 msgid "rel2 relative x changed from %.2f to %.2f"
 msgstr "rel2 relative x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3005
+#: src/bin/ui/property/property_group.c:3011
 #, c-format
 msgid "rel2 relative y changed from %.2f to %.2f"
 msgstr "rel2 relative y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3009
+#: src/bin/ui/property/property_group.c:3015
 #, c-format
 msgid "rel2 offset x changed from %d to %d"
 msgstr "rel2 offset x modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3013
+#: src/bin/ui/property/property_group.c:3019
 #, c-format
 msgid "rel2 offset y changed from %d to %d"
 msgstr "rel2 offset y modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3017
+#: src/bin/ui/property/property_group.c:3023
 #, c-format
 msgid "image left border changed from %d to %d"
 msgstr "bordure gauche de l'image modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3022
+#: src/bin/ui/property/property_group.c:3028
 #, c-format
 msgid "image right border changed from %d to %d"
 msgstr "bordure droite de l'image modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3027
+#: src/bin/ui/property/property_group.c:3033
 #, c-format
 msgid "image top border changed from %d to %d"
 msgstr "bordure haute de l'image modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3032
+#: src/bin/ui/property/property_group.c:3038
 #, c-format
 msgid "image bottom border changed from %d to %d"
 msgstr "bordure basse de l'image modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3037
+#: src/bin/ui/property/property_group.c:3043
 #, c-format
 msgid "border fill changed from \"%s\" to \"%s\""
 msgstr "remplissage de bordure modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3042
+#: src/bin/ui/property/property_group.c:3048
 #, c-format
 msgid "fill origin relative x changed from %.2f to %.2f"
 msgstr "fill origin relative x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3046
+#: src/bin/ui/property/property_group.c:3052
 #, c-format
 msgid "fill origin relative y changed from %.2f to %.2f"
 msgstr "fill origin relative y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3050
+#: src/bin/ui/property/property_group.c:3056
 #, c-format
 msgid "fill size relative x changed from %.2f to %.2f"
 msgstr "fill size relative x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3054
+#: src/bin/ui/property/property_group.c:3060
 #, c-format
 msgid "fill size relative y changed from %.2f to %.2f"
 msgstr "fill size relative y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3058
+#: src/bin/ui/property/property_group.c:3064
 #, c-format
 msgid "fill origin offset x changed from %.2f to %.2f"
 msgstr "fill origin offset x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3062
+#: src/bin/ui/property/property_group.c:3068
 #, c-format
 msgid "fill origin offset y changed from %.2f to %.2f"
 msgstr "fill origin offset Y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3066
+#: src/bin/ui/property/property_group.c:3072
 #, c-format
 msgid "fill size offset x changed from %.2f to %.2f"
 msgstr "fill size offset x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3070
+#: src/bin/ui/property/property_group.c:3076
 #, c-format
 msgid "fill size offset y changed from %.2f to %.2f"
 msgstr "fill size offset y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3074
+#: src/bin/ui/property/property_group.c:3080
 #, c-format
 msgid "color class changed from \"%s\" to \"%s\""
 msgstr "classe de couleur modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3078
+#: src/bin/ui/property/property_group.c:3084
 #, c-format
 msgid "color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "couleur modifiée de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3086
+#: src/bin/ui/property/property_group.c:3092
 #, c-format
 msgid "outline color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "couleur de contour modifiée de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3094
+#: src/bin/ui/property/property_group.c:3100
 #, c-format
 msgid "shadow color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "couleur d'ombre modifiée de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3102
+#: src/bin/ui/property/property_group.c:3108
 #, c-format
 msgid "text changed from \"%s\" to \"%s\""
 msgstr "texte modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3106
+#: src/bin/ui/property/property_group.c:3112
 #, c-format
 msgid "font changed from \"%s\" to \"%s\""
 msgstr "police modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3110
+#: src/bin/ui/property/property_group.c:3116
 #, c-format
 msgid "text min_x %s"
 msgstr "text min_x %s"
 
-#: src/bin/ui/property/property_group.c:3113
+#: src/bin/ui/property/property_group.c:3119
 #, c-format
 msgid "text min_y %s"
 msgstr "text min_y %s"
 
-#: src/bin/ui/property/property_group.c:3116
+#: src/bin/ui/property/property_group.c:3122
 #, c-format
 msgid "text max_x %s"
 msgstr "text max_x %s"
 
-#: src/bin/ui/property/property_group.c:3119
+#: src/bin/ui/property/property_group.c:3125
 #, c-format
 msgid "text max_y %s"
 msgstr "text max_y %s"
 
-#: src/bin/ui/property/property_group.c:3122
+#: src/bin/ui/property/property_group.c:3128
 #, c-format
 msgid "text fit_x %s"
 msgstr "text fit_x %s"
 
-#: src/bin/ui/property/property_group.c:3125
+#: src/bin/ui/property/property_group.c:3131
 #, c-format
 msgid "text fit_y %s"
 msgstr "text fit_y %s"
 
-#: src/bin/ui/property/property_group.c:3128
+#: src/bin/ui/property/property_group.c:3134
 #, c-format
 msgid "program current %s"
 msgstr "programme actuel %s"
 
-#: src/bin/ui/property/property_group.c:3131
+#: src/bin/ui/property/property_group.c:3137
 #, c-format
 msgid "text align x changed from %.2f to %.2f"
 msgstr "text align x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3135
+#: src/bin/ui/property/property_group.c:3141
 #, c-format
 msgid "text align y changed from %.2f to %.2f"
 msgstr "text align y modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3139
+#: src/bin/ui/property/property_group.c:3145
 #, c-format
 msgid "text size changed from %d to %d"
 msgstr "taille du texte modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3143
+#: src/bin/ui/property/property_group.c:3149
 #, c-format
 msgid "text elipsis changed from %.2f to %.2f"
 msgstr "ellipse de texte modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3147
+#: src/bin/ui/property/property_group.c:3153
 #, c-format
 msgid "text elipsis %s"
 msgstr "ellipse de texte %s"
 
-#: src/bin/ui/property/property_group.c:3150
+#: src/bin/ui/property/property_group.c:3156
 #, c-format
 msgid "program signal changed from \"%s\" to \"%s\""
 msgstr "signal du programme modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3154
+#: src/bin/ui/property/property_group.c:3160
 #, c-format
 msgid "program emit signal changed from \"%s\" to \"%s\""
 msgstr "émission de signal du programme modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3158
+#: src/bin/ui/property/property_group.c:3164
 #, c-format
 msgid "program emit source changed from \"%s\" to \"%s\""
 msgstr "émission de source du programme modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3162
+#: src/bin/ui/property/property_group.c:3168
 #, c-format
 msgid "program state changed from \"%s\" to \"%s\""
 msgstr "état du programme modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3166
+#: src/bin/ui/property/property_group.c:3172
 #, c-format
 msgid "program source changed from \"%s\" to \"%s\""
 msgstr "source du programme modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3170
+#: src/bin/ui/property/property_group.c:3176
 #, c-format
 msgid "program in.from changed from %.2f to %.2f"
 msgstr "programme in.from modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3174
+#: src/bin/ui/property/property_group.c:3180
 #, c-format
 msgid "program in.range changed from %.2f to %.2f"
 msgstr "programme in.range modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3178
+#: src/bin/ui/property/property_group.c:3184
 #, c-format
 msgid "program's transition time changed from %.2f to %.2f"
 msgstr "durée de transition du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3182
+#: src/bin/ui/property/property_group.c:3188
 #, c-format
 msgid "program's transition factor changed from %.2f to %.2f"
 msgstr "facteur de transition du programme modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3186
+#: src/bin/ui/property/property_group.c:3192
 #, c-format
 msgid "program's transition gradient changed from %.2f to %.2f"
 msgstr "gradient de transition du programme modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3190
+#: src/bin/ui/property/property_group.c:3196
 #, c-format
 msgid "program's transition decay changed from %.2f to %.2f"
 msgstr "décroissance de transition du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3194
+#: src/bin/ui/property/property_group.c:3200
 #, c-format
 msgid "program's transition bounces changed from %.2f to %.2f"
 msgstr "rebonds de transition du programme modifiés de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3198
+#: src/bin/ui/property/property_group.c:3204
 #, c-format
 msgid "program's transition swings changed from %.2f to %.2f"
 msgstr "oscillations de transition du programme modifiées de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3202
+#: src/bin/ui/property/property_group.c:3208
 #, c-format
 msgid "program's transition bezier_x1 changed from %.2f to %.2f"
 msgstr "transition bezier_x1 du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3206
+#: src/bin/ui/property/property_group.c:3212
 #, c-format
 msgid "program's transition bezier_y1 changed from %.2f to %.2f"
 msgstr "transition bezier_y1 du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3210
+#: src/bin/ui/property/property_group.c:3216
 #, c-format
 msgid "program's transition bezier_x2 changed from %.2f to %.2f"
 msgstr "transition bezier_x2 du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3214
+#: src/bin/ui/property/property_group.c:3220
 #, c-format
 msgid "program's transition bezier_y2 changed from %.2f to %.2f"
 msgstr "transition bezier_y2 du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3218
+#: src/bin/ui/property/property_group.c:3224
 #, c-format
 msgid "program's tone duration changed from %.2f to %.2f"
 msgstr "durée de la tonalité du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3222
+#: src/bin/ui/property/property_group.c:3228
 #, c-format
 msgid "program's sample changed from \"%s\" to \"%s\""
 msgstr "échantillon du programme modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3234
+#: src/bin/ui/property/property_group.c:3240
 #, c-format
 msgid "program's tone changed from \"%s\" to \"%s\""
 msgstr "tonalité du programme modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3238
+#: src/bin/ui/property/property_group.c:3244
 #, c-format
 msgid "program's channel changed from \"%s\" to \"%s\""
 msgstr "canal du programme modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3242
+#: src/bin/ui/property/property_group.c:3248
 #, c-format
 msgid "program's sample speed changed from %.2f to %.2f"
 msgstr "vitesse de l'échantillon du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3246
+#: src/bin/ui/property/property_group.c:3252
 #, c-format
 msgid "program drag value x changed from %.2f to %.2f"
-msgstr "valeur de déplacement (drag) en x du programme modifiée de %.2f en %.2f"
+msgstr ""
+"valeur de déplacement (drag) en x du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3250
+#: src/bin/ui/property/property_group.c:3256
 #, c-format
 msgid "program drag value y changed from %.2f to %.2f"
-msgstr "valeur de déplacement (drag) en y du programme modifiée de %.2f en %.2f"
+msgstr ""
+"valeur de déplacement (drag) en y du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3254
+#: src/bin/ui/property/property_group.c:3260
 #, c-format
 msgid "program value changed from %.2f to %.2f"
 msgstr "valeur du programme modifiée de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3258
+#: src/bin/ui/property/property_group.c:3264
 #, c-format
 msgid "filter part changed from \"%s\" to \"%s\""
 msgstr "filtre de la partie modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3262
+#: src/bin/ui/property/property_group.c:3268
 #, c-format
 msgid "filter state changed from \"%s\" to \"%s\""
 msgstr "filtre de l'état modifié de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3266
+#: src/bin/ui/property/property_group.c:3272
 #, c-format
 msgid "container's align_x changed from %.2f to %.2f"
 msgstr "align_x du conteneur modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3270
+#: src/bin/ui/property/property_group.c:3276
 #, c-format
 msgid "container's align_y changed from %.2f to %.2f"
 msgstr "align_y du conteneur modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3274
+#: src/bin/ui/property/property_group.c:3280
 #, c-format
 msgid "container's padding_x changed from %d to %d"
 msgstr "padding_x du conteneur modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3278
+#: src/bin/ui/property/property_group.c:3284
 #, c-format
 msgid "container's padding_y changed from %d to %d"
 msgstr "padding_y du conteneur modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3282
+#: src/bin/ui/property/property_group.c:3288
 #, c-format
 msgid "container's min_x %s"
 msgstr "min_x du conteneur %s"
 
-#: src/bin/ui/property/property_group.c:3285
+#: src/bin/ui/property/property_group.c:3291
 #, c-format
 msgid "container's min_y %s"
 msgstr "min_y du conteneur %s"
 
-#: src/bin/ui/property/property_group.c:3288
+#: src/bin/ui/property/property_group.c:3294
 #, c-format
 msgid "table homogeneous changed from \"%s\" to \"%s\""
 msgstr "paramètre homogène de la table modifié de \"%s\" en \"%s\""
 
-#: src/bin/ui/property/property_group.c:3294
+#: src/bin/ui/property/property_group.c:3300
 #, c-format
 msgid "item's source changed from \"%s\" to \"%s\""
 msgstr "source de l'élément modifiée de \"%s\" en \"%s\""
 
-#: src/bin/ui/property/property_group.c:3298
+#: src/bin/ui/property/property_group.c:3304
 #, c-format
 msgid "part item's min_w changed from %d to %d"
 msgstr "élément de partie min_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3302
+#: src/bin/ui/property/property_group.c:3308
 #, c-format
 msgid "part item's min_h changed from %d to %d"
 msgstr "élément de partie min_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3306
+#: src/bin/ui/property/property_group.c:3312
 #, c-format
 msgid "part item's max_w changed from %d to %d"
 msgstr "élément de partie max_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3310
+#: src/bin/ui/property/property_group.c:3316
 #, c-format
 msgid "part item's max_h changed from %d to %d"
 msgstr "élément de partie max_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3314
+#: src/bin/ui/property/property_group.c:3320
 #, c-format
 msgid "part item's prefer_w changed from %d to %d"
 msgstr "élément de partie prefer_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3318
+#: src/bin/ui/property/property_group.c:3324
 #, c-format
 msgid "part item's prefer_h changed from %d to %d"
 msgstr "élément de prefer _h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3322
+#: src/bin/ui/property/property_group.c:3328
 #, c-format
 msgid "part item's weight_x changed from %.2f to %.2f"
 msgstr "élément de partie weight_x modifié %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3326
+#: src/bin/ui/property/property_group.c:3332
 #, c-format
 msgid "part item's weight_y changed from %.2f to %.2f"
 msgstr "élément de partie weight_y modifié %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3330
+#: src/bin/ui/property/property_group.c:3336
 #, c-format
 msgid "part item's align_x changed from %.2f to %.2f"
 msgstr "élément de partie align_x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3334
+#: src/bin/ui/property/property_group.c:3340
 #, c-format
 msgid "part item's align_y changed from %.2f to %.2f"
 msgstr "élément de partie align_x modifié de %.2f en %.2f"
 
-#: src/bin/ui/property/property_group.c:3338
+#: src/bin/ui/property/property_group.c:3344
 #, c-format
 msgid "part item's aspect mode changed from \"%s\" to \"%s\""
 msgstr "mode d'aspect de l'élément de partie modifié de \"%s\" en \"%s\""
 
-#: src/bin/ui/property/property_group.c:3343
+#: src/bin/ui/property/property_group.c:3349
 #, c-format
 msgid "program's transition type changed from \"%s\" to \"%s\""
 msgstr "type de transition du programme modifié de \"%s\" en \"%s\""
 
-#: src/bin/ui/property/property_group.c:3348
+#: src/bin/ui/property/property_group.c:3354
 #, c-format
 msgid "part item's aspect_w changed from %d to %d"
 msgstr "élément de partie aspect_w modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3352
+#: src/bin/ui/property/property_group.c:3358
 #, c-format
 msgid "part item's aspect_h changed from %d to %d"
 msgstr "élément de partie aspect_h modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3356
+#: src/bin/ui/property/property_group.c:3362
 #, c-format
 msgid "part item's spread by rows changed from %d to %d"
 msgstr ""
 "élément de partie spread by rows (extension par rangées) modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3360
+#: src/bin/ui/property/property_group.c:3366
 #, c-format
 msgid "part item's spread by columns changed from %d to %d"
 msgstr ""
 "élément de partie spread by columns (extension par colonnes) modifié de %d "
 "en %d"
 
-#: src/bin/ui/property/property_group.c:3364
+#: src/bin/ui/property/property_group.c:3370
 #, c-format
 msgid "part item's span by columns changed from %hu to %hu"
 msgstr ""
 "élément de partie span by columns (étalement sur plusieurs colonnes) modifié "
 "de %hu en %hu"
 
-#: src/bin/ui/property/property_group.c:3368
+#: src/bin/ui/property/property_group.c:3374
 #, c-format
 msgid "part item's span by rows changed from %hu to %hu"
 msgstr ""
 "élément de partie span by rows (étalement sur plusieurs rangées) modifié de "
 "%hu en %hu"
 
-#: src/bin/ui/property/property_group.c:3372
+#: src/bin/ui/property/property_group.c:3378
 #, c-format
 msgid "part item's column position changed from %hu to %hu"
 msgstr "position de la colonne de l'élément de partie modifiée de %hu en %hu"
 
-#: src/bin/ui/property/property_group.c:3376
+#: src/bin/ui/property/property_group.c:3382
 #, c-format
 msgid "part item's row position changed from %hu to %hu"
 msgstr "position de la rangée de l'élément de partie modifiée de %hu en %hu"
 
-#: src/bin/ui/property/property_group.c:3380
+#: src/bin/ui/property/property_group.c:3386
 #, c-format
 msgid "part item's left padding changed from %d to %d"
 msgstr "padding gauche de l'élément de partie modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3385
+#: src/bin/ui/property/property_group.c:3391
 #, c-format
 msgid "part item's right padding changed from %d to %d"
 msgstr "padding droit de l'élément de partie modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3390
+#: src/bin/ui/property/property_group.c:3396
 #, c-format
 msgid "part item's top padding changed from %d to %d"
 msgstr "padding haut de l'élément de partie modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3395
+#: src/bin/ui/property/property_group.c:3401
 #, c-format
 msgid "part item's bottom padding changed from %d to %d"
 msgstr "padding bas de l'élément de partie modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3400
+#: src/bin/ui/property/property_group.c:3406
 #, c-format
 msgid "map's perspective part changed from \"%s\" to \"%s\""
 msgstr "partie perspective de la carte modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3404
+#: src/bin/ui/property/property_group.c:3410
 #, c-format
 msgid "map's light part changed from \"%s\" to \"%s\""
 msgstr "partie lumière de la carte modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3408
+#: src/bin/ui/property/property_group.c:3414
 #, c-format
 msgid "map %s"
 msgstr "carte %s"
 
-#: src/bin/ui/property/property_group.c:3411
+#: src/bin/ui/property/property_group.c:3417
 #, c-format
 msgid "map perspective %s"
 msgstr "perspective de la carte %s"
 
-#: src/bin/ui/property/property_group.c:3414
+#: src/bin/ui/property/property_group.c:3420
 #, c-format
 msgid "map smooth %s"
 msgstr "lissage de la carte %s"
 
-#: src/bin/ui/property/property_group.c:3417
+#: src/bin/ui/property/property_group.c:3423
 #, c-format
 msgid "map alpha %s"
 msgstr "opacité de la carte %s"
 
-#: src/bin/ui/property/property_group.c:3420
+#: src/bin/ui/property/property_group.c:3426
 #, c-format
 msgid "map backface cull %s"
 msgstr "backface_cull de la carte %s"
 
-#: src/bin/ui/property/property_group.c:3423
+#: src/bin/ui/property/property_group.c:3429
 #, c-format
 msgid "perspective focal changed from %d to %d"
 msgstr "focale de perspective modifiée de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3427
+#: src/bin/ui/property/property_group.c:3433
 #, c-format
 msgid "perspective zplane changed from %d to %d"
 msgstr "zplane de perspective modifié de %d en %d"
 
-#: src/bin/ui/property/property_group.c:3431
+#: src/bin/ui/property/property_group.c:3437
 #, c-format
 msgid "map's rotation center part changed from \"%s\" to \"%s\""
 msgstr "partie du centre de rotation de la carte modifiée de « %s » en « %s »"
 
-#: src/bin/ui/property/property_group.c:3435
+#: src/bin/ui/property/property_group.c:3441
 #, c-format
 msgid "map rotation x changed from %.2f to %.2f"
 msgstr "rotation x de la carte modifiée de %.2f à %.2f"
 
-#: src/bin/ui/property/property_group.c:3440
+#: src/bin/ui/property/property_group.c:3446
 #, c-format
 msgid "map rotation y changed from %.2f to %.2f"
 msgstr "rotation y de la carte modifiée de %.2f à %.2f"
 
-#: src/bin/ui/property/property_group.c:3445
+#: src/bin/ui/property/property_group.c:3451
 #, c-format
 msgid "map rotation z changed from %.2f to %.2f"
 msgstr "rotation z de la carte modifiée de %.2f à %.2f"
 
-#: src/bin/ui/property/property_group.c:3450
+#: src/bin/ui/property/property_group.c:3456
 #, c-format
 msgid "point color '1' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "point de couleur '1' modifié de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3458
+#: src/bin/ui/property/property_group.c:3464
 #, c-format
 msgid "point color '2' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "point de couleur '2' modifié de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3466
+#: src/bin/ui/property/property_group.c:3472
 #, c-format
 msgid "point color '3' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "point de couleur '3' modifié de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3474
+#: src/bin/ui/property/property_group.c:3480
 #, c-format
 msgid "point color '4' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr "point de couleur '4' modifié de [%d,%d,%d,%d] en [%d,%d,%d,%d]"
 
-#: src/bin/ui/property/property_group.c:3773
+#: src/bin/ui/property/property_group.c:3779
 msgid ""
 "Circular dependency alarm! Selected group somehow related to current group."
 msgstr ""
 "Alerte de dépendance circulaire ! Le groupe sélectionné est en quelque sorte "
 "lié au groupe actuel."
 
-#: src/bin/ui/property/property_group.c:4800
+#: src/bin/ui/property/property_group.c:4806
 msgid "turned on"
 msgstr "en fonction"
 
-#: src/bin/ui/property/property_group.c:4800
+#: src/bin/ui/property/property_group.c:4806
 msgid "turned off"
 msgstr "hors fonction"
 
-#: src/bin/ui/property/property_group.c:4894
+#: src/bin/ui/property/property_group.c:4900
 msgid ""
 "The name to be used by the application to load the resulting Edje object and "
 "to identify the group to swallow in a GROUP part."
@@ -1772,7 +2107,7 @@ msgstr ""
 "Le nom à utiliser par l'application pour charger l'objet Edje et pour "
 "identifier le groupe à inclure (swallow) dans une partie GROUP."
 
-#: src/bin/ui/property/property_group.c:4901
+#: src/bin/ui/property/property_group.c:4907
 msgid ""
 "The minimum width for the container defined by the composition of the parts. "
 "This value is not enforced."
@@ -1780,7 +2115,7 @@ msgstr ""
 "La largeur minimale du conteneur définie par la composition des parties. "
 "Cette valeur n'est pas imposée."
 
-#: src/bin/ui/property/property_group.c:4904
+#: src/bin/ui/property/property_group.c:4910
 msgid ""
 "The minimum height for the container defined by the composition of the "
 "parts. This value is not enforced."
@@ -1788,7 +2123,7 @@ msgstr ""
 "La hauteur minimale du conteneur définie par la composition des parties. "
 "Cette valeur n'est pas imposée."
 
-#: src/bin/ui/property/property_group.c:4910
+#: src/bin/ui/property/property_group.c:4916
 msgid ""
 "The maximum width for the container defined by the composition of the parts. "
 "This value is not enforced."
@@ -1796,7 +2131,7 @@ msgstr ""
 "La largeur maximale du conteneur définie par la composition des parties. "
 "Cette valeur n'est pas imposée."
 
-#: src/bin/ui/property/property_group.c:4913
+#: src/bin/ui/property/property_group.c:4919
 msgid ""
 "The maximum height for the container defined by the composition of the "
 "parts. This value is not enforced."
@@ -1804,7 +2139,7 @@ msgstr ""
 "La hauteur maximale du conteneur définie par la composition des parties. "
 "Cette valeur n'est pas imposée."
 
-#: src/bin/ui/property/property_group.c:4931
+#: src/bin/ui/property/property_group.c:4937
 msgid ""
 "The part name is used as a reference in the relative<bt>positioning system "
 "of the theme, by programs and in some cases by the application. It must be "
@@ -1814,7 +2149,7 @@ msgstr ""
 "positionnement relatif du thème, par les programmes et dans certains cas par "
 "l'application. Il doit être unique au sein du groupe."
 
-#: src/bin/ui/property/property_group.c:4942
+#: src/bin/ui/property/property_group.c:4948
 msgid ""
 "Specifies whether the part scales its size with an Edje scaling factor. By "
 "default, the scale is off and the default scale factor is 1.0 - that means "
@@ -1834,7 +2169,7 @@ msgstr ""
 "d'autres à la mise à l'échelle, ainsi le designer peut choisir ce qui "
 "fonctionne le mieux."
 
-#: src/bin/ui/property/property_group.c:4956
+#: src/bin/ui/property/property_group.c:4962
 msgid ""
 "Specifies whether the part emits signals. Disabling it prevents the part "
 "from emitting any type of signal at all."
@@ -1842,7 +2177,7 @@ msgstr ""
 "Spécifie si la partie émet des signaux. Sa désactivation empêche l'émission "
 "de tous types de signal."
 
-#: src/bin/ui/property/property_group.c:4964
+#: src/bin/ui/property/property_group.c:4970
 msgid ""
 "Specifies whether a part echoes a mouse event to other parts below the "
 "pointer."
@@ -1850,7 +2185,7 @@ msgstr ""
 "Spécifie si la partie transmet un événement de souris vers d'autres parties "
 "situées sous le pointeur."
 
-#: src/bin/ui/property/property_group.c:4970
+#: src/bin/ui/property/property_group.c:4976
 msgid ""
 "Only renders the area of the part that coincides with another part's "
 "container. The overflowing content is not displayed. Note that the part "
@@ -1860,7 +2195,7 @@ msgstr ""
 "conteneur d'une autre partie. Le contenu qui déborde n'est pas affiché. "
 "Notez que la partie ajustée peut être un rectangle ou une partie d'image."
 
-#: src/bin/ui/property/property_group.c:4978
+#: src/bin/ui/property/property_group.c:4984
 msgid ""
 "Specifies whether events with the given flags must be ignored. These events "
 "do not have their signals emitted to the parts."
@@ -1868,7 +2203,7 @@ msgstr ""
 "Spécifie si les événements avec drapeaux (flags) doivent être ignorés. Ces "
 "événements ne sont pas émis vers les parties."
 
-#: src/bin/ui/property/property_group.c:4986
+#: src/bin/ui/property/property_group.c:4992
 msgid ""
 "Sets the mouse pointer behavior for the part. The default value is AUTOGRAB. "
 "The following modes are available:  * AUTOGRAB, when the part is clicked and "
@@ -1883,7 +2218,7 @@ msgstr ""
 "l'extérieur de l'objet,   jusqu'à ce que le bouton soit relâché.  * NOGRAB, "
 "l'effet est limité au conteneur de la partie."
 
-#: src/bin/ui/property/property_group.c:4997
+#: src/bin/ui/property/property_group.c:5003
 msgid ""
 "The meaning of this parameter varies depending on the type of the part.  * "
 "For GROUP parts, it's the name of another group in the Edje    file which is "
@@ -1896,7 +2231,7 @@ msgstr ""
 "TEXTBLOCK, c'est le nom d'un groupe qui est    utilisé pour l'affichage de "
 "la sélection sous le texte."
 
-#: src/bin/ui/property/property_group.c:5015
+#: src/bin/ui/property/property_group.c:5021
 msgid ""
 "Enables or disables dragging along the X axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
@@ -1904,7 +2239,7 @@ msgstr ""
 "Active ou désactive le déplacement le long de l'axe X. Lorsqu'il est activé, "
 "1 définit le point de départ à 0.0 et -1 à 1.0."
 
-#: src/bin/ui/property/property_group.c:5018
+#: src/bin/ui/property/property_group.c:5024
 msgid ""
 "Enables or disables dragging along the Y axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
@@ -1912,8 +2247,8 @@ msgstr ""
 "Active ou désactive le déplacement le long de l'axe Y. Lorsqu'il est activé, "
 "1 définit le point de départ à 0.0 et -1 à 1.0."
 
-#: src/bin/ui/property/property_group.c:5024
-#: src/bin/ui/property/property_group.c:5029
+#: src/bin/ui/property/property_group.c:5030
+#: src/bin/ui/property/property_group.c:5035
 msgid ""
 "This parameter takes any integer and limits movement to values divisible by "
 "it, causing the part to jump from position to position. If the step is set "
@@ -1924,7 +2259,7 @@ msgstr ""
 "en position. Si le pas est fixé à 0, il est calculé comme la largeur de la "
 "pièce confinée divisée par le nombre."
 
-#: src/bin/ui/property/property_group.c:5042
+#: src/bin/ui/property/property_group.c:5048
 msgid ""
 "When set, limits the movement of the movable part to another part's "
 "container. When you use the confine option, do not forget to set a minimum "
@@ -1935,7 +2270,7 @@ msgstr ""
 "confinement, n'oubliez pas de définir une taille minimale pour la partie, "
 "sinon la partie mobile n'apparaîtra pas."
 
-#: src/bin/ui/property/property_group.c:5050
+#: src/bin/ui/property/property_group.c:5056
 msgid ""
 "When set, the movement of the dragged part can only start when it gets moved "
 "enough to be outside of the threshold part."
@@ -1944,7 +2279,7 @@ msgstr ""
 "peut commencer que lorsqu'elle est suffisamment déplacée pour se trouver en "
 "dehors de la partie de seuil."
 
-#: src/bin/ui/property/property_group.c:5057
+#: src/bin/ui/property/property_group.c:5063
 msgid ""
 "Causes the part to forward the drag events to another part, thus ignoring "
 "them for itself."
@@ -1952,7 +2287,7 @@ msgstr ""
 "Fait en sorte que la partie transmette les événements de déplacement à une "
 "autre partie, les ignorant ainsi pour elle-même."
 
-#: src/bin/ui/property/property_group.c:5071
+#: src/bin/ui/property/property_group.c:5077
 msgid ""
 "A name used to identify a description inside a given part. Multiple "
 "descriptions are used to declare different states of the same part, such as "
@@ -1965,7 +2300,7 @@ msgstr ""
 "déclarations d'état sont également associées à un numéro d'index, compris "
 "entre 0.0 et 1.0."
 
-#: src/bin/ui/property/property_group.c:5080
+#: src/bin/ui/property/property_group.c:5086
 msgid ""
 "Takes a boolean state specifying whether the part is visible or not. "
 "Invisible parts do not emit signals."
@@ -1973,30 +2308,30 @@ msgstr ""
 "Accepte un état booléen spécifiant si la partie est visible ou pas. Les "
 "parties invisibles n'émettent pas de signaux."
 
-#: src/bin/ui/property/property_group.c:5087
+#: src/bin/ui/property/property_group.c:5093
 msgid ""
 "Causes the part to use another part content as the content of this part."
 msgstr ""
 "Amène la partie à utiliser le contenu d'une autre partie comme contenu de "
 "cette partie."
 
-#: src/bin/ui/property/property_group.c:5101
+#: src/bin/ui/property/property_group.c:5107
 msgid "Sets the minimum width for this state."
 msgstr "Définit la largeur minimale pour cet état."
 
-#: src/bin/ui/property/property_group.c:5103
+#: src/bin/ui/property/property_group.c:5109
 msgid "Sets the minimum height for this state."
 msgstr "Définit la hauteur minimale pour cet état."
 
-#: src/bin/ui/property/property_group.c:5108
+#: src/bin/ui/property/property_group.c:5114
 msgid "Sets the maximum width for this state."
 msgstr "Définit la largeur maximale pour cet état."
 
-#: src/bin/ui/property/property_group.c:5110
+#: src/bin/ui/property/property_group.c:5116
 msgid "Sets the maximum height for this state."
 msgstr "Définit la hauteur maximale pour cet état."
 
-#: src/bin/ui/property/property_group.c:5115
+#: src/bin/ui/property/property_group.c:5121
 msgid ""
 "A width multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
@@ -2004,7 +2339,7 @@ msgstr ""
 "Un multiplicateur de largeur appliqué de force à la taille minimale, quelle "
 "qu'elle soit, uniquement lors du calcul de la taille minimale."
 
-#: src/bin/ui/property/property_group.c:5118
+#: src/bin/ui/property/property_group.c:5124
 msgid ""
 "A height multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
@@ -2012,7 +2347,7 @@ msgstr ""
 "Un multiplicateur de hauteur appliqué de force à la taille minimale, quelle "
 "qu'elle soit, uniquement lors du calcul de la taille minimale."
 
-#: src/bin/ui/property/property_group.c:5124
+#: src/bin/ui/property/property_group.c:5130
 msgid ""
 "Tells the minimum size calculation routine that this part does not change "
 "size in width. ON for enabled OFF for disabled. When enabled, the routine "
@@ -2022,7 +2357,7 @@ msgstr ""
 "change pas de taille en largeur. ON signifie activation, OFF désactivation. "
 "Quand activé, la routine n'essaie pas d'étendre ou de contracter la partie."
 
-#: src/bin/ui/property/property_group.c:5129
+#: src/bin/ui/property/property_group.c:5135
 msgid ""
 "Tells the minimum size calculation routine that this part does not change "
 "size in height. ON for enabled OFF for disabled. When enabled, the routine "
@@ -2032,11 +2367,11 @@ msgstr ""
 "change pas de taille en hauteur. ON signifie activation, OFF désactivation. "
 "Quand activé, la routine n'essaie pas d'étendre ou de contracter la partie."
 
-#: src/bin/ui/property/property_group.c:5137
+#: src/bin/ui/property/property_group.c:5143
 msgid "Sets the scope of the \"aspect\" property to a given dimension."
 msgstr "Définit la portée de la propriété « aspect » sur une dimension donnée."
 
-#: src/bin/ui/property/property_group.c:5142
+#: src/bin/ui/property/property_group.c:5148
 msgid ""
 "Normally the width and height can be resized to any values independently. "
 "The aspect property forces the width to height ratio to be kept from the "
@@ -2046,7 +2381,7 @@ msgstr ""
 "n'importe quelle valeur de façon indépendante. La propriété aspect force le "
 "rapport largeur/hauteur à rester au minimum."
 
-#: src/bin/ui/property/property_group.c:5146
+#: src/bin/ui/property/property_group.c:5152
 msgid ""
 "Normally the width and height can be resized to any values independently. "
 "The aspect property forces the width to height ratio to be kept to the "
@@ -2056,15 +2391,15 @@ msgstr ""
 "n'importe quelle valeur de façon indépendante. La propriété aspect force le "
 "rapport largeur/hauteur à rester au maximum."
 
-#: src/bin/ui/property/property_group.c:5160
+#: src/bin/ui/property/property_group.c:5166
 msgid "Enables or disables mapping for the part."
 msgstr "Active ou désactive le mapping pour la partie."
 
-#: src/bin/ui/property/property_group.c:5165
+#: src/bin/ui/property/property_group.c:5171
 msgid "Enables or disables perspective when rotating."
 msgstr "Active ou désactive la perspective lors de la rotation."
 
-#: src/bin/ui/property/property_group.c:5170
+#: src/bin/ui/property/property_group.c:5176
 msgid ""
 "Enables or disables smooth map rendering. This can be linear interpolation, "
 "anisotropic filtering, or anything the engine decides is \"smooth\"."
@@ -2073,11 +2408,11 @@ msgstr ""
 "interpolation linéaire, d'un filtrage anisotrope ou ce que le moteur "
 "considère comme « lisse »."
 
-#: src/bin/ui/property/property_group.c:5177
+#: src/bin/ui/property/property_group.c:5183
 msgid "Enables or disables the alpha channel when rendering the map."
 msgstr "Active ou désactive le canal alpha lors du rendu de la carte."
 
-#: src/bin/ui/property/property_group.c:5182
+#: src/bin/ui/property/property_group.c:5188
 msgid ""
 "Enables or disables backface culling (such as when the rotated part that "
 "normally faces the camera is facing away after being rotated). This means "
@@ -2087,7 +2422,7 @@ msgstr ""
 "tournent le dos à la caméra et que l'on ne voit donc pas). Cela signifie que "
 "la face arrière de l'objet est comme cachée par rotation."
 
-#: src/bin/ui/property/property_group.c:5190
+#: src/bin/ui/property/property_group.c:5196
 msgid ""
 "Sets the part that is used as the \"perspective point\" for giving a part a "
 "\"3d look\". The perspective point must have a perspective section that "
@@ -2097,7 +2432,7 @@ msgstr ""
 "donner un « aspect 3D ». Le point de perspective doit avoir une section "
 "perspective qui fournit les propriétés zplane et focal."
 
-#: src/bin/ui/property/property_group.c:5198
+#: src/bin/ui/property/property_group.c:5204
 msgid ""
 "Sets the part that is used as the \"light\" for calculating the brightness "
 "(based on how directly the part's surface is facing the light source point)"
@@ -2106,15 +2441,15 @@ msgstr ""
 "luminosité (en fonction de la façon dont la surface de la partie fait face à "
 "la source lumineuse)"
 
-#: src/bin/ui/property/property_group.c:5205
+#: src/bin/ui/property/property_group.c:5211
 msgid "Sets the distance from the focal z plane (zplane) and the camera."
 msgstr "Définit la distance entre le plan focal z (zplane) et la caméra."
 
-#: src/bin/ui/property/property_group.c:5210
+#: src/bin/ui/property/property_group.c:5216
 msgid "Sets the z value that is not scaled."
 msgstr "Définit la valeur z qui n'est pas mise à l'échelle."
 
-#: src/bin/ui/property/property_group.c:5215
+#: src/bin/ui/property/property_group.c:5221
 msgid ""
 "Sets the part that is used as the center of rotation when rotating the part "
 "with this description."
@@ -2122,7 +2457,7 @@ msgstr ""
 "Définit la partie utilisée comme centre de rotation lors de la rotation de "
 "la partie avec cette description."
 
-#: src/bin/ui/property/property_group.c:5221
+#: src/bin/ui/property/property_group.c:5227
 msgid ""
 "Rotation (in degrees) around the X axis of the part considering the center "
 "set."
@@ -2130,7 +2465,7 @@ msgstr ""
 "Rotation (en degrés) autour de l'axe X de la partie en considérant le centre "
 "défini."
 
-#: src/bin/ui/property/property_group.c:5226
+#: src/bin/ui/property/property_group.c:5232
 msgid ""
 "Rotation (in degrees) around the Y axis of the part considering the center "
 "set."
@@ -2138,7 +2473,7 @@ msgstr ""
 "Rotation (en degrés) autour de l'axe Y de la partie en considérant le centre "
 "défini."
 
-#: src/bin/ui/property/property_group.c:5231
+#: src/bin/ui/property/property_group.c:5237
 msgid ""
 "Rotation (in degrees) around the Z axis of the part considering the center "
 "set."
@@ -2146,7 +2481,7 @@ msgstr ""
 "Rotation (en degrés) autour de l'axe Z de la partie en considérant le centre "
 "défini."
 
-#: src/bin/ui/property/property_group.c:5236
+#: src/bin/ui/property/property_group.c:5242
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-top "
 "point of a part."
@@ -2154,7 +2489,7 @@ msgstr ""
 "Définit la couleur d'un sommet (vertex) dans la carte. Cette commande "
 "modifie le point supérieur gauche d'une partie."
 
-#: src/bin/ui/property/property_group.c:5239
+#: src/bin/ui/property/property_group.c:5245
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-top "
 "point of a part."
@@ -2162,7 +2497,7 @@ msgstr ""
 "Définit la couleur d'un sommet (vertex) dans la carte. Cette commande "
 "modifie le point supérieur droit d'une partie."
 
-#: src/bin/ui/property/property_group.c:5245
+#: src/bin/ui/property/property_group.c:5251
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-bottom "
 "point of a part."
@@ -2170,7 +2505,7 @@ msgstr ""
 "Définit la couleur d'un sommet (vertex) dans la carte. Cette commande "
 "modifie le point inférieur gauche d'une partie."
 
-#: src/bin/ui/property/property_group.c:5248
+#: src/bin/ui/property/property_group.c:5254
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-bottom "
 "point of a part."
@@ -2178,15 +2513,15 @@ msgstr ""
 "Définit la couleur d'un sommet (vertex) dans la carte. Cette commande "
 "modifie le point inférieur droit d'une partie."
 
-#: src/bin/ui/property/property_group.c:5256
+#: src/bin/ui/property/property_group.c:5262
 msgid "Causes Edje to draw the selected effect."
 msgstr "Permet à Edje de dessiner l'effet sélectionné."
 
-#: src/bin/ui/property/property_group.c:5262
+#: src/bin/ui/property/property_group.c:5268
 msgid "Shadow directions."
 msgstr "Directions de l'ombre."
 
-#: src/bin/ui/property/property_group.c:5270
+#: src/bin/ui/property/property_group.c:5276
 msgid ""
 "Sets the selection mode for a textblock part to one of the following: The "
 "DEFAULT selection mode is what you expect on any desktop. Press mouse, drag, "
@@ -2201,7 +2536,7 @@ msgstr ""
 "contrôlant l'objet Edje commence et termine explicitement les modes de "
 "sélection, et la sélection elle-même est déplaçable aux deux extrémités."
 
-#: src/bin/ui/property/property_group.c:5281
+#: src/bin/ui/property/property_group.c:5287
 msgid ""
 "Sets the edit mode for a textblock part to one of the following:<br>* "
 "NONE<br>* PLAIN<br>* EDITABLE<br>* PASSWORD<br>It causes the part be "
@@ -2217,7 +2552,7 @@ msgstr ""
 "de passe, le texte n'est pas sélectionnable, mais il peut être modifié et "
 "collé, et tous les caractères sont remplacés par des *."
 
-#: src/bin/ui/property/property_group.c:5296
+#: src/bin/ui/property/property_group.c:5302
 msgid ""
 "Sets the cursor mode for a textblock part to one of the following: UNDER "
 "cursor mode means the cursor draws below the character pointed at. This is "
@@ -2231,14 +2566,14 @@ msgstr ""
 "dessiné sous la forme d'une ligne verticale avant le caractère actuel, à "
 "l'instar de nombreuses autres boîtes à outils d'interfaces graphiques."
 
-#: src/bin/ui/property/property_group.c:5306
+#: src/bin/ui/property/property_group.c:5312
 msgid ""
 "It causes a textblock that is editable to allow multiple lines for editing."
 msgstr ""
 "Fait en sorte qu'un bloc de texte modifiable permette l'édition de plusieurs "
 "lignes."
 
-#: src/bin/ui/property/property_group.c:5312
+#: src/bin/ui/property/property_group.c:5318
 msgid ""
 "Used for the group to be loaded and the selection display under the selected "
 "text."
@@ -2246,7 +2581,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage de la sélection au-dessous "
 "du texte sélectionné."
 
-#: src/bin/ui/property/property_group.c:5319
+#: src/bin/ui/property/property_group.c:5325
 msgid ""
 "Used for the group to be loaded and the selection display over the selected "
 "text."
@@ -2254,7 +2589,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage de la sélection au-dessus du "
 "texte sélectionné."
 
-#: src/bin/ui/property/property_group.c:5326
+#: src/bin/ui/property/property_group.c:5332
 msgid ""
 "Used for the group to be loaded and the cursor display under the cursor "
 "position."
@@ -2262,7 +2597,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage du curseur au-dessous de la "
 "position du curseur."
 
-#: src/bin/ui/property/property_group.c:5333
+#: src/bin/ui/property/property_group.c:5339
 msgid ""
 "Used for the group to be loaded and the cursor display over the cursor "
 "position."
@@ -2270,7 +2605,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage du curseur au-dessus de la "
 "position du curseur."
 
-#: src/bin/ui/property/property_group.c:5340
+#: src/bin/ui/property/property_group.c:5346
 msgid ""
 "Used for the group to be loaded and the anchors display under the anchor "
 "position."
@@ -2278,7 +2613,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage des ancres au-dessous de la "
 "position de l'ancre."
 
-#: src/bin/ui/property/property_group.c:5347
+#: src/bin/ui/property/property_group.c:5353
 msgid ""
 "Used for the group to be loaded and the anchor display over the anchor "
 "position."
@@ -2286,7 +2621,7 @@ msgstr ""
 "Utilisé pour le groupe à charger et l'affichage des ancres au-dessus de la "
 "position de l'ancre."
 
-#: src/bin/ui/property/property_group.c:5361
+#: src/bin/ui/property/property_group.c:5367
 msgid ""
 "When the displayed object's size is smaller (or bigger) than its container, "
 "this property moves it relatively along the X axis inside its container. 0.0 "
@@ -2301,7 +2636,7 @@ msgstr ""
 "que 1.0 correspond aux bords droit et inférieur de l'objet sur l'axe "
 "horizontal. La valeur par défaut est 0.5."
 
-#: src/bin/ui/property/property_group.c:5369
+#: src/bin/ui/property/property_group.c:5375
 msgid ""
 "When the displayed object's size is smaller (or bigger) than its container, "
 "this property moves it relatively along the Y axis inside its container. 0.0 "
@@ -2316,12 +2651,7 @@ msgstr ""
 "que 1.0 correspond aux bords droit et inférieur de l'objet sur l'axe "
 "vertical. La valeur par défaut est 0.5."
 
-#: src/bin/ui/property/property_group.c:5379
-#: src/bin/ui/property/property_group.c:5557
-msgid "elm/image/icon/start-point"
-msgstr "elm/image/icon/start-point"
-
-#: src/bin/ui/property/property_group.c:5385
+#: src/bin/ui/property/property_group.c:5391
 msgid ""
 "Causes the left-up corner to be positioned relatively to the X axis of "
 "another part's container. Affects the first parameter of \"relative\". "
@@ -2331,7 +2661,7 @@ msgstr ""
 "d'une autre partie. Affecte le premier paramètre de « relative ». NONE "
 "annule cette valeur pour les parties héritées."
 
-#: src/bin/ui/property/property_group.c:5392
+#: src/bin/ui/property/property_group.c:5398
 msgid ""
 "Causes the left-up corner to be positioned relatively to the Y axis of "
 "another part's container. Affects the first parameter of \"relative\". "
@@ -2341,41 +2671,41 @@ msgstr ""
 "d'une autre partie. Affecte le premier paramètre de « relative ». NONE "
 "annule cette valeur pour les parties héritées."
 
-#: src/bin/ui/property/property_group.c:5398
-#: src/bin/ui/property/property_group.c:5441
-#: src/bin/ui/property/property_group.c:5562
-#: src/bin/ui/property/property_group.c:5585
+#: src/bin/ui/property/property_group.c:5404
+#: src/bin/ui/property/property_group.c:5447
+#: src/bin/ui/property/property_group.c:5568
+#: src/bin/ui/property/property_group.c:5591
 msgid "elm/image/icon/align"
 msgstr "elm/image/icon/align"
 
-#: src/bin/ui/property/property_group.c:5400
+#: src/bin/ui/property/property_group.c:5406
 msgid ""
 "Moves the left-up corner to a relative position inside the container of the "
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the X axis."
 msgstr ""
 "Déplace le coin supérieur gauche vers une position relative à l'intérieur du "
-"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 ("
-"100 %, fin) de l'axe X."
+"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 "
+"(100 %, fin) de l'axe X."
 
-#: src/bin/ui/property/property_group.c:5404
+#: src/bin/ui/property/property_group.c:5410
 msgid ""
 "Moves the left-up corner to a relative position inside the container of the "
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the Y axis."
 msgstr ""
 "Déplace le coin supérieur gauche vers une position relative à l'intérieur du "
-"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 ("
-"100 %, fin) de l'axe Y."
+"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 "
+"(100 %, fin) de l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5410
-#: src/bin/ui/property/property_group.c:5453
-#: src/bin/ui/property/property_group.c:5572
-#: src/bin/ui/property/property_group.c:5595
+#: src/bin/ui/property/property_group.c:5416
+#: src/bin/ui/property/property_group.c:5459
+#: src/bin/ui/property/property_group.c:5578
+#: src/bin/ui/property/property_group.c:5601
 msgid "elm/image/icon/offset"
 msgstr "elm/image/icon/offset"
 
-#: src/bin/ui/property/property_group.c:5412
+#: src/bin/ui/property/property_group.c:5418
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the X "
 "axis."
@@ -2383,7 +2713,7 @@ msgstr ""
 "Affecte la position du coin supérieur gauche pour un nombre fixe de pixels "
 "le long de l'axe X."
 
-#: src/bin/ui/property/property_group.c:5415
+#: src/bin/ui/property/property_group.c:5421
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the Y "
 "axis."
@@ -2391,12 +2721,7 @@ msgstr ""
 "Affecte la position du coin supérieur gauche pour un nombre fixe de pixels "
 "le long de l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5420
-#: src/bin/ui/property/property_group.c:5580
-msgid "elm/image/icon/end-point"
-msgstr "elm/image/icon/end-point"
-
-#: src/bin/ui/property/property_group.c:5426
+#: src/bin/ui/property/property_group.c:5432
 msgid ""
 "Causes the right-down corner to be positioned relatively to the X axis of "
 "another part's container. Affects the first parameter of \"relative\". "
@@ -2406,7 +2731,7 @@ msgstr ""
 "autre partie. Affecte le premier paramètre de « relative ». NONE annule "
 "cette valeur pour les parties héritées."
 
-#: src/bin/ui/property/property_group.c:5434
+#: src/bin/ui/property/property_group.c:5440
 msgid ""
 "Causes the right-down corner to be positioned relatively to the Y axis of "
 "another part's container. Affects the first parameter of \"relative\". "
@@ -2416,27 +2741,27 @@ msgstr ""
 "autre partie. Affecte le premier paramètre de « relative ». NONE annule "
 "cette valeur pour les parties héritées."
 
-#: src/bin/ui/property/property_group.c:5443
+#: src/bin/ui/property/property_group.c:5449
 msgid ""
 "Moves the right-down corner to a relative position inside the container of "
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the X axis."
 msgstr ""
 "Déplace le coin inférieur droit vers une position relative à l'intérieur du "
-"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 ("
-"100 %, fin) de l'axe X."
+"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 "
+"(100 %, fin) de l'axe X."
 
-#: src/bin/ui/property/property_group.c:5447
+#: src/bin/ui/property/property_group.c:5453
 msgid ""
 "Moves the right-down corner to a relative position inside the container of "
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the Y axis."
 msgstr ""
 "Déplace le coin inférieur droit vers une position relative à l'intérieur du "
-"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 ("
-"100 %, fin) de l'axe Y."
+"conteneur de la partie relative « to ». Valeurs de 0.0 (0 %, début) à 1.0 "
+"(100 %, fin) de l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5455
+#: src/bin/ui/property/property_group.c:5461
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the X axis."
@@ -2444,7 +2769,7 @@ msgstr ""
 "Affecte la position du coin inférieur droit pour un nombre fixe de pixels le "
 "long de l'axe X."
 
-#: src/bin/ui/property/property_group.c:5458
+#: src/bin/ui/property/property_group.c:5464
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the Y axis."
@@ -2452,11 +2777,11 @@ msgstr ""
 "Affecte la position du coin inférieur droit pour un nombre fixe de pixels le "
 "long de l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5473
+#: src/bin/ui/property/property_group.c:5479
 msgid "Name of vector to be used."
 msgstr "Nom du vecteur à utiliser."
 
-#: src/bin/ui/property/property_group.c:5487
+#: src/bin/ui/property/property_group.c:5493
 msgid ""
 "Name of image to be used. In an animation, this is the first and last image "
 "displayed."
@@ -2464,7 +2789,7 @@ msgstr ""
 "Nom de l'image à utiliser. Dans une animation, il s'agit de la première et "
 "de la dernière image affichées."
 
-#: src/bin/ui/property/property_group.c:5493
+#: src/bin/ui/property/property_group.c:5499
 msgid ""
 "Names of the images to be used in an animation loop. You can have none, 1, "
 "or multiple tween declarations. Images are displayed in the order they are "
@@ -2477,10 +2802,10 @@ msgstr ""
 "vers l'état dans lequel elles sont déclarées. L'image « normale » est l'état "
 "final."
 
-#: src/bin/ui/property/property_group.c:5502
-#: src/bin/ui/property/property_group.c:5506
-#: src/bin/ui/property/property_group.c:5513
-#: src/bin/ui/property/property_group.c:5517
+#: src/bin/ui/property/property_group.c:5508
+#: src/bin/ui/property/property_group.c:5512
+#: src/bin/ui/property/property_group.c:5519
+#: src/bin/ui/property/property_group.c:5523
 msgid ""
 "If set, the area (in pixels) of each side of the image is displayed as a "
 "fixed size border, from the side inwards, preventing the corners from being "
@@ -2490,7 +2815,7 @@ msgstr ""
 "forme de bordure de taille fixe, du côté vers l'intérieur, empêchant les "
 "coins d'être modifiés lors d'un redimensionnement."
 
-#: src/bin/ui/property/property_group.c:5524
+#: src/bin/ui/property/property_group.c:5530
 msgid ""
 "If the border is set, this value tells Edje if the rest of the image (not "
 "covered by the defined border) is displayed or not or assumed to be solid "
@@ -2500,7 +2825,7 @@ msgstr ""
 "l'image (non couvert par la bordure définie) est affiché ou non ou supposé "
 "opaque (sans alpha)."
 
-#: src/bin/ui/property/property_group.c:5540
+#: src/bin/ui/property/property_group.c:5546
 msgid ""
 "Sets the image fill type.<br>* SCALE - the image is scaled according to the "
 "params value \"relative\" and \"offset\" from \"origin\" and \"size\" "
@@ -2514,7 +2839,7 @@ msgstr ""
 "l'image est juxtaposée (tiled) en fonction des valeurs des paramètres « "
 "relative » et « offset » des blocs « origin » et « size »."
 
-#: src/bin/ui/property/property_group.c:5552
+#: src/bin/ui/property/property_group.c:5558
 msgid ""
 "The smooth property takes a boolean value to decide if the image is smoothed "
 "on scaling or not."
@@ -2522,7 +2847,7 @@ msgstr ""
 "La propriété smooth prend une valeur booléenne pour décider si l'image est "
 "lissée ou non lors de la mise à l'échelle."
 
-#: src/bin/ui/property/property_group.c:5564
+#: src/bin/ui/property/property_group.c:5570
 msgid ""
 "Sets the left-up corner X coordinate relative to the displayed element's "
 "content."
@@ -2530,7 +2855,7 @@ msgstr ""
 "Définit la coordonnée X du coin supérieur gauche par rapport au contenu de "
 "l'élément affiché."
 
-#: src/bin/ui/property/property_group.c:5567
+#: src/bin/ui/property/property_group.c:5573
 msgid ""
 "Sets the left-up corner Y coordinate relative to the displayed element's "
 "content."
@@ -2538,21 +2863,21 @@ msgstr ""
 "Définit la coordonnée Y du coin supérieur gauche par rapport au contenu de "
 "l'élément affiché."
 
-#: src/bin/ui/property/property_group.c:5574
+#: src/bin/ui/property/property_group.c:5580
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the X axis."
 msgstr ""
 "Affecte le coin supérieur gauche pour un nombre fixe de pixels le long de "
 "l'axe X."
 
-#: src/bin/ui/property/property_group.c:5576
+#: src/bin/ui/property/property_group.c:5582
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the Y axis."
 msgstr ""
 "Affecte le coin supérieur gauche pour un nombre fixe de pixels le long de "
 "l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5587
+#: src/bin/ui/property/property_group.c:5593
 msgid ""
 "Sets the right-bottom corner X coordinate relative to the displayed "
 "element's content."
@@ -2560,7 +2885,7 @@ msgstr ""
 "Définit la coordonnée X du coin inférieur droit par rapport au contenu de "
 "l'élément affiché."
 
-#: src/bin/ui/property/property_group.c:5590
+#: src/bin/ui/property/property_group.c:5596
 msgid ""
 "Sets the right-bottom corner Y coordinate relative to the displayed "
 "element's content."
@@ -2568,7 +2893,7 @@ msgstr ""
 "Définit la coordonnée Y du coin inférieur droit par rapport au contenu de "
 "l'élément affiché."
 
-#: src/bin/ui/property/property_group.c:5597
+#: src/bin/ui/property/property_group.c:5603
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the X "
 "axis."
@@ -2576,7 +2901,7 @@ msgstr ""
 "Affecte le coin inférieur droit pour un nombre fixe de pixels le long de "
 "l'axe X."
 
-#: src/bin/ui/property/property_group.c:5600
+#: src/bin/ui/property/property_group.c:5606
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the Y "
 "axis."
@@ -2584,7 +2909,7 @@ msgstr ""
 "Affecte le coin inférieur droit pour un nombre fixe de pixels le long de "
 "l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5615
+#: src/bin/ui/property/property_group.c:5621
 msgid ""
 "The part uses the color values of the chosen color class. These values can "
 "be overridden by the \"color\", \"color2\" and \"color3\" properties set "
@@ -2594,19 +2919,19 @@ msgstr ""
 "Ces valeurs peuvent être remplacées par les propriétés « color », « color2 » "
 "et « color3 » définies ci-dessous."
 
-#: src/bin/ui/property/property_group.c:5622
+#: src/bin/ui/property/property_group.c:5628
 msgid "Sets the main color."
 msgstr "Définit la couleur principale."
 
-#: src/bin/ui/property/property_group.c:5628
+#: src/bin/ui/property/property_group.c:5634
 msgid "Sets the text outline color."
 msgstr "Définit la couleur du contour du texte."
 
-#: src/bin/ui/property/property_group.c:5634
+#: src/bin/ui/property/property_group.c:5640
 msgid "Sets the text shadow color."
 msgstr "Définit la couleur de l'ombre du texte."
 
-#: src/bin/ui/property/property_group.c:5648
+#: src/bin/ui/property/property_group.c:5654
 msgid ""
 "Sets the default content of a text part. Normally the application is the one "
 "changing its value."
@@ -2614,7 +2939,7 @@ msgstr ""
 "Définit le contenu par défaut d'une partie de texte. Normalement, c'est "
 "l'application qui modifie sa valeur."
 
-#: src/bin/ui/property/property_group.c:5654
+#: src/bin/ui/property/property_group.c:5660
 msgid ""
 "Changes the position on the X axis of the point of balance inside the "
 "container."
@@ -2622,7 +2947,7 @@ msgstr ""
 "Modifie la position sur l'axe X du point d'équilibre à l'intérieur du "
 "conteneur."
 
-#: src/bin/ui/property/property_group.c:5657
+#: src/bin/ui/property/property_group.c:5663
 msgid ""
 "Changes the position on the Y axis of the point of balance inside the "
 "container."
@@ -2630,7 +2955,7 @@ msgstr ""
 "Modifie la position sur l'axe Y du point d'équilibre à l'intérieur du "
 "conteneur."
 
-#: src/bin/ui/property/property_group.c:5663
+#: src/bin/ui/property/property_group.c:5669
 msgid ""
 "When this parameter is enabled, it forces the minimum width of the container "
 "to be equal to the minimum size of the text."
@@ -2638,7 +2963,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la largeur minimale du conteneur à "
 "être égale à la taille minimale du texte."
 
-#: src/bin/ui/property/property_group.c:5667
+#: src/bin/ui/property/property_group.c:5673
 msgid ""
 "When this parameter is enabled, it forces the minimum height of the "
 "container to be equal to the minimum size of the text."
@@ -2646,7 +2971,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la hauteur minimale du conteneur à "
 "être égale à la taille minimale du texte."
 
-#: src/bin/ui/property/property_group.c:5674
+#: src/bin/ui/property/property_group.c:5680
 msgid ""
 "When this parameter is enabled, it forces the maximum width of the container "
 "to be equal to the maximum size of the text."
@@ -2654,7 +2979,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la largeur maximale du conteneur à "
 "être égale à la taille maximale du texte."
 
-#: src/bin/ui/property/property_group.c:5678
+#: src/bin/ui/property/property_group.c:5684
 msgid ""
 "When this parameter is enabled, it forces the maximum height of the "
 "container to be equal to the maximum size of the text."
@@ -2662,7 +2987,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la hauteur maximale du conteneur à "
 "être égale à la taille maximale du texte."
 
-#: src/bin/ui/property/property_group.c:5688
+#: src/bin/ui/property/property_group.c:5694
 msgid ""
 "This sets the font family to one of the aliases. Can be overrided by the "
 "application."
@@ -2670,7 +2995,7 @@ msgstr ""
 "Cela définit la famille de polices sur l'un des alias. Peut être remplacé "
 "par l'application."
 
-#: src/bin/ui/property/property_group.c:5695
+#: src/bin/ui/property/property_group.c:5701
 msgid ""
 "Sets the default font size in points for the text part. Can be overrided by "
 "the application."
@@ -2678,7 +3003,7 @@ msgstr ""
 "Définit la taille de police par défaut en points pour la partie texte. Peut "
 "être remplacé par l'application."
 
-#: src/bin/ui/property/property_group.c:5702
+#: src/bin/ui/property/property_group.c:5708
 msgid ""
 "When this parameter is enabled, Edje resizes the text width to fit in it's "
 "container."
@@ -2686,7 +3011,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, Edje redimensionne la largeur du texte pour "
 "tenir dans son conteneur."
 
-#: src/bin/ui/property/property_group.c:5705
+#: src/bin/ui/property/property_group.c:5711
 msgid ""
 "When this parameter is enabled, Edje resizes the text height to fit in it's "
 "container."
@@ -2694,7 +3019,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, Edje redimensionne la hauteur du texte pour "
 "tenir dans son conteneur."
 
-#: src/bin/ui/property/property_group.c:5712
+#: src/bin/ui/property/property_group.c:5718
 msgid ""
 "Causes the part to use the text properties (such as font and size) of "
 "another part and update them as they change."
@@ -2702,7 +3027,7 @@ msgstr ""
 "Amène la partie à utiliser les propriétés de texte (telles que la police et "
 "la taille) d'une autre partie et les met à jour à mesure qu'elles changent."
 
-#: src/bin/ui/property/property_group.c:5720
+#: src/bin/ui/property/property_group.c:5726
 msgid ""
 "Causes the part to display the text content of another part and update them "
 "as they change."
@@ -2710,14 +3035,14 @@ msgstr ""
 "Amène la partie à utiliser le contenu du texte d'une autre partie et le met "
 "à jour à mesure qu'il change."
 
-#: src/bin/ui/property/property_group.c:5727
+#: src/bin/ui/property/property_group.c:5733
 msgid ""
 "This parameter enables or disables the ability to apply ellipsis to the text."
 msgstr ""
 "Ce paramètre active ou désactive la possibilité d'appliquer une ellipse au "
 "texte."
 
-#: src/bin/ui/property/property_group.c:5730
+#: src/bin/ui/property/property_group.c:5736
 msgid ""
 "Used to balance the text in a relative point from 0.0 to 1.0, this point is "
 "the last section of the string to be cut out in case of a resize that is "
@@ -2728,14 +3053,14 @@ msgstr ""
 "redimensionnement plus petit que le texte lui-même. La valeur par défaut est "
 "0.0. "
 
-#: src/bin/ui/property/property_group.c:5742
+#: src/bin/ui/property/property_group.c:5748
 msgid ""
 "Causes the part to use the default style and tags with the specified name. "
 msgstr ""
 "Amène la partie à utiliser le style et les balises par défaut avec le nom "
 "spécifié. "
 
-#: src/bin/ui/property/property_group.c:5757
+#: src/bin/ui/property/property_group.c:5763
 msgid ""
 "Changes the position of the point of balance by the X axis inside the "
 "container."
@@ -2743,7 +3068,7 @@ msgstr ""
 "Modifie la position du point d'équilibre par l'axe X à l'intérieur du "
 "conteneur."
 
-#: src/bin/ui/property/property_group.c:5760
+#: src/bin/ui/property/property_group.c:5766
 msgid ""
 "Changes the position of the point of balance by the Y axis inside the "
 "container."
@@ -2751,15 +3076,15 @@ msgstr ""
 "Modifie la position du point d'équilibre par l'axe Y à l'intérieur du "
 "conteneur."
 
-#: src/bin/ui/property/property_group.c:5766
+#: src/bin/ui/property/property_group.c:5772
 msgid "Sets the space between cells by the X axis in pixels."
 msgstr "Définit l'espace entre les cellules par l'axe X en pixels."
 
-#: src/bin/ui/property/property_group.c:5768
+#: src/bin/ui/property/property_group.c:5774
 msgid "Sets the space between cells by the Y axis in pixels."
 msgstr "Définit l'espace entre les cellules par l'axe Y en pixels."
 
-#: src/bin/ui/property/property_group.c:5773
+#: src/bin/ui/property/property_group.c:5779
 msgid ""
 "When this parameter is enabled, it forces the minimum horizonal size of the "
 "box/table to be equal to the minimum horizonal size of the items."
@@ -2767,7 +3092,7 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la taille horizontale minimale de "
 "la box/table à être égale à la taille horizontale minimale des éléments."
 
-#: src/bin/ui/property/property_group.c:5777
+#: src/bin/ui/property/property_group.c:5783
 msgid ""
 "When this parameters is enabled, it forces the minimum vertical size of the "
 "box/table to be equal to the minimum vertical size of the items."
@@ -2775,74 +3100,74 @@ msgstr ""
 "Lorsque ce paramètre est activé, il force la taille verticale minimale de la "
 "box/table à être égale à la taille verticale minimale des éléments."
 
-#: src/bin/ui/property/property_group.c:5785
+#: src/bin/ui/property/property_group.c:5791
 msgid "Sets the homogeneous mode for the table."
 msgstr "Définit le mode homogène pour la table."
 
-#: src/bin/ui/property/property_group.c:5799
+#: src/bin/ui/property/property_group.c:5805
 msgid "Sets the name of the object using the evas_object_name_set() function."
 msgstr ""
 "Définit le nom de l'objet à l'aide de la fonction evas_object_name_set()."
 
-#: src/bin/ui/property/property_group.c:5804
+#: src/bin/ui/property/property_group.c:5810
 msgid "Sets the group this object is made from."
 msgstr "Définit le groupe à partir duquel cet objet est constitué."
 
-#: src/bin/ui/property/property_group.c:5809
+#: src/bin/ui/property/property_group.c:5815
 msgid "Sets the minimum size hints of width for this object."
 msgstr "Définit les indications de taille minimale en largeur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5811
+#: src/bin/ui/property/property_group.c:5817
 msgid "Sets the minimum size hints of height for this object."
 msgstr "Définit les indications de taille minimale en hauteur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5816
+#: src/bin/ui/property/property_group.c:5822
 msgid "Sets the maximum size hints of width for this object."
 msgstr "Définit les indications de taille maximale en largeur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5818
+#: src/bin/ui/property/property_group.c:5824
 msgid "Sets the maximum size hints of height for this object."
 msgstr "Définit les indications de taille maximale en hauteur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5823
+#: src/bin/ui/property/property_group.c:5829
 msgid "Sets the prederred size hints of width for this object."
 msgstr "Définit les indications de taille préférée en largeur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5825
+#: src/bin/ui/property/property_group.c:5831
 msgid "Sets the prederred size hints of height for this object."
 msgstr "Définit les indications de taille préférée en hauteur pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5830
+#: src/bin/ui/property/property_group.c:5836
 msgid "Sets the alignment size hints for this object by X axis."
 msgstr ""
 "Définit les indications de taille d'alignement pour cet objet par l'axe X."
 
-#: src/bin/ui/property/property_group.c:5832
+#: src/bin/ui/property/property_group.c:5838
 msgid "Sets the alignment size hints for this object by Y axis."
 msgstr ""
 "Définit les indications de taille d'alignement pour cet objet par l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5837
+#: src/bin/ui/property/property_group.c:5843
 msgid "Sets the weight size hints for this object by X axis."
 msgstr "Définit les indications de taille de poids pour cet objet par l'axe X."
 
-#: src/bin/ui/property/property_group.c:5839
+#: src/bin/ui/property/property_group.c:5845
 msgid "Sets the weight size hints for this object by Y axis."
 msgstr "Définit les indications de taille de poids pour cet objet par l'axe Y."
 
-#: src/bin/ui/property/property_group.c:5844
+#: src/bin/ui/property/property_group.c:5850
 msgid "Sets the aspect control hints for this object."
 msgstr "Définit les indications de contrôle d'aspect pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5849
+#: src/bin/ui/property/property_group.c:5855
 msgid "Sets the aspect width hints for this object."
 msgstr "Définit les indications de largeur d'aspect pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5851
+#: src/bin/ui/property/property_group.c:5857
 msgid "Sets the aspect height hints for this object."
 msgstr "Définit les indications de hauteur d'aspect pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5856
+#: src/bin/ui/property/property_group.c:5862
 msgid ""
 "Replicates the item in a rectangle with a given amount of rows starting from "
 "the defined position of this item."
@@ -2850,7 +3175,7 @@ msgstr ""
 "Réplique l'élément dans un rectangle avec un nombre donné de rangées à "
 "partir de la position définie de cet élément."
 
-#: src/bin/ui/property/property_group.c:5860
+#: src/bin/ui/property/property_group.c:5866
 msgid ""
 "Replicates the item in a rectangle with a given amount of columns starting "
 "from the defined position of this item."
@@ -2858,47 +3183,47 @@ msgstr ""
 "Réplique l'élément dans un rectangle avec un nombre donné de colonnes à "
 "partir de la position définie de cet élément."
 
-#: src/bin/ui/property/property_group.c:5867
+#: src/bin/ui/property/property_group.c:5873
 msgid "Sets the left padding hints for this object."
 msgstr "Définit les indications de remplissage gauche pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5869
+#: src/bin/ui/property/property_group.c:5875
 msgid "Sets the right padding hints for this object."
 msgstr "Définit les indications de remplissage droit pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5873
+#: src/bin/ui/property/property_group.c:5879
 msgid "Sets the top padding hints for this object."
 msgstr "Définit les indications de remplissage haut pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5875
+#: src/bin/ui/property/property_group.c:5881
 msgid "Sets the bottom padding hints for this object."
 msgstr "Définit les indications de remplissage bas pour cet objet."
 
-#: src/bin/ui/property/property_group.c:5881
+#: src/bin/ui/property/property_group.c:5887
 msgid "Sets how many rows this item uses."
 msgstr "Définit le nombre de rangées utilisées par cet élément."
 
-#: src/bin/ui/property/property_group.c:5883
+#: src/bin/ui/property/property_group.c:5889
 msgid "Sets how many columns this item uses"
 msgstr "Définit le nombre de colonnes utilisées par cet élément"
 
-#: src/bin/ui/property/property_group.c:5889
+#: src/bin/ui/property/property_group.c:5895
 msgid "Sets the row position this item has in the table."
 msgstr "Définit la position de la rangée de cet élément dans la table."
 
-#: src/bin/ui/property/property_group.c:5891
+#: src/bin/ui/property/property_group.c:5897
 msgid "Sets the column position this item has in the table."
 msgstr "Définit la position de la colonne de cet élément dans la table."
 
-#: src/bin/ui/property/property_group.c:5904
+#: src/bin/ui/property/property_group.c:5910
 msgid "Symbolic name of program as a unique identifier."
 msgstr "Nom symbolique du programme en tant qu'identifiant unique."
 
-#: src/bin/ui/property/property_group.c:5914
+#: src/bin/ui/property/property_group.c:5920
 msgid "Action to be performed by the program."
 msgstr "Action à exécuter par le programme."
 
-#: src/bin/ui/property/property_group.c:5919
+#: src/bin/ui/property/property_group.c:5925
 msgid ""
 "Specifies the signal that causes the program to run.The received signal must "
 "match the specified source to run. Signals can be globbed, but only 1 signal "
@@ -2918,17 +3243,17 @@ msgstr ""
 "être regroupés, mais seulement 1 mot-clé de signal par programme peut être "
 "utilisé, par exemple : « mouse,clicked, » ; (cliquer sur n'importe quel "
 "bouton de la souris correspondant à la source démarre le programme). Edje "
-"fournit les signaux généraux suivants :<br>hold,on ; hold,off ;<br>mouse,in ;"
-" mouse,out ; mouse,pressed,in ; mouse,pressed,out ;<br>mouse,down,N : où N = "
-"numéro du bouton de la souris ;<br>mouse,down,N,double : où N = numéro du "
-"bouton de la souris ;<br>mouse,down,N,triple : où N = numéro du bouton de la "
-"souris ;<br>mouse,up,N : où N = numéro du bouton de la souris ;"
-"<br>mouse,clicked,N : où N -=numéro du bouton de la souris ;<br>mouse,move ;"
-"<br> mouse,wheel,N,M : où N = la direction (par défaut c'est 0), M = 1 si la "
-"molette défile vers le haut et -1 vers le bas ;<br>drag,start ; drag ; "
-"drag,stop ;<br>focus,part,in ; focus,part,out.<br>"
+"fournit les signaux généraux suivants :<br>hold,on ; hold,off ;<br>mouse,"
+"in ; mouse,out ; mouse,pressed,in ; mouse,pressed,out ;<br>mouse,down,N : où "
+"N = numéro du bouton de la souris ;<br>mouse,down,N,double : où N = numéro "
+"du bouton de la souris ;<br>mouse,down,N,triple : où N = numéro du bouton de "
+"la souris ;<br>mouse,up,N : où N = numéro du bouton de la souris ;<br>mouse,"
+"clicked,N : où N -=numéro du bouton de la souris ;<br>mouse,move ;<br> mouse,"
+"wheel,N,M : où N = la direction (par défaut c'est 0), M = 1 si la molette "
+"défile vers le haut et -1 vers le bas ;<br>drag,start ; drag ; drag,stop ;"
+"<br>focus,part,in ; focus,part,out.<br>"
 
-#: src/bin/ui/property/property_group.c:5941
+#: src/bin/ui/property/property_group.c:5947
 msgid ""
 "Source of the accepted signal. Sources can be globbed, but only 1 source "
 "keyword per program can be used. For example: \"button-*\"; (Signals from "
@@ -2939,17 +3264,17 @@ msgstr ""
 "bouton-* » ; (les signaux provenant de n'importe quelle partie ou programme "
 "nommé « bouton-* » sont acceptés)."
 
-#: src/bin/ui/property/property_group.c:5949
+#: src/bin/ui/property/property_group.c:5955
 msgid "Wait 'from' seconds before executing the program."
 msgstr "Attendez 'from' secondes avant d'exécuter le programme."
 
-#: src/bin/ui/property/property_group.c:5951
+#: src/bin/ui/property/property_group.c:5957
 msgid "Add a number of seconds (from 0 to 'range') to the total waiting time."
 msgstr ""
 "Ajoutez un nombre de secondes (de 0 à 'range') au temps d'attente total."
 
-#: src/bin/ui/property/property_group.c:5956
-#: src/bin/ui/property/property_group.c:5963
+#: src/bin/ui/property/property_group.c:5962
+#: src/bin/ui/property/property_group.c:5969
 msgid ""
 "Filter signals to be only accepted if the part [part] is in state named "
 "[state]. Only 1 filter per program can be used. If [state] is not given, the "
@@ -2959,15 +3284,15 @@ msgstr ""
 "l'état nommé [state]. 1 seul filtre par programme peut être utilisé. Si "
 "[state] n'est pas donné, la source de l'événement est utilisée à la place."
 
-#: src/bin/ui/property/property_group.c:5977
+#: src/bin/ui/property/property_group.c:5983
 msgid "Switch the part state from the current to the given."
 msgstr "Bascule l'état de la partie de l'état actuel à l'état donné."
 
-#: src/bin/ui/property/property_group.c:5983
+#: src/bin/ui/property/property_group.c:5989
 msgid "State index"
 msgstr "Index d'état"
 
-#: src/bin/ui/property/property_group.c:5989
+#: src/bin/ui/property/property_group.c:5995
 msgid ""
 "Name of the signal to be emitted to the application on execution of this "
 "program."
@@ -2975,7 +3300,7 @@ msgstr ""
 "Nom du signal à émettre vers l'application lors de l'exécution de ce "
 "programme."
 
-#: src/bin/ui/property/property_group.c:5996
+#: src/bin/ui/property/property_group.c:6002
 msgid ""
 "Name of the signal source to be emitted to the application on the execution "
 "of this program."
@@ -2983,23 +3308,23 @@ msgstr ""
 "Nom de la source du signal à émettre vers l'application lors de l'exécution "
 "de ce programme."
 
-#: src/bin/ui/property/property_group.c:6016
+#: src/bin/ui/property/property_group.c:6022
 msgid "Defines how transitions occur using the STATE_SET action."
 msgstr ""
 "Définit comment les transitions se produisent à l'aide de l'action STATE_SET."
 
-#: src/bin/ui/property/property_group.c:6021
+#: src/bin/ui/property/property_group.c:6027
 msgid "Causes the object to move from its current position."
 msgstr "Provoque le déplacement de l'objet à partir de sa position actuelle."
 
-#: src/bin/ui/property/property_group.c:6026
+#: src/bin/ui/property/property_group.c:6032
 msgid ""
 "A double specifying the number of seconds in which to preform the transition."
 msgstr ""
 "Un paramètre double spécifiant le nombre de secondes pendant lesquelles "
 "effectuer la transition."
 
-#: src/bin/ui/property/property_group.c:6033
+#: src/bin/ui/property/property_group.c:6039
 msgid ""
 "ACCEL_FAC, DECEL_FAC and SIN_FAC need the extra optional value to determine "
 "the \"factor\" of curviness. 1.0 is the same as their non-factor "
@@ -3012,7 +3337,7 @@ msgstr ""
 "supérieurs à 1 rendent les angles de courbe plus raides avec un point de "
 "courbe plus prononcé."
 
-#: src/bin/ui/property/property_group.c:6044
+#: src/bin/ui/property/property_group.c:6050
 msgid ""
 "Initial gradient start (0.0 is horizontal, 1.0 is diagonal (linear), 2.0 is "
 "twice the gradient of linear)."
@@ -3020,7 +3345,7 @@ msgstr ""
 "Début du dégradé initial (0.0 est horizontal, 1.0 est diagonal et linéaire, "
 "2,0 est le double du dégradé linéaire)."
 
-#: src/bin/ui/property/property_group.c:6051
+#: src/bin/ui/property/property_group.c:6057
 msgid ""
 "Determining how much the bounce decays, with 0.0 giving linear decay per "
 "bounce, and higher values giving much more decay."
@@ -3029,23 +3354,23 @@ msgstr ""
 "linéaire par rebond, et des valeurs plus élevées donnant une déclin beaucoup "
 "plus important."
 
-#: src/bin/ui/property/property_group.c:6059
+#: src/bin/ui/property/property_group.c:6065
 msgid "Number of bounces (rounded down to the nearest integer value)"
 msgstr "Nombre de rebonds (arrondi à la valeur entière la plus proche)"
 
-#: src/bin/ui/property/property_group.c:6065
+#: src/bin/ui/property/property_group.c:6071
 msgid "Number of spring \"swings\"."
 msgstr "Nombre d'oscillations de type « swings »."
 
-#: src/bin/ui/property/property_group.c:6091
+#: src/bin/ui/property/property_group.c:6097
 msgid "Name of sample to be played"
 msgstr "Nom de l'échantillon à jouer"
 
-#: src/bin/ui/property/property_group.c:6097
+#: src/bin/ui/property/property_group.c:6103
 msgid "Name of tone to be played"
 msgstr "Nom de la tonalité à jouer"
 
-#: src/bin/ui/property/property_group.c:6103
+#: src/bin/ui/property/property_group.c:6109
 msgid ""
 "PLAY_SAMPLE (optional) channel can be one of: EFFECT/FX, BACKGROUND/BG ,"
 "MUSIC/MUS, FOREGROUND/FG, INTERFACE/UI, INPUT, ALERT"
@@ -3053,24 +3378,161 @@ msgstr ""
 "Le canal PLAY_SAMPLE (facultatif) peut être l'un des suivants : EFFECT/FX, "
 "BACKGROUND/BG, MUSIC/MUS, FOREGROUND/FG, INTERFACE/UI, INPUT, ALERT"
 
-#: src/bin/ui/property/property_group.c:6111
+#: src/bin/ui/property/property_group.c:6117
 msgid "Range of tone playing from 0.1 to 10 seconds."
 msgstr "La plage de lecture de tonalité est de 0.1 à 10 secondes."
 
-#: src/bin/ui/property/property_group.c:6117
+#: src/bin/ui/property/property_group.c:6123
 msgid "Range of sample playing speed is from 0 to 100."
 msgstr "La vitesse de lecture de l'échantillon est comprise entre 0 et 100."
 
-#: src/bin/ui/property/property_group.c:6137
 #: src/bin/ui/property/property_group.c:6143
+#: src/bin/ui/property/property_group.c:6149
 msgid "Defines a new parameter. The value is the string specified next to it."
 msgstr ""
 "Définit un nouveau paramètre. La valeur est la chaîne de caractères "
 "spécifiée à côté."
 
-#: src/bin/ui/property/property_color.c:193
-msgid "Provides a descriptive name for the effect of the color class"
-msgstr "Fournit un nom descriptif pour l'effet de la classe de couleur"
+#: src/bin/ui/property/property_image.c:65
+msgid "Set of images"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:72
+#: src/bin/ui/property/property_image.c:92
+msgid "Unknown"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:77
+#, c-format
+msgid "PNG image (%s)"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:79
+#, fuzzy, c-format
+msgid "GIF image (%s)"
+msgstr "Ensemble d'images"
+
+#: src/bin/ui/property/property_image.c:84
+#, c-format
+msgid "JPEG image (%s)"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:86
+#, c-format
+msgid "BMP image (%s)"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:89
+#, c-format
+msgid "TIFF image (%s)"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:432
+#, fuzzy
+msgid "Item info"
+msgstr "Élément"
+
+#: src/bin/ui/property/property_image.c:444
+msgid "Type"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:449
+#, fuzzy
+msgid "Image info"
+msgstr "Image"
+
+#: src/bin/ui/property/property_image.c:456
+msgid "Location"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:461
+msgid "Image compression"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:466
+#, fuzzy
+msgid "Image quality"
+msgstr "Collection d'images"
+
+#: src/bin/ui/property/property_image.c:471
+msgid "Width"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:476
+#, fuzzy
+msgid "Height"
+msgstr "Droite"
+
+#: src/bin/ui/property/property_image.c:481
+#, fuzzy
+msgid "Set image info"
+msgstr "Ajouter nouvelle image dans l'ensemble"
+
+#: src/bin/ui/property/property_image.c:488
+msgid "Border"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:489
+msgid "left:"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:490
+#, fuzzy
+msgid "right:"
+msgstr "Droite"
+
+#: src/bin/ui/property/property_image.c:495
+msgid "top:"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:496
+msgid "bottom:"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:500
+msgid "Minimum size"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:501
+#: src/bin/ui/property/property_image.c:507
+msgid "width:"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:502
+#: src/bin/ui/property/property_image.c:508
+#, fuzzy
+msgid "height:"
+msgstr "Droite"
+
+#: src/bin/ui/property/property_image.c:506
+msgid "Maximum size"
+msgstr ""
+
+#: src/bin/ui/property/property_image.c:512
+#, fuzzy
+msgid "Border scale"
+msgstr "Les deux échelles"
+
+#: src/bin/ui/property/property_sound.c:38
+msgid "RAW"
+msgstr ""
+
+#: src/bin/ui/property/property_sound.c:39
+msgid "COMP"
+msgstr ""
+
+#: src/bin/ui/property/property_sound.c:40
+msgid "LOSSY"
+msgstr ""
+
+#: src/bin/ui/property/property_sound.c:41
+msgid "AS_IS"
+msgstr ""
+
+#: src/bin/ui/property/property_sound.c:111
+#, c-format
+msgid "%s Format Sound"
+msgstr ""
 
 #: src/bin/ui/property/property_textblock.c:1151
 msgid ""
@@ -3078,8 +3540,8 @@ msgid ""
 "lang=hi\" or \"Serif:style=Bold\".Warning! All font names shouldn't contain "
 "spaces.Font name \"Times New Roman\" should be written as \"TimesNewRoman\"!"
 msgstr ""
-"Description de la police au format fontconfig. Par exemple, « "
-"Sans:style=Italic:lang=hi » ou « Serif:style=Bold ». Attention ! Les noms de "
+"Description de la police au format fontconfig. Par exemple, « Sans:"
+"style=Italic:lang=hi » ou « Serif:style=Bold ». Attention ! Les noms de "
 "polices ne doivent pas contenir d'espaces ; « Times New Roman » doit être "
 "écrit sous la forme « TimesNewRoman » !"
 
@@ -3118,8 +3580,8 @@ msgid ""
 msgstr ""
 "Définit l'alignement horizontal du texte.<br> * auto  - respecte les "
 "paramètres LTR/RTL<br>  * center - centre le texte sur la ligne.<br> * "
-"middle - alias de « center »<br>  * left  - aligne le texte sur la "
-"gauche.<br> * right  - aligne le texte sur la droite.<br>"
+"middle - alias de « center »<br>  * left  - aligne le texte sur la gauche."
+"<br> * right  - aligne le texte sur la droite.<br>"
 
 #: src/bin/ui/property/property_textblock.c:1201
 msgid ""
@@ -3261,18 +3723,292 @@ msgstr "Définit l'écart des tirets de soulignement."
 msgid "Sets the color of dashed underline."
 msgstr "Définit la couleur du soulignement par tirets."
 
-#: src/bin/ui/tab_home_open.c:61
-msgid "Project open"
-msgstr "Ouvrir un projet"
+#: src/bin/ui/script_manager.c:131
+#, fuzzy
+msgid "ERROR!"
+msgstr "ERREUR : "
 
-#: src/bin/ui/tab_home_open.c:117 src/bin/ui/tab_home_open.c:279
-#: src/bin/main.c:153
-msgid "Given project is dameged. Do you want to recover project?"
-msgstr "Le projet indiqué est endommagé. Voulez-vous récupérer ce projet ?"
+#: src/bin/ui/script_manager.c:135
+msgid "SUCCESS!"
+msgstr ""
 
+#: src/bin/ui/script_manager.c:209
+#, fuzzy, c-format
+msgid "Group: %s"
+msgstr "Groupe"
+
+#: src/bin/ui/script_manager.c:214
+#, fuzzy, c-format
+msgid "Program: %s"
+msgstr "Programmes"
+
+#: src/bin/ui/sound_manager.c:127
+msgid "UNKNOWN"
+msgstr "INCONNU"
+
+#: src/bin/ui/sound_manager.c:177
+msgid "Sound Samples"
+msgstr "Échantillons sonores"
+
+#: src/bin/ui/sound_manager.c:190
+msgid "Sound Tones"
+msgstr "Tonalités sonores"
+
+#: src/bin/ui/sound_manager.c:232
+#, c-format
+msgid "File '%s' is not exist"
+msgstr "Le fichier « %s » n'existe pas"
+
+#: src/bin/ui/sound_manager.c:251
+#, c-format
+msgid "Sample '%s' is already added to project"
+msgstr "L'échantillon « %s » a déjà été ajouté"
+
+#: src/bin/ui/sound_manager.c:264
+#, c-format
+msgid "File '%s' exist"
+msgstr "Le fichier « %s » existe"
+
+#: src/bin/ui/sound_manager.c:315
+msgid "Choose a sound"
+msgstr "Choisissez un son"
+
+#: src/bin/ui/sound_manager.c:381
+msgid "Tone name:"
+msgstr "Nom de la tonalité :"
+
+#: src/bin/ui/sound_manager.c:385
+msgid "Type a new tone name"
+msgstr "Entrez nouveau nom pour la tonalité"
+
+#: src/bin/ui/sound_manager.c:391
+msgid "Frequency:"
+msgstr "Fréquence :"
+
+#: src/bin/ui/sound_manager.c:397
+msgid "Type a frequency (20 - 20000)"
+msgstr "Entrez fréquence (20 à 20 000 Hz)"
+
+#: src/bin/ui/sound_manager.c:437
+msgid "Create a new tone"
+msgstr "Créer nouvelle tonalité"
+
+#: src/bin/ui/sound_manager.c:588
+msgid "Sound Gallery"
+msgstr "Collection de sons"
+
+#: src/bin/ui/sound_manager.c:648
+msgid "Sample"
+msgstr "Échantillon"
+
+#: src/bin/ui/sound_manager.c:649
+msgid "Tone"
+msgstr "Tonalité"
+
+#: src/bin/ui/style_manager.c:197
+msgid "Style name:"
+msgstr "Nom du style :"
+
+#: src/bin/ui/style_manager.c:202
+msgid "Type a new style name"
+msgstr "Entrez nouveau nom de style"
+
+#: src/bin/ui/style_manager.c:229 src/bin/ui/style_manager.c:320
+msgid "Failed to add tag value. Tag will be deleted"
+msgstr ""
+"Impossible d'ajouter une valeur à la balise. La balise a été supprimée."
+
+#: src/bin/ui/style_manager.c:261
+msgid "Add textblock style"
+msgstr "Ajouter un style de bloc de texte"
+
+#: src/bin/ui/style_manager.c:274
+msgid "Type a new tag name."
+msgstr "Entrez nouveau nom pour la balise."
+
+#: src/bin/ui/style_manager.c:367
+#, c-format
+msgid "Add tag for style: %s"
+msgstr "Ajouter une balise pour le style : %s"
+
+#: src/bin/ui/style_manager.c:859
+msgid "Textblock style manager"
+msgstr "Gestionnaire de styles de bloc de texte"
+
+#: src/bin/ui/style_manager.c:876
+msgid "Textblock styles list"
+msgstr "Liste des styles de bloc de texte"
+
+#: src/bin/ui/style_manager.c:938
+msgid "Style"
+msgstr "Style"
+
+#: src/bin/ui/style_manager.c:939
+msgid "Tag"
+msgstr "Balise"
+
+#: src/bin/ui/tab_home_common.c:33
+msgid "Version of file:"
+msgstr ""
+
+#: src/bin/ui/tab_home_common.c:37
+msgid "Authors:"
+msgstr ""
+
+#: src/bin/ui/tab_home_common.c:41
+msgid "Licenses:"
+msgstr ""
+
+#: src/bin/ui/tab_home_common.c:45
+msgid "Comment:"
+msgstr ""
+
+#: src/bin/ui/tab_home_common.c:48 src/bin/ui/tab_home_import_edc.c:385
+#: src/bin/ui/tab_home_import_edj.c:416 src/bin/ui/tab_home_new.c:450
+msgid "Created with Eflete!"
+msgstr ""
+
+#: src/bin/ui/tab_home_common.c:69
+msgid "Meta data save"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:189 src/bin/ui/tab_home_import_edc.c:554
+msgid "Images directories:"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:197
+msgid "Fonts directories:"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:205
+#, fuzzy
+msgid "Sounds directories:"
+msgstr "Tonalités sonores"
+
+#: src/bin/ui/tab_home_import_edc.c:223 src/bin/ui/tab_home_import_edc.c:614
+#, fuzzy
+msgid "Data directories:"
+msgstr "Éléments de données"
+
+#: src/bin/ui/tab_home_import_edc.c:409 src/bin/ui/tab_home_new.c:503
+#, fuzzy
+msgid "Import edc"
+msgstr "Importer fichier EDC"
+
+#: src/bin/ui/tab_home_import_edc.c:461
+#, fuzzy
+msgid "Import EDC-file"
+msgstr "Importer fichier EDJ"
+
+#: src/bin/ui/tab_home_import_edc.c:461 src/bin/ui/tab_home_import_edj.c:493
 #: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:286
 msgid "The given file is locked by another application"
 msgstr "Le fichier indiqué est verrouillé par une autre application"
+
+#: src/bin/ui/tab_home_import_edc.c:467 src/bin/ui/tab_home_new.c:559
+#, c-format
+msgid ""
+"<font_size=16>A project folder named '%s' already exist.Do you want to "
+"replace it?</font_size><br>The project folder '%s' already exist in '%s'. "
+"Replacing it will overwrite<b>all</b> contents."
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:514
+msgid "Import"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:526 src/bin/ui/tab_home_import_edj.c:580
+#: src/bin/ui/tab_home_new.c:638
+#, fuzzy
+msgid "Project name:"
+msgstr "Enregistrement du projet"
+
+#: src/bin/ui/tab_home_import_edc.c:533 src/bin/ui/tab_home_import_edj.c:586
+#: src/bin/ui/tab_home_new.c:644
+#, fuzzy
+msgid "Path to project:"
+msgstr "Chemin vers le répertoire du projet"
+
+#: src/bin/ui/tab_home_import_edc.c:540
+#, fuzzy
+msgid "Path to edc-file:"
+msgstr "Importer fichier EDC"
+
+#: src/bin/ui/tab_home_import_edc.c:568
+msgid "Font directories:"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edc.c:582
+#, fuzzy
+msgid "Sound directories:"
+msgstr "Tonalités sonores"
+
+#: src/bin/ui/tab_home_import_edj.c:439
+#, fuzzy
+msgid "Import edj"
+msgstr "Importer fichier EDJ"
+
+#: src/bin/ui/tab_home_import_edj.c:493
+#, fuzzy
+msgid "Import EDJ-file"
+msgstr "Importer fichier EDJ"
+
+#: src/bin/ui/tab_home_import_edj.c:499
+#, c-format
+msgid ""
+"<wrap=word>A project folder named <b>'%s'</b> already exist in <b>'%s'</b>."
+"Do you want to replace it?<br>Replacing it will overwrite <b>all</b> "
+"contents.</wrap>"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edj.c:574 src/bin/ui/tab_home_new.c:632
+msgid "Create"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edj.c:593
+#, fuzzy
+msgid "Path to edj-file:"
+msgstr "Importer fichier EDJ"
+
+#: src/bin/ui/tab_home_import_edj.c:608 src/bin/ui/tab_home_new.c:656
+msgid "Widgets:"
+msgstr ""
+
+#: src/bin/ui/tab_home_import_edj.c:816 src/bin/ui/tab_home_new.c:726
+msgid "Following widgets were not found and ignored: "
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:232
+msgid "Scroller<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:240
+msgid "Photocam<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:247
+msgid "Genlist<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:256
+msgid "Notify<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:263
+msgid "Button<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:270
+msgid "List<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_new.c:277
+msgid "Label<br>"
+msgstr ""
+
+#: src/bin/ui/tab_home_open.c:61
+msgid "Project open"
+msgstr "Ouvrir un projet"
 
 #: src/bin/ui/tab_home_open.c:188
 msgid "Confirm clear recent list"
@@ -3295,486 +4031,314 @@ msgstr "Effacer la liste"
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/bin/ui/tabs.c:1220
+#: src/bin/ui/tabs.c:1219
 msgid "Project info"
 msgstr "Infos du projet"
 
-#: src/bin/ui/workspace/workspace.c:526
-msgid "100"
-msgstr "100"
-
-#: src/bin/ui/workspace/workspace.c:528
-msgid "100%"
-msgstr "100 %"
-
-#: src/bin/ui/workspace/workspace.c:755
-#, c-format
-msgid "Part '%s' width: %d"
-msgstr "Partie « %s » largeur : %d"
-
-#: src/bin/ui/workspace/workspace.c:760
-#, c-format
-msgid "Part '%s' heigth: %d"
-msgstr "Partie « %s » hauteur : %d"
-
-#: src/bin/ui/workspace/workspace.c:775
-#, c-format
-msgid "Part '%s' object area width: %d"
-msgstr "Partie « %s » largeur zone d'objet : %d"
-
-#: src/bin/ui/workspace/workspace.c:780
-#, c-format
-msgid "Part '%s' object area heigth: %d"
-msgstr "Partie « %s » hauteur zone d'objet : %d"
-
-#: src/bin/ui/workspace/workspace.c:790 src/bin/ui/workspace/workspace.c:800
-#: src/bin/ui/workspace/workspace.c:810 src/bin/ui/workspace/workspace.c:820
-#, c-format
-msgid "Part '%s'"
-msgstr "Partie « %s »"
-
-#: src/bin/ui/workspace/workspace.c:1065
-msgid "Absolute scale"
-msgstr "Échelle absolue"
-
-#: src/bin/ui/workspace/workspace.c:1067
-msgid "Relative scale"
-msgstr "Échelle relative"
-
-#: src/bin/ui/workspace/workspace.c:1069
-msgid "Both scales"
-msgstr "Les deux échelles"
-
-#: src/bin/ui/workspace/workspace.c:1075
-msgid "Markers"
-msgstr "Marqueurs"
-
-#: src/bin/ui/workspace/workspace.c:1418
-#, c-format
-msgid "max size changed from [%dx%d] to [%dx%d]"
-msgstr "taille max. modifiée de [%dx%d] en [%dx%d]"
-
-#: src/bin/ui/workspace/workspace.c:1438
-#, c-format
-msgid "align changed from [%fx%f] to [%fx%f]"
-msgstr "alignement modifié de [%fx%f] en [%fx%f]"
-
-#: src/bin/ui/workspace/workspace.c:1523
-msgid "Library"
-msgstr "Bibliothèque"
-
-#: src/bin/ui/workspace/workspace.c:2241
-msgid "Project is changed"
-msgstr "Projet modifié"
-
-#: src/bin/ui/workspace/workspace.c:2243
-msgid "Reload"
-msgstr "Recharger"
-
-#: src/bin/ui/workspace/group_navigator.c:107
+#: src/bin/ui/workspace/group_navigator.c:115
 msgid "State set"
 msgstr "État défini"
 
-#: src/bin/ui/workspace/group_navigator.c:108
+#: src/bin/ui/workspace/group_navigator.c:116
 msgid "Signal emit"
 msgstr "Signal émis"
 
-#: src/bin/ui/workspace/group_navigator.c:109
+#: src/bin/ui/workspace/group_navigator.c:117
 msgid "Drag value set"
 msgstr "Valeur de déplacement définie"
 
-#: src/bin/ui/workspace/group_navigator.c:110
+#: src/bin/ui/workspace/group_navigator.c:118
 msgid "Drag value step"
 msgstr "Valeur du pas de déplacement"
 
-#: src/bin/ui/workspace/group_navigator.c:111
+#: src/bin/ui/workspace/group_navigator.c:119
 msgid "Drag value page"
 msgstr "Page du pas de déplacement"
 
-#: src/bin/ui/workspace/group_navigator.c:112
+#: src/bin/ui/workspace/group_navigator.c:120
 msgid "Play sample"
 msgstr "Jouer l'échantillon"
 
-#: src/bin/ui/workspace/group_navigator.c:113
+#: src/bin/ui/workspace/group_navigator.c:121
 msgid "Play tone"
 msgstr "Jouer la tonalité"
 
-#: src/bin/ui/workspace/group_navigator.c:114
+#: src/bin/ui/workspace/group_navigator.c:122
 msgid "Action stop"
 msgstr "Arrêter l'action"
 
-#: src/bin/ui/workspace/group_navigator.c:191
+#: src/bin/ui/workspace/group_navigator.c:199
 msgid "items"
 msgstr "éléments"
 
-#: src/bin/ui/workspace/group_navigator.c:208
+#: src/bin/ui/workspace/group_navigator.c:216
 msgid "Parts"
 msgstr "Parties"
 
-#: src/bin/ui/workspace/group_navigator.c:210
+#: src/bin/ui/workspace/group_navigator.c:218
 msgid "Programs"
 msgstr "Programmes"
 
-#: src/bin/ui/workspace/group_navigator.c:212
+#: src/bin/ui/workspace/group_navigator.c:220
 msgid "Data items"
 msgstr "Éléments de données"
 
-#: src/bin/ui/workspace/group_navigator.c:915
-#: src/bin/ui/workspace/group_navigator.c:1557
+#: src/bin/ui/workspace/group_navigator.c:923
+#: src/bin/ui/workspace/group_navigator.c:1565
 msgid "Select the name of the source group."
 msgstr "Choisissez le nom du groupe de la source."
 
-#: src/bin/ui/workspace/group_navigator.c:975
+#: src/bin/ui/workspace/group_navigator.c:983
 #, c-format
 msgid "copied new part \"%s\" from \"%s\""
 msgstr "nouvelle partie modifiée de « %s » en « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:987
+#: src/bin/ui/workspace/group_navigator.c:995
 #, c-format
 msgid "added new part \"%s\""
 msgstr "nouvelle partie « %s » ajoutée"
 
-#: src/bin/ui/workspace/group_navigator.c:1125
+#: src/bin/ui/workspace/group_navigator.c:1133
 msgid "Part name"
 msgstr "Nom de la partie"
 
-#: src/bin/ui/workspace/group_navigator.c:1128
+#: src/bin/ui/workspace/group_navigator.c:1136
 msgid "Enter the name of the new part"
 msgstr "Saisissez le nom de la nouvelle partie"
 
-#: src/bin/ui/workspace/group_navigator.c:1135
+#: src/bin/ui/workspace/group_navigator.c:1143
 msgid "Part type"
 msgstr "Type de partie"
 
-#: src/bin/ui/workspace/group_navigator.c:1153
+#: src/bin/ui/workspace/group_navigator.c:1161
 msgid "Part copy"
 msgstr "Copie de partie"
 
-#: src/bin/ui/workspace/group_navigator.c:1194
+#: src/bin/ui/workspace/group_navigator.c:1202
 #, c-format
 msgid "Add New Part to Group \"%s\""
 msgstr "Ajout nouvelle partie au groupe « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:1242
+#: src/bin/ui/workspace/group_navigator.c:1250
 #, c-format
 msgid "added new data item \"%s\""
 msgstr "nouvel élément de donnée « %s » ajouté"
 
-#: src/bin/ui/workspace/group_navigator.c:1257
+#: src/bin/ui/workspace/group_navigator.c:1265
 msgid "Data item name"
 msgstr "Nom de l'élément de donnée"
 
-#: src/bin/ui/workspace/group_navigator.c:1260
+#: src/bin/ui/workspace/group_navigator.c:1268
 msgid "Enter the name of the new group_data"
 msgstr "Saisissez le nom du nouveau group_data"
 
-#: src/bin/ui/workspace/group_navigator.c:1285
+#: src/bin/ui/workspace/group_navigator.c:1293
 #, c-format
 msgid "Add New Data Item to Group \"%s\""
 msgstr "Ajout nouvel élément de donnée au groupe « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:1321
+#: src/bin/ui/workspace/group_navigator.c:1329
 #, c-format
 msgid "added new state \"%s\" %.2f"
 msgstr "nouvel état « %s » %.2f ajouté"
 
-#: src/bin/ui/workspace/group_navigator.c:1332
+#: src/bin/ui/workspace/group_navigator.c:1340
 #, c-format
 msgid "added new state \"%s\" %.2f as copy of \"%s\" %.2f"
 msgstr "nouvel état « %s » %.2f ajouté comme copie de « %s » %.2f"
 
-#: src/bin/ui/workspace/group_navigator.c:1396
+#: src/bin/ui/workspace/group_navigator.c:1404
 msgid "State name"
 msgstr "Nom de l'état"
 
-#: src/bin/ui/workspace/group_navigator.c:1401
+#: src/bin/ui/workspace/group_navigator.c:1409
 msgid "Enter the name of the new state"
 msgstr "Saisissez le nom du nouvel état"
 
-#: src/bin/ui/workspace/group_navigator.c:1405
+#: src/bin/ui/workspace/group_navigator.c:1413
 msgid "Value"
 msgstr "Valeur"
 
-#: src/bin/ui/workspace/group_navigator.c:1409
+#: src/bin/ui/workspace/group_navigator.c:1417
 msgid "Available values: 0.0 - 1.0"
 msgstr "Valeurs disponibles : 0.0 - 1.0"
 
-#: src/bin/ui/workspace/group_navigator.c:1414
+#: src/bin/ui/workspace/group_navigator.c:1422
 msgid "Duplicate state"
 msgstr "Dupliquer l'état"
 
-#: src/bin/ui/workspace/group_navigator.c:1459
+#: src/bin/ui/workspace/group_navigator.c:1467
 #, c-format
 msgid "Add New State to Part \"%s\""
 msgstr "Ajout nouvel état à la partie « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:1487
+#: src/bin/ui/workspace/group_navigator.c:1495
 #, c-format
 msgid "added new item \"%s\" to part \"%s\""
 msgstr "nouvel élément « %s » ajouté à la partie « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:1551
+#: src/bin/ui/workspace/group_navigator.c:1559
 msgid "Enter the name of the new item"
 msgstr "Saisissez le nom du nouvel élément"
 
-#: src/bin/ui/workspace/group_navigator.c:1555
+#: src/bin/ui/workspace/group_navigator.c:1563
 msgid "Source group"
 msgstr "Groupe de la source"
 
-#: src/bin/ui/workspace/group_navigator.c:1596
+#: src/bin/ui/workspace/group_navigator.c:1604
 #, c-format
 msgid "Add New Item to Part \"%s\""
 msgstr "Ajout nouvel élément à la partie « %s »"
 
-#: src/bin/ui/workspace/group_navigator.c:1658
+#: src/bin/ui/workspace/group_navigator.c:1666
 #, c-format
 msgid "added new program \"%s\""
 msgstr "nouveau programme « %s » ajouté"
 
-#: src/bin/ui/workspace/group_navigator.c:1677
+#: src/bin/ui/workspace/group_navigator.c:1685
 msgid "Program name"
 msgstr "Nom du programme"
 
-#: src/bin/ui/workspace/group_navigator.c:1683
+#: src/bin/ui/workspace/group_navigator.c:1691
 msgid "Enter the name of the new program"
 msgstr "Saisissez le nom du nouveau programme"
 
-#: src/bin/ui/workspace/group_navigator.c:1687
+#: src/bin/ui/workspace/group_navigator.c:1695
 msgid "Action type"
 msgstr "Type d'action"
 
-#: src/bin/ui/workspace/group_navigator.c:1721
+#: src/bin/ui/workspace/group_navigator.c:1729
 msgid "Add New Program"
 msgstr "Ajout d'un nouveau programme"
 
-#: src/bin/ui/workspace/group_navigator.c:1771
+#: src/bin/ui/workspace/group_navigator.c:1779
 #, c-format
 msgid "deleted program \"%s\""
 msgstr "programme « %s » supprimé"
 
-#: src/bin/ui/workspace/group_navigator.c:1845
+#: src/bin/ui/workspace/group_navigator.c:1853
 #, c-format
 msgid "deleted group_data \"%s\""
 msgstr "group_data « %s » supprimé"
 
-#: src/bin/ui/workspace/group_navigator.c:1915
+#: src/bin/ui/workspace/group_navigator.c:1923
 #, c-format
 msgid "deleted part \"%s\""
 msgstr "partie « %s » supprimée"
 
-#: src/bin/ui/workspace/group_navigator.c:2085
+#: src/bin/ui/workspace/group_navigator.c:2093
 #, c-format
 msgid "deleted state \"%s\" %.2f"
 msgstr "état « %s » %.2f supprimé"
 
-#: src/bin/ui/workspace/group_navigator.c:2151
+#: src/bin/ui/workspace/group_navigator.c:2159
 #, c-format
 msgid "deleted item \"%s\""
 msgstr "élément « %s » supprimé"
 
-#: src/bin/ui/workspace/group_navigator.c:2275
+#: src/bin/ui/workspace/group_navigator.c:2283
 #, c-format
 msgid "part \"%s\" placed below part \"%s\" in the stack"
 msgstr "la partie « %s » est placée sous la partie « %s » dans la pile"
 
-#: src/bin/ui/workspace/group_navigator.c:2277
+#: src/bin/ui/workspace/group_navigator.c:2285
 #, c-format
 msgid "part \"%s\" restacked to the top of the stack"
 msgstr "la partie « %s » est replacée au sommet de la pile"
 
-#: src/bin/ui/workspace/group_navigator.c:2346
+#: src/bin/ui/workspace/group_navigator.c:2354
 #, c-format
 msgid "part item \"%s\" restacked BELOW"
 msgstr "élément de partie « %s » replacé en BELOW"
 
-#: src/bin/ui/workspace/group_navigator.c:2355
+#: src/bin/ui/workspace/group_navigator.c:2363
 #, c-format
 msgid "part item \"%s\" restacked ABOVE"
 msgstr "élément de partie « %s » replacé en ABOVE"
 
-#: src/bin/ui/workspace/group_navigator.c:2615
+#: src/bin/ui/workspace/group_navigator.c:2623
 msgid "Part"
 msgstr "Partie"
 
-#: src/bin/ui/workspace/group_navigator.c:2621
-msgid "State"
-msgstr "État"
-
-#: src/bin/ui/workspace/group_navigator.c:2625
-msgid "Item"
-msgstr "Élément"
-
-#: src/bin/ui/workspace/group_navigator.c:2633
+#: src/bin/ui/workspace/group_navigator.c:2641
 msgid "Program"
 msgstr "Programme"
 
-#: src/bin/ui/workspace/group_navigator.c:2639
+#: src/bin/ui/workspace/group_navigator.c:2647
 msgid "Data item"
 msgstr "Élément de donnée"
 
-#: src/bin/main.c:45
+#: src/bin/ui/workspace/workspace.c:525
+msgid "100"
+msgstr "100"
+
+#: src/bin/ui/workspace/workspace.c:527
+msgid "100%"
+msgstr "100 %"
+
+#: src/bin/ui/workspace/workspace.c:758
 #, c-format
-msgid "ERROR: "
-msgstr "ERREUR : "
+msgid "Part '%s' width: %d"
+msgstr "Partie « %s » largeur : %d"
 
-#: src/bin/main.c:47
+#: src/bin/ui/workspace/workspace.c:763
 #, c-format
-msgid ""
-"\n"
-"ERROR: invalid options found. See --help.\n"
-msgstr ""
-"\n"
-"ERREUR : options invalides détectées. Voir --help.\n"
+msgid "Part '%s' heigth: %d"
+msgstr "Partie « %s » hauteur : %d"
 
-#: src/bin/main.c:65
-msgid "Name for new project"
-msgstr "Nom du nouveau projet"
-
-#: src/bin/main.c:66
-msgid "Path to project directory"
-msgstr "Chemin vers le répertoire du projet"
-
-#: src/bin/main.c:67
-msgid ""
-"Export edj file path. The path should contain the edj file name. The edj "
-"file will be write by this path on every save. If file missed will be "
-"created, if file exist, changed groups will be add."
-msgstr ""
-"Exporte le chemin du fichier edj. Le chemin doit contenir le nom du fichier "
-"edj. Ce chemin sera utilisé par le fichier edj à chaque sauvegarde. Si le "
-"fichier n'existe pas, il sera créé ; si le fichier existe, les groupes "
-"modifiés seront ajoutés."
-
-#: src/bin/main.c:68
-msgid ""
-"Export edc file path. It should be path folder. On every save will generate "
-"source code of changed groups. If folder is missed it will be created, if "
-"folder exist new source code will be add."
-msgstr ""
-"Exporte le chemin du fichier edc. Il doit être dans le chemin vers le "
-"dossier. À chaque sauvegarde, le code source des groupes modifiés sera "
-"généré. Si le dossier n'existe pas, il sera créé ; si le dossier existe, un "
-"nouveau code source sera ajouté."
-
-#: src/bin/main.c:260
-msgid "Only one file should be specified."
-msgstr "Un fichier seulement doit être indiqué."
-
-#: src/bin/main.c:304
-msgid "--export-edj value have not extension '.edj'. Wrong value."
-msgstr "la valeur --export-edj n'a pas d'extension en « .edj ». Valeur erronée."
-
-#: src/bin/main.c:309
-msgid "--reopen is given but file specified."
-msgstr "--reopen est donné mais un fichier est spécifié."
-
-#: src/bin/main.c:311
-msgid "--reopen is given but --name specified."
-msgstr "--reopen est donné mais --name spécifié."
-
-#: src/bin/main.c:313
-msgid "--repoen is given but --path specified."
-msgstr "--reopen est donné mais --path spécifié."
-
-#: src/bin/main.c:315
-msgid "--reopen is given but --id specified."
-msgstr "--reopen est donné mais --id spécifié."
-
-#: src/bin/main.c:317
-msgid "--reopen is given but --sd specified."
-msgstr "--reopen est donné mais --sd spécifié."
-
-#: src/bin/main.c:319
-msgid "--reopen is given but --fd specified."
-msgstr "--reopen est donné mais --fd spécifié."
-
-#: src/bin/main.c:321
-msgid "--reopen is given but --dd specified."
-msgstr "--reopen est donné mais --dd spécifié."
-
-#: src/bin/main.c:323 src/bin/main.c:361 src/bin/main.c:414
-msgid "widgets can be added only to new project."
-msgstr ""
-"les objets graphiques (widgets) ne peuvent être ajoutés qu'à un nouveau "
-"projet."
-
-#: src/bin/main.c:327
-msgid "There are no previously opened projects yet."
-msgstr "Pas encore de projets déjà ouverts."
-
-#: src/bin/main.c:342
+#: src/bin/ui/workspace/workspace.c:778
 #, c-format
-msgid "File '%s' doesn't exists."
-msgstr "Le fichier « %s » n'existe pas."
+msgid "Part '%s' object area width: %d"
+msgstr "Partie « %s » largeur zone d'objet : %d"
 
-#: src/bin/main.c:344
+#: src/bin/ui/workspace/workspace.c:783
 #, c-format
-msgid "'%s' is a directory."
-msgstr "« %s » est un répertoire."
+msgid "Part '%s' object area heigth: %d"
+msgstr "Partie « %s » hauteur zone d'objet : %d"
 
-#: src/bin/main.c:349
-msgid "*.pro file is given but --name specified."
-msgstr "fichier *.pro donné mais --name est spécifié."
+#: src/bin/ui/workspace/workspace.c:793 src/bin/ui/workspace/workspace.c:803
+#: src/bin/ui/workspace/workspace.c:813 src/bin/ui/workspace/workspace.c:823
+#, c-format
+msgid "Part '%s'"
+msgstr "Partie « %s »"
 
-#: src/bin/main.c:351
-msgid "*.pro file is given but --path specified."
-msgstr "fichier *.pro donné mais --path est spécifié."
+#: src/bin/ui/workspace/workspace.c:1068
+msgid "Absolute scale"
+msgstr "Échelle absolue"
 
-#: src/bin/main.c:353
-msgid "*.pro file is given but --id specified."
-msgstr "fichier *.pro donné mais --id est spécifié."
+#: src/bin/ui/workspace/workspace.c:1070
+msgid "Relative scale"
+msgstr "Échelle relative"
 
-#: src/bin/main.c:355
-msgid "*.pro file is given but --sd specified."
-msgstr "fichier *.pro donné mais --sd est spécifié."
+#: src/bin/ui/workspace/workspace.c:1072
+msgid "Both scales"
+msgstr "Les deux échelles"
 
-#: src/bin/main.c:357
-msgid "*.pro file is given but --fd specified."
-msgstr "fichier *.pro donné mais --fd est spécifié."
+#: src/bin/ui/workspace/workspace.c:1078
+msgid "Markers"
+msgstr "Marqueurs"
 
-#: src/bin/main.c:359
-msgid "*.pro file is given but --dd specified."
-msgstr "fichier *.pro donné mais --dd est spécifié."
+#: src/bin/ui/workspace/workspace.c:1422
+#, c-format
+msgid "max size changed from [%dx%d] to [%dx%d]"
+msgstr "taille max. modifiée de [%dx%d] en [%dx%d]"
 
-#: src/bin/main.c:374
-msgid "*.edj file is given but --id specified."
-msgstr "fichier *.edj donné mais --id est spécifié."
+#: src/bin/ui/workspace/workspace.c:1442
+#, c-format
+msgid "align changed from [%fx%f] to [%fx%f]"
+msgstr "alignement modifié de [%fx%f] en [%fx%f]"
 
-#: src/bin/main.c:376
-msgid "*.edj file is given but --sd specified."
-msgstr "fichier *.edj donné mais --sd est spécifié."
+#: src/bin/ui/workspace/workspace.c:1527
+msgid "Library"
+msgstr "Bibliothèque"
 
-#: src/bin/main.c:378
-msgid "*.edj file is given but --fd specified."
-msgstr "fichier *.edj donné mais --fd est spécifié."
+#: src/bin/ui/workspace/workspace.c:2245
+msgid "Project is changed"
+msgstr "Projet modifié"
 
-#: src/bin/main.c:380
-msgid "*.edj file is given but --dd specified."
-msgstr "fichier *.edj donné mais --dd est spécifié."
-
-#: src/bin/main.c:393
-msgid "Wrong file extension."
-msgstr "Extension de fichier erronée."
-
-#: src/bin/main.c:398
-msgid "no file or --name are given but --path specified."
-msgstr "pas de fichier ou --name donné mais --path spécifié."
-
-#: src/bin/main.c:400
-msgid "no file is given but --id specified."
-msgstr "pas de fichier donné mais --id spécifié."
-
-#: src/bin/main.c:402
-msgid "no file is given but --sd specified."
-msgstr "pas de fichier donné mais --sd spécifié."
-
-#: src/bin/main.c:404
-msgid "no file is given but --fd specified."
-msgstr "pas de fichier donné mais --fd spécifié."
-
-#: src/bin/main.c:406
-msgid "no file is given but --dd specified."
-msgstr "pas de fichier donné mais --dd spécifié."
+#: src/bin/ui/workspace/workspace.c:2247
+msgid "Reload"
+msgstr "Recharger"
 
 #~ msgid "Property"
 #~ msgstr "Propriété"
