@@ -41,13 +41,20 @@ dir_bin     = join_paths(dir_prefix, get_option('bindir'))
 dir_doc     = join_paths(dir_prefix, get_option('infodir'), 'eflete')
 dir_locale  = join_paths(get_option('prefix'), get_option('localedir'))
 
+if host_machine.system() == 'linux'
+  system = '@0@ (kernel: @1@)'.format( run_command('uname','-o').stdout().strip(),
+                                       run_command('uname','-r').stdout().strip())
+else
+  system = host_machine.system()
+endif
+
 # configuration
 config_h = configuration_data()
 config_h.set_quoted('PACKAGE_NAME'     , meson.project_name())
 config_h.set_quoted('PACKAGE_VERSION'  , version_rev)
 config_h.set_quoted('PACKAGE_COMMIT'   , git_commit)
 config_h.set_quoted('PACKAGE_BUILD_DIR', meson.current_build_dir())
-config_h.set_quoted('PACKAGE_OS'       , host_machine.system())
+config_h.set_quoted('PACKAGE_OS'       , system)
 config_h.set_quoted('PACKAGE_BUILD_TIME', run_command('date', '+%F %H:%M', check: false).stdout().strip())
 config_h.set('__UNUSED_RESULT__', '__attribute__((warn_unused_result))')
 
