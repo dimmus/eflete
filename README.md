@@ -61,6 +61,21 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:"$PKG_CONFIG_PATH"
 export LD_LIBRARY_PATH=/usr/local/lib:"$LD_LIBRARY_PATH"
 ```
 
+Compilation options are (see `meson_options.txt` as well):
+
+| Option           | Default value |
+| :----------------|:-------------:|
+| -Denable-nls     | true          |
+| -Denable-audio   | true          |
+| -Denable-enventor| false         |
+| -Denable-tizen   | false         |
+| -Dbuild-doc      | false         |
+| -Denable-debug   | false         |
+| -Denable-todo    | false         |
+| -Dbuild-tests    | false         |
+
+You can see your current setup in the meson setup output.
+
 To run tests:
 ```sh
 meson --reconfigure -Dbuild-tests=true . build 
