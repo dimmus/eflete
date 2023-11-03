@@ -25,7 +25,7 @@ if version[2] == '99'
     endif
     git_commit = run_command(git_program, 'rev-parse', '@', check: false).stdout().strip()
   endif
-  version_rev = '.'.join([version, git_version])
+  version_rev = '@0@.@1@'.format(meson.project_version(), git_version)
   release = 'dev-@0@.@1@.@2@'.format(version[0], version[1], version[2])
 else
   version_rev = version
