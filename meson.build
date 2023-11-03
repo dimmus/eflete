@@ -49,7 +49,7 @@ config_h.set_quoted('PACKAGE_VERSION'  , version_rev)
 config_h.set_quoted('PACKAGE_COMMIT'   , git_commit)
 config_h.set_quoted('PACKAGE_BUILD_DIR', meson.current_build_dir())
 config_h.set_quoted('PACKAGE_OS'       , host_machine.system())
-config_h.set_quoted('PACKAGE_BUILD_TIME', '2023') # should be the time like $(date +"%F\ %H:%M")
+config_h.set_quoted('PACKAGE_BUILD_TIME', run_command('date', '+%F %H:%M', check: false).stdout().strip())
 config_h.set('__UNUSED_RESULT__', '__attribute__((warn_unused_result))')
 
 config_dir = [include_directories('.')]
