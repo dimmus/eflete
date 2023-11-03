@@ -57,7 +57,11 @@ static const Ecore_Getopt options = {
    "  if FILE is *.edj: import edj\n"
    "  if FILE is not specified but --name given: new project\n"
    ,
-   PACKAGE_VERSION,
+   PACKAGE_VERSION "\n"
+   " Commit: " PACKAGE_COMMIT "\n"
+   "   Date: " PACKAGE_BUILD_TIME "\n"
+   "    EFL: " PACKAGE_EFL "\n"
+   "     OS: " PACKAGE_OS "\n",
    "(C) 2013-2016 Samsung Electronics.\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
