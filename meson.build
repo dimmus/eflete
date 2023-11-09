@@ -29,7 +29,6 @@ if version[2] == '99'
 else
   version_rev = version
   release = '@0@.@1@.@2@'.format(version[0], version[1], version[2])
-  config_h.set('EFLETE_RELEASE_BUILD', '1') # unused
 endif
 
 # install paths
