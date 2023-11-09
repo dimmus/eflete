@@ -42,8 +42,8 @@ dir_doc     = join_paths(dir_prefix, get_option('infodir'), 'eflete')
 dir_locale  = join_paths(get_option('prefix'), get_option('localedir'))
 
 if host_machine.system() == 'linux'
-  system = '@0@ (kernel: @1@)'.format( run_command('uname','-o').stdout().strip(),
-                                       run_command('uname','-r').stdout().strip())
+  system = '@0@ (kernel: @1@)'.format(run_command('uname','-o', check: false).stdout().strip(),
+                                      run_command('uname','-r', check: false).stdout().strip())
 else
   system = host_machine.system()
 endif
