@@ -8,402 +8,420 @@ msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
 "Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
 "POT-Creation-Date: 2017-07-21 16:03+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-12-22 18:00+0000\n"
+"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"Language-Team: Tamil <https://hosted.weblate.org/projects/eflete/eflete/ta/>"
+"\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/bin/project_manager/project_manager2.c:1404
 #, c-format
 msgid "Export to file '%s' successfull"
-msgstr ""
+msgstr "'%s' வெற்றிக்கு ஏற்றுமதி"
 
 #: src/bin/ui/colorclass_manager.c:87
 msgid "Color class name: "
-msgstr ""
+msgstr "வண்ண வகுப்பு பெயர்: "
 
 #: src/bin/ui/colorclass_manager.c:91
 msgid "Type new color class name here"
-msgstr ""
+msgstr "புதிய வண்ண வகுப்பு பெயரை இங்கே தட்டச்சு செய்க"
 
 #: src/bin/ui/colorclass_manager.c:141 src/bin/ui/project_navigator.c:548
 msgid "Create a new layout"
-msgstr ""
+msgstr "புதிய தளவமைப்பை உருவாக்கவும்"
 
 #: src/bin/ui/colorclass_manager.c:174
 #, c-format
 msgid "Colorclass is used in:"
-msgstr ""
+msgstr "ColorClass இதில் பயன்படுத்தப்படுகிறது:"
 
 #: src/bin/ui/colorclass_manager.c:178
 #, c-format
 msgid "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"
-msgstr ""
+msgstr "<br> குழு: %s <br> பகுதி: %s <br> மாநிலம்: \" %s\" %2.1f"
 
 #: src/bin/ui/colorclass_manager.c:249 src/bin/ui/image_manager.c:931
 #: src/bin/ui/sound_manager.c:646 src/bin/ui/style_manager.c:475
 msgid "Search"
-msgstr ""
+msgstr "தேடல்"
 
 #: src/bin/ui/colorclass_manager.c:436 src/bin/ui/menu.c:330
 msgid "Color class manager"
-msgstr ""
+msgstr "வண்ண வகுப்பு மேலாளர்"
 
 #: src/bin/ui/colorclass_manager.c:448 src/bin/ui/image_manager.c:1078
 #: src/bin/ui/sound_manager.c:579 src/bin/ui/style_manager.c:867
 msgid "Preview"
-msgstr ""
+msgstr "முன்னோட்டம்"
 
 #: src/bin/ui/colorclass_manager.c:449
 msgid "Color classes list"
-msgstr ""
+msgstr "வண்ண வகுப்புகள் பட்டியல்"
 
 #: src/bin/ui/colorclass_manager.c:505
 msgid "The quick brown fox jumps over the lazy dog"
-msgstr ""
+msgstr "விரைவான பழுப்பு நரி சோம்பேறி நாய் மீது குதிக்கிறது"
 
 #: src/bin/ui/colorclass_manager.c:535
 msgid "Failed initialize colorclasses manager"
-msgstr ""
+msgstr "தோல்வியுற்றது ColorClasses மேலாளரைத் தொடங்கவும்"
 
 #: src/bin/ui/image_manager.c:248
 msgid "Unable to add a folder"
-msgstr ""
+msgstr "ஒரு கோப்புறையைச் சேர்க்க முடியவில்லை"
 
 #: src/bin/ui/image_manager.c:267
 msgid "Add new image into set"
-msgstr ""
+msgstr "புதிய படத்தை தொகுப்பில் சேர்க்கவும்"
 
 #: src/bin/ui/image_manager.c:651
 msgid "File not exist"
-msgstr ""
+msgstr "கோப்பு இல்லை"
 
 #: src/bin/ui/image_manager.c:656 src/bin/ui/sound_manager.c:229
 msgid "Unable to add folder"
-msgstr ""
+msgstr "கோப்புறையைச் சேர்க்க முடியவில்லை"
 
 #: src/bin/ui/image_manager.c:669
 msgid "File exist"
-msgstr ""
+msgstr "கோப்பு உள்ளது"
 
 #: src/bin/ui/image_manager.c:703
 msgid "Choose image"
-msgstr ""
+msgstr "படத்தைத் தேர்வுசெய்க"
 
 #: src/bin/ui/image_manager.c:805
 msgid "Image set name:"
-msgstr ""
+msgstr "பட தொகுப்பு பெயர்:"
 
 #: src/bin/ui/image_manager.c:810
 msgid "Type a new image set name"
-msgstr ""
+msgstr "புதிய பட தொகுப்பு பெயரைத் தட்டச்சு செய்க"
 
 #: src/bin/ui/image_manager.c:833
 msgid "Create a new image set"
-msgstr ""
+msgstr "புதிய பட தொகுப்பை உருவாக்கவும்"
 
 #: src/bin/ui/image_manager.c:960 src/bin/ui/image_manager.c:1168
 msgid "Image"
-msgstr ""
+msgstr "படம்"
 
 #: src/bin/ui/image_manager.c:982
 msgid "Image Set"
-msgstr ""
+msgstr "பட தொகுப்பு"
 
 #: src/bin/ui/image_manager.c:1001
 msgid "Vectors"
-msgstr ""
+msgstr "திசையன்கள்"
 
 #: src/bin/ui/image_manager.c:1060 src/bin/ui/menu.c:327
 msgid "Image manager"
-msgstr ""
+msgstr "பட மேலாளர்"
 
 #: src/bin/ui/image_manager.c:1079
 msgid "Image Gallery"
-msgstr ""
+msgstr "பட கேலரி"
 
 #: src/bin/ui/image_manager.c:1169
 msgid "Image set"
-msgstr ""
+msgstr "பட தொகுப்பு"
 
 #: src/bin/ui/sound_manager.c:119
 msgid "UNKNOWN"
-msgstr ""
+msgstr "தெரியவில்லை"
 
 #: src/bin/ui/sound_manager.c:169
 msgid "Sound Samples"
-msgstr ""
+msgstr "ஒலி மாதிரிகள்"
 
 #: src/bin/ui/sound_manager.c:182
 msgid "Sound Tones"
-msgstr ""
+msgstr "ஒலி டோன்கள்"
 
 #: src/bin/ui/sound_manager.c:224
 #, c-format
 msgid "File '%s' is not exist"
-msgstr ""
+msgstr "'%s' கோப்பு இல்லை"
 
 #: src/bin/ui/sound_manager.c:243
 #, c-format
 msgid "Sample '%s' is already added to project"
-msgstr ""
+msgstr "மாதிரி '%s' ஏற்கனவே திட்டத்தில் சேர்க்கப்பட்டுள்ளது"
 
 #: src/bin/ui/sound_manager.c:256
 #, c-format
 msgid "File '%s' exist"
-msgstr ""
+msgstr "கோப்பு '%s' உள்ளது"
 
 #: src/bin/ui/sound_manager.c:307
 msgid "Choose a sound"
-msgstr ""
+msgstr "ஒலியைத் தேர்வுசெய்க"
 
 #: src/bin/ui/sound_manager.c:373
 msgid "Tone name:"
-msgstr ""
+msgstr "தொனி பெயர்:"
 
 #: src/bin/ui/sound_manager.c:377
 msgid "Type a new tone name"
-msgstr ""
+msgstr "புதிய தொனி பெயரைத் தட்டச்சு செய்க"
 
 #: src/bin/ui/sound_manager.c:383
 msgid "Frequency:"
-msgstr ""
+msgstr "அதிர்வெண்:"
 
 #: src/bin/ui/sound_manager.c:389
 msgid "Type a frequency (20 - 20000)"
-msgstr ""
+msgstr "ஒரு அதிர்வெண் (20 - 20000) தட்டச்சு செய்க"
 
 #: src/bin/ui/sound_manager.c:429
 msgid "Create a new tone"
-msgstr ""
+msgstr "புதிய தொனியை உருவாக்கவும்"
 
 #: src/bin/ui/sound_manager.c:561 src/bin/ui/menu.c:328
 msgid "Sound manager"
-msgstr ""
+msgstr "ஒலி மேலாளர்"
 
 #: src/bin/ui/sound_manager.c:580
 msgid "Sound Gallery"
-msgstr ""
+msgstr "ஒலி கேலரி"
 
 #: src/bin/ui/sound_manager.c:640
 msgid "Sample"
-msgstr ""
+msgstr "மாதிரி"
 
 #: src/bin/ui/sound_manager.c:641
 msgid "Tone"
-msgstr ""
+msgstr "தொனி"
 
 #: src/bin/ui/style_manager.c:189
 msgid "Style name:"
-msgstr ""
+msgstr "பாணி பெயர்:"
 
 #: src/bin/ui/style_manager.c:194
 msgid "Type a new style name"
-msgstr ""
+msgstr "புதிய பாணி பெயரைத் தட்டச்சு செய்க"
 
 #: src/bin/ui/style_manager.c:221 src/bin/ui/style_manager.c:312
 msgid "Failed to add tag value. Tag will be deleted"
-msgstr ""
+msgstr "குறிச்சொல் மதிப்பைச் சேர்க்கத் தவறிவிட்டது. குறிச்சொல் நீக்கப்படும்"
 
 #: src/bin/ui/style_manager.c:253
 msgid "Add textblock style"
-msgstr ""
+msgstr "உரைதாரர் பாணியைச் சேர்க்கவும்"
 
 #: src/bin/ui/style_manager.c:266
 msgid "Type a new tag name."
-msgstr ""
+msgstr "புதிய குறிச்சொல் பெயரைத் தட்டச்சு செய்க."
 
 #: src/bin/ui/style_manager.c:359
 #, c-format
 msgid "Add tag for style: %s"
-msgstr ""
+msgstr "பாணிக்கு குறிச்சொல்லைச் சேர்க்கவும்: %s"
 
 #: src/bin/ui/style_manager.c:851
 msgid "Textblock style manager"
-msgstr ""
+msgstr "டெக்ச்ட்ப்ளாக் பாணி மேலாளர்"
 
 #: src/bin/ui/style_manager.c:868
 msgid "Textblock styles list"
-msgstr ""
+msgstr "டெக்ச்ட்ப்ளாக் ச்டைல்கள் பட்டியல்"
 
 #: src/bin/ui/style_manager.c:930
 msgid "Style"
-msgstr ""
+msgstr "சூல் தண்டு"
 
 #: src/bin/ui/style_manager.c:931
 msgid "Tag"
-msgstr ""
+msgstr "குறிச்சொல்"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:190
 msgid "Click to show vertical ctxpopup with icons and labels (3 items)"
 msgstr ""
+"சின்னங்கள் மற்றும் லேபிள்களுடன் (3 உருப்படிகள்) செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:192
 msgid "Click to show vertical ctxpopup with icons and labels (30 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்களுடன் (30 உருப்படிகள்) செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:194
 msgid "Click to show vertical ctxpopup with icons and no labels (3 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்கள் (3 உருப்படிகள்) உடன் செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:196
 msgid "Click to show vertical ctxpopup with icons and no labels (30 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்கள் (30 உருப்படிகள்) உடன் செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு "
+"செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:198
 msgid "Click to show vertical ctxpopup with labels and no icons (3 items)"
 msgstr ""
+"லேபிள்கள் மற்றும் ஐகான்கள் (3 உருப்படிகள்) உடன் செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:200
 msgid "Click to show vertical ctxpopup with labels and no icons (30 items)"
 msgstr ""
+"லேபிள்கள் மற்றும் ஐகான்கள் (30 உருப்படிகள்) உடன் செங்குத்து CTXPOPUP ஐக் காட்ட சொடுக்கு "
+"செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:202
 msgid "Click to show horizontal ctxpopup with icons and labels (3 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்களுடன் (3 உருப்படிகள்) கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:204
 msgid "Click to show horizontal ctxpopup with icons and labels (30 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்களுடன் (30 உருப்படிகள்) கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:206
 msgid "Click to show horizontal ctxpopup with icons and no labels (3 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்கள் (3 உருப்படிகள்) உடன் கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:208
 msgid "Click to show horizontal ctxpopup with icons and no labels (30 items)"
 msgstr ""
+"ஐகான்கள் மற்றும் லேபிள்கள் (30 உருப்படிகள்) உடன் கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:210
 msgid "Click to show horizontal ctxpopup with labels and no icons (3 items)"
 msgstr ""
+"லேபிள்களுடன் கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க மற்றும் சின்னங்கள் இல்லை (3 "
+"உருப்படிகள்)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:212
 msgid "Click to show horizontal ctxpopup with labels and no icons (30 items)"
 msgstr ""
+"லேபிள்கள் மற்றும் ஐகான்கள் (30 உருப்படிகள்) உடன் கிடைமட்ட CTXPOPUP ஐக் காட்ட சொடுக்கு செய்க"
 
 #: src/bin/ui/live_view/elementary/live_custom_layout.c:30
 #, c-format
 msgid "Could not load group '%s' from mapped file '%s'."
-msgstr ""
+msgstr "வரைபடக் கோப்பிலிருந்து '%s' குழுவை ஏற்ற முடியவில்லை '%s'."
 
 #: src/bin/ui/live_view/elementary/live_label.c:30
 msgid "Some long text for our label, that islong but not too long."
-msgstr ""
+msgstr "எங்கள் லேபிளுக்கு சில நீண்ட உரை, அந்த இச்லாங் ஆனால் மிக நீளமாக இல்லை."
 
 #: src/bin/ui/live_view/elementary/live_list.c:120
 #: src/bin/ui/live_view/elementary/live_widget_common.c:308
 msgid "No icons"
-msgstr ""
+msgstr "சின்னங்கள் இல்லை"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:114
 msgid "Eflete"
-msgstr ""
+msgstr "எப்லெட்"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:115
 msgid "Multi-"
-msgstr ""
+msgstr "பல"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:116
 msgid "-button-"
-msgstr ""
+msgstr "-பட்டன்-"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:117
 msgid "-entry"
-msgstr ""
+msgstr "-எண்டரி"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:118
 msgid "Check"
-msgstr ""
+msgstr "சரிபார்"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:119
 msgid "this"
-msgstr ""
+msgstr "இது"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:120
 msgid "out"
-msgstr ""
+msgstr "வெளியே"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:121
 msgid "!"
-msgstr ""
+msgstr "!"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:143
 msgid "Text1"
-msgstr ""
+msgstr "உரை 1"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:144
 msgid "Tap and enter for adding buttons"
-msgstr ""
+msgstr "பொத்தான்களைச் சேர்ப்பதற்கு தட்டவும் உள்ளிடவும்"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:40
 #: src/bin/ui/live_view/elementary/live_naviframe.c:54
 #: src/bin/ui/live_view/elementary/live_widget_common.c:88
 #: src/bin/ui/live_view/elementary/live_widget_common.c:102
 msgid "Back"
-msgstr ""
+msgstr "பின்"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:45
 #: src/bin/ui/live_view/elementary/live_widget_common.c:93
 msgid "Page Next"
-msgstr ""
+msgstr "பக்கம் அடுத்து"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:59
 #: src/bin/ui/live_view/elementary/live_widget_common.c:107
 msgid "Page Prev"
-msgstr ""
+msgstr "பக்க முந்தைய"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:90
 #: src/bin/ui/live_view/elementary/live_widget_common.c:360
 msgid "Prev page"
-msgstr ""
+msgstr "முந்தைய பக்கம்"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:95
 #: src/bin/ui/live_view/elementary/live_widget_common.c:365
 msgid "Next page"
-msgstr ""
+msgstr "அடுத்த பக்கம்"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:184
 #: src/bin/ui/live_view/elementary/live_widget_common.c:354
 msgid "Page 1"
-msgstr ""
+msgstr "பக்கம் 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:185
 #: src/bin/ui/live_view/elementary/live_widget_common.c:355
 msgid "Subtitle 1"
-msgstr ""
+msgstr "வசன வரிகள் 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:186
 #: src/bin/ui/live_view/elementary/live_widget_common.c:356
 msgid "Main Page"
-msgstr ""
+msgstr "முதன்மை பக்கம்"
 
 #: src/bin/ui/live_view/elementary/live_notify.c:162
 msgid "Press to show Notify"
-msgstr ""
+msgstr "அறிவிப்பைக் காட்ட அழுத்தவும்"
 
 #: src/bin/ui/live_view/elementary/live_spinner.c:30
-#, c-format
+#, c-format, fuzzy
 msgid "%1.1f units"
-msgstr ""
+msgstr "%1.1 எஃப் அலகுகள்"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:53
 #: src/bin/ui/live_view/elementary/live_widget_common.c:286
 msgid "Object"
-msgstr ""
+msgstr "பொருள்"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:57
 #: src/bin/ui/live_view/elementary/live_widget_common.c:290
 msgid "Enabled"
-msgstr ""
+msgstr "இயக்கப்பட்டது"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:59
 #: src/bin/ui/live_view/elementary/live_widget_common.c:292
 msgid "Disabled"
-msgstr ""
+msgstr "முடக்கப்பட்டது"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:60
 #: src/bin/ui/live_view/elementary/live_widget_common.c:69
@@ -421,31 +439,31 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_widget_common.c:333
 #: src/bin/ui/live_view/elementary/live_widget_common.c:345
 msgid "User Text"
-msgstr ""
+msgstr "பயனர் உரை"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:222
 msgid "Left"
-msgstr ""
+msgstr "இடது"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:227
 msgid "Right"
-msgstr ""
+msgstr "வலது"
 
 #: src/bin/ui/main_window.c:211 src/bin/ui/project_close.c:227
 msgid "Last saved: none"
-msgstr ""
+msgstr "கடைசியாக சேமிக்கப்பட்டது: எதுவுமில்லை"
 
 #: src/bin/ui/main_window.c:212 src/bin/ui/project_close.c:228
 msgid "Project path: none"
-msgstr ""
+msgstr "திட்ட பாதை: எதுவுமில்லை"
 
 #: src/bin/ui/main_window.c:312 src/bin/ui/menu.c:335
 msgid "About"
-msgstr ""
+msgstr "பற்றி"
 
 #: src/bin/ui/main_window.c:333
 msgid "About Component Designer"
-msgstr ""
+msgstr "கூறு வடிவமைப்பாளர் பற்றி"
 
 #: src/bin/ui/main_window.c:348
 msgid ""
@@ -468,199 +486,222 @@ msgid ""
 "b> - switch to prev tab<br><br>Popups:<br><b>Enter</b> - OK<br><b>ESC</b> - "
 "cancel<br>"
 msgstr ""
+"உலகளாவிய: <br> <b> f1 </b> - குறுக்குவழிகள் பட்டியலைக் காட்டு (இந்த உரையாடல்) <br> "
+"<b> f2 </b> - இயல்பான பயன்முறை <br> <b> f3 </b> - குறியீடு பயன்முறை < br> <b> f4 "
+"</b> - டெமோ பயன்முறை <br> <b> f7 </b> - பட மேலாளரைத் திறக்கவும் <br> <b> f8 </b> "
+"- திறந்த ஒலி மேலாளரைத் திறக்கவும் <br> <b> f9 </b> - திறந்த பாணி மேலாளர் <br> <b> "
+"f10 </b> - வண்ணமயமான கிளாச் மேலாளரைத் திறக்கவும் <br> <b> f11 </b> - ச்கிரிப்ட் "
+"மேலாளரைத் திறக்கவும் <br> <b> கட்டுப்பாடு + q </b > - வெளியேறு <br> <br> "
+"பணியிடங்கள்: <br> <b> கட்டுப்பாடு + s </b> - சேமி <br> <b> கட்டுப்பாடு + சட் </b> - "
+"செயல்தவிர் <br> <b> கட்டுப்பாடு + ஒய் </b> - மீண்டும் <br> <b> கட்டுப்பாடு + n </b> - "
+"புதிய குழுவைச் சேர்க்கவும் <br> <b> q </b> - புதிய பகுதியைச் சேர்க்கவும் <br> <b> w "
+"</b> - புதிய நிலையைச் சேர்க்கவும் <br> <b> இ </b> - புதிய உருப்படியைச் சேர்க்கவும் "
+"<br> <b> ஆர் </b> - புதிய நிரலைச் சேர்க்கவும் <br> <b> டி </b> - புதிய தரவு "
+"உருப்படியைச் சேர்க்கவும் < br> <b> டெல் </b> - தேர்ந்தெடுக்கப்பட்ட "
+"பகுதி/நிலை/உருப்படி/நிரல்/தரவு உருப்படியை நீக்கு <br> <b> கள் </b> - செயலில் உள்ள "
+"பகுதியின் அடுத்த நிலையைத் தேர்ந்தெடுக்கவும் <br> <b> சட் </ b> - முந்தைய பகுதியைத் "
+"தேர்ந்தெடுக்கவும் <br> <b> ஃச் </b> - அடுத்த பகுதியைத் தேர்ந்தெடுக்கவும் <br> <b> தப்பி "
+"</b> - தேர்ந்தெடுக்கப்பட்ட <br> <b> o </b> - பொருளைக் காட்டு/மறைக்கவும் பகுதி <br> "
+"<b> கட்டுப்பாடு + wheel_up </b>/<b> kp_add </b> - <br> <b> கட்டுப்பாடு + "
+"wheel_down </b>/<b> kp_sub </b> - பெரிதாக்க வெளியே <br> <b> kp_div </b> - சூமை"
+" 100%ஆக அமைக்கவும் <br> <br> தாவல்கள்: <br> <b> கட்டுப்பாடு + w </b> - தாவலை மூடு "
+"<br> <b> கட்டுப்பாடு + எண் </b> - தாவலுக்கு மாறவும் <br> <b> தாவல் </b>/<b> "
+"கட்டுப்பாடு + pg_down </b> - அடுத்த தாவலுக்கு மாறவும் <br> <b> உயர்த்து + தாவல் </ "
+"b>/<b> கட்டுப்பாடு + pg_up </b> - முந்தைய தாவலுக்கு மாறவும் <br> <br> பாப்அப்கள்: "
+"<br> <b> உள்ளிடவும் </b> - சரி <br> <b> தப்பி </b> - ரத்துசெய் <br>"
 
 #: src/bin/ui/main_window.c:407 src/bin/ui/main_window.c:645
 msgid "Help: shortcuts"
-msgstr ""
+msgstr "உதவி: குறுக்குவழிகள்"
 
 #: src/bin/ui/main_window.c:435
 msgid "Sequence already binded."
-msgstr ""
+msgstr "வரிசை ஏற்கனவே பிணைக்கப்பட்டுள்ளது."
 
 #: src/bin/ui/main_window.c:452
 msgid "Please press key sequence"
-msgstr ""
+msgstr "முக்கிய வரிசையை அழுத்தவும்"
 
 #: src/bin/ui/menu.c:275
 msgid "File"
-msgstr ""
+msgstr "கோப்பு"
 
 #: src/bin/ui/menu.c:277 src/bin/ui/tabs.c:1214
 msgid "New project"
-msgstr ""
+msgstr "புதிய திட்டம்"
 
 #: src/bin/ui/menu.c:278 src/bin/ui/tab_home_open.c:117
 #: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:279
 #: src/bin/ui/tab_home_open.c:286 src/bin/ui/tabs.c:1212 src/bin/main.c:98
 #: src/bin/main.c:153
 msgid "Open project"
-msgstr ""
+msgstr "திறந்த திட்டம்"
 
 #: src/bin/ui/menu.c:279 src/bin/ui/tabs.c:1216
 msgid "Import edj-file"
-msgstr ""
+msgstr "EDJ-FILE ஐ இறக்குமதி செய்க"
 
 #: src/bin/ui/menu.c:280 src/bin/ui/tabs.c:1218
 msgid "Import edc-file"
-msgstr ""
+msgstr "EDC-FILE ஐ இறக்குமதி செய்க"
 
 #: src/bin/ui/menu.c:283
 msgid "Save"
-msgstr ""
+msgstr "சேமி"
 
 #: src/bin/ui/menu.c:285
 msgid "Export as edc"
-msgstr ""
+msgstr "EDC ஆக ஏற்றுமதி"
 
 #: src/bin/ui/menu.c:286
 msgid "Group"
-msgstr ""
+msgstr "குழு"
 
 #: src/bin/ui/menu.c:287
 msgid "Project"
-msgstr ""
+msgstr "திட்டம்"
 
 #: src/bin/ui/menu.c:288
 msgid "Export as edj"
-msgstr ""
+msgstr "EDJ ஆக ஏற்றுமதி"
 
 #: src/bin/ui/menu.c:289
 msgid "Develop"
-msgstr ""
+msgstr "உருவாக்கு"
 
 #: src/bin/ui/menu.c:290
 msgid "Release"
-msgstr ""
+msgstr "வெளியீடு"
 
 #: src/bin/ui/menu.c:292
 msgid "Close project"
-msgstr ""
+msgstr "மூடு திட்டத்தை மூடு"
 
 #: src/bin/ui/menu.c:295
 msgid "Quit"
-msgstr ""
+msgstr "வெளியேறு"
 
 #: src/bin/ui/menu.c:297
 msgid "Edit"
-msgstr ""
+msgstr "தொகு"
 
 #: src/bin/ui/menu.c:298 src/bin/ui/workspace/workspace.c:1056
 msgid "Undo"
-msgstr ""
+msgstr "செயல்தவிர்"
 
 #: src/bin/ui/menu.c:299 src/bin/ui/workspace/workspace.c:1057
 msgid "Redo"
-msgstr ""
+msgstr "மீண்டும்செய்"
 
 #: src/bin/ui/menu.c:301
 msgid "Add group"
-msgstr ""
+msgstr "குழுவைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:303
 msgid "Add part"
-msgstr ""
+msgstr "பகுதியைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:304
 msgid "Add state"
-msgstr ""
+msgstr "மாநிலத்தைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:305
 msgid "Add item"
-msgstr ""
+msgstr "உருப்படியைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:306
 msgid "Add program"
-msgstr ""
+msgstr "நிரலைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:307
 msgid "Add data item"
-msgstr ""
+msgstr "தரவு உருப்படியைச் சேர்க்கவும்"
 
 #: src/bin/ui/menu.c:310
 msgid "View"
-msgstr ""
+msgstr "பார்வை"
 
 #: src/bin/ui/menu.c:311
 msgid "Zoom in"
-msgstr ""
+msgstr "பெரிதாக்கு"
 
 #: src/bin/ui/menu.c:312
 msgid "Zoom out"
-msgstr ""
+msgstr "சிறிதாக்கு"
 
 #: src/bin/ui/menu.c:313
 msgid "Reset zoom"
-msgstr ""
+msgstr "பெரிதாக்கு மீட்டமைக்கவும்"
 
 #: src/bin/ui/menu.c:314
 msgid "Zoom to fit in Workspace"
-msgstr ""
+msgstr "பணியிடத்தில் பொருந்தக்கூடிய பெரிதாக்கு"
 
 #: src/bin/ui/menu.c:315
 msgid "Resize to fill workspace"
-msgstr ""
+msgstr "பணியிடத்தை நிரப்ப மறுஅளவிடுங்கள்"
 
 #: src/bin/ui/menu.c:318
 msgid "Show object area"
-msgstr ""
+msgstr "பொருள் பகுதியைக் காட்டு"
 
 #: src/bin/ui/menu.c:320 src/bin/ui/workspace/workspace.c:1059
 msgid "Show rulers"
-msgstr ""
+msgstr "ஆட்சியாளர்களைக் காட்டு"
 
 #: src/bin/ui/menu.c:322
 msgid "Window"
-msgstr ""
+msgstr "சாளரம்"
 
 #: src/bin/ui/menu.c:324 src/bin/ui/tabs.c:1226
 msgid "Home"
-msgstr ""
+msgstr "வீடு"
 
 #: src/bin/ui/menu.c:329
 msgid "Textblock styles manager"
-msgstr ""
+msgstr "டெக்ச்ட்ப்ளாக் ச்டைல்ச் மேலாளர்"
 
 #: src/bin/ui/menu.c:331
 msgid "Script manager"
-msgstr ""
+msgstr "ச்கிரிப்ட் மேலாளர்"
 
 #: src/bin/ui/menu.c:333
 msgid "Help"
-msgstr ""
+msgstr "உதவி"
 
 #: src/bin/ui/menu.c:334
 msgid "Shortcuts"
-msgstr ""
+msgstr "குறுக்குவழிகள்"
 
 #: src/bin/ui/modal_window/modal_window.c:49
 msgid "Title will be deleted"
-msgstr ""
+msgstr "தலைப்பு நீக்கப்படும்"
 
 #: src/bin/ui/modal_window/modal_window.c:55
 #: src/bin/ui/modal_window/modal_window.c:207
 msgid "Ok"
-msgstr ""
+msgstr "சரி"
 
 #: src/bin/ui/modal_window/modal_window.c:203
 msgid "Cancel"
-msgstr ""
+msgstr "ரத்துசெய்"
 
 #: src/bin/ui/project_navigator.c:410
 msgid "Alias of"
-msgstr ""
+msgstr "மாற்றுப்பெயர்"
 
 #: src/bin/ui/project_navigator.c:412 src/bin/ui/project_navigator.c:470
 msgid "Copy of"
-msgstr ""
+msgstr "நகல்"
 
 #: src/bin/ui/project_navigator.c:460
 #: src/bin/ui/workspace/group_navigator.c:1546
 msgid "Name"
-msgstr ""
+msgstr "பெயர்"
 
 #: src/bin/ui/project_navigator.c:477
 msgid "Alias"
-msgstr ""
+msgstr "மாற்றுப்பெயர்"
 
 #: src/bin/ui/project_navigator.c:487 src/bin/ui/project_navigator.c:500
 #: src/bin/ui/project_navigator.c:903 src/bin/ui/project_navigator.c:938
@@ -673,411 +714,423 @@ msgstr ""
 #: src/bin/ui/workspace/group_navigator.c:1417
 #: src/bin/ui/workspace/group_navigator.c:1420
 msgid "None"
-msgstr ""
+msgstr "எதுவுமில்லை"
 
 #: src/bin/ui/project_navigator.c:595
 #, c-format
 msgid "Can't remove layout \"%s\""
-msgstr ""
+msgstr "\"%s\" தளவமைப்பை அகற்ற முடியாது"
 
 #: src/bin/ui/project_navigator.c:596 src/bin/ui/property/property_group.c:3776
 msgid "Error"
-msgstr ""
+msgstr "பிழை"
 
 #: src/bin/ui/project_navigator.c:640 src/bin/ui/project_navigator.c:747
 #: src/bin/ui/project_navigator.c:769 src/bin/ui/project_navigator.c:782
 msgid "Warning: Delete layout"
-msgstr ""
+msgstr "எச்சரிக்கை: தளவமைப்பை நீக்கு"
 
 #: src/bin/ui/project_navigator.c:641 src/bin/ui/project_navigator.c:770
 msgid ""
 "Can't delete the opened layout. Please, close the layout tab before delete "
 "it."
 msgstr ""
+"திறந்த தளவமைப்பை நீக்க முடியாது. தயவுசெய்து, தளவமைப்பு தாவலை நீக்குவதற்கு முன் அதை "
+"மூடு."
 
 #: src/bin/ui/project_navigator.c:748
 msgid ""
 "Can't delete one of those opened layouts. Please, close the layout tab "
 "before delete it."
 msgstr ""
+"திறந்த தளவமைப்புகளில் ஒன்றை நீக்க முடியாது. தயவுசெய்து, தளவமைப்பு தாவலை நீக்குவதற்கு முன்"
+" அதை மூடு."
 
 #: src/bin/ui/project_navigator.c:755
 msgid "Confirm delete layouts"
-msgstr ""
+msgstr "தளவமைப்புகளை நீக்கு என்பதை உறுதிப்படுத்தவும்"
 
 #: src/bin/ui/project_navigator.c:756
 msgid ""
 "Are you sure you want to delete the selected layouts?<br>All aliases will be "
 "delete too."
 msgstr ""
+"தேர்ந்தெடுக்கப்பட்ட தளவமைப்புகளை நீக்க விரும்புகிறீர்களா? <br> அனைத்து மாற்றுப்பெயர்களும் "
+"நீக்கப்படும்."
 
 #: src/bin/ui/project_navigator.c:783
 msgid ""
 "One or few of the aliases of this group are opened.Please, close the alias "
 "tab/tabs before delete it."
 msgstr ""
+"இந்த குழுவின் ஒன்று அல்லது சில மாற்றங்கள் திறக்கப்படுகின்றன. தயவுசெய்து, அதை நீக்குவதற்கு "
+"முன் மாற்று தாவல்/தாவல்களை மூடு."
 
 #: src/bin/ui/project_navigator.c:790
 msgid "Confirm delete layout"
-msgstr ""
+msgstr "தளவமைப்பை நீக்கு என்பதை உறுதிப்படுத்தவும்"
 
 #: src/bin/ui/project_navigator.c:791
 msgid ""
 "Are you sure you want to delete the selected layout?<br>All aliases will be "
 "delete too."
 msgstr ""
+"தேர்ந்தெடுக்கப்பட்ட தளவமைப்பை நீக்க விரும்புகிறீர்களா? <br> அனைத்து மாற்றுப்பெயர்களும் "
+"நீக்கப்படும்."
 
 #: src/bin/ui/project_close.c:48 src/bin/ui/project_close.c:86
 msgid "Export source code"
-msgstr ""
+msgstr "மூலக் குறியீடு ஏற்றுமதி"
 
 #: src/bin/ui/project_close.c:72
 msgid "Export develop edj"
-msgstr ""
+msgstr "ஏற்றுமதி உருவாக்கு EDJ"
 
 #: src/bin/ui/project_close.c:108
 msgid "Project save"
-msgstr ""
+msgstr "திட்ட சேமிப்பு"
 
 #: src/bin/ui/project_close.c:196
 #, c-format
 msgid "Close project %s"
-msgstr ""
+msgstr "திட்டம் %s மூடு"
 
 #: src/bin/ui/project_close.c:198
 msgid "Do you want to save changes?"
-msgstr ""
+msgstr "மாற்றங்களைச் சேமிக்க விரும்புகிறீர்களா?"
 
 #: src/bin/ui/project_close.c:214
 msgid "Project close"
-msgstr ""
+msgstr "திட்ட நெருக்கமான"
 
 #: src/bin/ui/property/property_group.c:1184
 msgid "< Style manager >"
-msgstr ""
+msgstr "<ச்டைல் மேனேசர்>"
 
 #: src/bin/ui/property/property_group.c:1273
 msgid "< Sound manager >"
-msgstr ""
+msgstr "<ஒலி மேலாளர்>"
 
 #: src/bin/ui/property/property_group.c:1523
 msgid "< Color class manager >"
-msgstr ""
+msgstr "<வண்ண வகுப்பு மேலாளர்>"
 
 #: src/bin/ui/property/property_group.c:1667
 msgid ""
 "Specifies a program to run after the current<br>program completes. The "
 "source and signal parameters<br>of a program run as an \"after\" are ignored."
 msgstr ""
+"தற்போதைய <br> நிரல் முடிந்ததும் இயக்க ஒரு நிரலைக் குறிப்பிடுகிறது. ஒரு நிரலின் மூல "
+"மற்றும் சமிக்ஞை அளவுருக்கள் <br> ஒரு \"பின்\" என இயங்கும் புறக்கணிக்கப்படுகின்றன."
 
 #: src/bin/ui/property/property_group.c:1766
 msgid "Program or part on which the specified action acts."
-msgstr ""
+msgstr "நிரல் அல்லது குறிப்பிட்ட செயல் செயல்படும் பகுதி."
 
 #: src/bin/ui/property/property_group.c:2704
 #, c-format
 msgid "group name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "குழு பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2708
 #, c-format
 msgid "state name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "மாநில பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2712
 #, c-format
 msgid "program name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2719
 #, c-format
 msgid "part item's name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "பகுதி உருப்படியின் பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2723
 #, c-format
 msgid "image changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "படம் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2733
 #, c-format
 msgid "vector changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "திசையன் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2738
 #, c-format
 msgid "changed \"%d\" tween images"
-msgstr ""
+msgstr "\"%d\" இருபது படங்கள் மாற்றப்பட்டன"
 
 #: src/bin/ui/property/property_group.c:2741
 #, c-format
 msgid "group.min_w changed from %d to %d"
-msgstr ""
+msgstr "group.min_w %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2745
 #, c-format
 msgid "group.min_h changed from %d to %d"
-msgstr ""
+msgstr "group.min_h %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2749
 #, c-format
 msgid "group.max_w changed from %d to %d"
-msgstr ""
+msgstr "group.max_w %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2753
 #, c-format
 msgid "group.max_h changed from %d to %d"
-msgstr ""
+msgstr "group.max_h %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2757
 #, c-format
 msgid "part name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "பகுதி பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2761
 #, c-format
 msgid "data item name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "தரவு உருப்படி பெயர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2765
 #, c-format
 msgid "data item value changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "தரவு உருப்படி மதிப்பு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2775
 #, c-format
 msgid "part scale %s"
-msgstr ""
+msgstr "பகுதி அளவு %s"
 
 #: src/bin/ui/property/property_group.c:2778
 #, c-format
 msgid "mouse events %s"
-msgstr ""
+msgstr "சுட்டி நிகழ்வுகள் %s"
 
 #: src/bin/ui/property/property_group.c:2781
 #, c-format
 msgid "repeat events %s"
-msgstr ""
+msgstr "நிகழ்வுகள் %s"
 
 #: src/bin/ui/property/property_group.c:2784
 #, c-format
 msgid "clip to changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "கிளிப் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2788
 #, c-format
 msgid "proxy source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "பதிலாள் மூலமானது \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2792
 #, c-format
 msgid "ignore_flags changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "புறக்கணிப்பு_ஃப்ளாக்ச் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2797
 #, c-format
 msgid "pointer mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "சுட்டிக்காட்டி பயன்முறை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2802
 #, c-format
 msgid "select mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "பயன்முறையைத் தேர்ந்தெடுக்கவும் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2807
 #, c-format
 msgid "entry mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நுழைவு முறை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2812
 #, c-format
 msgid "cursor mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "கர்சர் பயன்முறை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2817
 #, c-format
 msgid "fill type changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரப்பு வகை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2822
 #, c-format
 msgid "text effect changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உரை விளைவு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2827
 #, c-format
 msgid "shadow direction changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிழல் திசை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2833
 #, c-format
 msgid "dragable enable x changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய ஃச் ஃச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2837
 #, c-format
 msgid "dragable enable y changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய செயலாக்க ஒய் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2841
 #, c-format
 msgid "dragable step x changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய படி ஃச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2845
 #, c-format
 msgid "dragable step y changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய படி %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2849
 #, c-format
 msgid "dragable count x changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய எண்ணிக்கை ஃச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2853
 #, c-format
 msgid "dragable count y changed from %d to %d"
-msgstr ""
+msgstr "இழுக்கக்கூடிய நாடு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2857
 #, c-format
 msgid "dragable confine changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "இழுக்கக்கூடிய வரையறை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2861
 #, c-format
 msgid "dragable threshold changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "இழுக்கக்கூடிய வாசல் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2865
 #, c-format
 msgid "dragable event changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "இழுக்கக்கூடிய நிகழ்வு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2869
 #, c-format
 msgid "source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "மூல \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2873
 #, c-format
 msgid "selection under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "\"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்ட தேர்வு"
 
 #: src/bin/ui/property/property_group.c:2877
 #, c-format
 msgid "cursor under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "கர்சர் கீழ் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2881
 #, c-format
 msgid "anchors under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "கீழ் உள்ள நங்கூரங்கள் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டன"
 
 #: src/bin/ui/property/property_group.c:2885
 #, c-format
 msgid "selection over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "தேர்வு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2889
 #, c-format
 msgid "cursor over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "கர்சர் ஓவர் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2893
 #, c-format
 msgid "anchors over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நங்கூரர்கள் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டனர்"
 
 #: src/bin/ui/property/property_group.c:2897
 #, c-format
 msgid "text source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உரை மூலமானது \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2901
 #, c-format
 msgid "text text_source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உரை உரை_சோர்ச் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2905
 #, c-format
 msgid "text style changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உரை பாணி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2909
 #, c-format
 msgid "multiline %s"
-msgstr ""
+msgstr "மல்டிலின் %s"
 
 #: src/bin/ui/property/property_group.c:2912
 #, c-format
 msgid "state visible %s"
-msgstr ""
+msgstr "மாநில புலப்படும் %s"
 
 #: src/bin/ui/property/property_group.c:2915
 #, c-format
 msgid "fill smooth %s"
-msgstr ""
+msgstr "மென்மையான %s ஐ நிரப்பவும்"
 
 #: src/bin/ui/property/property_group.c:2918
 #, c-format
 msgid "state min_w changed from %d to %d"
-msgstr ""
+msgstr "state min_w %d இலிருந்து %d ஆக மாறியது"
 
 #: src/bin/ui/property/property_group.c:2922
 #, c-format
 msgid "state min_h changed from %d to %d"
-msgstr ""
+msgstr "state min_h %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2926
 #, c-format
 msgid "state minmul_w changed from %d to %d"
-msgstr ""
+msgstr "state minmul_w %d இலிருந்து %d ஆக மாறியது"
 
 #: src/bin/ui/property/property_group.c:2930
 #, c-format
 msgid "state minmul_h changed from %d to %d"
-msgstr ""
+msgstr "state minmul_h %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2934
 #, c-format
 msgid "state fixed_w %s"
-msgstr ""
+msgstr "state youred_w %s"
 
 #: src/bin/ui/property/property_group.c:2937
 #, c-format
 msgid "state fixed_h %s"
-msgstr ""
+msgstr "மாநில நிலையான_.எச் %s"
 
 #: src/bin/ui/property/property_group.c:2940
 #, c-format
 msgid "state max_w changed from %d to %d"
-msgstr ""
+msgstr "மாநில MAX_W %d இலிருந்து %d ஆக மாறியது"
 
 #: src/bin/ui/property/property_group.c:2944
 #, c-format
 msgid "state max_h changed from %d to %d"
-msgstr ""
+msgstr "மாநில MAX_H %d இலிருந்து %d ஆக மாறியது"
 
 #: src/bin/ui/property/property_group.c:2948
 #, c-format
 msgid "state aspect_min changed from %.2f to %.2f"
-msgstr ""
+msgstr "மாநில அம்சம்_மின் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2952
 #, c-format
 msgid "state aspect_max changed from %.2f to %.2f"
-msgstr ""
+msgstr "மாநில அம்சம்_மேக்ச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2956
 #, c-format
 msgid "aspect preference changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "அம்ச விருப்பம் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2961
 #, c-format
 msgid "align x changed from %.2f to %.2f"
-msgstr ""
+msgstr "சீரமை ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2965
 #, c-format
