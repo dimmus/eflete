@@ -15,10 +15,10 @@ logger_init(void)
 
    if(_eflete_lod_dom < 0)
      {
-        _eflete_lod_dom = eina_log_domain_register(PACKAGE, EINA_COLOR_LIGHTBLUE);
+        _eflete_lod_dom = eina_log_domain_register(PACKAGE_NAME, EINA_COLOR_LIGHTBLUE);
         if(_eflete_lod_dom < 0)
           {
-             EINA_LOG_CRIT("Could not register log domain "PACKAGE);
+             EINA_LOG_CRIT("Could not register log domain "PACKAGE_NAME);
              return false;
           }
      }

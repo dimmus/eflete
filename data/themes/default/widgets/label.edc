@@ -8,7 +8,9 @@ group { name: "elm/label/base/default";
          description { state: "default" 0.0;
          }
       }
-      part { name: "elm.text"; type: TEXTBLOCK;
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             text {
@@ -48,7 +50,9 @@ group { name: "elm/label/base/slide_about";
       item: "default_font_size" "11";
    }
    parts {
-      part { name: "label.text.clip"; type: RECT;
+      part { name: "label.text.clip";
+         type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 300;
          }
@@ -103,7 +107,7 @@ group { name: "elm/label/base/slide_about";
       }
       program { name: "animation_sliding";
          action: STATE_SET "sliding" 0.00;
-         transition: LINEAR 16.0;
+         transition: LINEAR 26.0;
          target: "elm.text";
          after: "animation_bottom";
       }
@@ -127,7 +131,9 @@ group { name: "elm/label/base/help";
             rel2.to: "elm.text";
          }
       }
-      part { name: "elm.text"; type: TEXTBLOCK;
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             text {

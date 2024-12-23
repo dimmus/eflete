@@ -1,0 +1,16 @@
+src += files([  
+    'property_color_control.c',
+    'property_color.c',
+    'property_common_image.c',
+    'property_common_tween.c',
+    'property_common.c',
+    'property_demo.c',
+    'property_dummy.c',
+    'property_group.c',
+    'property_image_selector.c',
+    'property_image.c',
+    'property_script.c',
+    'property_sound.c',
+    'property_textblock.c',
+    'property.c',
+])

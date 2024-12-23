@@ -1,6 +1,23 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "eflete.h"
-#include "main_window.h"
-#include "shortcuts.h"
 #include "config.h"
 #include "syntax_color.h"
 
@@ -14,15 +31,17 @@
 App_Data ap;
 
 Eina_Bool
-app_init()
+app_init(void)
 {
    Eina_Stringshare *conf_path;
    char buf[PATH_MAX];
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALE_DIR);
-   textdomain(PACKAGE);
-#endif /* set locale */
+  #ifdef HAVE_GETTEXT
+   bindtextdomain(PACKAGE_NAME, PACKAGE_LOCALE_DIR);
+   textdomain(PACKAGE_NAME);
+  #endif
+#endif
 
    if (!eina_init())
      {
@@ -66,7 +85,7 @@ app_init()
    snprintf(buf, sizeof(buf), "%s/%s", DIR_PATH, LOCALE); \
    if (!ecore_file_exists(buf)) \
      { \
-         snprintf(buf, sizeof(buf), "%s/%s", COMPILE_PATH, CURRENT); \
+         snprintf(buf, sizeof(buf), "%s/%s", PACKAGE_BUILD_DIR, CURRENT); \
          if (!ecore_file_exists(buf)) \
            { \
               CRIT(MESSAGE" '%s'", buf); \
@@ -74,15 +93,15 @@ app_init()
            } \
      }
 
-   PATH_CHECK("themes/default/eflete_elm.edj", "data/eflete_elm.edj",
+   PATH_CHECK("themes/default/eflete_elm.edj", "data/themes/default/eflete_elm.edj",
               elm_app_data_dir_get(), "Default theme is missing");
    ap.path.theme_edj = eina_stringshare_add(buf);
 
-   PATH_CHECK("themes/default/ewe.edj", "data/ewe.edj",
+   PATH_CHECK("themes/default/ewe.edj", "data/themes/ewe/ewe.edj",
               elm_app_data_dir_get(), "Ewe theme is missing");
    ap.path.ewe_edj = eina_stringshare_add(buf);
 
-   PATH_CHECK("layouts/eflete.edj", "data/eflete.edj",
+   PATH_CHECK("layouts/eflete.edj", "data/layouts/eflete.edj",
               elm_app_data_dir_get(), "Default layouts is missing");
    ap.path.layout_edj = eina_stringshare_add(buf);
 
@@ -93,7 +112,6 @@ app_init()
    ap.path.edj_path = eina_stringshare_printf("%s/themes/default/", elm_app_data_dir_get());
    ap.path.image_path = eina_stringshare_printf("%s/images/", elm_app_data_dir_get());
    ap.path.sound_path = eina_stringshare_printf("%s/sounds/", elm_app_data_dir_get());
-
 
    ap.theme = elm_theme_new();
 
@@ -113,11 +131,11 @@ app_init()
    ap.color_data = color_init(eina_strbuf_new());
 
    eina_stringshare_del(conf_path);
-   return true;
+   return EINA_TRUE;
 }
 
 Eina_Bool
-app_shutdown()
+app_shutdown(void)
 {
    if(ap.color_data)
      color_term(ap.color_data);
@@ -144,7 +162,7 @@ app_shutdown()
    edje_shutdown();
    logger_shutdown();
 
-   return true;
+   return EINA_TRUE;
 }
 
 #undef CHECK_AP

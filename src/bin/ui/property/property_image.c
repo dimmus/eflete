@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "main_window.h"
 #include "project_manager2.h"
 #include "property.h"
@@ -77,7 +96,7 @@ _image_info_type_setup(Property_Action *action, const char *image_name)
 }
 
 static Eina_Bool
-_update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
+_update_cb(Property_Attribute *pa EINA_UNUSED, Property_Action *action)
 {
    Eina_Stringshare *str;
 
@@ -161,7 +180,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 
 static void
 _on_image_selected(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Property_Data *pd = (Property_Data *)data;
@@ -397,7 +416,7 @@ _filter_cb(Property_Attribute *pa)
 }
 
 static void
-_init_items()
+_init_items(void)
 {
    Property_Image_Item it;
 #define IT image_pd.items[it]
@@ -514,7 +533,7 @@ property_image_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_image_manager_items_get()
+property_image_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

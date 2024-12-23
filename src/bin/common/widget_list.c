@@ -425,7 +425,7 @@ widget_tree_items_get(Eina_List *groups,
    int level = 0;
    const char *pos;
    Group2 *group, *group_next;
-   size_t prefix_len;
+   int prefix_len;
    char *group_prefix;
    int group_prefix_len;
    Eina_List *l, *lnext;

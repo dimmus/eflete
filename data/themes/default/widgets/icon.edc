@@ -1,7 +1,7 @@
 #define IC(Name, Alias1, Alias2, File, Min, Max) \
    group { name: "elm/icon/"##Name##"/default"; min: Min Min; max: Max Max; \
    alias: "elm/icon/"##Alias1##"/default"; alias: "elm/icon/"##Alias2##"/default"; \
-   images.image: File COMP; parts { part { name: "base"; \
+   images.image: File COMP; parts { part { name: "base"; scale: 1; \
    description { aspect: 1.0 1.0; aspect_preference: BOTH; \
    image.normal: File; } } } }
 IC("go-up",             "toolbar/go-up",            "menu/go-up",             "icon_arrow_up.png",       14, 0);
@@ -55,7 +55,7 @@ IC("no_photo",          "photo/no_photo",           "anonim",                 "i
 
 #define IC(Name, File, Min, Max) \
    group { name: "elm/icon/"##Name##"/default"; min: Min Min; max: Max Max; \
-   images.image: File COMP; parts { part { name: "base"; \
+   images.image: File COMP; parts { part { name: "base"; scale: 1; \
    description { aspect: 1.0 1.0; aspect_preference: BOTH; \
    image.normal: File; } } } }
 IC("arrow_up_left",        "icon_arrow_up_left.png",    14, 0);

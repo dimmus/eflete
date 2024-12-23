@@ -47,9 +47,9 @@ EFL_START_TEST(ewe_ruler_marker_relative_set_test_p)
    Ewe_Ruler_Marker *marker = ewe_ruler_marker_add(ruler, NULL);
 
    ck_assert_msg(ewe_ruler_marker_relative_set(ruler, marker, NULL, 125.25) == EINA_TRUE, "Can't set rel position");
-   ck_assert_msg(ewe_ruler_marker_relative_get(ruler, marker, NULL) == 125.25, "Wrong value setted");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(ruler, marker, NULL), 125.25), "Wrong value setted");
    ck_assert_msg(ewe_ruler_marker_relative_set(ruler, marker, NULL, -125.25) == EINA_TRUE, "Can't set rel position");
-   ck_assert_msg(ewe_ruler_marker_relative_get(ruler, marker, NULL) == -125.25, "Wrong value setted");
+   ck_assert_msg(EINA_DBL_EQ(ewe_ruler_marker_relative_get(ruler, marker, NULL), -125.25), "Wrong value setted");
 
    evas_object_del(win);
 }

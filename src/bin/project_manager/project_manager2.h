@@ -257,7 +257,7 @@ pm_project_release_export(Project *pro,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
                           PM_Project_End_Cb func_end,
-                          const void *data) EINA_ARG_NONNULL(1, 2) __UNUSED__;
+                          const void *data) EINA_ARG_NONNULL(1, 2) EINA_UNUSED;
 
 
 /**

@@ -3,17 +3,17 @@
 
 #ifdef HAVE_TIZEN
 static void
-__UNUSED__ _combobox_widget_expanded_cb(void *data __UNUSED__,
+EINA_UNUSED _combobox_widget_expanded_cb(void *data EINA_UNUSED,
                              Evas_Object *obj,
-                             void *ei __UNUSED__)
+                             void *ei EINA_UNUSED)
 {
    edje_object_signal_emit(elm_layout_edje_get(obj), "expanded", "elm");
 }
 
 static void
-__UNUSED__ _combobox_widget_dismissed_cb(void *data __UNUSED__,
+EINA_UNUSED _combobox_widget_dismissed_cb(void *data EINA_UNUSED,
                               Evas_Object *obj,
-                              void *ei __UNUSED__)
+                              void *ei EINA_UNUSED)
 {
    edje_object_signal_emit(elm_layout_edje_get(obj), "dismissed", "elm");
 }

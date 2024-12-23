@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "diff.h"
@@ -361,7 +380,7 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
 }
 
 Eina_Bool
-editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;
@@ -397,7 +416,7 @@ editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge 
 }
 
 Eina_Bool
-editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;

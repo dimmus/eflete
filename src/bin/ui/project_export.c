@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "main_window.h"
 #include "tabs.h"
 #include "project_manager2.h"
@@ -11,14 +30,14 @@ struct _Export_Data
 typedef struct _Export_Data Export_Data;
 
 static Eina_Bool
-_export_teardown(void *data, Splash_Status status __UNUSED__)
+_export_teardown(void *data, Splash_Status status EINA_UNUSED)
 {
    eina_stringshare_del(data);
    return true;
 }
 
 static Eina_Bool
-_export_develop_setup(void *data, Splash_Status status __UNUSED__)
+_export_develop_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -57,8 +76,8 @@ _after_export_dev_check(void *data)
 }
 
 static Eina_Bool
-_export_dev(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+_export_dev(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
             void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
@@ -110,7 +129,7 @@ project_export_develop(void)
 }
 
 static Eina_Bool
-_export_release_setup(void *data, Splash_Status status __UNUSED__)
+_export_release_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -139,7 +158,7 @@ _after_export_release_check(void *data)
 }
 
 static Eina_Bool
-_export_release(void *data __UNUSED__,
+_export_release(void *data EINA_UNUSED,
                 Evas_Object *obj, /* this is fileselector from popup */
                 void *event_info)
 {
@@ -187,7 +206,7 @@ project_export_release(void)
 }
 
 static Eina_Bool
-_export_source_code_setup(void *data, Splash_Status status __UNUSED__)
+_export_source_code_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    char buf[PATH_MAX];
    PM_Project_Result result;
@@ -220,7 +239,7 @@ _after_export_source_code_check(void *data)
 
 static Eina_Bool
 _export_source_code(void *data,
-                    Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+                    Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
                     void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
@@ -259,7 +278,7 @@ project_export_edc_project(Eina_List *groups)
 }
 
 static Eina_Bool
-_export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
+_export_group_source_code_setup(void *data, Splash_Status status EINA_UNUSED)
 {
    Eina_Stringshare *path = (Eina_Stringshare *)data;
    PM_Project_Result result;
@@ -295,8 +314,8 @@ _after_group_source_check(void *data)
 }
 
 static Eina_Bool
-_export_group_source_code(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+_export_group_source_code(void *data EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED, /* this is fileselector from popup */
                           void *event_info)
 {
    Eina_List *selected = (Eina_List *)event_info;
@@ -313,10 +332,13 @@ _export_group_source_code(void *data __UNUSED__,
 
    path = eina_stringshare_add((const char *)eina_list_data_get(selected));
    buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf,
-                             _("<font_size=16>A project file '%s/%s' already exist."
-                               "Do you want to replace it?</font_size>"),
-                             path, name);
+   if (name)
+      eina_strbuf_append_printf(buf,
+                              _("<font_size=16>A project file '%s/%s' already exist."
+                                 "Do you want to replace it?</font_size>"),
+                              path, name);
+   else
+      ERR("Path name is NULL: %s", name);
    exist_permission_check(path, name,
                           _("Export group source code"),
                           eina_strbuf_string_get(buf), FILE_SAVE_ASK, _after_group_source_check, path);

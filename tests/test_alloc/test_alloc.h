@@ -1,5 +1,3 @@
-
-// #include "utc_common.h"
 #include "config.h"
 
 #include "../eflete_check.h"

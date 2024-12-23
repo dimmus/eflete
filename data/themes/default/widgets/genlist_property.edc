@@ -1300,6 +1300,7 @@ group { name: "elm/genlist/item/caption/property";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1311,6 +1312,7 @@ group { name: "elm/genlist/item/caption/property";
       part { name: "swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -1331,6 +1333,7 @@ group { name: "elm/genlist/item/caption/property";
       part { name: "text.item.name";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -1412,6 +1415,7 @@ group { name: "elm/genlist/tree/caption/property";
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1423,6 +1427,7 @@ group { name: "elm/genlist/tree/caption/property";
       part { name: "text.item.name";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 26;
             color_class: "main";
@@ -1447,6 +1452,7 @@ group { name: "elm/genlist/tree/caption/property";
       }
       part { name: "arrow";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             max: 14 14;
@@ -1533,6 +1539,7 @@ group { name: "elm/genlist/item/1swallow/property";
    parts {
       part { name: "elm.swallow.pad";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1544,6 +1551,7 @@ group { name: "elm/genlist/item/1swallow/property";
       part { name: "swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -1564,6 +1572,7 @@ group { name: "elm/genlist/item/1swallow/property";
       part { name: "text.item.name";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 22;
             color_class: "main";
@@ -1591,6 +1600,7 @@ group { name: "elm/genlist/item/1swallow/property";
       }
       part { name: "text.action1.name";
          type: TEXT;
+	 scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             align: 1.0 0.5;
@@ -1614,6 +1624,7 @@ group { name: "elm/genlist/item/1swallow/property";
       }
       part { name: "swallow.action1";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 0.4 0.0;
@@ -1626,6 +1637,7 @@ group { name: "elm/genlist/item/1swallow/property";
       }
       part { name: "disclip";
          type: RECT;
+         scale: 1;
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
@@ -1664,6 +1676,7 @@ group { name: "elm/genlist/item/2swallow/property";
    parts {
       part { name: "elm.swallow.pad";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
@@ -1675,6 +1688,7 @@ group { name: "elm/genlist/item/2swallow/property";
       part { name: "swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             min: 14 14;
@@ -1695,6 +1709,7 @@ group { name: "elm/genlist/item/2swallow/property";
       part { name: "text.item.name";
          type: TEXT;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             min: 0 22;
             color_class: "main";
@@ -1723,6 +1738,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "text.action1.name";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             align: 1.0 0.5;
@@ -1747,6 +1763,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "swallow.action1";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 60 0;
             max: 60 -1;
@@ -1764,6 +1781,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "text.action1.units";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -1783,6 +1801,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "text.action2.name";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
@@ -1804,6 +1823,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "swallow.action2";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 60 0;
             max: 60 -1;
@@ -1820,6 +1840,7 @@ group { name: "elm/genlist/item/2swallow/property";
       }
       part { name: "text.action2.units";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {

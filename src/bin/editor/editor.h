@@ -261,7 +261,7 @@ typedef struct {
 
 
 void
-_editor_project_changed();
+_editor_project_changed(void);
 
 /* Top Level Blocks */
 Eina_Bool
@@ -402,6 +402,10 @@ editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 Eina_Bool
 editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                       const char *item_name) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                      const char *new_val) EINA_WARN_UNUSED_RESULT;
+
 Eina_Bool
 editor_group_script_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                         const char *new_val) EINA_WARN_UNUSED_RESULT;

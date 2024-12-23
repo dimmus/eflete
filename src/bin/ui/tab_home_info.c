@@ -1,5 +1,23 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "tabs_private.h"
-#include "tabs.h"
 #include "main_window.h"
 
 struct _Tab_Home_Info
@@ -43,7 +61,7 @@ _info_set(Eina_Bool disabled, const char *name, const char *path,
 }
 
 void
-_tab_project_update()
+_tab_project_update(void)
 {
    Eina_Stringshare *authors, *version, *license, *comment;
 
@@ -61,17 +79,17 @@ _tab_project_update()
 }
 
 static void
-_validate(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_validate(void *data EINA_UNUSED,
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(tab_info.btn_save, false);
 }
 
 static void
-_save(void *data __UNUSED__,
-      Evas_Object *obj __UNUSED__,
-      void *event_info __UNUSED__)
+_save(void *data EINA_UNUSED,
+      Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
    assert(ap.project != NULL);
    meta_controls_data_save(&tab_info.meta);

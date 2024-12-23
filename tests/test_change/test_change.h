@@ -1,6 +1,3 @@
-
-// #include "utc_common.h"
-#include "config.h"
 #include "change.h"
 #include "diff.h"
 

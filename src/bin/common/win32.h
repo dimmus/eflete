@@ -3,7 +3,7 @@
 #define WIN32HEAD
 #ifdef _WIN32
 static inline int
-waitpid(DWORD pid, void *unused1 __UNUSED__, int unused2 __UNUSED__)
+waitpid(DWORD pid, void *unused1 EINA_UNUSED, int unused2 EINA_UNUSED)
 {
    DWORD rez;
    HANDLE process_handle = OpenProcess(SYNCHRONIZE, FALSE, pid);

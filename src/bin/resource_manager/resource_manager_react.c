@@ -22,13 +22,12 @@
 #include "resource_manager_private.h"
 #include "project_manager2.h"
 #include "tabs.h"
-#include "string_common.h"
 
 /* CALLBACK FUNCTIONS */
 
 static void
 _property_resource_attribute_changed(void *data,
-                                     Evas_Object *obj __UNUSED__,
+                                     Evas_Object *obj EINA_UNUSED,
                                      void *event_info)
 {
    Colorclass2 *cc_res;
@@ -88,7 +87,7 @@ _property_resource_attribute_changed(void *data,
 
 static void
 _property_attribute_changed(void *data,
-                            Evas_Object *obj __UNUSED__,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    TODO("Update editor and resource manager (read comment below)")
@@ -521,7 +520,7 @@ _property_attribute_changed(void *data,
 
 static void
 _colorclass_added(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *ei)
 {
    Colorclass2 *res;
@@ -536,7 +535,7 @@ _colorclass_added(void *data,
 
 static void
 _colorclass_deleted(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj EINA_UNUSED,
                     void *ei)
 {
    const char *name = (const char *)ei;
@@ -550,7 +549,7 @@ _colorclass_deleted(void *data,
 
 static void
 _sound_added(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Sound2 *res;
@@ -572,7 +571,7 @@ _sound_added(void *data,
 
 static void
 _sound_deleted(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *ei)
 {
    const char *name = (const char *)ei;
@@ -585,7 +584,7 @@ _sound_deleted(void *data,
 
 static void
 _tone_added(void *data,
-            Evas_Object *obj __UNUSED__,
+            Evas_Object *obj EINA_UNUSED,
             void *ei)
 {
    Tone2 *res;
@@ -601,7 +600,7 @@ _tone_added(void *data,
 
 static void
 _tone_deleted(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *ei)
 {
    const char *name = (const char *)ei;
@@ -614,7 +613,7 @@ _tone_deleted(void *data,
 
 static void
 _image_added(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Image2 *res;
@@ -640,7 +639,7 @@ _image_added(void *data,
 
 static void
 image_deleted(void *data,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj EINA_UNUSED,
               void *ei)
 {
    const char *name = (const char *)ei;
@@ -653,7 +652,7 @@ image_deleted(void *data,
 
 static void
 _image_set_added(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Image_Set2 *res;
@@ -670,7 +669,7 @@ _image_set_added(void *data,
 
 static void
 _image_set_deleted(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Image_Set2 *res;
@@ -684,7 +683,7 @@ _image_set_deleted(void *data,
 
 static void
 _image_set_image_add(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *ei)
 {
    Image_Set2 *image_set_res;
@@ -699,7 +698,7 @@ _image_set_image_add(void *data,
 
 static void
 _image_set_image_del(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *ei)
 {
    Image_Set2 *image_set_res;
@@ -715,7 +714,7 @@ _image_set_image_del(void *data,
 
 static void
 _style_added(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Style2 *res;
@@ -730,7 +729,7 @@ _style_added(void *data,
 
 static void
 _style_deleted(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *ei)
 {
    const char *name = (const char *)ei;
@@ -743,7 +742,7 @@ _style_deleted(void *data,
 
 static void
 _style_changed(void *data,
-               Evas_Object *obj __UNUSED__,
+               Evas_Object *obj EINA_UNUSED,
                void *ei)
 {
    Font_Change *font_change = (Font_Change *)ei;
@@ -774,7 +773,7 @@ _style_changed(void *data,
 
 static void
 _editor_part_added_cb(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    Eina_Stringshare *part_name = event_info;
@@ -787,7 +786,7 @@ _editor_part_added_cb(void *data,
 
 static void
 _editor_part_deleted_cb(void *data,
-                        Evas_Object *obj __UNUSED__,
+                        Evas_Object *obj EINA_UNUSED,
                         void *event_info)
 {
    const Editor_Part *editor_part = event_info;
@@ -800,7 +799,7 @@ _editor_part_deleted_cb(void *data,
 
 static void
 _editor_program_added_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Eina_Stringshare *program_name = event_info;
@@ -813,7 +812,7 @@ _editor_program_added_cb(void *data,
 
 static void
 _editor_program_deleted_cb(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    const Editor_Program *editor_part = event_info;
@@ -827,7 +826,7 @@ _editor_program_deleted_cb(void *data,
 
 static void
 _editor_group_data_added_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
@@ -838,8 +837,8 @@ _editor_group_data_added_cb(void *data,
 }
 
 static void
-_editor_group_data_deleted_cb(void *data __UNUSED__,
-                              Evas_Object *obj __UNUSED__,
+_editor_group_data_deleted_cb(void *data EINA_UNUSED,
+                              Evas_Object *obj EINA_UNUSED,
                               void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
@@ -851,7 +850,7 @@ _editor_group_data_deleted_cb(void *data __UNUSED__,
 
 static void
 _editor_part_item_added_cb(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    const Editor_Item *editor_item = event_info;
@@ -869,8 +868,8 @@ _editor_part_item_added_cb(void *data,
 }
 
 static void
-_editor_part_item_deleted_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_editor_part_item_deleted_cb(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    const Editor_Item *editor_item = event_info;
@@ -882,8 +881,8 @@ _editor_part_item_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_state_added_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
+_editor_state_added_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
    const Editor_State *editor_state = event_info;
@@ -899,7 +898,7 @@ _editor_state_added_cb(void *data __UNUSED__,
 
 static void
 _editor_state_deleted_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    const Editor_State *editor_state = event_info;
@@ -912,8 +911,8 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
-_editor_part_restacked_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+_editor_part_restacked_cb(void *data EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    const Editor_Part_Restack *editor_part_restack = event_info;
@@ -938,8 +937,8 @@ _editor_part_restacked_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_item_restacked_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
+_editor_part_item_restacked_cb(void *data EINA_UNUSED,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
@@ -976,7 +975,7 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
 
 static void
 _editor_group_add_cb(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Eina_Stringshare *group_name = (Eina_Stringshare *)event_info;
@@ -992,8 +991,8 @@ _editor_group_add_cb(void *data,
 }
 
 static void
-_editor_group_del_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
+_editor_group_del_cb(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Eina_Stringshare *group_name = event_info;

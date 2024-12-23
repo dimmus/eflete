@@ -1,6 +1,24 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "property.h"
 #include "property_private.h"
-#include "main_window.h"
 #include "project_manager2.h"
 
 /* gengrid base functions */
@@ -8,8 +26,8 @@
 static Elm_Gengrid_Item_Class *_itc_tween = NULL;
 static char *
 _item_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *part __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                const char *part EINA_UNUSED)
 {
    return strdup(data);
 }
@@ -40,7 +58,7 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
 
 static void
 _item_del(void *data,
-          Evas_Object *obj __UNUSED__)
+          Evas_Object *obj EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -54,8 +72,8 @@ static Eina_List *added_tweens = NULL;;
 
 static void
 _del_tween_image(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    Evas_Object *control = (Evas_Object *)data;
    Evas_Object *tween_list = elm_layout_content_get(control, NULL);
@@ -76,11 +94,11 @@ _del_tween_image(void *data,
 
 static Eina_Bool
 _on_image_editor_tween_done(void *data,
-                            Evas_Object *obj __UNUSED__,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    Evas_Object *control = (Evas_Object *)data;
-   Evas_Object *tween_list __UNUSED__ = elm_layout_content_get(control, NULL);
+   Evas_Object *tween_list EINA_UNUSED = elm_layout_content_get(control, NULL);
    Eina_List *selected = (Eina_List *)event_info;
    Eina_List *l = NULL;
    const char *name = NULL;
@@ -103,7 +121,7 @@ TODO("apply when popup will be fixed");
 static void
 _add_tween_image(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Evas_Object *control = (Evas_Object *)data;
 
@@ -118,19 +136,19 @@ TODO("apply when popup will be fixed");
 }
 
 Eina_List *
-property_image_tween_added_list_get()
+property_image_tween_added_list_get(void)
 {
    return added_tweens;
 }
 
 Eina_List *
-property_image_tween_deleted_list_get()
+property_image_tween_deleted_list_get(void)
 {
    return deleted_tweens;
 }
 
 void
-property_image_tween_lists_free()
+property_image_tween_lists_free(void)
 {
    /* code taken from edje_edit_string_list_free */
    while (added_tweens)

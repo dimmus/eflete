@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "main_window.h"
 #include <Ecore_Getopt.h>
 #include <regex.h>
@@ -8,6 +27,8 @@
 /* it's really bad idia, but need haven't time to make it correctly */
 #include "tabs_private.h"
 #include "config.h"
+
+#include "eflete.h"
 
 static char *file = NULL;
 static char *pro_name = NULL;
@@ -36,8 +57,12 @@ static const Ecore_Getopt options = {
    "  if FILE is *.edj: import edj\n"
    "  if FILE is not specified but --name given: new project\n"
    ,
-   VERSION,
-   "(C) 2013-2016 Samsung Electronics,\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
+   PACKAGE_VERSION "\n"
+   " Commit: " PACKAGE_COMMIT "\n"
+   "   Date: " PACKAGE_BUILD_TIME "\n"
+   "    EFL: " PACKAGE_EFL "\n"
+   "     OS: " PACKAGE_OS "\n",
+   "(C) 2013-2016 Samsung Electronics.\n (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov\n",
    "GNU Library General Public License version 2",
    "This application was written for Enlightenment, to use EFL\n"
    "and design to create and modify Elementary widgets styles.\n",
@@ -63,7 +88,7 @@ static const Ecore_Getopt options = {
 };
 
 static Eina_Bool
-_setup_open_splash(void *data, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    Eina_Stringshare *path = data;
@@ -85,21 +110,21 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    return true;
 }
 
-__UNUSED__ static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+EINA_UNUSED static Eina_Bool
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    return true;
 }
 
 static void
-_popup_recover_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_popup_recover_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Popup_Button btn_res = (Popup_Button)event_info;
@@ -116,7 +141,7 @@ _popup_recover_cb(void *data __UNUSED__,
 }
 
 static void
-_open_project(void *data __UNUSED__)
+_open_project(void *data EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -138,9 +163,11 @@ _open_project(void *data __UNUSED__)
 }
 
 static void
-_import_edj(void *data __UNUSED__)
+_import_edj(void *data EINA_UNUSED)
 {
+#ifndef HAVE_TIZEN
    const char *name;
+#endif
    Eina_Tmpstr *proj_name;
    if (pro_name)
      {
@@ -161,7 +188,7 @@ _import_edj(void *data __UNUSED__)
 }
 
 static void
-_import_edc(void *data __UNUSED__)
+_import_edc(void *data EINA_UNUSED)
 {
    const char *name;
    Eina_Tmpstr *proj_name;
@@ -180,7 +207,7 @@ _import_edc(void *data __UNUSED__)
 }
 
 static void
-_new_project(void *data __UNUSED__)
+_new_project(void *data EINA_UNUSED)
 {
    const char *name;
    Eina_Tmpstr *proj_name;
@@ -246,7 +273,7 @@ elm_main(int argc, char **argv)
    if (!info_only)
      {
 #ifdef HAVE_CONFIG_H
-        INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
+        INFO("%s: %s - Started...", PACKAGE_NAME, PACKAGE_VERSION);
 #else
         CRIT("Could not find 'eflete_config.h'");
 #endif

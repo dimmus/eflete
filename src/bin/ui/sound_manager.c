@@ -1,7 +1,32 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
 
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "main_window.h"
 #include "project_manager2.h"
@@ -62,7 +87,7 @@ static Elm_Gengrid_Item_Class *ggic = NULL;
 
 static char *
 _grid_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj EINA_UNUSED,
                 const char  *part)
 {
    Sound_Data *snd = (Sound_Data *)data;
@@ -80,7 +105,7 @@ exit:
 }
 
 static void
-_grid_del(void *data, Evas_Object *obj __UNUSED__)
+_grid_del(void *data, Evas_Object *obj EINA_UNUSED)
 {
    Sound_Data *snd = (Sound_Data *)data;
 
@@ -110,8 +135,8 @@ _sound_format_get(Eina_Stringshare *snd_src)
 }
 
 static void
-_grid_sel_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+_grid_sel_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Resource2 *res = NULL;
@@ -176,17 +201,17 @@ _sound_manager_init(void)
 }
 
 static void
-_grid_unsel_cb(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_grid_unsel_cb(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(mng.btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
 }
 
 static Eina_Bool
-_add_sample_done(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
+_add_sample_done(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
                  void *event_info)
 {
    Sound_Data *snd;
@@ -283,7 +308,7 @@ _tone_add(void)
 static void
 _sample_add_cb(void *data,
                Evas_Object *obj,
-               void *event_info __UNUSED__)
+               void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 
@@ -291,17 +316,17 @@ _sample_add_cb(void *data,
 }
 
 static void
-_menu_dismissed_cb(void *data __UNUSED__,
+_menu_dismissed_cb(void *data EINA_UNUSED,
                    Evas_Object *obj,
-                   void *event_info __UNUSED__)
+                   void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 
 static void
-_menu_dismiss_cb(void *data __UNUSED__,
+_menu_dismiss_cb(void *data EINA_UNUSED,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    elm_menu_close(obj);
    shortcuts_object_check_pop(obj);
@@ -309,8 +334,8 @@ _menu_dismiss_cb(void *data __UNUSED__,
 
 static void
 _validation(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
    Eina_Bool validate = EINA_FALSE;
@@ -346,8 +371,8 @@ _validation(void *data,
        popup_button_disabled_set(popup, BTN_OK, false);
 }
 
-Evas_Object *
-_add_tone_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+static Evas_Object *
+_add_tone_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item, *box;
 
@@ -382,8 +407,8 @@ _add_tone_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **t
 }
 
 static void
-_tone_add_popup_close_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_tone_add_popup_close_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -397,9 +422,9 @@ _tone_add_popup_close_cb(void *data __UNUSED__,
 }
 
 static void
-_tone_add_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_tone_add_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -417,9 +442,9 @@ _tone_add_cb(void *data __UNUSED__,
 #undef INFO_ADD
 
 static void
-_sound_add_cb(void *data __UNUSED__,
+_sound_add_cb(void *data EINA_UNUSED,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Evas_Coord x, y, h;
 
@@ -431,9 +456,9 @@ _sound_add_cb(void *data __UNUSED__,
 }
 
 static void
-_sound_del_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_sound_del_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *grid_it;
    Sound_Data *snd;
@@ -469,18 +494,18 @@ _sound_del_cb(void *data __UNUSED__,
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.text")
 
 static void
-_search_changed_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_search_changed_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    _gengrid_item_search(mng.gengrid, &(mng.sound_search_data),
                         mng.sound_search_data.last_item_found);
 }
 
 static void
-_find_next_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_find_next_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *start_from = NULL;
 
@@ -494,9 +519,9 @@ _find_next_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -509,9 +534,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -522,9 +547,9 @@ _mw_done_cb(void *data __UNUSED__,
 }
 
 static void
-_project_closed_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_project_closed_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    elm_gengrid_clear(mng.gengrid);
 }
@@ -544,7 +569,7 @@ sound_manager_add(void)
    mw_title_set(mng.win, _("Sound manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "sound2");
 #else
@@ -627,7 +652,7 @@ sound_manager_add(void)
 
    ENTRY_ADD(mng.layout, search_entry, true);
    elm_object_part_text_set(search_entry, "guide", _("Search"));
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ICON_STANDARD_ADD(search_entry, ic, true, "search");
    elm_object_part_content_set(search_entry, "elm.swallow.end", ic);
  #else

@@ -1,8 +1,29 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "editor_macro.h"
 #include "change.h"
 #include "diff.h"
+
+#include "editor_private.h"
 
 extern int _editor_signals_blocked;
 
@@ -915,7 +936,7 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 }
 
 Eina_Bool
-editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                    const char *program_name, Edje_Action_Type type)
 {
    Diff *diff;
@@ -957,7 +978,7 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 }
 
 Eina_Bool
-_editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+_editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply, Eina_Bool reset,
                     const char *program_name)
 {
    Diff *diff;

@@ -1,5 +1,26 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "main_window.h"
 #include "project_manager2.h"
+
+#include "project_common.h"
 
 typedef struct {
    Eina_Strbuf *buf, *buf_msg;
@@ -26,7 +47,7 @@ static void _permision_popup_job(void *data)
 }
 
 static void
-_exist_permission_popup_close_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+_exist_permission_popup_close_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
    Permission_Check_Data *pcd = data;
@@ -119,14 +140,14 @@ exit:
 }
 
 Eina_Bool
-progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
+progress_print(void *data EINA_UNUSED, Eina_Stringshare *progress_string)
 {
    elm_object_part_text_set(ap.splash, "label.info", progress_string);
    return true;
 }
 
 void
-progress_end(void *data __UNUSED__, PM_Project_Result result, Project *project __UNUSED__)
+progress_end(void *data EINA_UNUSED, PM_Project_Result result, Project *project EINA_UNUSED)
 {
    char buf[PATH_MAX];
    switch (result)

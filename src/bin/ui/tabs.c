@@ -1,8 +1,26 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "tabs_private.h"
 #include "workspace.h"
 #include "tabs.h"
 #include "history.h"
-#include "project_manager2.h"
 #include "main_window.h"
 #include "change.h"
 
@@ -62,7 +80,7 @@ _content_unset(void)
 
 static void
 _content_set(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Tabs_Item *item = (Tabs_Item *)data;
@@ -128,8 +146,8 @@ _content_set(void *data,
 }
 
 static void
-_mode_changed(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
+_mode_changed(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
               void *event_info)
 {
    Evas_Object *content;
@@ -186,8 +204,8 @@ _del_tab(Tabs_Item *item)
 
 static void
 _home_tab_change(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    evas_object_hide(elm_layout_content_unset(tabs.home.content, NULL));
    elm_layout_content_set(tabs.home.content, NULL, data);
@@ -195,8 +213,8 @@ _home_tab_change(void *data,
 }
 
 static void
-_property_attribute_changed(void *data __UNUSED__,
-                            Evas_Object *obj __UNUSED__,
+_property_attribute_changed(void *data EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    Attribute *attr = event_info;
@@ -343,19 +361,19 @@ _property_attribute_changed(void *data __UNUSED__,
      }
 }
 
-void
-_on_save(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+static void
+_on_save(void *data EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_code_reload(tabs.current_workspace);
 }
 
-void
-_on_project_changed(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+static void
+_on_project_changed(void *data EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    Eina_List *l;
    Tabs_Item *item;
@@ -368,8 +386,8 @@ _on_project_changed(void *data __UNUSED__,
 }
 
 static void
-_demo_swallow_set(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_demo_swallow_set(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *ei)
 {
    assert(tabs.current_workspace != NULL);
@@ -378,8 +396,8 @@ _demo_swallow_set(void *data __UNUSED__,
 }
 
 static void
-_demo_text_set(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_demo_text_set(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *ei)
 {
    assert(tabs.current_workspace != NULL);
@@ -388,8 +406,8 @@ _demo_text_set(void *data __UNUSED__,
 }
 
 static void
-_demo_send_signal(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_demo_send_signal(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *ei)
 {
    assert(tabs.current_workspace != NULL);
@@ -398,8 +416,8 @@ _demo_send_signal(void *data __UNUSED__,
 }
 
 static void
-_part_renamed(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
+_part_renamed(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
               void *ei)
 {
    Rename *ren = ei;
@@ -414,8 +432,8 @@ _part_renamed(void *data __UNUSED__,
 }
 
 static void
-_group_data_renamed(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
+_group_data_renamed(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
               void *ei)
 {
    Rename *ren = ei;
@@ -430,9 +448,9 @@ _group_data_renamed(void *data __UNUSED__,
 }
 
 static void
-_editor_saved(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *ei __UNUSED__)
+_editor_saved(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *ei EINA_UNUSED)
 {
    Eina_List *l;
    Tabs_Item *item;
@@ -450,25 +468,25 @@ _editor_saved(void *data __UNUSED__,
 }
 
 static void
-_project_opened(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *ei __UNUSED__)
+_project_opened(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *ei EINA_UNUSED)
 {
 
    tabs_home_tab_add(TAB_HOME_PROJECT_INFO);
 }
 
 static void
-_project_closed(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *ei __UNUSED__)
+_project_closed(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *ei EINA_UNUSED)
 {
    tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
 }
 
 static void
-_editor_part_state_selected_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
+_editor_part_state_selected_cb(void *data EINA_UNUSED,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    const Editor_State *editor_state = event_info;
@@ -482,8 +500,8 @@ _editor_part_state_selected_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_added_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
+_editor_part_added_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    Eina_Stringshare *part_name = event_info;
@@ -496,8 +514,8 @@ _editor_part_added_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_deleted_cb(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
+_editor_part_deleted_cb(void *data EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
                         void *event_info)
 {
    const Editor_Part *part = (Editor_Part *)event_info;
@@ -510,8 +528,8 @@ _editor_part_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_program_added_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_editor_program_added_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Eina_Stringshare *program_name = event_info;
@@ -524,8 +542,8 @@ _editor_program_added_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_program_deleted_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
+_editor_program_deleted_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    const Editor_Program *program = (Editor_Program *)event_info;
@@ -538,8 +556,8 @@ _editor_program_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_group_data_added_cb(void *data __UNUSED__,
-                            Evas_Object *obj __UNUSED__,
+_editor_group_data_added_cb(void *data EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
@@ -552,8 +570,8 @@ _editor_group_data_added_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_group_data_deleted_cb(void *data __UNUSED__,
-                              Evas_Object *obj __UNUSED__,
+_editor_group_data_deleted_cb(void *data EINA_UNUSED,
+                              Evas_Object *obj EINA_UNUSED,
                               void *event_info)
 {
    Eina_Stringshare *group_data_name = event_info;
@@ -566,8 +584,8 @@ _editor_group_data_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_item_added_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
+_editor_part_item_added_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    const Editor_Item *editor_item = event_info;
@@ -582,8 +600,8 @@ _editor_part_item_added_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_item_deleted_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_editor_part_item_deleted_cb(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    const Editor_Item *editor_item = event_info;
@@ -596,8 +614,8 @@ _editor_part_item_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_state_added_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
+_editor_state_added_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
    const Editor_State *editor_state = event_info;
@@ -611,8 +629,8 @@ _editor_state_added_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_state_deleted_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_editor_state_deleted_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    const Editor_State *editor_state = event_info;
@@ -626,8 +644,8 @@ _editor_state_deleted_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_restacked_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+_editor_part_restacked_cb(void *data EINA_UNUSED,
+                          Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    const Editor_Part_Restack *editor_part_restack = event_info;
@@ -642,8 +660,8 @@ _editor_part_restacked_cb(void *data __UNUSED__,
 }
 
 static void
-_editor_part_item_restacked_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
+_editor_part_item_restacked_cb(void *data EINA_UNUSED,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
@@ -659,117 +677,117 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_add_part_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_shortcut_add_part_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_part_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_add_part_item_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info __UNUSED__)
+_shortcut_add_part_item_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_part_item_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_add_state_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_add_state_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_state_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_add_program_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info __UNUSED__)
+_shortcut_add_program_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_program_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_add_data_item_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info __UNUSED__)
+_shortcut_add_data_item_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_add_group_data_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_del_cb(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_shortcut_del_cb(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_delete_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_state_next_cb(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+_shortcut_state_next_cb(void *data EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_state_next_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_part_next_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_part_next_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_next_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_part_prev_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_part_prev_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_prev_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_part_showhide_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info __UNUSED__)
+_shortcut_part_showhide_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_showhide_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_part_unselect_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info __UNUSED__)
+_shortcut_part_unselect_cb(void *data EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_part_unselect_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_all_parts_showhide_cb(void *data __UNUSED__,
-                                Evas_Object *obj __UNUSED__,
-                                void *event_info __UNUSED__)
+_shortcut_all_parts_showhide_cb(void *data EINA_UNUSED,
+                                Evas_Object *obj EINA_UNUSED,
+                                void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_all_parts_showhide_request(tabs.current_workspace);
 }
 
 static void
-_shortcut_tab_next_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_shortcut_tab_next_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    Eina_List *l;
    Tabs_Item *item;
@@ -781,9 +799,9 @@ _shortcut_tab_next_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_tab_prev_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_shortcut_tab_prev_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    Eina_List *l;
    Tabs_Item *item;
@@ -795,14 +813,14 @@ _shortcut_tab_prev_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_tab_num_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
+_shortcut_tab_num_cb(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    int num = *((int *)event_info);
    Tabs_Item *item;
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    /*In tizen mode "Home tab" is hidden*/
    item = eina_list_nth(tabs.items, num);
 #else
@@ -814,9 +832,9 @@ _shortcut_tab_num_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_tab_close_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_tab_close_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    /* trigger focus out callback on entries before closing tab */
    elm_object_focus_set(tabs.toolbar, true);
@@ -824,19 +842,19 @@ _shortcut_tab_close_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_mode_normal_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info __UNUSED__)
+_shortcut_mode_normal_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_mode_set(tabs.current_workspace, MODE_NORMAL);
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static void
-_shortcut_mode_code_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_mode_code_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_mode_set(tabs.current_workspace, MODE_CODE);
@@ -844,18 +862,18 @@ _shortcut_mode_code_cb(void *data __UNUSED__,
 #endif
 
 static void
-_shortcut_mode_demo_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_shortcut_mode_demo_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_mode_set(tabs.current_workspace, MODE_DEMO);
 }
 
 static void
-_shortcut_zoom_in_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+_shortcut_zoom_in_cb(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    double factor;
 
@@ -867,9 +885,9 @@ _shortcut_zoom_in_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_zoom_out_cb(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_shortcut_zoom_out_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    double factor;
 
@@ -881,36 +899,36 @@ _shortcut_zoom_out_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_zoom_reset_cb(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+_shortcut_zoom_reset_cb(void *data EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_zoom_factor_set(tabs.current_workspace, 1.0);
 }
 
 static void
-_shortcut_fill_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_shortcut_fill_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_container_fill(tabs.current_workspace);
 }
 
 static void
-_shortcut_fit_cb(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_shortcut_fit_cb(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_container_fit(tabs.current_workspace);
 }
 
 static void
-_shortcut_object_area_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info __UNUSED__)
+_shortcut_object_area_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    Eina_Bool visible;
 
@@ -922,9 +940,9 @@ _shortcut_object_area_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_rulers_show_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info __UNUSED__)
+_shortcut_rulers_show_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    Eina_Bool visible;
 
@@ -936,36 +954,36 @@ _shortcut_rulers_show_cb(void *data __UNUSED__,
 }
 
 static void
-_shortcut_undo_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_shortcut_undo_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_history_undo(tabs.current_workspace);
 }
 
 static void
-_shortcut_redo_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_shortcut_redo_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace && !tabs.current_group->main_group)
      workspace_history_redo(tabs.current_workspace);
 }
 
 static void
-_history_update_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_history_update_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_history_update(tabs.current_workspace);
 }
 
 static void
-_demo_property_update(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_demo_property_update(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    if (tabs.current_workspace)
      workspace_demo_group_property_update(tabs.current_workspace);
@@ -1039,7 +1057,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, signals.shortcut.tab.num, _shortcut_tab_num_cb, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.tab.close, _shortcut_tab_close_cb, NULL);
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.normal, _shortcut_mode_normal_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.code, _shortcut_mode_code_cb, NULL);
 #endif
    evas_object_smart_callback_add(ap.win, signals.shortcut.workspace.mode.demo, _shortcut_mode_demo_cb, NULL);
@@ -1081,8 +1099,8 @@ tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widg
 static void
 _tab_close(void *data,
            Elm_Object_Item *it,
-           const char *emission __UNUSED__,
-           const char *source __UNUSED__)
+           const char *emission EINA_UNUSED,
+           const char *source EINA_UNUSED)
 {
    Tabs_Item *item = (Tabs_Item *)data;
    Evas_Object *content;
@@ -1138,10 +1156,10 @@ tabs_tab_add(Group2 *group)
 }
 
 static void
-_tab_home_del(void *data __UNUSED__,
-              Evas *e __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_tab_home_del(void *data EINA_UNUSED,
+              Evas *e EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    evas_object_del(tabs.home.content_open_project);
    evas_object_del(tabs.home.content_new_project);

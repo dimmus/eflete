@@ -1,16 +1,41 @@
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
+
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "property.h"
 #include "property_private.h"
-#include "group_manager.h"
 #include "history.h"
 #include "change.h"
 #include "project_manager2.h"
 #include "validator.h"
 #include "shortcuts.h"
-#include "string_common.h"
 
 #define PART_MASK(TYPE) (1u << TYPE)
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
@@ -319,7 +344,7 @@ _expand_later_job(void *data)
 
 static void
 _on_group_changed(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Property_Data *pd = data;
@@ -385,8 +410,8 @@ _on_group_changed(void *data,
 }
 
 static void
-_on_editor_attribute_changed(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
+_on_editor_attribute_changed(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
    Attribute *attribute = event_info;
@@ -562,14 +587,14 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET);
 #endif
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
@@ -594,7 +619,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_34);
          break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE);
@@ -602,7 +627,7 @@ _subitems_get(Property_Attribute *pa)
 #endif
         break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
@@ -623,24 +648,24 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TYPE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET);
 #endif
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET);
 #endif
          break;
       case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET);
 #endif
          break;
       case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET);
 #endif
@@ -762,10 +787,10 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
 }
 
 static void
-_ccl_control_free(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
+_ccl_control_free(void *data EINA_UNUSED,
+                  Evas *e EINA_UNUSED,
                   Evas_Object *obj,
-                  void *event_info __UNUSED__)
+                  void *event_info EINA_UNUSED)
 {
    Evas_Object *color = NULL;
 
@@ -780,9 +805,9 @@ _ccl_control_free(void *data __UNUSED__,
 }
 
 static void
-_btn_script_manager_cb(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_btn_script_manager_cb(void *data EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    if (group_pd.group->current_selected)
      script_manager_add(group_pd.group->current_selected);
@@ -792,9 +817,9 @@ _btn_script_manager_cb(void *data __UNUSED__,
 
 /*
 static void
-_color_class_colors_fill(void *data __UNUSED__,
+_color_class_colors_fill(void *data EINA_UNUSED,
                          Evas_Object *combo,
-                         void *event_info __UNUSED__)
+                         void *event_info EINA_UNUSED)
 {
    int cc_val[12];
    Evas_Object *color;
@@ -1620,7 +1645,7 @@ _afters_change_cb(Property_Attribute *pa, Property_Action *action)
 }
 
 static Eina_List *
-_afters_get(Property_Attribute *pa __UNUSED__)
+_afters_get(Property_Attribute *pa EINA_UNUSED)
 {
    Property_Attribute *new_pa;
    Eina_List *afters, *l, *items = NULL;
@@ -1720,7 +1745,7 @@ _targets_change_cb(Property_Attribute *pa, Property_Action *action)
 
 
 static Eina_List *
-_targets_get(Property_Attribute *pa __UNUSED__)
+_targets_get(Property_Attribute *pa EINA_UNUSED)
 {
    Property_Attribute *new_pa;
    Eina_List *targets, *l, *items = NULL;
@@ -2617,17 +2642,17 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &double_val1, NULL, NULL);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &double_val1, NULL);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &double_val1);
          elm_spinner_value_set(action->control, double_val1);
          TODO("replace this with _default_get when correct version will be available");
-         return double_val1 == 0;
+         return EINA_DBL_EQ(double_val1, 0);
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
@@ -4848,7 +4873,7 @@ _action2(Property_Attribute *pa, const char *name, const char *units,
 }
 
 static void
-_init_items()
+_init_items(void)
 {
    Property_Group_Item it;
 #define IT group_pd.items[it]
@@ -6160,7 +6185,7 @@ property_group_init(Property_Data *pd)
 }
 
 Eina_List *
-property_group_items_get()
+property_group_items_get(void)
 {
    Eina_List *items = NULL;
 

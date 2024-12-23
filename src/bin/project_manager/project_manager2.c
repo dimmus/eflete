@@ -1,5 +1,23 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #define _GNU_SOURCE
-#include "string_common.h"
 #include "project_manager2.h"
 #include <fcntl.h>
 #include <errno.h>
@@ -69,7 +87,6 @@ struct _Project_Process_Data
 typedef struct _Project_Process_Data Project_Process_Data;
 
 
-
 static void
 _project_descriptor_init(Project_Process_Data *ppd)
 {
@@ -88,7 +105,7 @@ _project_descriptor_init(Project_Process_Data *ppd)
    EET_DATA_DESCRIPTOR_ADD_BASIC (ppd->eed_project, Project, "release_options", release_options, EET_T_STRING);
 }
 
-void
+static void
 _pm_project_descriptor_shutdown(Project_Process_Data *ppd)
 {
    eet_data_descriptor_free(ppd->eed_project);
@@ -430,7 +447,7 @@ _project_lock(Project *project)
 #endif /* _WIN32 */
 
    snprintf(buf, sizeof(buf), "%d\n", pid);
-   if (!write(project->fd_lock, buf, strlen_safe(buf)))
+   if (!write(project->fd_lock, buf, strlen(buf)))
      {
         close(project->fd_lock);
         return false;
@@ -593,7 +610,7 @@ _project_trylock(const char *pro_path)
 
 static Eina_Bool
 _exe_output_handler(void *data,
-                    int type __UNUSED__,
+                    int type EINA_UNUSED,
                     void *event_info)
 {
    int i;
@@ -610,8 +627,8 @@ _exe_output_handler(void *data,
 
 static Eina_Bool
 _exporter_finish_handler(void *data,
-                         int type __UNUSED__,
-                         void *event_info __UNUSED__)
+                         int type EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
    Project *project = (Project *) ppd->project;
@@ -717,7 +734,7 @@ _project_open_internal(Project_Process_Data *ppd, Eina_Bool recover)
 
    /* updating .dev file path */
    tmp = strdup(ppd->path);
-   tmp_len = strlen_safe(tmp);
+   tmp_len = strlen(tmp);
    tmp[tmp_len - 3] = 'd';
    tmp[tmp_len - 2] = 'e';
    tmp[tmp_len - 1] = 'v';
@@ -854,8 +871,8 @@ pm_project_open(const char *path,
 
 static Eina_Bool
 _edje_pick_finish_handler(void *data,
-                          int type __UNUSED__,
-                          void *event_info __UNUSED__)
+                          int type EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1042,7 +1059,7 @@ pm_project_import_edj(const char *name,
 
 static Eina_Bool
 _finish_from_edje_cc(void *data,
-                     int type __UNUSED__,
+                     int type EINA_UNUSED,
                      void *event_info)
 {
    Project_Process_Data *ppd = data;
@@ -1258,7 +1275,7 @@ pm_project_meta_data_set(Project *project,
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
-        size = (strlen_safe(DATA) + 1) * sizeof(char); \
+        size = (strlen(DATA) + 1) * sizeof(char); \
         bytes = eet_write(ef, KEY, DATA, size, compess_level); \
         if (bytes <= 0 && size > 0) \
           { \
@@ -1279,8 +1296,8 @@ pm_project_meta_data_set(Project *project,
 
 static Eina_Bool
 _group_export_finish_handler(void *data,
-                             int type __UNUSED__,
-                             void *event_info __UNUSED__)
+                             int type EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1359,7 +1376,7 @@ pm_project_source_code_export(Project *project,
 
 static Eina_Bool
 _develop_export_finish_handler(void *data,
-                               int type __UNUSED__,
+                               int type EINA_UNUSED,
                                void *event_info)
 {
    Project_Process_Data *ppd = data;
@@ -1453,8 +1470,8 @@ pm_project_develop_export(Project *project,
 
 static Eina_Bool
 _release_export_build_finish_handler(void *data,
-                                     int type __UNUSED__,
-                                     void *event_info __UNUSED__)
+                                     int type EINA_UNUSED,
+                                     void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
 
@@ -1468,8 +1485,8 @@ _release_export_build_finish_handler(void *data,
 
 static Eina_Bool
 _release_export_finish_handler(void *data,
-                             int type __UNUSED__,
-                             void *event_info __UNUSED__)
+                             int type EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
 {
    Project_Process_Data *ppd = data;
    Eina_Strbuf *buf;

@@ -1,10 +1,28 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "property.h"
 #include "property_private.h"
-#include "main_window.h"
 
 static Eina_Bool
 _on_image_editor_done(void *data,
-                      Evas_Object *obj __UNUSED__,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    const char *value;
@@ -30,8 +48,8 @@ TODO("apply after helper popup would be fixed")
 
 static void
 _on_state_image_choose(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       void *ei EINA_UNUSED)
 {
    popup_gengrid_image_helper(NULL,
                               data,
@@ -70,8 +88,8 @@ property_image_normal_control_add(Evas_Object *parent)
 
 static void
 _on_state_vector_choose(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       void *ei EINA_UNUSED)
 {
    popup_gengrid_image_helper(NULL,
                               data,

@@ -1,7 +1,26 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_elementary_widgets.h"
 
 static void
-_on_gengrid_swallow_check(void *data __UNUSED__,
+_on_gengrid_swallow_check(void *data EINA_UNUSED,
                           Evas_Object *obj,
                           void *ei)
 {
@@ -22,7 +41,7 @@ _on_gengrid_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_gengrid_text_check(void *data __UNUSED__,
+_on_gengrid_text_check(void *data EINA_UNUSED,
                        Evas_Object *obj,
                        void *ei)
 {
@@ -43,7 +62,7 @@ _on_gengrid_text_check(void *data __UNUSED__,
 }
 
 static void
-_gengrid_send_signal(void *data __UNUSED__,
+_gengrid_send_signal(void *data EINA_UNUSED,
                      Evas_Object *obj,
                      void *ei)
 {
@@ -65,7 +84,7 @@ _gengrid_send_signal(void *data __UNUSED__,
 
 /*********** GEN GRID CREATING FUNCTIONS ****************/
 static char *
-_grid_text_get(void *data __UNUSED__,
+_grid_text_get(void *data EINA_UNUSED,
                Evas_Object *obj,
                const char  *part)
 {
@@ -88,7 +107,7 @@ _grid_text_get(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_grid_content_get(void *data __UNUSED__,
+_grid_content_get(void *data EINA_UNUSED,
                   Evas_Object *obj,
                   const char  *part)
 {

@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "highlight.h"
 #include "cursor.h"
 
@@ -195,7 +214,7 @@ _handler_pos_recalc(Highlight *highlight)
 static void
 _handler_down_cb(void *data,
                  Evas *evas,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj EINA_UNUSED,
                  void *event_info)
 {
    Handler *handler = (Handler *)data;
@@ -223,8 +242,8 @@ _handler_down_cb(void *data,
 static void
 _handler_move_cb(void *data,
                  Evas *evas,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    Handler *handler = (Handler *)data;
 
@@ -394,8 +413,8 @@ _handler_move_cb(void *data,
 
 static void
 _handler_up_cb(void *data,
-               Evas *evas __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+               Evas *evas EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Handler *handler = (Handler *)data;
@@ -425,9 +444,9 @@ _handler_up_cb(void *data,
  */
 static void
 _handler_mouse_in_cb(void *data,
-                    Evas *evas __UNUSED__,
+                    Evas *evas EINA_UNUSED,
                     Evas_Object *obj,
-                    void *event_info __UNUSED__)
+                    void *event_info EINA_UNUSED)
 {
    Highlight *highlight = (Highlight *)data;
 
@@ -450,9 +469,9 @@ _handler_mouse_in_cb(void *data,
  */
 static void
 _handler_mouse_out_cb(void *data,
-                      Evas *evas __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+                      Evas *evas EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    Highlight *highlight = (Highlight *)data;
 

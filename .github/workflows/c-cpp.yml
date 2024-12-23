@@ -8,25 +8,38 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-22.04
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    env:
+      OS: ${{ matrix.os }}
+      # PYTHON: '3.10'
     steps:
-    - uses: actions/checkout@v3
-    - name: install deps
+    - uses: actions/checkout@master
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y autopoint gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
-        # sudo apt-get install -y check
-    - name: autoreconf
-      run: autoreconf -i
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    #- name: make check
-    #  run: make check
-    - name: Codecov
+        sudo apt-get install -y autopoint meson ninja-build gettext libunwind-dev libefl-all-dev libeet1 libeet-bin
+        sudo apt-get install -y check lcov
+    - name: Setup python
+      uses: actions/setup-python@master
+      # with:
+      #   python-version: 3.10
+    - name: Install python dependencies
+      run: pip install lxml
+    - name: Setup project (meson)
+      run: meson setup . build -Db_coverage=true -Dbuild-tests=true
+    - name: Build project (ninja)
+      run: ninja -C build
+    - name: Run tests (ninja)
+      run: ninja -C build test
+    - name: Generate coverage report
+      run: ./scripts/generate_coverage_report.sh
+    - name: Upload to Codecov
       uses: codecov/codecov-action@v3.1.4
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./build/meson-logs/
+        files: ./coverage.xml
+        verbose: true

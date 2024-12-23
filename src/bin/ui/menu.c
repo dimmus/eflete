@@ -1,6 +1,5 @@
 #include "main_window.h"
 #include "tabs.h"
-#include "workspace.h"
 #include "shortcuts.h"
 #include "project_manager2.h"
 
@@ -68,8 +67,8 @@ struct _menu_event
 typedef struct _menu_event Menu_Event;
 
 static Eina_Bool
-_menu_cb(void *data __UNUSED__,
-         int type __UNUSED__,
+_menu_cb(void *data EINA_UNUSED,
+         int type EINA_UNUSED,
          void *event)
 {
    Menu_Event *menu_event = (Menu_Event *)event;
@@ -77,7 +76,7 @@ _menu_cb(void *data __UNUSED__,
    switch (menu_event->mid)
      {
       case MENU_FILE:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_FILE_NEW_PROJECT:
          tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
@@ -115,7 +114,7 @@ _menu_cb(void *data __UNUSED__,
          ui_main_window_del();
          break;
       case MENU_EDIT:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_EDIT_UNDO:
          shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
@@ -145,7 +144,7 @@ _menu_cb(void *data __UNUSED__,
          /* preferences_window_add(ap.project); */
          break;
       case MENU_VIEW:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
          shortcuts_shortcut_send(SHORTCUT_TYPE_ZOOM_IN);
@@ -169,7 +168,7 @@ _menu_cb(void *data __UNUSED__,
          shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
          break;
       case MENU_WINDOW:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
@@ -190,7 +189,7 @@ _menu_cb(void *data __UNUSED__,
          shortcuts_shortcut_send(SHORTCUT_TYPE_TAB_SCRIPT_MANAGER);
          break;
       case MENU_HELP:
-         // TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error.
+         /* TOP LEVEL: nothing to do. Need this to avoid 'unknown menu id' error. */
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
@@ -207,8 +206,8 @@ _menu_cb(void *data __UNUSED__,
 
 static void
 _delay_menu_cb(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
 
@@ -219,9 +218,9 @@ _delay_menu_cb(void *data,
 }
 
 static void
-_project_changed(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_project_changed(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
 }
@@ -268,7 +267,7 @@ ui_menu_add(void)
    snprintf(buf, sizeof(buf), "%sicon-save.png", ap.path.image_path);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"), "Ctrl-O")
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
@@ -276,7 +275,7 @@ ui_menu_add(void)
       ___(MENU_FILE);
 #endif /* if !HAVE_TIZEN */
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, buf, _("Save"), "Ctrl-S")
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)
@@ -315,7 +314,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_WINDOW, NULL, _("Window"), NULL)
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_TAB_HOME, NULL, _("Home"), NULL)
       ___(MENU_WINDOW);
 #endif /* if !HAVE_TIZEN */

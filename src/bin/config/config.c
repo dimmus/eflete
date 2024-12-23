@@ -1,6 +1,5 @@
 #include "config.h"
 #include "shortcuts.h"
-#include "enventor_module.h"
 
 #define CONFIG_FILE        "eflete.cfg"
 #define CONFIG_FILE_KEY    "config"
@@ -136,7 +135,8 @@ config_recent_add(const char *name, const char *path)
    config->recents = eina_list_prepend(config->recents, r);
    config_save();
 
-   free(r);
+   /* free it later to avoid segfault (see _tab_open_project_recents_update) */
+   /* free(r); */
 }
 
 static void

@@ -896,7 +896,7 @@ group { name: "elm/hover/base/menu/default";
 group { name: "elm/hover/base/submenu/default";
    inherit: "elm/hover/base/menu/default";
    images {
-      image: "vgrad_med.png" COMP;
+      // image: "vgrad_med.png" COMP; // not used
    }
    parts {
       part { name: "elm.swallow.offset";
@@ -1012,6 +1012,10 @@ group { name: "elm/hover/base/main_menu_submenu/default";
       part { name: "base"; type: RECT; repeat_events: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
       part { name: "bottomclip"; type: RECT;

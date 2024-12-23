@@ -1,4 +1,24 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "sound_player.h"
+#include "eina_util.h"
 
 #define TONE_PLAYING_DURATION 2.0
 #define UPDATE_FREQUENCY 1.0 / 30.0
@@ -18,7 +38,7 @@ static Evas_Object *rewin;
 static Evas_Object *play;
 
 static int
-_snd_file_seek(void *data __UNUSED__, Eo *eo_obj __UNUSED__, int ofset, int whence)
+_snd_file_seek(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, int ofset, int whence)
 {
    switch (whence)
      {
@@ -38,23 +58,23 @@ _snd_file_seek(void *data __UNUSED__, Eo *eo_obj __UNUSED__, int ofset, int when
 }
 
 static int
-_snd_file_read(void *data __UNUSED__, Eo *eo_obj __UNUSED__, void *buffer, int len)
+_snd_file_read(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED, void *buffer, int len)
 {
    if ((offset + len) > length)
      len = length - offset;
-   memcpy(buffer, data_sound + offset, len);
+   memcpy(buffer, (int *)(data_sound) + offset, len);
    offset += len;
    return len;
 }
 
 static int
-_snd_file_get_length(void *data __UNUSED__, Eo *eo_obj __UNUSED__)
+_snd_file_get_length(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED)
 {
    return length;
 }
 
 static int
-_snd_file_tell(void *data __UNUSED__, Eo *eo_obj __UNUSED__)
+_snd_file_tell(void *data EINA_UNUSED, Eo *eo_obj EINA_UNUSED)
 {
    return offset;
 }
@@ -91,7 +111,7 @@ _player_units_free(char *str)
    evas_object_show(ITEM);
 
 static void
-_play_finished_cb(void *data __UNUSED__, const Efl_Event *event __UNUSED__)
+_play_finished_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 {
    efl_unref(in);
    in = NULL;
@@ -100,20 +120,20 @@ _play_finished_cb(void *data __UNUSED__, const Efl_Event *event __UNUSED__)
 }
 
 static void
-_out_fail(void *data __UNUSED__, const Efl_Event *event)
+_out_fail(void *data EINA_UNUSED, const Efl_Event *event)
 {
    efl_unref(event->object);
 }
 
 static Eina_Bool
-_rewind_cb(void *data __UNUSED__)
+_rewind_cb(void *data EINA_UNUSED)
 {
    double value, max;
 
    value = elm_slider_value_get(rewin);
    elm_slider_min_max_get(rewin, NULL, &max);
 
-   if (max == value)
+   if (EINA_DBL_EQ(max, value))
      {
         Evas_Object *icon = elm_object_part_content_get(play, NULL);
         elm_icon_standard_set(icon, "media_player/play");
@@ -128,15 +148,15 @@ _rewind_cb(void *data __UNUSED__)
 }
 
 static void
-_on_rewin_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_on_rewin_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    double value = elm_slider_value_get(rewin);
    ecore_audio_obj_in_seek(in, value, SEEK_SET);
 }
 static void
-_create_io_stream()
+_create_io_stream(void)
 {
    in = efl_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL);
    assert(in != NULL);
@@ -148,7 +168,7 @@ _create_io_stream()
                          _play_finished_cb, NULL);
 }
 static void
-_tone_play()
+_tone_play(void)
 {
    double value;
    Eina_Bool ret = false;
@@ -181,13 +201,13 @@ _tone_play()
    elm_slider_value_set(rewin, 0.0);
 
    value = elm_slider_value_get(rewin);
-   if (value)
+   if (EINA_DBL_NONZERO(value))
      ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
 static void
-_sample_play()
+_sample_play(void)
 {
    double value, len = 0.0;
    Eina_Bool ret = false;
@@ -218,15 +238,15 @@ _sample_play()
      }
 
    value = elm_slider_value_get(rewin);
-   if (value)
+   if (EINA_DBL_NONZERO(value))
      ecore_audio_obj_in_seek(in, value, SEEK_SET);
 
    timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, NULL);
 }
 static void
-_on_play_cb(void *data __UNUSED__,
+_on_play_cb(void *data EINA_UNUSED,
            Evas_Object *obj,
-           void *event_info __UNUSED__)
+           void *event_info EINA_UNUSED)
 {
    Evas_Object *icon = elm_object_part_content_get(obj, NULL);
    Eina_Bool paused;
@@ -268,7 +288,7 @@ _on_play_cb(void *data __UNUSED__,
 }
 
 static void
-_interrupt_playing()
+_interrupt_playing(void)
 {
    Eina_Bool ret;
    Evas_Object *icon;

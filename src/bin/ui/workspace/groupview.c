@@ -1,6 +1,24 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "groupview.h"
 #include "groupview_private.h"
-#include "cursor.h"
 #include "project_manager2.h"
 
 #define MY_CLASS_NAME "Groupview"
@@ -33,7 +51,7 @@ _grouopview_hl_event_new(Highlight_Events *event, Groupview_Smart_Data *sd)
 
 static void
 _hl_part_drag_start_cb(void *data,
-                       Evas_Object *obj __UNUSED__,
+                       Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -46,7 +64,7 @@ _hl_part_drag_start_cb(void *data,
 
 static void
 _hl_part_changed_cb(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj EINA_UNUSED,
                     void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -59,7 +77,7 @@ _hl_part_changed_cb(void *data,
 
 static void
 _hl_part_drag_stop_cb(void *data,
-                      Evas_Object * obj __UNUSED__,
+                      Evas_Object * obj EINA_UNUSED,
                       void *event_info)
 {
    Groupview_Smart_Data *sd = data;
@@ -73,8 +91,8 @@ _hl_part_drag_stop_cb(void *data,
 
 static void
 _unselect_part(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+               Evas *e EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Evas_Object *o = (Evas_Object *)data;
@@ -440,8 +458,8 @@ groupview_part_object_area_visible_get(Evas_Object *obj)
 }
 
 Eina_Bool
-groupview_parts_separated(Evas_Object *obj __UNUSED__,
-                          Eina_Bool separated __UNUSED__)
+groupview_parts_separated(Evas_Object *obj EINA_UNUSED,
+                          Eina_Bool separated EINA_UNUSED)
 {
 #if 0
    int w, h, count;

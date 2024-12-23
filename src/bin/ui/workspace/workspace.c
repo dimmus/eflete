@@ -1,8 +1,26 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "workspace.h"
 #include "main_window.h"
 #include "groupview.h"
 #include "container.h"
-#include "eflete.h"
 #include "group_navigator.h"
 #include "history.h"
 #include "history_ui.h"
@@ -21,7 +39,7 @@
    Workspace_Data *wd = evas_object_data_get(OBJ, WORKSPACE_DATA); \
    assert(wd != NULL);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
 #endif
 
@@ -78,7 +96,7 @@ struct _Workspace_Data
          Evas_Object *cmb_zoom;
          Evas_Object *slider;
       } zoom;
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
       struct {
          Evas_Object *normal;
          Evas_Object *code;
@@ -98,7 +116,7 @@ struct _Workspace_Data
          Evas_Object *tile;
          Evas_Object *white;
       } bg_switcher;
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
       Evas_Object *libraries_switcher;
       Elm_Genlist_Item_Class *libraries_itc;
 #endif
@@ -128,7 +146,7 @@ struct _Workspace_Data
 typedef struct _Workspace_Data Workspace_Data;
 
 Eina_Bool
-workspace_highlight_unset(Evas_Object *obj __UNUSED__)
+workspace_highlight_unset(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }
@@ -144,7 +162,7 @@ workspace_active_demo_mode_get(Evas_Object *obj)
    return false;
 }
 
-char *
+static char *
 _group_code_get(Workspace_Data *wd)
 {
    Eina_Stringshare *code;
@@ -193,8 +211,8 @@ _scroll_area_get(Workspace_Data *wd)
 static void
 _rulers_pointer_move(void *data,
                      Evas *e,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    Scroll_Area *area = data;
    Evas_Coord x, y, ruler_h_x, ruler_v_y;
@@ -208,9 +226,9 @@ _rulers_pointer_move(void *data,
 
 static void
 _workspace_del(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               Evas *e EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -246,8 +264,8 @@ _object_delete_job(void *data)
 
 static void
 _code_reload(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    assert(data != NULL);
 
@@ -300,8 +318,8 @@ _members_zoom_set(Workspace_Data *wd)
 
 static void
 _fit_cb(void *data,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+        Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -309,24 +327,24 @@ _fit_cb(void *data,
 }
 
 static void
-_slider_zoom_stop_cb(void *data __UNUSED__,
+_slider_zoom_stop_cb(void *data EINA_UNUSED,
                 Evas_Object *obj,
-                void *event_info __UNUSED__)
+                void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 static void
-_slider_zoom_start_cb(void *data __UNUSED__,
+_slider_zoom_start_cb(void *data EINA_UNUSED,
                       Evas_Object *obj,
-                      void *event_info __UNUSED__)
+                      void *event_info EINA_UNUSED)
 {
    shortcuts_object_push(obj);
 }
 
 static void
 _slider_zoom_cb(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Eina_Stringshare *text;
    Workspace_Data *wd = data;
@@ -352,7 +370,7 @@ _zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
 }
 
 static char *
-_combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_combobox_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    return strdup(item->data);
@@ -360,18 +378,18 @@ _combobox_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __U
 
 static void
 _combobox_item_del(void *data,
-                   Evas_Object *obj __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED)
 {
    Combobox_Item *item = (Combobox_Item *)data;
    eina_stringshare_del(item->data);
    free(item);
 }
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
 static void
 _btn_minus_zoom_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -385,8 +403,8 @@ _btn_minus_zoom_cb(void *data,
 
 static void
 _btn_plus_zoom_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -401,7 +419,7 @@ _btn_plus_zoom_cb(void *data,
 static void
 _spinner_zoom_cb(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = (Workspace_Data *)data;
 
@@ -414,7 +432,7 @@ _spinner_zoom_cb(void *data,
 #else
 static void
 _zoom_selected_cb(void *data,
-                  Evas_Object *obj __UNUSED__,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Workspace_Data *wd = data;
@@ -438,7 +456,7 @@ _zoom_controls_add(Workspace_Data *wd)
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
    evas_object_smart_callback_add(wd->toolbar.zoom.fit, signals.elm.button.clicked, _fit_cb, wd);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_object_style_set(wd->toolbar.zoom.fit, "fit");
 #else
    Evas_Object *img;
@@ -456,7 +474,7 @@ _zoom_controls_add(Workspace_Data *wd)
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_start, _slider_zoom_start_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.changed, _slider_zoom_cb, wd);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, signals.elm.slider.drag_stop, _slider_zoom_stop_cb, wd);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *btn = elm_button_add(wd->toolbar.obj);
    elm_object_style_set(btn, "minus_zoom");
    evas_object_show(btn);
@@ -473,7 +491,7 @@ _zoom_controls_add(Workspace_Data *wd)
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
 #endif
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    evas_object_size_hint_min_set(wd->toolbar.zoom.slider, 134, 0);
    Evas_Object *zoom_layout = elm_layout_add(wd->toolbar.obj);
    elm_layout_theme_set(zoom_layout, "layout", "zoom", "controls");
@@ -484,7 +502,7 @@ _zoom_controls_add(Workspace_Data *wd)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
 #endif
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom, 10, 1000, 10, true);
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 76, 0);
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, 100);
@@ -528,7 +546,7 @@ _zoom_controls_add(Workspace_Data *wd)
 static void
 _spinner_container_change(void *data,
                           Evas_Object *obj,
-                          void *event_info __UNUSED__)
+                          void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -550,7 +568,7 @@ _spinner_container_change(void *data,
 static void
 _container_aspect_change(void *data,
                          Evas_Object *obj,
-                         void *event_info __UNUSED__)
+                         void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -574,7 +592,7 @@ _container_aspect_change(void *data,
 static void
 _container_lock(void *data,
                 Evas_Object *obj,
-                void *event_info __UNUSED__)
+                void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Scroll_Area *area;
@@ -586,7 +604,7 @@ _container_lock(void *data,
    lock = elm_check_state_get(obj);
    container_lock_set(area->container, lock);
 
-   // toggle spinner lock
+   /* toggle spinner lock */
    elm_object_disabled_set(wd->toolbar.container_sizer.spinner_w, (lock != 1) ? false : true);
    elm_object_disabled_set(wd->toolbar.container_sizer.spinner_h, (lock != 1) ? false : true);
 }
@@ -596,7 +614,7 @@ _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *size_controls = elm_layout_add(wd->toolbar.obj);
    elm_layout_theme_set(size_controls, "layout", "container/controls", "default");
    evas_object_show(size_controls);
@@ -615,35 +633,18 @@ _container_size_controls_add(Workspace_Data *wd)
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_w, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_w, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, signals.elm.spinner.changed_user, _spinner_container_change, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
 #else
    elm_object_part_content_set(size_controls, "width", wd->toolbar.container_sizer.spinner_w);
 #endif
 
-   // start experiment
-   // Evas_Object *sp;
-   // sp = elm_spinner_add(wd->toolbar.obj);
-   // elm_spinner_editable_set(sp, EINA_TRUE);
-   // elm_spinner_label_format_set(sp, "%1.1f units");
-   // elm_spinner_step_set(sp, 1.3);
-   // elm_spinner_wrap_set(sp, EINA_TRUE);
-   // elm_spinner_min_max_set(sp, -5000.0, 5000.0);
-   // evas_object_size_hint_align_set(sp, EVAS_HINT_FILL, 0.5);
-   // evas_object_size_hint_weight_set(sp, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   // evas_object_smart_callback_add(sp, "mouse,down,1",
-   //                                _spinner_container_change, NULL);
-   // wd->toolbar.container_sizer.spinner_w = sp;
-   // tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   // elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
-   // stop experiment
-
    wd->toolbar.container_sizer.check_chain = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, signals.elm.check.changed, _container_aspect_change, wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_chain);
 #else
@@ -653,7 +654,7 @@ _container_size_controls_add(Workspace_Data *wd)
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.container_sizer.spinner_h, 0, 9999, 1, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_h, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, signals.elm.spinner.changed_user, _spinner_container_change, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
 #else
@@ -679,7 +680,7 @@ _radio_switcher_add(Workspace_Data *wd,
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
    evas_object_smart_callback_add(radio, signals.elm.radio.changed, func, wd);
-   elm_radio_group_add(radio, group);
+   if (group) elm_radio_group_add(radio, group);
 
    return radio;
 }
@@ -844,7 +845,7 @@ hide:
 
 static void
 _container_changed(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Workspace_Data *wd = data;
@@ -902,8 +903,8 @@ _container_changed(void *data,
 
 static void
 _menu_dismissed(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -914,8 +915,8 @@ _menu_dismissed(void *data,
 
 static void
 _menu_undo(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_UNDO);
@@ -923,8 +924,8 @@ _menu_undo(void *data,
 
 static void
 _menu_redo(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_REDO);
@@ -932,8 +933,8 @@ _menu_redo(void *data,
 
 static void
 _menu_rulers_visible(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
    shortcuts_shortcut_send(SHORTCUT_TYPE_RULERS_SHOW);
@@ -941,8 +942,8 @@ _menu_rulers_visible(void *data,
 
 static void
 _menu_markers(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -955,8 +956,8 @@ _menu_markers(void *data,
 
 static void
 _menu_ruler_abs(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -972,8 +973,8 @@ _menu_ruler_abs(void *data,
 
 static void
 _menu_ruler_rel(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -989,8 +990,8 @@ _menu_ruler_rel(void *data,
 
 static void
 _menu_rulers_both(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    _menu_dismissed(data, NULL, NULL);
 
@@ -1020,8 +1021,8 @@ _menu_rulers_both(void *data,
 
 static void
 _menu_cb(void *data,
-         Evas *e __UNUSED__,
-         Evas_Object *obj __UNUSED__,
+         Evas *e EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
          void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1060,7 +1061,7 @@ _menu_add(Workspace_Data *wd)
    elm_menu_item_separator_add(wd->menu.obj, NULL);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
 #endif
    wd->menu.scale_abs = _radio_switcher_add(wd, NULL, NULL, 0, NULL);
@@ -1069,7 +1070,7 @@ _menu_add(Workspace_Data *wd)
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_ruler_rel, NULL, wd->menu.scale_rel, wd);
    wd->menu.scale_both = _radio_switcher_add(wd, NULL, NULL, 2, wd->menu.scale_abs);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_both, NULL, wd->menu.scale_both, wd);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
 #endif
    wd->menu.markers = elm_check_add(wd->layout);
@@ -1091,7 +1092,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    ewe_ruler_horizontal_set(area->ruler_v.obj, false);
    elm_layout_content_set(area->layout, "elm.swallow.ruler_v", area->ruler_v.obj);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, false);
    ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, false);
 #endif
@@ -1121,9 +1122,9 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
      evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, wd);
 }
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
 static void
-_library_select(void *data __UNUSED__,
+_library_select(void *data EINA_UNUSED,
                 Evas_Object *obj,
                 void *event_info)
 {
@@ -1153,7 +1154,7 @@ _library_select(void *data __UNUSED__,
 static void
 _mode_cb(void *data,
          Evas_Object *obj,
-         void *event_info __UNUSED__)
+         void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
    Workspace_Mode mode;
@@ -1161,7 +1162,7 @@ _mode_cb(void *data,
    Scroll_Area *area = NULL;
    const Container_Geom *geom;
    char *color_code = NULL;
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    mode = elm_radio_value_get(obj);
 #else
    // Tizen spceific code. Here uses check instead radio button.
@@ -1187,10 +1188,11 @@ _mode_cb(void *data,
       case MODE_CODE:
          color_code =_group_code_get(wd);
          elm_panes_fixed_set(wd->panes_h, false);
-         if (wd->code.size == -1) wd->code.size = 0.5;
+         if (EINA_DBL_EQ(wd->code.size, -1)) wd->code.size = 0.5;
          elm_panes_content_right_size_set(wd->panes_h, wd->code.size);
          elm_entry_entry_set(wd->code.obj, color_code);
          free(color_code);
+         break;
       case MODE_NORMAL:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
@@ -1244,11 +1246,11 @@ _mode_cb(void *data,
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
-       void *event_info __UNUSED__)
+       void *event_info EINA_UNUSED)
 {
    Bg_Preview bg_mode;
    Workspace_Data *wd = data;
@@ -1282,7 +1284,7 @@ _bg_cb(void *data,
 
 static void
 _part_select(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1297,7 +1299,7 @@ _part_select(void *data,
 
 static void
 _part_visible(void *data,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj EINA_UNUSED,
               void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1313,7 +1315,7 @@ _part_visible(void *data,
 /******************************************************************************/
 static void
 _groupview_clicked(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1358,7 +1360,7 @@ _groupview_hl_part_drag_start(void *data,
 
 static void
 _groupview_hl_part_changed(void *data,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
    Workspace_Data *wd = data;
@@ -1433,7 +1435,7 @@ _groupview_hl_part_drag_stop(void *data,
                                                      event->part->common.name,
                                                      event->part->current_state->common.name,
                                                      event->part->current_state->val);
-        if ((align_x == part_align_x) && (align_y == part_align_y))
+        if (EINA_DBL_EQ(align_x, part_align_x) && EINA_DBL_EQ(align_y, part_align_y))
           change_free(change);
         else
           {
@@ -1453,7 +1455,7 @@ _groupview_hl_part_drag_stop(void *data,
 static void
 _panes_h_unpress(void *data,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    Workspace_Data *wd = data;
 
@@ -1463,9 +1465,9 @@ _panes_h_unpress(void *data,
 }
 
 static void
-_panes_h_press(void *data __UNUSED__,
+_panes_h_press(void *data EINA_UNUSED,
                Evas_Object *obj,
-               void *event_info __UNUSED__)
+               void *event_info EINA_UNUSED)
 {
    shortcuts_object_push(obj);
 }
@@ -1517,7 +1519,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Combobox_Item *combobox_item;
    /* Combobox for a choose libraries. */
    COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
@@ -1561,7 +1563,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    elm_toolbar_item_separator_set(tb_it, true);
 #endif
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    /* add to toolbar modes switcher */
    wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1589,7 +1591,7 @@ workspace_add(Evas_Object *parent, Group2 *group)
    wd->zoom_factor = 1.0;
    _zoom_controls_add(wd);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    /* add to toolbar bg switcher */
    wd->toolbar.bg_switcher.white = _radio_switcher_add(wd, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1651,7 +1653,7 @@ workspace_mode_set(Evas_Object *obj, Workspace_Mode mode)
 {
    WS_DATA_GET(obj);
 
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    elm_radio_value_set(wd->toolbar.mode_switcher.normal, mode);
    _mode_cb(wd, wd->toolbar.mode_switcher.normal, NULL);
 #else
@@ -1686,7 +1688,7 @@ workspace_group_navigator_update_group_data(Evas_Object *obj, Resource2 *group_d
 }
 
 Eina_Bool
-workspace_edit_object_recalc(Evas_Object *obj __UNUSED__)
+workspace_edit_object_recalc(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }
@@ -1710,13 +1712,13 @@ workspace_groupview_soft_update(Evas_Object *obj)
 }
 
 Eina_Bool
-workspace_highlight_align_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+workspace_highlight_align_visible_set(Evas_Object *obj EINA_UNUSED, Eina_Bool flag EINA_UNUSED)
 {
    return false;
 }
 
 Eina_Bool
-workspace_highlight_align_visible_get(Evas_Object *obj __UNUSED__)
+workspace_highlight_align_visible_get(Evas_Object *obj EINA_UNUSED)
 {
    return false;
 }

@@ -1,8 +1,26 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_elementary_widgets.h"
-#include "widget_macro.h"
 
 static void
-_on_genlist_swallow_check(void *data __UNUSED__,
+_on_genlist_swallow_check(void *data EINA_UNUSED,
                           Evas_Object *obj,
                           void *ei)
 {
@@ -23,7 +41,7 @@ _on_genlist_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_genlist_text_check(void *data __UNUSED__,
+_on_genlist_text_check(void *data EINA_UNUSED,
                        Evas_Object *obj,
                        void *ei)
 {
@@ -44,7 +62,7 @@ _on_genlist_text_check(void *data __UNUSED__,
 }
 
 static void
-_genlist_send_signal(void *data __UNUSED__,
+_genlist_send_signal(void *data EINA_UNUSED,
                      Evas_Object *obj,
                      void *ei)
 {
@@ -65,7 +83,7 @@ _genlist_send_signal(void *data __UNUSED__,
 
 /*********** GEN LIST CREATING FUNCTIONS ****************/
 static char *
-_glist_text_get(void        *data __UNUSED__,
+_glist_text_get(void        *data EINA_UNUSED,
                 Evas_Object *obj,
                 const char  *part)
 {
@@ -89,7 +107,7 @@ _glist_text_get(void        *data __UNUSED__,
 }
 
 static Evas_Object *
-_glist_content_get(void *data __UNUSED__,
+_glist_content_get(void *data EINA_UNUSED,
                    Evas_Object *obj,
                    const char  *part)
 {
@@ -131,7 +149,7 @@ _glist_content_get(void *data __UNUSED__,
 
 
 static void
-_glist_expanded_cb(void *data __UNUSED__,
+_glist_expanded_cb(void *data EINA_UNUSED,
                    Evas_Object *obj,
                    void *event_info)
 {
@@ -156,8 +174,8 @@ _glist_expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_glist_contracted_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
+_glist_contracted_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
                   void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -165,8 +183,8 @@ _glist_contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -174,8 +192,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;

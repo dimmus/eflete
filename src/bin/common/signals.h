@@ -1,6 +1,8 @@
 #ifndef SIGNALS_H
 #define SIGNALS_H
 
+#include "eflete.h"
+
 typedef struct {
    const struct {
       const char *del;

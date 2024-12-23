@@ -92,7 +92,7 @@ resource_manager_v_find(const Eina_List *list, Eina_Stringshare *name, double va
    const Eina_List *l;
    EINA_LIST_FOREACH(list, l, data)
      {
-        if ((data->common.name == name) && (data->val == value))
+        if ((data->common.name == name) && EINA_DBL_EQ(data->val, value))
           {
              res = data;
              break;

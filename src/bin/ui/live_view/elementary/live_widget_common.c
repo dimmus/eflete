@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_elementary_widgets.h"
 
 Eina_Bool
@@ -34,16 +53,16 @@ standard_widget_name_parse(const char *full_group_name,
 }
 
 static char *
-_gen_text_get(void        *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                const char  *part __UNUSED__)
+_gen_text_get(void        *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                const char  *part EINA_UNUSED)
 {
    return strdup(_("User Text"));
 }
 static Evas_Object *
-_gen_content_get(void *data __UNUSED__,
+_gen_content_get(void *data EINA_UNUSED,
                    Evas_Object *obj,
-                   const char  *part __UNUSED__)
+                   const char  *part EINA_UNUSED)
 {
 
    Evas_Object *content = elm_button_add(obj);
@@ -51,7 +70,7 @@ _gen_content_get(void *data __UNUSED__,
    return content;
 }
 static void
-_pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_pop_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = data;
 
@@ -61,7 +80,7 @@ _pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED_
 }
 
 static void
-_next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_next_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = (Evas_Object *)data, *bt;
 
@@ -75,7 +94,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 }
 
 static void
-_prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_prev_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = (Evas_Object *)data, *bt;
 
@@ -360,7 +379,7 @@ object_generate(Demo_Part *part, Evas_Object *object)
 }
 
 void
-on_swallow_check(void *data __UNUSED__,
+on_swallow_check(void *data EINA_UNUSED,
                  Evas_Object *obj,
                  void *ei)
 {
@@ -404,7 +423,7 @@ on_swallow_check(void *data __UNUSED__,
 }
 
 void
-on_text_check(void *data __UNUSED__,
+on_text_check(void *data EINA_UNUSED,
               Evas_Object *obj,
               void *ei)
 {
@@ -414,7 +433,7 @@ on_text_check(void *data __UNUSED__,
 }
 
 void
-send_signal(void *data __UNUSED__,
+send_signal(void *data EINA_UNUSED,
              Evas_Object *obj,
              void *ei)
 {

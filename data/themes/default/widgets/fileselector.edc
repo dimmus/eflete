@@ -5,6 +5,7 @@ group { name: "elm/fileselector/base/default";
    parts {
       part { name: "elm.swallow.up";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 1 1;
@@ -16,6 +17,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.home";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 1 1;
@@ -33,6 +35,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.search";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 1;
@@ -49,6 +52,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.spinner.clip";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
             rel1 {
@@ -69,6 +73,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.files";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             min: 10 10;
@@ -86,6 +91,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.path";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
@@ -102,6 +108,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.filename";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
@@ -118,6 +125,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "separator";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             min: 0 2;
@@ -135,6 +143,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.filters";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 74 0;
             align: 1.0 1.0;
@@ -151,6 +160,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.cancel";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 63 0;
             align: 1.0 1.0;
@@ -167,6 +177,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.ok";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
             min: 42 0;
             align: 1.0 1.0;
@@ -178,6 +189,7 @@ group { name: "elm/fileselector/base/default";
       }
       part { name: "elm.swallow.spinner";
          type: SWALLOW;
+         scale: 1;
          clip_to: "elm.spinner.clip";
          description { state: "default" 0.0;
             rel1 {
@@ -214,6 +226,7 @@ group { name: "elm/fileselector/base/extended";
    parts {
       part { name: "elm.swallow.up";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.00 0.00;
             fixed: 1 1;
@@ -223,6 +236,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.home";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.00 0.00;
             fixed: 1 1;
@@ -240,6 +254,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.search";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.00 0.50;
             fixed: 1 1;
@@ -259,6 +274,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.spinner.clip";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.00;
             color: 255 255 255 0;
             rel1.to: "elm.swallow.spinner";
@@ -271,6 +287,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.files";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 0.00;
             min: 10 10;
@@ -288,6 +305,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.path";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.50 1.00;
             fixed: 1 1;
@@ -304,6 +322,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.filename";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.50 1.00;
             fixed: 1 1;
@@ -320,6 +339,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "separator";
          type: IMAGE;
+         scale: 1;
          description { state: "default" 0.00;
             align: 0.50 1.00;
             min: 0 2;
@@ -334,6 +354,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.filters";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 1.00;
             fixed: 1 1;
@@ -348,6 +369,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.cancel";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 1.00;
             fixed: 1 1;
@@ -362,6 +384,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.ok";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 1.00;
             fixed: 1 1;
@@ -371,6 +394,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.spinner";
          type: SWALLOW;
+         scale: 1;
          clip_to: "elm.spinner.clip";
          description { state: "default" 0.00;
             rel1.to: "elm.swallow.files";
@@ -379,6 +403,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.btn_list";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 0.00;
             fixed: 1 1;
@@ -393,6 +418,7 @@ group { name: "elm/fileselector/base/extended";
       }
       part { name: "elm.swallow.btn_grid";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.00;
             align: 1.00 0.00;
             fixed: 1 1;

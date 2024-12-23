@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "container.h"
 #include "cursor.h"
 
@@ -57,8 +76,8 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
 
 static void
 _mouse_down_hRB_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+                   Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
@@ -73,9 +92,9 @@ _mouse_down_hRB_cb(void *data,
 
 static void
 _mouse_up_hRB_cb(void *data,
-                 Evas *e __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas *e EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    CONTAINER_DATA_GET(data, sd)
    sd->handler_BR_pressed = false;
@@ -84,8 +103,8 @@ _mouse_up_hRB_cb(void *data,
 
 static void
 _mouse_move_hBR_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+                   Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Evas_Object *o = data;

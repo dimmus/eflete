@@ -1,6 +1,32 @@
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
+
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "tabs_private.h"
 #include "tabs.h"
@@ -56,7 +82,7 @@ static void
 _tree_nodes_get(Eina_List *groups_list, Node *node);
 
 static Eina_Bool
-_validate()
+_validate(void)
 {
    if (!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
        !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)) ||
@@ -79,9 +105,9 @@ validation_edj_failed:
 }
 
 static void
-_name_changed_cb(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_name_changed_cb(void *data EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    _validate();
 }
@@ -111,9 +137,9 @@ _tree_nodes_get(Eina_List *groups_list, Node *node)
 }
 
 static void
-_edj_changed_cb(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_edj_changed_cb(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Eina_List *collections, *l, *groups_list = NULL;
    Eina_List *folders = NULL, *groups = NULL;
@@ -219,7 +245,7 @@ _node_selected_set(Node *node)
 static void
 _check_widget(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Node *node = data;
 
@@ -234,9 +260,9 @@ _check_widget(void *data,
 }
 
 static void
-_on_check_all(void *data __UNUSED__,
+_on_check_all(void *data EINA_UNUSED,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *item;
    Node *node;
@@ -258,8 +284,8 @@ _on_check_all(void *data __UNUSED__,
 
 static char *
 _genlist_label_get(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   const char  *part __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   const char  *part EINA_UNUSED)
 {
    Node *node = data;
    const char *pos;
@@ -269,7 +295,7 @@ _genlist_label_get(void *data,
    assert (node != NULL);
    if (node->list)
      {
-        symbols = strlen_safe(node->name) - 1;
+        symbols = strlen(node->name) - 1;
         strncpy(buf, node->name, symbols);
         buf[symbols] = '\0';
         pos = strrchr(buf, '/');
@@ -304,8 +330,8 @@ _genlist_content_get(void *data,
 }
 
 static void
-_on_item_activated(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_on_item_activated(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *it = (Elm_Object_Item *)event_info;
@@ -318,8 +344,8 @@ _on_item_activated(void *data __UNUSED__,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -327,8 +353,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -336,8 +362,8 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -368,8 +394,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -394,7 +420,7 @@ _progress_end(void *data, PM_Project_Result result, Project *project)
 }
 
 static Eina_Bool
-_setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_setup_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    Eina_Bool ret = true;
    PM_Project_Result result;
@@ -418,15 +444,15 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static Eina_Bool
-_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+_teardown_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
    elm_check_state_set(tab_edj.ch_all, false);
    return true;
 }
 
-__UNUSED__ static Eina_Bool
-_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+EINA_UNUSED static Eina_Bool
+_cancel_open_splash(void *data EINA_UNUSED, Splash_Status status EINA_UNUSED)
 {
    //pm_project_thread_cancel();
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
@@ -434,7 +460,7 @@ _cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
-_after_import_check(void *data __UNUSED__)
+_after_import_check(void *data EINA_UNUSED)
 {
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
@@ -447,8 +473,8 @@ _after_import_check(void *data __UNUSED__)
 
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Eina_Strbuf *buf;
@@ -479,7 +505,7 @@ _after_popup_close(void *data __UNUSED__,
    exist_permission_check(elm_entry_entry_get(tab_edj.path),
                                elm_entry_entry_get(tab_edj.name),
                                _("Import edj-file"), eina_strbuf_string_get(buf),
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
                                FILE_SAVE_ASK,
 #else
                                FILE_SAVE_REPLACE,
@@ -489,9 +515,9 @@ _after_popup_close(void *data __UNUSED__,
 }
 
 static void
-_import(void *data __UNUSED__,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+_import(void *data EINA_UNUSED,
+        Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    if (ap.project)
      if (!project_close(_after_popup_close, NULL))
@@ -501,9 +527,9 @@ _import(void *data __UNUSED__,
 }
 
 static void
-_elipsis(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_elipsis(void *data EINA_UNUSED,
+         Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    popup_fileselector_folder_helper(NULL,
                                     NULL,
@@ -515,9 +541,9 @@ _elipsis(void *data __UNUSED__,
 }
 
 static void
-_elipsis_edj(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_elipsis_edj(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    popup_fileselector_edj_helper(NULL,
                                  NULL,
@@ -528,11 +554,11 @@ _elipsis_edj(void *data __UNUSED__,
                                  false);
 }
 
-void
-_tab_import_edj_del(void *data __UNUSED__,
-                    Evas *e __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+static void
+_tab_import_edj_del(void *data EINA_UNUSED,
+                    Evas *e EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    elm_validator_regexp_free(tab_edj.name_validator);
 }
@@ -628,7 +654,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_STYLE_COPY(LEN, COPY_STYLE) \
    do \
      { \
-        len = strlen_safe(item->name) - (LEN); \
+        len = strlen(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s", item->name, cp_style, COPY_STYLE); \
@@ -638,7 +664,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
 #define GROUP_ITEM_STYLE_COPY(LEN, COPY_STYLE, COPY_ITEM_STYLE) \
    do \
      { \
-        len = strlen_safe(item->name) - (LEN); \
+        len = strlen(item->name) - (LEN); \
         strncpy(cp_style, item->name, len - 1); \
         cp_style[len - 1] = '\0'; \
         tmp = eina_stringshare_printf("cp***%s***%s/%s/%s", item->name, cp_style, COPY_ITEM_STYLE, COPY_STYLE); \
@@ -671,7 +697,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
                          }
                     }
                   else if (iname)
@@ -689,17 +715,17 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                                              GROUP_APPEND()
                                            else
                                              EINA_LIST_FOREACH(cp_style_list, l1, name2)
-                                               GROUP_STYLE_COPY(strlen_safe(style_name), name2)
+                                               GROUP_STYLE_COPY(strlen(style_name), name2)
                                         }
                                       else
                                         {
                                            EINA_LIST_FOREACH(cp_item_style_list, l1, name2)
                                              {
                                                 if (!cp_style_list)
-                                                  GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, style_name, name2)
+                                                  GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, style_name, name2)
                                                 else
                                                   EINA_LIST_FOREACH(cp_style_list, l1, name3)
-                                                    GROUP_ITEM_STYLE_COPY(strlen_safe(style_name) + strlen_safe(item_style_name) + 1, name3, name2)
+                                                    GROUP_ITEM_STYLE_COPY(strlen(style_name) + strlen(item_style_name) + 1, name3, name2)
                                              }
                                         }
                                    }
@@ -711,7 +737,7 @@ _genlist_style_selected_set(Node *item, Eina_List *styles, Eina_Bool selected)
                               GROUP_APPEND()
                             else
                               EINA_LIST_FOREACH(cp_style_list, l1, name1)
-                                GROUP_STYLE_COPY(strlen_safe(style_name), name1)
+                                GROUP_STYLE_COPY(strlen(style_name), name1)
                          }
                     }
                   eina_stringshare_del(style_name);

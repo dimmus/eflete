@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "groupview.h"
 #include "groupview_private.h"
 #include "project_manager2.h"
@@ -185,8 +204,8 @@ _part_item_search(Eina_List *items, const char *item_name)
 
 static void
 _part_select(void *data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+             Evas *e EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Groupview_Part *gp = (Groupview_Part *)data;
@@ -773,7 +792,7 @@ _image_proxy_common_param_update(Evas_Object *image, Groupview_Part *gp, Evas_Ob
         evas_object_image_filled_set(image, false);
         evas_object_image_fill_set(image, x, y, w, h);
      }
-   else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
+   else if (!EINA_DBL_EQ(fill_x, 0) || !EINA_DBL_EQ(fill_y, 0) || !EINA_DBL_EQ(fill_w, 1) || !EINA_DBL_EQ(fill_h, 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
             fill_size_offset_x || fill_size_offset_y)
      {
@@ -1114,8 +1133,8 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 }
 
 void
-_parts_stack_layout(Evas_Object          *o __UNUSED__,
-                    Evas_Object_Box_Data *p __UNUSED__,
+_parts_stack_layout(Evas_Object          *o EINA_UNUSED,
+                    Evas_Object_Box_Data *p EINA_UNUSED,
                     void                 *data)
 
 {

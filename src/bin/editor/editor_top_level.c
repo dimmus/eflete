@@ -1,8 +1,6 @@
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "editor_macro.h"
-#include "change.h"
-#include "diff.h"
 
 extern int _editor_signals_blocked;
 

@@ -1,8 +1,29 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "editor_macro.h"
 #include "change.h"
 #include "diff.h"
+
+#include "editor_private.h"
 
 extern int _editor_signals_blocked;
 Eina_Bool
@@ -674,7 +695,7 @@ editor_part_item_index_reset(Evas_Object *edit_object, Change *change, Eina_Bool
 }
 
 Eina_Bool
-editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                               const char *part_name, const char *item_name, const char *source_group, unsigned int index)
 {
    Diff *diff;
@@ -733,7 +754,7 @@ editor_part_item_index_append(Evas_Object *edit_object, Change *change, Eina_Boo
 }
 
 Eina_Bool
-editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_item_index_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                            const char *part_name, unsigned int index)
 {
    Diff *diff;
@@ -872,7 +893,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply,
 }
 
 Eina_Bool
-editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                 const char *part_name, Edje_Part_Type type)
 {
    Diff *diff;
@@ -917,7 +938,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
 }
 
 Eina_Bool
-editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
+editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply,
                  const char *part_name, const char *part_name_copy)
 {
    Diff *diff;
@@ -953,7 +974,7 @@ editor_part_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 }
 
 Eina_Bool
-_editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply, Eina_Bool reset,
+_editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge EINA_UNUSED, Eina_Bool apply, Eina_Bool reset,
                  const char *part_name)
 {
    Diff *diff;

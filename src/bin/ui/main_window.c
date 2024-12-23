@@ -1,6 +1,25 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#endif
 
 #include "main_window.h"
 #include "history_ui.h"
@@ -12,69 +31,69 @@
 #include "property.h"
 
 static void
-_project_navigator_group_open(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
+_project_navigator_group_open(void *data EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    tabs_tab_add((Group2 *)event_info);
 }
 
 static void
-_close_request(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_close_request(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    ui_main_window_del();
 }
 
 static void
-_help(void *data __UNUSED__,
-      Evas_Object *obj __UNUSED__,
-      void *event_info __UNUSED__)
+_help(void *data EINA_UNUSED,
+      Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
    shortcuts_window_add();
 }
 
 static void
-_image_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_image_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      image_manager_add();
 }
 
 static void
-_sound_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_sound_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      sound_manager_add();
 }
 
 static void
-_style_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_style_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      style_manager_add();
 }
 
 static void
-_color_class_manager(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_color_class_manager(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    if (ap.project)
      colorclass_manager_add();
 }
 
 static void
-_script_manager(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_script_manager(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    Group2 *group = tabs_current_group_get();
 
@@ -92,8 +111,8 @@ _script_manager(void *data __UNUSED__,
 }
 
 static void
-_after_popup_close(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_after_popup_close(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
                    void *event_info)
 {
    Popup_Button pbtn = (Popup_Button) event_info;
@@ -110,7 +129,7 @@ _after_popup_close(void *data __UNUSED__,
 
    config_save();
    evas_object_del(ap.property.group);
-   INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
+   INFO("%s %s - Finished...", PACKAGE_NAME, PACKAGE_VERSION);
    elm_exit();
 }
 
@@ -239,15 +258,15 @@ ui_main_window_add(void)
 
    elm_config_window_auto_focus_enable_set(false);
 
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    elm_config_tooltip_delay_set(0.2);
 #endif
     return true;
 }
 
-#if !HAVE_TIZEN
-Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
+#ifndef HAVE_TIZEN
+static Evas_Object *
+_about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *label = (Evas_Object *) data;
    Eina_Strbuf *authors_file_path = NULL;
@@ -261,12 +280,18 @@ _about_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus
 
    authors = eina_strbuf_new();
    eina_strbuf_append_printf(authors,
-                             "<color=#b6b6b6>"
-                             "<b><align=center>"PACKAGE_NAME" v."VERSION" (build time "BUILD_TIME")</align></b><br>"
+                             /* "<color=#b6b6b6>" */
+                             "<b><align=center>EFLETE (EFL Edge Theme Editor)</align></b><br>"
+			     "<b>Version:</b> "PACKAGE_VERSION"<br>"
+			     "<b>Commit:</b> "PACKAGE_COMMIT"<br>"
+			     "<b>Date:</b> "PACKAGE_BUILD_TIME"<br>"
+			     "<b>EFL:</b> "PACKAGE_EFL"<br>"
+			     "<b>OS:</b> "PACKAGE_OS"<br>"
+			     "<br>"	
                              "This application was written for Enlightenment project.<br>"
                              "It is designed to create and modify styles of Elementary widgets.<br>"
                              "<br>"
-                             "Copyright (C) 2013 - 2017 Samsung Electronics.<br>"
+                             "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
                              "Copyright (C) 2022 - 2023 Dmitri \"dimmus\" Chudinov.<br>"
                              "<br>"
                              "<align=center><b>Authors:</b><br>");
@@ -299,12 +324,12 @@ about_window_add(void)
 
 #else
 Evas_Object *
-_about_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_about_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
   Evas_Object *layout = (Evas_Object *)data;
   elm_layout_theme_set(layout, "layout", "about", "default");
-  elm_object_part_text_set(layout, "ver.text", VERSION);
-  elm_object_part_text_set(layout, "build.text", BUILD_TIME);
+  elm_object_part_text_set(layout, "ver.text", PACKAGE_VERSION);
+  elm_object_part_text_set(layout, "build.text", PACKAGE_BUILD_TIME);
   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
   return layout;
@@ -323,7 +348,7 @@ about_window_add(void)
 #if 0
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup __UNUSED__, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *box = data;
    Evas_Object *scroller = elm_scroller_add(ap.win);
@@ -401,7 +426,7 @@ typedef struct {
 
 static void
 _shortcut_change_request(void *data,
-                         Evas *e __UNUSED__,
+                         Evas *e EINA_UNUSED,
                          Evas_Object *obj,
                          void *event)
 {
@@ -426,7 +451,7 @@ _shortcut_change_request(void *data,
 }
 
 static void
-_change_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_change_shortcut(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Shortcut_Data *sc = (Shortcut_Data *)data;
    Evas_Object *layout =  evas_object_data_get(obj, "layout");
@@ -439,7 +464,7 @@ _change_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event
 }
 
 static void
-_reset_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_reset_shortcut(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
    if (btn_res == BTN_RESET)
@@ -449,7 +474,7 @@ _reset_shortcut(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_
 }
 
 static char *
-_label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
+_label_get(void *data, Evas_Object *obj EINA_UNUSED, const char *pr EINA_UNUSED)
 {
    if (!pr) return strdup(" ");
    if (!strcmp(pr, "combination.text"))
@@ -461,7 +486,6 @@ _label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
    else if (!strcmp(pr, "description.text"))
      {
         Shortcut_Data *sc = (Shortcut_Data *)data;
-        return strdup(sc->description);
         return  sc->description != NULL ? strdup(sc->description) : strdup("NONE");
      }
    else if (!strcmp(pr, "elm.text"))
@@ -472,7 +496,7 @@ _label_get(void *data, Evas_Object *obj __UNUSED__, const char *pr __UNUSED__)
 }
 
 static Evas_Object *
-_content_get(void *data __UNUSED__, Evas_Object *obj, const char *pr __UNUSED__)
+_content_get(void *data EINA_UNUSED, Evas_Object *obj, const char *pr EINA_UNUSED)
 {
    if (!pr) return NULL;
 
@@ -547,7 +571,7 @@ static const Shortcut_Data popup_hotkeys[] = {
 };
 
 static Evas_Object *
-_shortcuts_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_focus __UNUSED__)
+_shortcuts_window_content_get(void *data, Evas_Object *popup EINA_UNUSED, Evas_Object **to_focus EINA_UNUSED)
 {
    Evas_Object *box = data;
    Evas_Object *genlist = elm_genlist_add(ap.win);
@@ -609,13 +633,11 @@ _shortcuts_window_content_get(void *data, Evas_Object *popup, Evas_Object **to_f
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
-
    Evas_Object *layout = elm_layout_add(ap.win);
    elm_layout_theme_set(layout, "layout", "shortcuts", "default");
    elm_layout_content_set(layout, "elm.swallow.content", genlist);
    evas_object_show(layout);
    elm_box_pack_end(box, layout);
-
    elm_object_style_set(popup, "shortcuts");
    return box;
 }

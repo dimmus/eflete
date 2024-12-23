@@ -1,6 +1,32 @@
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
+
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "main_window.h"
 #include "validator.h"
@@ -43,7 +69,7 @@ static Colorclasses_Manager mng;
 static void
 _validation(void *data,
             Evas_Object *obj,
-            void *event_info __UNUSED__)
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
 
@@ -62,7 +88,7 @@ _validation(void *data,
 }
 
 static Evas_Object *
-_add_colorclass_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+_add_colorclass_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item = NULL;
 
@@ -81,7 +107,7 @@ _add_colorclass_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Obje
 
 static void
 _colorclass_add_popup_close_cb(void *data,
-                               Evas_Object *obj __UNUSED__,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
@@ -114,8 +140,8 @@ _colorclass_add_popup_close_cb(void *data,
 
 static void
 _colorclass_add_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
    mng.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
@@ -125,9 +151,9 @@ _colorclass_add_cb(void *data,
 }
 
 static void
-_colorclass_del_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_colorclass_del_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    Attribute attribute = ATTRIBUTE_STATE_COLOR_CLASS;
 
@@ -180,17 +206,17 @@ _colorclass_del_cb(void *data __UNUSED__,
 
 /* Callback on colorclass (un)selection in list */
 static void
-_on_unselected(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_on_unselected(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    elm_object_disabled_set(mng.del_button, EINA_TRUE);
    evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
 }
 
 static void
-_on_selected(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
+_on_selected(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
@@ -229,7 +255,7 @@ _manager_search_field_create(Evas_Object *parent)
 
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    Evas_Object *icon;
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -239,17 +265,17 @@ _manager_search_field_create(Evas_Object *parent)
    return entry;
 }
 static void
-_search_changed(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_search_changed(void *data EINA_UNUSED,
+                Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    _genlist_item_search(mng.genlist, &(mng.style_search_data),
                         mng.style_search_data.last_item_found);
 }
 static void
-_search_nxt_gd_item(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_search_nxt_gd_item(void *data EINA_UNUSED,
+                    Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *start_from = NULL;
 
@@ -261,8 +287,8 @@ _search_nxt_gd_item(void *data __UNUSED__,
 
 static void
 _search_reset_cb(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    Search_Data *search_data = data;
 
@@ -273,15 +299,15 @@ _search_reset_cb(void *data,
 
 static char *
 _item_ccl_label_get(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    const char *part __UNUSED__)
+                    Evas_Object *obj EINA_UNUSED,
+                    const char *part EINA_UNUSED)
 {
    Colorclass_Item *ccl_it = (Colorclass_Item *)data;
    return strdup(ccl_it->name);
 }
 static void
 _item_ccl_del(void *data,
-                    Evas_Object *obj __UNUSED__)
+                    Evas_Object *obj EINA_UNUSED)
 {
    Colorclass_Item *ccl_it = (Colorclass_Item *)data;
    eina_stringshare_del(ccl_it->name);
@@ -293,7 +319,7 @@ _item_ccl_del(void *data,
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
-       void *event_info __UNUSED__)
+       void *event_info EINA_UNUSED)
 {
    Bg_Preview bg_mode;
    const char *signal = NULL;
@@ -338,9 +364,9 @@ _radio_switcher_add(Evas_Object *obj,
 #endif
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -350,9 +376,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -418,7 +444,7 @@ colorclass_manager_add(void)
    mw_title_set(mng.win, _("Color class manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "color");
 #else

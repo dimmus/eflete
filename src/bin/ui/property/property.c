@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "property.h"
 #include "property_private.h"
 #include "property_common.h"
@@ -39,6 +58,7 @@ property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item
    Eina_List *subitems;
 
    assert(pa != NULL);
+   assert(pd->genlist != NULL);
    assert(pd->item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
 
    /* item is already added */
@@ -64,8 +84,8 @@ property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -73,8 +93,8 @@ _expand_request_cb(void *data __UNUSED__,
 }
 
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -82,7 +102,7 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_expanded_cb(void *data __UNUSED__,
+_expanded_cb(void *data EINA_UNUSED,
              Evas_Object *obj,
              void *event_info)
 {
@@ -99,8 +119,8 @@ _expanded_cb(void *data __UNUSED__,
 }
 
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -113,8 +133,8 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_realized_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+_realized_cb(void *data EINA_UNUSED,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -129,7 +149,7 @@ _realized_cb(void *data __UNUSED__,
 
 static void
 _unrealized_cb(void *data,
-               Evas_Object *o __UNUSED__,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Property_Data *pd = data;
@@ -161,9 +181,9 @@ _unrealized_cb(void *data,
 
 static void
 _property_del(void *data,
-              Evas *e __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+              Evas *e EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Property_Data *pd = (Property_Data *)data;
 
@@ -193,7 +213,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    property_common_itc_init(pd);
 
    pd->layout = elm_layout_add(parent);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    Evas_Object *icon;
    switch (mode)
      {

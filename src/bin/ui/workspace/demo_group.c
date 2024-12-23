@@ -1,4 +1,21 @@
-
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 #include "demo_group.h"
 #include "main_window.h"
 #include "history.h"
@@ -32,7 +49,7 @@ _program_item_del(Elm_Object_Item *pl, Demo_Signal *part);
 #define CAPTION_GENLIST_ITEM_TEXT_GET(TYPE, TITLE) \
 static char * \
 _##TYPE##_label_cb(void *data, \
-                   Evas_Object *obj __UNUSED__, \
+                   Evas_Object *obj EINA_UNUSED, \
                    const char *part) \
 { \
    assert(data != NULL); \
@@ -53,8 +70,8 @@ CAPTION_GENLIST_ITEM_TEXT_GET(signal, "Signals")
 
 static char *
 _part_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                const char *pr EINA_UNUSED)
 {
    Demo_Part *part = data;
 
@@ -65,8 +82,8 @@ _part_label_get(void *data,
 }
 static char *
 _sig_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
+                Evas_Object *obj EINA_UNUSED,
+                const char *pr EINA_UNUSED)
 {
    Demo_Signal *prog = data;
 
@@ -77,24 +94,24 @@ _sig_label_get(void *data,
 }
 
 static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *o __UNUSED__,
+_expand_request_cb(void *data EINA_UNUSED,
+                   Evas_Object *o EINA_UNUSED,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *o __UNUSED__,
+_contract_request_cb(void *data EINA_UNUSED,
+                     Evas_Object *o EINA_UNUSED,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 static void
-_contracted_cb(void *data __UNUSED__,
-               Evas_Object *o __UNUSED__,
+_contracted_cb(void *data EINA_UNUSED,
+               Evas_Object *o EINA_UNUSED,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -102,7 +119,7 @@ _contracted_cb(void *data __UNUSED__,
 }
 static void
 _expanded_cb(void *data,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -157,7 +174,7 @@ _expanded_cb(void *data,
 }
 static void
 _selected_cb(void *data,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *o EINA_UNUSED,
              void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info, *plit;
@@ -186,8 +203,8 @@ _selected_cb(void *data,
 
 static void
 _clicked_cb(void *data,
-            Evas_Object *o __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *o EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Demo_Signal *signal = (Demo_Signal *)data;
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SIGNAL_SEND, signal);
@@ -209,9 +226,9 @@ _content_get(void *data,
    return button;
 }
 
-void
+static void
 _program_add(void *data,
-             Evas_Object *obj __UNUSED__,
+             Evas_Object *obj EINA_UNUSED,
              void *ei)
 {
    Part_Demo_List *pl = data;
@@ -299,7 +316,7 @@ _program_add(void *data,
 
 static void
 _part_renamed(void *data,
-              Evas_Object *obj __UNUSED__,
+              Evas_Object *obj EINA_UNUSED,
               void *ei)
 {
    Rename *ren = ei;

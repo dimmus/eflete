@@ -1,7 +1,6 @@
 #!/bin/bash
 
 NEWS_FILE=NEWS.new
-CONFIGURE=configure.ac
 
 function line_print {
 	eval "printf '%.0s$2' {1..$1}"
@@ -84,12 +83,12 @@ function commit_NEWS {
 	git log -1
 }
 
-function commit_VERSION {
-	git add $CONFIGURE
-	git commit -m "Update configure for version $1"
-	echo -e ""
-	git log -1
-}
+# function commit_VERSION {
+# 	git add $CONFIGURE
+# 	git commit -m "Update configure for version $1"
+# 	echo -e ""
+# 	git log -1
+# }
 
 function spinner {
 	PID="$1"
@@ -103,8 +102,8 @@ function spinner {
 
 function check_build {
 	git clean -dxf > /tmp/git_clean.log
-	./autogen.sh
-	make
+	meson . build
+	ninja -C build
 	if [ $? -ne 0 ]; then
 		echo -e ""
 		echo -e "ERROR: Build is failsed."
@@ -114,46 +113,46 @@ function check_build {
 	echo -e ">>> Build success"
 }
 
-function check_UTC {
-	make check
+function check_test {
+	meson test -C build -t 2
 	if [ $? -ne 0 ]; then
 		echo -e ""
 		echo -e "ERROR: Build is failsed."
 		exit 1;
 	fi
 
-	echo -e ">>> UTC success"
+	echo -e ">>> Tests success"
 }
 
-function update_version {
-	echo -e ""
-	echo -e ">>> Update version in configure file"
-	oldIFS="$IFS"
-	IFS='.'
-	array=( $1 )
-	major="${array[0]}"
-	minor="${array[1]}"
-	micra="${array[*]:2}"
-	IFS="$oldIFS"
+# function update_version {
+# 	echo -e ""
+# 	echo -e ">>> Update version in configure file"
+# 	oldIFS="$IFS"
+# 	IFS='.'
+# 	array=( $1 )
+# 	major="${array[0]}"
+# 	minor="${array[1]}"
+# 	micra="${array[*]:2}"
+# 	IFS="$oldIFS"
 
-	sed "1s/.*/EFLETE_VERSION([$major], [$minor], [$micra], [release])/g" $CONFIGURE > "$CONFIGURE.new"
-	mv "$CONFIGURE.new" $CONFIGURE
+# 	sed "1s/.*/EFLETE_VERSION([$major], [$minor], [$micra], [release])/g" $CONFIGURE > "$CONFIGURE.new"
+# 	mv "$CONFIGURE.new" $CONFIGURE
 
-	echo -e ""
-	head $CONFIGURE
-	echo -e ""
-	read -p "Do you want to edit $CONFIGURE? [Y/n] " choice
-	case "$choice" in
-		y|Y ) vim $CONFIGURE ;;
-		* ) ;;
-	esac
+# 	echo -e ""
+# 	head $CONFIGURE
+# 	echo -e ""
+# 	read -p "Do you want to edit $CONFIGURE? [Y/n] " choice
+# 	case "$choice" in
+# 		y|Y ) vim $CONFIGURE ;;
+# 		* ) ;;
+# 	esac
 	
-	read -p "Do you want to commit the updated version? [Y/n] " choice
-	case "$choice" in
-		y|Y ) commit_VERSION $1 ;;
-		* ) ;;
-	esac
-}
+# 	read -p "Do you want to commit the updated version? [Y/n] " choice
+# 	case "$choice" in
+# 		y|Y ) commit_VERSION $1 ;;
+# 		* ) ;;
+# 	esac
+# }
 
 function create_tag {
 	git tag -a "$1" -m "v$1"
@@ -166,8 +165,8 @@ function create_tarballs {
 	fi
 	mkdir -p $path
 	echo -e $path
-	make dist
-	mv eflete-$1* $path
+	ninja -C build dist
+	mv build/meson-dist/eflete-$1* $path
 	cd $path
 	md5sum * > "eflete-$1.md5sum"
 }
@@ -181,9 +180,9 @@ if [ -z $1 ]; then
 	exit 1
 fi
 
-update_news $1
-update_version $1
+# update_news $1
+# update_version $1
 create_tag
 check_build
-check_UTC
+check_test
 create_tarballs $1

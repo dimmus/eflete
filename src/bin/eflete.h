@@ -1,3 +1,22 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #ifndef EFLETE_H
 #define EFLETE_H
 
@@ -15,7 +34,7 @@
 
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#endif
 
 #include <assert.h>
 #include <stdbool.h>
@@ -72,7 +91,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #pragma GCC poison elm_object_item_part_text_get
 
 #include <Elementary.h>
-#include <elm_entry_eo.h> // to use ELM_ENTRY_EVENT_VALIDATE in ui/style_manager.c
+#include <elm_entry_eo.h> /* to use ELM_ENTRY_EVENT_VALIDATE in ui/style_manager.c */
 
 #include "logger.h"
 #include "string_common.h"
@@ -143,7 +162,8 @@ struct _App_Data
  *
  */
 typedef struct _App_Data App_Data;
-EAPI_MAIN int elm_main();
+
+EAPI_MAIN int elm_main(int argc, char **argv);
 
 /* The global Eflete_Data */
 extern App_Data ap;
@@ -189,8 +209,8 @@ hack_spinner_add(Evas_Object *parent);
 void
 hack_spinner_value_set(Evas_Object *spinner, double val);
 /* saving function pointers to use later in tizen_hack* functions to avoid infonote recursion on call */
-static void (* _elm_spinner_value_set)(Evas_Object *, double) __UNUSED__ = elm_spinner_value_set;
-static Evas_Object * (* _elm_spinner_add)(Evas_Object *)  __UNUSED__ = elm_spinner_add;
+static void (* _elm_spinner_value_set)(Evas_Object *, double) EINA_UNUSED = elm_spinner_value_set;
+static Evas_Object * (* _elm_spinner_add)(Evas_Object *)  EINA_UNUSED = elm_spinner_add;
 /* replacing functions with hack-version */
 #define elm_spinner_value_set    hack_spinner_value_set
 #define elm_spinner_add          hack_spinner_add

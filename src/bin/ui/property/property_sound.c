@@ -1,8 +1,25 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2016 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "property.h"
 #include "property_private.h"
 #include "sound_player.h"
-#include "main_window.h"
-#include "project_manager2.h"
 
 #define SOUND_MASK(TYPE) (1u << TYPE)
 #define SOUND_SAMPLE SOUND_MASK(SOUND_TYPE_SAMPLE)
@@ -216,7 +233,7 @@ _filter_cb(Property_Attribute *pa)
 }
 
 static void
-_init_items()
+_init_items(void)
 {
    Property_Sound_Item it;
 #define IT sound_pd.items[it]
@@ -287,7 +304,7 @@ _init_items()
 
 static void
 _on_grid_clicked(void *data,
-                     Evas_Object *obj __UNUSED__,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    Property_Data *pd = data;
@@ -329,7 +346,7 @@ property_sound_manager_init(Property_Data *pd)
 }
 
 Eina_List *
-property_sound_manager_items_get()
+property_sound_manager_items_get(void)
 {
    Eina_List *items = NULL;
 

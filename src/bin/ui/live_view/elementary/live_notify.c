@@ -1,8 +1,27 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_elementary_widgets.h"
 
 static void
 _on_notify_swallow_check(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
@@ -43,7 +62,7 @@ _on_notify_swallow_check(void *data,
 }
 
 static void
-_notify_send_signal(void *data __UNUSED__,
+_notify_send_signal(void *data EINA_UNUSED,
                     Evas_Object *obj,
                     void *ei)
 {
@@ -117,8 +136,8 @@ _notify_orient_get(const char *class, double *horizontal, double *vertical)
 
 static void
 _on_click(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+          Evas_Object *obj EINA_UNUSED,
+          void *event_info EINA_UNUSED)
 {
    Evas_Object *notify = data;
 

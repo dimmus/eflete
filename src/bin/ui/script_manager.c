@@ -1,14 +1,37 @@
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2017 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
+
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
+
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "modal_window.h"
-#include "property.h"
 #include "property_private.h"
 #include "history.h"
 #include "change.h"
-#include "syntax_color.h"
-#include "eflete.h"
 
 typedef struct _Script_Manager Script_Manager;
 
@@ -27,9 +50,9 @@ struct _Script_Manager
 static Script_Manager mng;
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -39,9 +62,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -52,8 +75,8 @@ _mw_done_cb(void *data __UNUSED__,
 
 static void
 _btn_save_cb(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Resource2 *res = data;
    Eina_Stringshare *code;
@@ -137,7 +160,7 @@ script_manager_add(Resource2 *res)
    mw_title_set(mng.win, _("Script manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "code2");
 #else

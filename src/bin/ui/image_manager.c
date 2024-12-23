@@ -1,8 +1,32 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+#ifndef EO_BETA_API
+# define EO_BETA_API
+#endif
 
-#define EO_BETA_API
-#define EFL_BETA_API_SUPPORT
-#define EFL_EO_API_SUPPORT
+#ifndef EFL_BETA_API_SUPPORT
+# define EFL_BETA_API_SUPPORT
+#endif
 
+#ifndef EFL_EO_API_SUPPORT
+# define EFL_EO_API_SUPPORT
+#endif
 
 #include "main_window.h"
 #include "project_manager2.h"
@@ -67,7 +91,7 @@ struct _Image_Manager
    Elm_Object_Item *vector_header;
 };
 
-static Eina_Bool _on_image_done(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info);
+static Eina_Bool _on_image_done(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
 static void _image_info_setup(const Image_Item* it);
 
 static Image_Manager mng;
@@ -78,7 +102,7 @@ static Elm_Gengrid_Item_Class *gic_set = NULL;
 
 static char *
 _grid_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj EINA_UNUSED,
                 const char  *part)
 {
    const Image_Item *it = data;
@@ -101,8 +125,8 @@ _grid_label_get(void *data,
 
 static char *
 _grid_vector_label_get(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char  *part __UNUSED__)
+                       Evas_Object *obj EINA_UNUSED,
+                       const char  *part EINA_UNUSED)
 {
    const Eina_Stringshare *vector_name = data;
 
@@ -201,8 +225,8 @@ _grid_content_get(void *data,
 
 static void
 _grid_image_set_image_sel(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
 {
    Image_Item *it = (Image_Item *)data;
 
@@ -213,7 +237,7 @@ _grid_image_set_image_sel(void *data,
 
 static Eina_Bool
 _on_image_set_image_done(void *data,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    const Eina_List *images = NULL, *l = NULL;
@@ -243,10 +267,10 @@ _on_image_set_image_done(void *data,
 
 static void
 _image_set_image_add(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    popup_fileselector_image_helper(_("Add new image into set"),
                                    NULL,
                                    NULL,
@@ -266,9 +290,9 @@ _image_set_image_add(void *data,
 }
 
 static void
-_image_set_image_del(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+_image_set_image_del(void *data EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    Image_Item *image_set = (Image_Item *)data;
    Image_Item *image = NULL;
@@ -438,7 +462,7 @@ empty_content:
 /* deletion callback */
 static void
 _grid_vector_del(void *data,
-                 Evas_Object *obj __UNUSED__)
+                 Evas_Object *obj EINA_UNUSED)
 {
    Eina_Stringshare *vector_name = data;
 
@@ -449,7 +473,7 @@ _grid_vector_del(void *data,
 
 static void
 _grid_del(void *data,
-          Evas_Object *obj __UNUSED__)
+          Evas_Object *obj EINA_UNUSED)
 {
    Image_Item *it = data;
 
@@ -462,15 +486,15 @@ _grid_del(void *data,
 
 static char *
 _grid_group_label_get(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      const char  *part __UNUSED__)
+                      Evas_Object *obj EINA_UNUSED,
+                      const char  *part EINA_UNUSED)
 {
    return strdup(data);
 }
 
 static void
 _grid_group_del(void *data,
-                Evas_Object *obj __UNUSED__)
+                Evas_Object *obj EINA_UNUSED)
 {
    eina_stringshare_del(data);
 }
@@ -494,9 +518,9 @@ _image_info_setup(const Image_Item* it)
 
 /* item selection change callback */
 static void
-_grid_sel_cb(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_grid_sel_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    Image_Item *item = NULL;
    Eina_List *l;
@@ -613,14 +637,13 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 }
 
 static Eina_Bool
-_on_image_done(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
+_on_image_done(void *data EINA_UNUSED,
+               Evas_Object *obj EINA_UNUSED,
                void *event_info)
 {
    Image_Item *it = NULL;
    const Eina_List *images, *l;
    const char *selected;
-   Uns_List *image = NULL;
    const char *file_name;
    Evas_Object *img;
    Eina_Stringshare *res_path;
@@ -650,7 +673,6 @@ _on_image_done(void *data __UNUSED__,
         else
           {
              ERR(_("File exist"));
-             free(image);
              eina_stringshare_del(res_path);
              continue;
           }
@@ -679,10 +701,10 @@ _on_image_done(void *data __UNUSED__,
 static void
 _new_image_add_cb(void *data,
               Evas_Object *obj,
-              void *event_info __UNUSED__)
+              void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    popup_fileselector_image_helper(_("Choose image"),
                                    NULL,
                                    NULL,
@@ -702,17 +724,17 @@ _new_image_add_cb(void *data,
 }
 
 static void
-_menu_dismissed_cb(void *data __UNUSED__,
+_menu_dismissed_cb(void *data EINA_UNUSED,
                    Evas_Object *obj,
-                   void *event_info __UNUSED__)
+                   void *event_info EINA_UNUSED)
 {
    shortcuts_object_check_pop(obj);
 }
 
 static void
-_menu_dismiss_cb(void *data __UNUSED__,
+_menu_dismiss_cb(void *data EINA_UNUSED,
                  Evas_Object *obj,
-                 void *event_info __UNUSED__)
+                 void *event_info EINA_UNUSED)
 {
    elm_menu_close(obj);
    shortcuts_object_check_pop(obj);
@@ -722,8 +744,8 @@ _menu_dismiss_cb(void *data __UNUSED__,
 
 static void
 _validation(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *popup = data;
    Eina_Bool validate = EINA_FALSE;
@@ -764,8 +786,8 @@ _image_set_add(void)
 }
 
 static void
-_image_set_add_popup_close_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_image_set_add_popup_close_cb(void *data EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    Popup_Button btn_res = (Popup_Button) event_info;
@@ -778,8 +800,8 @@ _image_set_add_popup_close_cb(void *data __UNUSED__,
 }
 
 
-Evas_Object *
-_add_image_set_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Object **to_focus)
+static Evas_Object *
+_add_image_set_content_get(void *data EINA_UNUSED, Evas_Object *popup, Evas_Object **to_focus)
 {
    Evas_Object *item, *box;
 
@@ -802,9 +824,9 @@ _add_image_set_content_get(void *data __UNUSED__, Evas_Object *popup, Evas_Objec
 }
 
 static void
-_new_image_set_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_new_image_set_add_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *popup;
 
@@ -819,9 +841,9 @@ _new_image_set_add_cb(void *data __UNUSED__,
 }
 
 static void
-_image_add_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_image_add_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Coord x, y, h;
 
@@ -833,9 +855,9 @@ _image_add_cb(void *data __UNUSED__,
 }
 
 static void
-_image_del_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_image_del_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *grid_item = NULL;
    Image_Item *it = NULL;
@@ -882,18 +904,18 @@ _image_del_cb(void *data __UNUSED__,
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
-_entry_changed_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_entry_changed_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    _gengrid_item_search(mng.gengrid, &(mng.image_search_data),
                         mng.image_search_data.last_item_found);
 }
 
 static void
-_find_next_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_find_next_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Elm_Object_Item *start_from = NULL;
 
@@ -912,7 +934,7 @@ _image_manager_search_field_create(Evas_Object *parent)
 
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    Evas_Object *icon;
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -1000,9 +1022,9 @@ _image_manager_init(void)
 }
 
 static void
-_mw_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_mw_cancel_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -1012,9 +1034,9 @@ _mw_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_mw_done_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_mw_done_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
 {
    Evas_Object *content;
 
@@ -1024,9 +1046,9 @@ _mw_done_cb(void *data __UNUSED__,
 }
 
 static void
-_project_closed_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_project_closed_cb(void *data EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    evas_object_del(mng.image);
    elm_gengrid_clear(mng.gengrid);
@@ -1043,7 +1065,7 @@ image_manager_add(void)
    mw_title_set(mng.win, _("Image manager"));
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.cancel, _mw_cancel_cb, NULL);
    evas_object_smart_callback_add(mng.win, signals.eflete.modal_window.done, _mw_done_cb, NULL);
-#if !HAVE_TIZEN
+#ifndef HAVE_TIZEN
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "image2");
 #else

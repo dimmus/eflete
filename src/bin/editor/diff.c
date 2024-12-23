@@ -383,13 +383,6 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_suius.s1);
          break;
       case FUNCTION_TYPE_STRING_STRING_STRING:
-         eina_stringshare_del(diff->redo.args.type_sss.s1);
-         eina_stringshare_del(diff->redo.args.type_sss.s2);
-         eina_stringshare_del(diff->redo.args.type_sss.s3);
-         eina_stringshare_ref(new_diff->redo.args.type_sss.s1);
-         eina_stringshare_ref(new_diff->redo.args.type_sss.s2);
-         eina_stringshare_ref(new_diff->redo.args.type_sss.s3);
-         break;
       case FUNCTION_TYPE_STRING_STRING_STRING_UINT:
          eina_stringshare_del(diff->redo.args.type_sss.s1);
          eina_stringshare_del(diff->redo.args.type_sss.s2);
@@ -555,10 +548,6 @@ diff_free(Diff *diff)
          eina_stringshare_del(diff->redo.args.type_suius.s1);
          break;
       case FUNCTION_TYPE_STRING_STRING_STRING:
-         eina_stringshare_del(diff->redo.args.type_sss.s1);
-         eina_stringshare_del(diff->redo.args.type_sss.s2);
-         eina_stringshare_del(diff->redo.args.type_sss.s3);
-         break;
       case FUNCTION_TYPE_STRING_STRING_STRING_UINT:
          eina_stringshare_del(diff->redo.args.type_sss.s1);
          eina_stringshare_del(diff->redo.args.type_sss.s2);

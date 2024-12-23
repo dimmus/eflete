@@ -1,5 +1,24 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#include "main_window.h" /* strlen_safe */
 #include "shortcuts.h"
-#include "main_window.h" // strlen_safe
 #include "config.h"
 static Eina_List *handlers_stack = NULL;
 
@@ -197,7 +216,7 @@ _shortcut_handle(Shortcut_Type type)
 }
 
 static Eina_Bool
-_mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_mouse_wheel_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev = event;
 
@@ -216,7 +235,7 @@ _mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_key_press_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
@@ -306,7 +325,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_key_unpress_event_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    Shortcut sc, *shortcut;
@@ -371,9 +390,9 @@ _key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static void
-_win_unfocused_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_win_unfocused_cb(void *data EINA_UNUSED,
+                  Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    Shortcut *shortcut;
 
@@ -427,10 +446,10 @@ _add_shortcut(Shortcut_Type type_press,
 }
 
 static void
-_default_shortcuts_add()
+_default_shortcuts_add(void)
 {
    assert(ap.shortcuts != NULL);
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
    _add_shortcut(SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
                  MOD_ALT, 70, "F4" /*q*/);
 #else
@@ -544,7 +563,7 @@ _default_shortcuts_add()
 /*               PUBLIC API                    */
 /*=============================================*/
 Eina_Bool
-shortcuts_profile_load(Profile *profile __UNUSED__)
+shortcuts_profile_load(Profile *profile EINA_UNUSED)
 {
    return false;
 }
@@ -703,7 +722,7 @@ shortcuts_disabled_set(Eina_Bool disabled)
 }
 
 void
-shortcuts_shortcut_reset()
+shortcuts_shortcut_reset(void)
 {
    assert(ap.shortcuts != NULL);
    Eina_List *l = NULL, *ln = NULL;
@@ -715,7 +734,7 @@ shortcuts_shortcut_reset()
         ap.shortcuts->shortcuts = eina_list_remove_list(ap.shortcuts->shortcuts, l);
         switch (shortcut->type_press)
           {
-#if HAVE_TIZEN
+#ifdef HAVE_TIZEN
            case SHORTCUT_TYPE_QUIT:
               shortcut->modifiers =  MOD_ALT;
               shortcut->keycode = 70;

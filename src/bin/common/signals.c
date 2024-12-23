@@ -1,4 +1,3 @@
-#include "history.h"
 #include "signals.h"
 
 const Signals signals = {

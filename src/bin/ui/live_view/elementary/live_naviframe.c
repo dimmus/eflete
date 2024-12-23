@@ -1,9 +1,28 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_elementary_widgets.h"
 
 static const char *item_style_name = NULL;
 
 static void
-_pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_pop_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = data;
 
@@ -13,7 +32,7 @@ _pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED_
 }
 
 static void
-_next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_next_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = (Evas_Object *)data, *bt;
 
@@ -27,7 +46,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 }
 
 static void
-_prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_prev_page_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *nf = (Evas_Object *)data, *bt;
 
@@ -41,7 +60,7 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 }
 
 static void
-_on_naviframe_swallow_check(void *data __UNUSED__,
+_on_naviframe_swallow_check(void *data EINA_UNUSED,
                             Evas_Object *obj,
                             void *ei)
 {
@@ -99,7 +118,7 @@ _on_naviframe_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_naviframe_text_check(void *data __UNUSED__,
+_on_naviframe_text_check(void *data EINA_UNUSED,
                          Evas_Object *obj,
                          void *ei)
 {
@@ -116,7 +135,7 @@ _on_naviframe_text_check(void *data __UNUSED__,
 }
 
 static void
-_naviframe_send_signal(void *data __UNUSED__,
+_naviframe_send_signal(void *data EINA_UNUSED,
                        Evas_Object *obj,
                        void *ei)
 {
