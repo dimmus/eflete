@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: 2023-01-29 22:00+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/"
-">\n"
+"PO-Revision-Date: 2025-01-20 14:00+0000\n"
+"Last-Translator: Philippe Jean Guillaumie <batden@sfr.fr>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 "X-Launchpad-Export-Date: 2014-08-25 07:02+0000\n"
 
 #: src/bin/common/common_macro.h:63
 msgid "Last saved: %d %b %Y %H:%M"
-msgstr ""
+msgstr "Dernière sauvegarde : %d %b %Y %H:%M"
 
 #: src/bin/main.c:47
 #, c-format
@@ -257,7 +257,7 @@ msgstr "L'initialisation du gestionnaire de classes de couleur a échoué"
 
 #: src/bin/ui/image_manager.c:255
 msgid "Unable to add a folder"
-msgstr "Impossible d'ajouter un fichier"
+msgstr "Ajout de dossier impossible"
 
 #: src/bin/ui/image_manager.c:274
 msgid "Add new image into set"
@@ -318,6 +318,8 @@ msgstr "Ensemble d'images"
 #: src/bin/ui/live_view/demo.c:35 src/bin/ui/live_view/demo.c:48
 msgid "Widget live view isn't implemented yet. Using fallback to layout"
 msgstr ""
+"L'aperçu en direct du widget n'est pas encore implémenté. Utilisation de la "
+"compostion de repli"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:190
 msgid "Click to show vertical ctxpopup with icons and labels (3 items)"
@@ -778,7 +780,7 @@ msgstr "Annuler"
 
 #: src/bin/ui/popup.c:170
 msgid "Replace"
-msgstr ""
+msgstr "Remplacer"
 
 #: src/bin/ui/popup.c:171
 #, fuzzy
@@ -824,12 +826,12 @@ msgstr "Fermeture du projet"
 #: src/bin/ui/project_common.c:40
 #, c-format
 msgid "Haven't permision to overwrite '%s' in '%s'"
-msgstr ""
+msgstr "Permission non accordée pour écraser « %s » dans « %s »"
 
 #: src/bin/ui/project_common.c:98
 #, c-format
 msgid "Haven't permision to write '%s'"
-msgstr ""
+msgstr "Pas de permission en écriture pour « %s »"
 
 #: src/bin/ui/project_common.c:157
 #, fuzzy, c-format
@@ -843,7 +845,7 @@ msgstr "Ouvrir un projet"
 
 #: src/bin/ui/project_export.c:94 src/bin/ui/project_export.c:175
 msgid "Please type in actual .edj file"
-msgstr ""
+msgstr "Veuillez saisir le fichier .edj actuel"
 
 #: src/bin/ui/project_export.c:95 src/bin/ui/project_export.c:109
 #: src/bin/ui/project_export.c:176 src/bin/ui/project_export.c:266
@@ -857,6 +859,8 @@ msgid ""
 "<font_size=16>A project file '%s' already exist.Do you want to replace it?</"
 "font_size>"
 msgstr ""
+"<font_size=16>Un fichier de projet « %s » existe déjà. Voulez-vous le "
+"remplacer?</font_size>"
 
 #: src/bin/ui/project_export.c:145
 #, fuzzy
@@ -874,6 +878,8 @@ msgid ""
 "<font_size=16>A project folder '%s' already exist.Do you want to replace it?"
 "</font_size>"
 msgstr ""
+"<font_size=16>Un dossier de projet « %s » existe déjà. Voulez-vous le "
+"remplacer ?</font_size>"
 
 #: src/bin/ui/project_export.c:301
 #, fuzzy
@@ -886,6 +892,8 @@ msgid ""
 "<font_size=16>A project file '%s/%s' already exist.Do you want to replace it?"
 "</font_size>"
 msgstr ""
+"<font_size=16>Un fichier de projet « %s/%s » existe déjà. Voulez-vous le "
+"remplacer ?</font_size>"
 
 #: src/bin/ui/project_export.c:343
 #, fuzzy
@@ -990,7 +998,7 @@ msgstr "Fournit un nom descriptif pour l'effet de la classe de couleur"
 
 #: src/bin/ui/property/property_dummy.c:174
 msgid "default 0.0"
-msgstr ""
+msgstr "par défaut 0.0"
 
 #: src/bin/ui/property/property_dummy.c:208
 #, fuzzy
@@ -1037,7 +1045,7 @@ msgstr "Élément"
 
 #: src/bin/ui/property/property_dummy.c:226
 msgid "Item 3_1 with dynamic subitems"
-msgstr ""
+msgstr "Élément 3_1 avec sous-éléments dynamiques"
 
 #: src/bin/ui/property/property_dummy.c:230
 #, fuzzy
@@ -1061,7 +1069,7 @@ msgstr "Élément"
 
 #: src/bin/ui/property/property_dummy.c:244
 msgid "comb"
-msgstr ""
+msgstr "comb"
 
 #: src/bin/ui/property/property_dummy.c:251
 #, fuzzy
@@ -1090,13 +1098,13 @@ msgstr "Agrandir"
 #: src/bin/ui/property/property_image.c:507
 #: src/bin/ui/property/property_image.c:508
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: src/bin/ui/property/property_dummy.c:255
 #: src/bin/ui/property/property_dummy.c:269
 #: src/bin/ui/property/property_dummy.c:320
 msgid "max"
-msgstr ""
+msgstr "max"
 
 #: src/bin/ui/property/property_dummy.c:259
 #, fuzzy
@@ -1131,19 +1139,19 @@ msgstr "Élément"
 
 #: src/bin/ui/property/property_dummy.c:306
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: src/bin/ui/property/property_dummy.c:309
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/bin/ui/property/property_dummy.c:318
 msgid "p1"
-msgstr ""
+msgstr "p1"
 
 #: src/bin/ui/property/property_dummy.c:321
 msgid "p2"
-msgstr ""
+msgstr "p2"
 
 #: src/bin/ui/property/property_group.c:1190
 msgid "< Style manager >"
@@ -3395,17 +3403,17 @@ msgstr ""
 
 #: src/bin/ui/property/property_image.c:65
 msgid "Set of images"
-msgstr ""
+msgstr "Ensemble d'images"
 
 #: src/bin/ui/property/property_image.c:72
 #: src/bin/ui/property/property_image.c:92
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: src/bin/ui/property/property_image.c:77
 #, c-format
 msgid "PNG image (%s)"
-msgstr ""
+msgstr "Image PNG (%s)"
 
 #: src/bin/ui/property/property_image.c:79
 #, fuzzy, c-format
@@ -3415,17 +3423,17 @@ msgstr "Ensemble d'images"
 #: src/bin/ui/property/property_image.c:84
 #, c-format
 msgid "JPEG image (%s)"
-msgstr ""
+msgstr "Image JPEG (%s)"
 
 #: src/bin/ui/property/property_image.c:86
 #, c-format
 msgid "BMP image (%s)"
-msgstr ""
+msgstr "Image BMP (%s)"
 
 #: src/bin/ui/property/property_image.c:89
 #, c-format
 msgid "TIFF image (%s)"
-msgstr ""
+msgstr "Image TIFF (%s)"
 
 #: src/bin/ui/property/property_image.c:432
 #, fuzzy
@@ -3434,7 +3442,7 @@ msgstr "Élément"
 
 #: src/bin/ui/property/property_image.c:444
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: src/bin/ui/property/property_image.c:449
 #, fuzzy
@@ -3443,11 +3451,11 @@ msgstr "Image"
 
 #: src/bin/ui/property/property_image.c:456
 msgid "Location"
-msgstr ""
+msgstr "Emplacement"
 
 #: src/bin/ui/property/property_image.c:461
 msgid "Image compression"
-msgstr ""
+msgstr "Compression de l'image"
 
 #: src/bin/ui/property/property_image.c:466
 #, fuzzy
@@ -3456,7 +3464,7 @@ msgstr "Collection d'images"
 
 #: src/bin/ui/property/property_image.c:471
 msgid "Width"
-msgstr ""
+msgstr "Largeur"
 
 #: src/bin/ui/property/property_image.c:476
 #, fuzzy
@@ -3470,11 +3478,11 @@ msgstr "Ajouter nouvelle image dans l'ensemble"
 
 #: src/bin/ui/property/property_image.c:488
 msgid "Border"
-msgstr ""
+msgstr "Bordure"
 
 #: src/bin/ui/property/property_image.c:489
 msgid "left:"
-msgstr ""
+msgstr "gauche :"
 
 #: src/bin/ui/property/property_image.c:490
 #, fuzzy
@@ -3483,20 +3491,20 @@ msgstr "Droite"
 
 #: src/bin/ui/property/property_image.c:495
 msgid "top:"
-msgstr ""
+msgstr "haut :"
 
 #: src/bin/ui/property/property_image.c:496
 msgid "bottom:"
-msgstr ""
+msgstr "bas :"
 
 #: src/bin/ui/property/property_image.c:500
 msgid "Minimum size"
-msgstr ""
+msgstr "Taille minimale"
 
 #: src/bin/ui/property/property_image.c:501
 #: src/bin/ui/property/property_image.c:507
 msgid "width:"
-msgstr ""
+msgstr "largeur :"
 
 #: src/bin/ui/property/property_image.c:502
 #: src/bin/ui/property/property_image.c:508
@@ -3506,7 +3514,7 @@ msgstr "Droite"
 
 #: src/bin/ui/property/property_image.c:506
 msgid "Maximum size"
-msgstr ""
+msgstr "Taille maximale"
 
 #: src/bin/ui/property/property_image.c:512
 #, fuzzy
@@ -3515,24 +3523,24 @@ msgstr "Les deux échelles"
 
 #: src/bin/ui/property/property_sound.c:38
 msgid "RAW"
-msgstr ""
+msgstr "RAW"
 
 #: src/bin/ui/property/property_sound.c:39
 msgid "COMP"
-msgstr ""
+msgstr "COMP"
 
 #: src/bin/ui/property/property_sound.c:40
 msgid "LOSSY"
-msgstr ""
+msgstr "LOSSY"
 
 #: src/bin/ui/property/property_sound.c:41
 msgid "AS_IS"
-msgstr ""
+msgstr "AS_IS"
 
 #: src/bin/ui/property/property_sound.c:111
 #, c-format
 msgid "%s Format Sound"
-msgstr ""
+msgstr "Format de son %s"
 
 #: src/bin/ui/property/property_textblock.c:1151
 msgid ""
@@ -3730,7 +3738,7 @@ msgstr "ERREUR : "
 
 #: src/bin/ui/script_manager.c:135
 msgid "SUCCESS!"
-msgstr ""
+msgstr "SUCCÈS !"
 
 #: src/bin/ui/script_manager.c:209
 #, fuzzy, c-format
@@ -3849,36 +3857,36 @@ msgstr "Balise"
 
 #: src/bin/ui/tab_home_common.c:33
 msgid "Version of file:"
-msgstr ""
+msgstr "Version du fichier :"
 
 #: src/bin/ui/tab_home_common.c:37
 msgid "Authors:"
-msgstr ""
+msgstr "Auteurs :"
 
 #: src/bin/ui/tab_home_common.c:41
 msgid "Licenses:"
-msgstr ""
+msgstr "Licences :"
 
 #: src/bin/ui/tab_home_common.c:45
 msgid "Comment:"
-msgstr ""
+msgstr "Commentaire :"
 
 #: src/bin/ui/tab_home_common.c:48 src/bin/ui/tab_home_import_edc.c:385
 #: src/bin/ui/tab_home_import_edj.c:416 src/bin/ui/tab_home_new.c:450
 msgid "Created with Eflete!"
-msgstr ""
+msgstr "Une création d'Eflete !"
 
 #: src/bin/ui/tab_home_common.c:69
 msgid "Meta data save"
-msgstr ""
+msgstr "Sauvegarde des métadonnées"
 
 #: src/bin/ui/tab_home_import_edc.c:189 src/bin/ui/tab_home_import_edc.c:554
 msgid "Images directories:"
-msgstr ""
+msgstr "Répertoires d'images :"
 
 #: src/bin/ui/tab_home_import_edc.c:197
 msgid "Fonts directories:"
-msgstr ""
+msgstr "Répertoires des polices :"
 
 #: src/bin/ui/tab_home_import_edc.c:205
 #, fuzzy
@@ -3912,10 +3920,13 @@ msgid ""
 "replace it?</font_size><br>The project folder '%s' already exist in '%s'. "
 "Replacing it will overwrite<b>all</b> contents."
 msgstr ""
+"<font_size=16>Un dossier de projet nommé « %s » existe déjà. Voulez-vous le "
+"remplacer ?</font_size><br>Le dossier du projet « %s » est situé dans « %s »"
+". Le remplacer va écraser <b>tout</b> son contenu."
 
 #: src/bin/ui/tab_home_import_edc.c:514
 msgid "Import"
-msgstr ""
+msgstr "Importer"
 
 #: src/bin/ui/tab_home_import_edc.c:526 src/bin/ui/tab_home_import_edj.c:580
 #: src/bin/ui/tab_home_new.c:638
@@ -3936,7 +3947,7 @@ msgstr "Importer fichier EDC"
 
 #: src/bin/ui/tab_home_import_edc.c:568
 msgid "Font directories:"
-msgstr ""
+msgstr "Répertoires de police :"
 
 #: src/bin/ui/tab_home_import_edc.c:582
 #, fuzzy
@@ -3960,10 +3971,13 @@ msgid ""
 "Do you want to replace it?<br>Replacing it will overwrite <b>all</b> "
 "contents.</wrap>"
 msgstr ""
+"<wrap=word>Un dossier de projet nommé <b>« %s »</b> existe déjà dans <b>« %s "
+"»</b>. Voulez-vous le remplacer ?<br>Le remplacer vas écraser <b>tout</b> "
+"son contenu.</wrap>"
 
 #: src/bin/ui/tab_home_import_edj.c:574 src/bin/ui/tab_home_new.c:632
 msgid "Create"
-msgstr ""
+msgstr "Créer"
 
 #: src/bin/ui/tab_home_import_edj.c:593
 #, fuzzy
@@ -3972,39 +3986,39 @@ msgstr "Importer fichier EDJ"
 
 #: src/bin/ui/tab_home_import_edj.c:608 src/bin/ui/tab_home_new.c:656
 msgid "Widgets:"
-msgstr ""
+msgstr "Widgets :"
 
 #: src/bin/ui/tab_home_import_edj.c:816 src/bin/ui/tab_home_new.c:726
 msgid "Following widgets were not found and ignored: "
-msgstr ""
+msgstr "Les widgets suivants sont introuvables et donc ignorés : "
 
 #: src/bin/ui/tab_home_new.c:232
 msgid "Scroller<br>"
-msgstr ""
+msgstr "Scroller<br>"
 
 #: src/bin/ui/tab_home_new.c:240
 msgid "Photocam<br>"
-msgstr ""
+msgstr "Photocam<br>"
 
 #: src/bin/ui/tab_home_new.c:247
 msgid "Genlist<br>"
-msgstr ""
+msgstr "Genlist<br>"
 
 #: src/bin/ui/tab_home_new.c:256
 msgid "Notify<br>"
-msgstr ""
+msgstr "Notify<br>"
 
 #: src/bin/ui/tab_home_new.c:263
 msgid "Button<br>"
-msgstr ""
+msgstr "Button<br>"
 
 #: src/bin/ui/tab_home_new.c:270
 msgid "List<br>"
-msgstr ""
+msgstr "List<br>"
 
 #: src/bin/ui/tab_home_new.c:277
 msgid "Label<br>"
-msgstr ""
+msgstr "Label<br>"
 
 #: src/bin/ui/tab_home_open.c:61
 msgid "Project open"
