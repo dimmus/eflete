@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: 2025-01-20 14:00+0000\n"
+"PO-Revision-Date: 2025-01-21 10:19+0000\n"
 "Last-Translator: Philippe Jean Guillaumie <batden@sfr.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/eflete/eflete/fr/>"
 "\n"
@@ -297,7 +297,7 @@ msgstr "Image"
 
 #: src/bin/ui/image_manager.c:987
 msgid "Image Set"
-msgstr "Ensemble d'images"
+msgstr "Ensemble des images"
 
 #: src/bin/ui/image_manager.c:1006
 msgid "Vectors"
@@ -674,7 +674,7 @@ msgstr "Modifier"
 
 #: src/bin/ui/menu.c:292 src/bin/ui/workspace/workspace.c:1059
 msgid "Undo"
-msgstr "Annuler"
+msgstr "Défaire"
 
 #: src/bin/ui/menu.c:293 src/bin/ui/workspace/workspace.c:1060
 msgid "Redo"
@@ -783,19 +783,16 @@ msgid "Replace"
 msgstr "Remplacer"
 
 #: src/bin/ui/popup.c:171
-#, fuzzy
 msgid "Don't save"
-msgstr "Enregistrement du projet"
+msgstr "Ne pas enregistrer"
 
 #: src/bin/ui/popup.c:173
-#, fuzzy
 msgid "Reset"
-msgstr "Rétablir le zoom"
+msgstr "Rétablir"
 
 #: src/bin/ui/popup.c:1338
-#, fuzzy
 msgid "<font_size=14>Import edc-file error"
-msgstr "Importer fichier EDC"
+msgstr "<font_size=14>Erreur d'importation du edc-file"
 
 #: src/bin/ui/project_close.c:48 src/bin/ui/project_close.c:86
 #: src/bin/ui/project_export.c:224
@@ -834,14 +831,13 @@ msgid "Haven't permision to write '%s'"
 msgstr "Pas de permission en écriture pour « %s »"
 
 #: src/bin/ui/project_common.c:157
-#, fuzzy, c-format
+#, c-format
 msgid "Project '%s' is opened."
-msgstr "Ouvrir un projet"
+msgstr "Le projet «%s» est ouvert."
 
 #: src/bin/ui/project_common.c:192
-#, fuzzy
 msgid "Project progress"
-msgstr "Ouvrir un projet"
+msgstr "Progression du projet"
 
 #: src/bin/ui/project_export.c:94 src/bin/ui/project_export.c:175
 msgid "Please type in actual .edj file"
@@ -849,9 +845,8 @@ msgstr "Veuillez saisir le fichier .edj actuel"
 
 #: src/bin/ui/project_export.c:95 src/bin/ui/project_export.c:109
 #: src/bin/ui/project_export.c:176 src/bin/ui/project_export.c:266
-#, fuzzy
 msgid "Export to develop edj-file"
-msgstr "Exporter fichier de dév. EDJ"
+msgstr "Exporter en develop edj-file"
 
 #: src/bin/ui/project_export.c:102 src/bin/ui/project_export.c:183
 #, c-format
@@ -863,14 +858,12 @@ msgstr ""
 "remplacer?</font_size>"
 
 #: src/bin/ui/project_export.c:145
-#, fuzzy
 msgid "Export release edj"
-msgstr "Exporter en EDJ"
+msgstr "Exporter en release edj"
 
 #: src/bin/ui/project_export.c:187
-#, fuzzy
 msgid "Export to release edj-file"
-msgstr "Exporter en EDJ"
+msgstr "Exporter en release edj-file"
 
 #: src/bin/ui/project_export.c:256
 #, c-format
@@ -882,9 +875,8 @@ msgstr ""
 "remplacer ?</font_size>"
 
 #: src/bin/ui/project_export.c:301
-#, fuzzy
 msgid "Export source edc"
-msgstr "Exporter le code source"
+msgstr "Exporter le source edc"
 
 #: src/bin/ui/project_export.c:337
 #, c-format
@@ -896,9 +888,8 @@ msgstr ""
 "remplacer ?</font_size>"
 
 #: src/bin/ui/project_export.c:343
-#, fuzzy
 msgid "Export group source code"
-msgstr "Exporter le code source"
+msgstr "Exporter le code source du groupe"
 
 #: src/bin/ui/project_navigator.c:418
 msgid "Alias of"
@@ -1001,9 +992,8 @@ msgid "default 0.0"
 msgstr "par défaut 0.0"
 
 #: src/bin/ui/property/property_dummy.c:208
-#, fuzzy
 msgid "Item 1"
-msgstr "Élément"
+msgstr "Élément 1"
 
 #: src/bin/ui/property/property_dummy.c:209
 #: src/bin/ui/property/property_dummy.c:216
@@ -1015,9 +1005,8 @@ msgstr "elm/image/icon/start-point"
 #: src/bin/ui/property/property_dummy.c:211
 #: src/bin/ui/property/property_dummy.c:290
 #: src/bin/ui/property/property_dummy.c:294
-#, fuzzy
 msgid "Item 2"
-msgstr "Élément"
+msgstr "Élément 2"
 
 #: src/bin/ui/property/property_dummy.c:213
 #: src/bin/ui/property/property_dummy.c:219
@@ -1029,60 +1018,51 @@ msgid "elm/image/icon/end-point"
 msgstr "elm/image/icon/end-point"
 
 #: src/bin/ui/property/property_dummy.c:215
-#, fuzzy
 msgid "Item 2_1"
-msgstr "Élément"
+msgstr "Élément 2_1"
 
 #: src/bin/ui/property/property_dummy.c:218
-#, fuzzy
 msgid "Item 2_2"
-msgstr "Élément"
+msgstr "Élément 2_2"
 
 #: src/bin/ui/property/property_dummy.c:221
-#, fuzzy
 msgid "Item 3"
-msgstr "Élément"
+msgstr "Élément 3"
 
 #: src/bin/ui/property/property_dummy.c:226
 msgid "Item 3_1 with dynamic subitems"
 msgstr "Élément 3_1 avec sous-éléments dynamiques"
 
 #: src/bin/ui/property/property_dummy.c:230
-#, fuzzy
 msgid "Item 3_2"
-msgstr "Élément"
+msgstr "Élément 3_2"
 
 #: src/bin/ui/property/property_dummy.c:234
-#, fuzzy
 msgid "Item 4"
-msgstr "Élément"
+msgstr "Élément 4"
 
 #: src/bin/ui/property/property_dummy.c:235
-#, fuzzy
 msgid "entry"
-msgstr "-entry"
+msgstr "entry"
 
 #: src/bin/ui/property/property_dummy.c:243
-#, fuzzy
 msgid "Item 5"
-msgstr "Élément"
+msgstr "Élément 5"
 
 #: src/bin/ui/property/property_dummy.c:244
 msgid "comb"
 msgstr "comb"
 
 #: src/bin/ui/property/property_dummy.c:251
-#, fuzzy
 msgid "Item 6"
-msgstr "Élément"
+msgstr "Élément 6"
 
 #: src/bin/ui/property/property_dummy.c:252
 #: src/bin/ui/property/property_dummy.c:261
 #: src/bin/ui/property/property_dummy.c:266
 #: src/bin/ui/property/property_dummy.c:317
-#, fuzzy
 msgid "min"
-msgstr "Agrandir"
+msgstr "min"
 
 #: src/bin/ui/property/property_dummy.c:254
 #: src/bin/ui/property/property_dummy.c:257
@@ -1107,24 +1087,20 @@ msgid "max"
 msgstr "max"
 
 #: src/bin/ui/property/property_dummy.c:259
-#, fuzzy
 msgid "Item 7"
-msgstr "Élément"
+msgstr "Élément 7"
 
 #: src/bin/ui/property/property_dummy.c:265
-#, fuzzy
 msgid "Item 8"
-msgstr "Élément"
+msgstr "Élément 8"
 
 #: src/bin/ui/property/property_dummy.c:273
-#, fuzzy
 msgid "Item 9"
-msgstr "Élément"
+msgstr "Élément 9"
 
 #: src/bin/ui/property/property_dummy.c:280
-#, fuzzy
 msgid "Item 10"
-msgstr "Élément"
+msgstr "Élément 10"
 
 #: src/bin/ui/property/property_dummy.c:286
 #: src/bin/ui/workspace/group_navigator.c:2629
@@ -1461,7 +1437,7 @@ msgstr "état max_w modifié de %d en %d"
 #: src/bin/ui/property/property_group.c:2950
 #, c-format
 msgid "state max_h changed from %d to %d"
-msgstr "état min_h modifié de %d en %d"
+msgstr "état max_h modifié de %d en %d"
 
 #: src/bin/ui/property/property_group.c:2954
 #, c-format
@@ -1928,7 +1904,7 @@ msgstr "élément de partie align_x modifié de %.2f en %.2f"
 #: src/bin/ui/property/property_group.c:3340
 #, c-format
 msgid "part item's align_y changed from %.2f to %.2f"
-msgstr "élément de partie align_x modifié de %.2f en %.2f"
+msgstr "élément de partie align_y modifié de %.2f en %.2f"
 
 #: src/bin/ui/property/property_group.c:3344
 #, c-format
@@ -2937,7 +2913,7 @@ msgstr "Définit la couleur du contour du texte."
 
 #: src/bin/ui/property/property_group.c:5640
 msgid "Sets the text shadow color."
-msgstr "Définit la couleur de l'ombre du texte."
+msgstr "Définit la couleur d'ombre du texte."
 
 #: src/bin/ui/property/property_group.c:5654
 msgid ""
@@ -3416,9 +3392,9 @@ msgid "PNG image (%s)"
 msgstr "Image PNG (%s)"
 
 #: src/bin/ui/property/property_image.c:79
-#, fuzzy, c-format
+#, c-format
 msgid "GIF image (%s)"
-msgstr "Ensemble d'images"
+msgstr "Image GIF (%s)"
 
 #: src/bin/ui/property/property_image.c:84
 #, c-format
@@ -3436,18 +3412,16 @@ msgid "TIFF image (%s)"
 msgstr "Image TIFF (%s)"
 
 #: src/bin/ui/property/property_image.c:432
-#, fuzzy
 msgid "Item info"
-msgstr "Élément"
+msgstr "Info sur l'élément"
 
 #: src/bin/ui/property/property_image.c:444
 msgid "Type"
 msgstr "Type"
 
 #: src/bin/ui/property/property_image.c:449
-#, fuzzy
 msgid "Image info"
-msgstr "Image"
+msgstr "Info sur l'image"
 
 #: src/bin/ui/property/property_image.c:456
 msgid "Location"
@@ -3458,23 +3432,20 @@ msgid "Image compression"
 msgstr "Compression de l'image"
 
 #: src/bin/ui/property/property_image.c:466
-#, fuzzy
 msgid "Image quality"
-msgstr "Collection d'images"
+msgstr "Qualité de l'image"
 
 #: src/bin/ui/property/property_image.c:471
 msgid "Width"
 msgstr "Largeur"
 
 #: src/bin/ui/property/property_image.c:476
-#, fuzzy
 msgid "Height"
-msgstr "Droite"
+msgstr "Hauteur"
 
 #: src/bin/ui/property/property_image.c:481
-#, fuzzy
 msgid "Set image info"
-msgstr "Ajouter nouvelle image dans l'ensemble"
+msgstr "Définir l'info de l'image"
 
 #: src/bin/ui/property/property_image.c:488
 msgid "Border"
@@ -3485,9 +3456,8 @@ msgid "left:"
 msgstr "gauche :"
 
 #: src/bin/ui/property/property_image.c:490
-#, fuzzy
 msgid "right:"
-msgstr "Droite"
+msgstr "droite :"
 
 #: src/bin/ui/property/property_image.c:495
 msgid "top:"
@@ -3508,18 +3478,16 @@ msgstr "largeur :"
 
 #: src/bin/ui/property/property_image.c:502
 #: src/bin/ui/property/property_image.c:508
-#, fuzzy
 msgid "height:"
-msgstr "Droite"
+msgstr "hauteur :"
 
 #: src/bin/ui/property/property_image.c:506
 msgid "Maximum size"
 msgstr "Taille maximale"
 
 #: src/bin/ui/property/property_image.c:512
-#, fuzzy
 msgid "Border scale"
-msgstr "Les deux échelles"
+msgstr "Échelle de la bordure"
 
 #: src/bin/ui/property/property_sound.c:38
 msgid "RAW"
@@ -3732,23 +3700,22 @@ msgid "Sets the color of dashed underline."
 msgstr "Définit la couleur du soulignement par tirets."
 
 #: src/bin/ui/script_manager.c:131
-#, fuzzy
 msgid "ERROR!"
-msgstr "ERREUR : "
+msgstr "ERREUR !"
 
 #: src/bin/ui/script_manager.c:135
 msgid "SUCCESS!"
 msgstr "SUCCÈS !"
 
 #: src/bin/ui/script_manager.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "Group: %s"
-msgstr "Groupe"
+msgstr "Groupe : %s"
 
 #: src/bin/ui/script_manager.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "Program: %s"
-msgstr "Programmes"
+msgstr "Programme : %s"
 
 #: src/bin/ui/sound_manager.c:127
 msgid "UNKNOWN"
@@ -3889,24 +3856,20 @@ msgid "Fonts directories:"
 msgstr "Répertoires des polices :"
 
 #: src/bin/ui/tab_home_import_edc.c:205
-#, fuzzy
 msgid "Sounds directories:"
-msgstr "Tonalités sonores"
+msgstr "Répertoires des sons :"
 
 #: src/bin/ui/tab_home_import_edc.c:223 src/bin/ui/tab_home_import_edc.c:614
-#, fuzzy
 msgid "Data directories:"
-msgstr "Éléments de données"
+msgstr "Répertoires de données :"
 
 #: src/bin/ui/tab_home_import_edc.c:409 src/bin/ui/tab_home_new.c:503
-#, fuzzy
 msgid "Import edc"
-msgstr "Importer fichier EDC"
+msgstr "Importer edc"
 
 #: src/bin/ui/tab_home_import_edc.c:461
-#, fuzzy
 msgid "Import EDC-file"
-msgstr "Importer fichier EDJ"
+msgstr "Importer EDC-file"
 
 #: src/bin/ui/tab_home_import_edc.c:461 src/bin/ui/tab_home_import_edj.c:493
 #: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:286
@@ -3930,39 +3893,33 @@ msgstr "Importer"
 
 #: src/bin/ui/tab_home_import_edc.c:526 src/bin/ui/tab_home_import_edj.c:580
 #: src/bin/ui/tab_home_new.c:638
-#, fuzzy
 msgid "Project name:"
-msgstr "Enregistrement du projet"
+msgstr "Nom du projet :"
 
 #: src/bin/ui/tab_home_import_edc.c:533 src/bin/ui/tab_home_import_edj.c:586
 #: src/bin/ui/tab_home_new.c:644
-#, fuzzy
 msgid "Path to project:"
-msgstr "Chemin vers le répertoire du projet"
+msgstr "Chemin vers le projet :"
 
 #: src/bin/ui/tab_home_import_edc.c:540
-#, fuzzy
 msgid "Path to edc-file:"
-msgstr "Importer fichier EDC"
+msgstr "Chemin vers edc-file :"
 
 #: src/bin/ui/tab_home_import_edc.c:568
 msgid "Font directories:"
 msgstr "Répertoires de police :"
 
 #: src/bin/ui/tab_home_import_edc.c:582
-#, fuzzy
 msgid "Sound directories:"
-msgstr "Tonalités sonores"
+msgstr "Répertoires de sons :"
 
 #: src/bin/ui/tab_home_import_edj.c:439
-#, fuzzy
 msgid "Import edj"
-msgstr "Importer fichier EDJ"
+msgstr "Importer edj"
 
 #: src/bin/ui/tab_home_import_edj.c:493
-#, fuzzy
 msgid "Import EDJ-file"
-msgstr "Importer fichier EDJ"
+msgstr "Importer EDJ-file"
 
 #: src/bin/ui/tab_home_import_edj.c:499
 #, c-format
@@ -3980,9 +3937,8 @@ msgid "Create"
 msgstr "Créer"
 
 #: src/bin/ui/tab_home_import_edj.c:593
-#, fuzzy
 msgid "Path to edj-file:"
-msgstr "Importer fichier EDJ"
+msgstr "Chemin vers edj-file :"
 
 #: src/bin/ui/tab_home_import_edj.c:608 src/bin/ui/tab_home_new.c:656
 msgid "Widgets:"
@@ -4022,7 +3978,7 @@ msgstr "Label<br>"
 
 #: src/bin/ui/tab_home_open.c:61
 msgid "Project open"
-msgstr "Ouvrir un projet"
+msgstr "Ouvrir projet"
 
 #: src/bin/ui/tab_home_open.c:188
 msgid "Confirm clear recent list"
