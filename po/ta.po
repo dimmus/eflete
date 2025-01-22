@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
 "Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
 "POT-Creation-Date: 2017-07-21 16:03+0300\n"
-"PO-Revision-Date: 2024-12-22 18:00+0000\n"
+"PO-Revision-Date: 2024-12-25 02:00+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/eflete/eflete/ta/>"
 "\n"
@@ -114,7 +114,7 @@ msgstr "படம்"
 
 #: src/bin/ui/image_manager.c:982
 msgid "Image Set"
-msgstr "பட தொகுப்பு"
+msgstr "படத் தொகுப்பு"
 
 #: src/bin/ui/image_manager.c:1001
 msgid "Vectors"
@@ -130,7 +130,7 @@ msgstr "பட கேலரி"
 
 #: src/bin/ui/image_manager.c:1169
 msgid "Image set"
-msgstr "பட தொகுப்பு"
+msgstr "படத் தொகுப்பு"
 
 #: src/bin/ui/sound_manager.c:119
 msgid "UNKNOWN"
@@ -404,9 +404,9 @@ msgid "Press to show Notify"
 msgstr "அறிவிப்பைக் காட்ட அழுத்தவும்"
 
 #: src/bin/ui/live_view/elementary/live_spinner.c:30
-#, c-format, fuzzy
+#, c-format
 msgid "%1.1f units"
-msgstr "%1.1 எஃப் அலகுகள்"
+msgstr "%1.1f அலகுகள்"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:53
 #: src/bin/ui/live_view/elementary/live_widget_common.c:286
@@ -1135,645 +1135,663 @@ msgstr "சீரமை ஃச் %.2f இலிருந்து %.2f ஆக �
 #: src/bin/ui/property/property_group.c:2965
 #, c-format
 msgid "align y changed from %.2f to %.2f"
-msgstr ""
+msgstr "சீரமை ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2969
 #, c-format
 msgid "rel1 to_x changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "REL1 TO_X \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2973
 #, c-format
 msgid "rel1 to_y changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "Rel1 to_y \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2977
 #, c-format
 msgid "rel1 relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "REL1 உறவினர் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2981
 #, c-format
 msgid "rel1 relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "REL1 உறவினர் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2985
 #, c-format
 msgid "rel1 offset x changed from %d to %d"
-msgstr ""
+msgstr "REL1 ஆஃப்செட் ஃச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2989
 #, c-format
 msgid "rel1 offset y changed from %d to %d"
-msgstr ""
+msgstr "REL1 ஆஃப்செட் ஒய் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2993
 #, c-format
 msgid "rel2 to_x changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "Rel2 to_x \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:2997
 #, c-format
 msgid "rel2 to_y changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "Rel2 to_y \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3001
 #, c-format
 msgid "rel2 relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "Rel2 உறவினர் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3005
 #, c-format
 msgid "rel2 relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "Rel2 உறவினர் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3009
 #, c-format
 msgid "rel2 offset x changed from %d to %d"
-msgstr ""
+msgstr "REL2 ஆஃப்செட் ஃச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3013
 #, c-format
 msgid "rel2 offset y changed from %d to %d"
-msgstr ""
+msgstr "Rel2 ஆஃப்செட் ஒய் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3017
 #, c-format
 msgid "image left border changed from %d to %d"
-msgstr ""
+msgstr "பட இடது எல்லை %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3022
 #, c-format
 msgid "image right border changed from %d to %d"
-msgstr ""
+msgstr "பட வலது எல்லை %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3027
 #, c-format
 msgid "image top border changed from %d to %d"
-msgstr ""
+msgstr "படத்தின் மேல் எல்லை %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3032
 #, c-format
 msgid "image bottom border changed from %d to %d"
-msgstr ""
+msgstr "படத்தின் கீழ் எல்லை %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3037
 #, c-format
 msgid "border fill changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "எல்லை நிரப்பு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3042
 #, c-format
 msgid "fill origin relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "மூலத்தை நிரப்பவும் உறவினர் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3046
 #, c-format
 msgid "fill origin relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "மூலத்தை நிரப்பவும் உறவினர் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டார்"
 
 #: src/bin/ui/property/property_group.c:3050
 #, c-format
 msgid "fill size relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "அளவு உறவினர் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3054
 #, c-format
 msgid "fill size relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "அளவு உறவினர் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டார்"
 
 #: src/bin/ui/property/property_group.c:3058
 #, c-format
 msgid "fill origin offset x changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரப்புதல் ஆஃப்செட் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3062
 #, c-format
 msgid "fill origin offset y changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரப்புதல் ஆஃப்செட் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3066
 #, c-format
 msgid "fill size offset x changed from %.2f to %.2f"
-msgstr ""
+msgstr "அளவு ஆஃப்செட் ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3070
 #, c-format
 msgid "fill size offset y changed from %.2f to %.2f"
-msgstr ""
+msgstr "அளவு ஆஃப்செட் ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3074
 #, c-format
 msgid "color class changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வண்ண வகுப்பு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3078
 #, c-format
 msgid "color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "வண்ணம் [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d க்கு மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3086
 #, c-format
 msgid "outline color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr ""
+"அவுட்லைன் வண்ணம் [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d க்கு மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3094
 #, c-format
 msgid "shadow color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "நிழல் நிறம் [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d] ஆக மாற்றப்பட்டது."
 
 #: src/bin/ui/property/property_group.c:3102
 #, c-format
 msgid "text changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உரை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3106
 #, c-format
 msgid "font changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "எழுத்துரு \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3110
 #, c-format
 msgid "text min_x %s"
-msgstr ""
+msgstr "உரை min_x %s"
 
 #: src/bin/ui/property/property_group.c:3113
 #, c-format
 msgid "text min_y %s"
-msgstr ""
+msgstr "உரை min_y %s"
 
 #: src/bin/ui/property/property_group.c:3116
 #, c-format
 msgid "text max_x %s"
-msgstr ""
+msgstr "உரை max_x %s"
 
 #: src/bin/ui/property/property_group.c:3119
 #, c-format
 msgid "text max_y %s"
-msgstr ""
+msgstr "உரை MAX_Y %s"
 
 #: src/bin/ui/property/property_group.c:3122
 #, c-format
 msgid "text fit_x %s"
-msgstr ""
+msgstr "உரை FIT_X %s"
 
 #: src/bin/ui/property/property_group.c:3125
 #, c-format
 msgid "text fit_y %s"
-msgstr ""
+msgstr "உரை FIT_Y %s"
 
 #: src/bin/ui/property/property_group.c:3128
 #, c-format
 msgid "program current %s"
-msgstr ""
+msgstr "நிரல் தற்போதைய %s"
 
 #: src/bin/ui/property/property_group.c:3131
 #, c-format
 msgid "text align x changed from %.2f to %.2f"
-msgstr ""
+msgstr "உரை சீரமை ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3135
 #, c-format
 msgid "text align y changed from %.2f to %.2f"
-msgstr ""
+msgstr "உரை சீரமை ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3139
 #, c-format
 msgid "text size changed from %d to %d"
-msgstr ""
+msgstr "உரை அளவு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3143
 #, c-format
 msgid "text elipsis changed from %.2f to %.2f"
-msgstr ""
+msgstr "உரை நீள்வட்டம் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3147
 #, c-format
 msgid "text elipsis %s"
-msgstr ""
+msgstr "உரை நீள்வட்டம் %s"
 
 #: src/bin/ui/property/property_group.c:3150
 #, c-format
 msgid "program signal changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் சமிக்ஞை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3154
 #, c-format
 msgid "program emit signal changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் உமிழ்வு சமிக்ஞை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3158
 #, c-format
 msgid "program emit source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் உமிழ்வு மூலமானது \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3162
 #, c-format
 msgid "program state changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் நிலை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3166
 #, c-format
 msgid "program source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரல் மூலமானது \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3170
 #, c-format
 msgid "program in.from changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரல் in.from %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3174
 #, c-format
 msgid "program in.range changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரல் in.range %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3178
 #, c-format
 msgid "program's transition time changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் நேரம் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3182
 #, c-format
 msgid "program's transition factor changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் காரணி %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3186
 #, c-format
 msgid "program's transition gradient changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் சாய்வு %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3190
 #, c-format
 msgid "program's transition decay changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் சிதைவு %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3194
 #, c-format
 msgid "program's transition bounces changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் பவுன்ச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3198
 #, c-format
 msgid "program's transition swings changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் ஊசலாட்டம் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3202
 #, c-format
 msgid "program's transition bezier_x1 changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரலின் மாற்றம் பெசியர்_எக்ச் 1 %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3206
 #, c-format
 msgid "program's transition bezier_y1 changed from %.2f to %.2f"
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் பெசியர்_ஒய் 1 %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3210
 #, c-format
 msgid "program's transition bezier_x2 changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரலின் மாற்றம் பெசியர்_எக்ச் 2 %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3214
 #, c-format
 msgid "program's transition bezier_y2 changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரலின் மாற்றம் பெசியர்_ஒய் 2 %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3218
 #, c-format
 msgid "program's tone duration changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரலின் தொனி காலம் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3222
 #, c-format
 msgid "program's sample changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரலின் மாதிரி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3234
 #, c-format
 msgid "program's tone changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரலின் தொனி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3238
 #, c-format
 msgid "program's channel changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "நிரலின் சேனல் \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3242
 #, c-format
 msgid "program's sample speed changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரலின் மாதிரி விரைவு %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3246
 #, c-format
 msgid "program drag value x changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரல் இழுவை மதிப்பு ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3250
 #, c-format
 msgid "program drag value y changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரல் இழுவை மதிப்பு ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3254
 #, c-format
 msgid "program value changed from %.2f to %.2f"
-msgstr ""
+msgstr "நிரல் மதிப்பு %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3258
 #, c-format
 msgid "filter part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வடிகட்டி பகுதி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3262
 #, c-format
 msgid "filter state changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வடிகட்டி நிலை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3266
 #, c-format
 msgid "container's align_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "கொள்கலனின் சீரமைப்பு_எக்ச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3270
 #, c-format
 msgid "container's align_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "கொள்கலனின் சீரமைப்பு_ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3274
 #, c-format
 msgid "container's padding_x changed from %d to %d"
-msgstr ""
+msgstr "கொள்கலனின் திணிப்பு_எக்ச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3278
 #, c-format
 msgid "container's padding_y changed from %d to %d"
-msgstr ""
+msgstr "கொள்கலனின் திணிப்பு_ஒய் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3282
 #, c-format
 msgid "container's min_x %s"
-msgstr ""
+msgstr "கொள்கலனின் min_x %s"
 
 #: src/bin/ui/property/property_group.c:3285
 #, c-format
 msgid "container's min_y %s"
-msgstr ""
+msgstr "கொள்கலனின் min_y %s"
 
 #: src/bin/ui/property/property_group.c:3288
 #, c-format
 msgid "table homogeneous changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "அட்டவணை ஒரேவிதமான \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3294
 #, c-format
 msgid "item's source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "உருப்படியின் மூலமானது \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3298
 #, c-format
 msgid "part item's min_w changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் min_w %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3302
 #, c-format
 msgid "part item's min_h changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் min_h %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3306
 #, c-format
 msgid "part item's max_w changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் MAX_W %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3310
 #, c-format
 msgid "part item's max_h changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் MAX_H %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3314
 #, c-format
 msgid "part item's prefer_w changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் விருப்பம் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3318
 #, c-format
 msgid "part item's prefer_h changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் விருப்பம் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3322
 #, c-format
 msgid "part item's weight_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "பகுதி உருப்படியின் எடை_எக்ச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3326
 #, c-format
 msgid "part item's weight_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "பகுதி உருப்படியின் எடை_ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3330
 #, c-format
 msgid "part item's align_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "பகுதி உருப்படியின் சீரமைப்பு_எக்ச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3334
 #, c-format
 msgid "part item's align_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "பகுதி உருப்படியின் சீரமைப்பு_ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3338
 #, c-format
 msgid "part item's aspect mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "பகுதி உருப்படியின் அம்ச முறை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3343
 #, c-format
 msgid "program's transition type changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "திட்டத்தின் மாற்றம் வகை \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3348
 #, c-format
 msgid "part item's aspect_w changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் அம்சம்_டபிள்யூ %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3352
 #, c-format
 msgid "part item's aspect_h changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் அம்சம்_எச் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3356
 #, c-format
 msgid "part item's spread by rows changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படி வரிசைகளால் பரவியது %d முதல் %d வரை மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3360
 #, c-format
 msgid "part item's spread by columns changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படி நெடுவரிசைகளால் பரவியது %d முதல் %d வரை மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3364
 #, c-format
 msgid "part item's span by columns changed from %hu to %hu"
 msgstr ""
+"நெடுவரிசைகளால் பகுதி உருப்படியின் இடைவெளி %hu இலிருந்து %hu ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3368
 #, c-format
 msgid "part item's span by rows changed from %hu to %hu"
 msgstr ""
+"வரிசைகளின் பகுதி உருப்படியின் இடைவெளி %hu இலிருந்து %hu ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3372
 #, c-format
 msgid "part item's column position changed from %hu to %hu"
-msgstr ""
+msgstr "பகுதி உருப்படியின் நெடுவரிசை நிலை %hu இலிருந்து %hu ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3376
 #, c-format
 msgid "part item's row position changed from %hu to %hu"
-msgstr ""
+msgstr "பகுதி உருப்படியின் வரிசை நிலை %hu இலிருந்து %hu ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3380
 #, c-format
 msgid "part item's left padding changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் இடது திணிப்பு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3385
 #, c-format
 msgid "part item's right padding changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் வலது திணிப்பு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3390
 #, c-format
 msgid "part item's top padding changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் மேல் திணிப்பு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3395
 #, c-format
 msgid "part item's bottom padding changed from %d to %d"
-msgstr ""
+msgstr "பகுதி உருப்படியின் கீழ் திணிப்பு %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3400
 #, c-format
 msgid "map's perspective part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வரைபடத்தின் முன்னோக்கு பகுதி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3404
 #, c-format
 msgid "map's light part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வரைபடத்தின் ஒளி பகுதி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3408
 #, c-format
 msgid "map %s"
-msgstr ""
+msgstr "வரைபடம் %s"
 
 #: src/bin/ui/property/property_group.c:3411
 #, c-format
 msgid "map perspective %s"
-msgstr ""
+msgstr "வரைபட முன்னோக்கு %s"
 
 #: src/bin/ui/property/property_group.c:3414
 #, c-format
 msgid "map smooth %s"
-msgstr ""
+msgstr "வரைபடம் மென்மையான %s"
 
 #: src/bin/ui/property/property_group.c:3417
 #, c-format
 msgid "map alpha %s"
-msgstr ""
+msgstr "வரைபட ஆல்பா %s"
 
 #: src/bin/ui/property/property_group.c:3420
 #, c-format
 msgid "map backface cull %s"
-msgstr ""
+msgstr "வரைபட பேக்ஃபேச் கல் %s"
 
 #: src/bin/ui/property/property_group.c:3423
 #, c-format
 msgid "perspective focal changed from %d to %d"
-msgstr ""
+msgstr "முன்னோக்கு குவியல் %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3427
 #, c-format
 msgid "perspective zplane changed from %d to %d"
-msgstr ""
+msgstr "முன்னோக்கு Zplane %d இலிருந்து %d ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3431
 #, c-format
 msgid "map's rotation center part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "வரைபடத்தின் சுழற்சி மைய பகுதி \"%s\" இலிருந்து \"%s\" ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3435
 #, c-format
 msgid "map rotation x changed from %.2f to %.2f"
-msgstr ""
+msgstr "வரைபட சுழற்சி ஃச் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3440
 #, c-format
 msgid "map rotation y changed from %.2f to %.2f"
-msgstr ""
+msgstr "வரைபட சுழற்சி ஒய் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3445
 #, c-format
 msgid "map rotation z changed from %.2f to %.2f"
-msgstr ""
+msgstr "வரைபட சுழற்சி சட் %.2f இலிருந்து %.2f ஆக மாற்றப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:3450
 #, c-format
 msgid "point color '1' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr ""
+"புள்ளி வண்ணம் '1' [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d க்கு மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3458
 #, c-format
 msgid "point color '2' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr ""
+"புள்ளி வண்ணம் '2' [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d க்கு மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3466
 #, c-format
 msgid "point color '3' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr ""
+"புள்ளி நிறம் '3' [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d] ஆக மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3474
 #, c-format
 msgid "point color '4' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
 msgstr ""
+"புள்ளி வண்ணம் '4' [%d,%d,%d,%d] இலிருந்து [%d,%d,%d,%d க்கு மாற்றப்பட்டது]"
 
 #: src/bin/ui/property/property_group.c:3773
 msgid ""
 "Circular dependency alarm! Selected group somehow related to current group."
 msgstr ""
+"வட்ட சார்பு அலாரம்! தேர்ந்தெடுக்கப்பட்ட குழு எப்படியாவது தற்போதைய குழுவுடன் தொடர்புடையது."
 
 #: src/bin/ui/property/property_group.c:4800
 msgid "turned on"
-msgstr ""
+msgstr "இயக்கப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:4800
 msgid "turned off"
-msgstr ""
+msgstr "அணைக்கப்பட்டது"
 
 #: src/bin/ui/property/property_group.c:4894
 msgid ""
 "The name to be used by the application to load the resulting Edje object and "
 "to identify the group to swallow in a GROUP part."
 msgstr ""
+"இதன் விளைவாக வரும் EDJE பொருளை ஏற்றவும், குழு பகுதியில் விழுங்க குழுவை அடையாளம் "
+"காணவும் பயன்பாட்டால் பயன்படுத்தப்பட வேண்டிய பெயர்."
 
 #: src/bin/ui/property/property_group.c:4901
 msgid ""
 "The minimum width for the container defined by the composition of the parts. "
 "This value is not enforced."
 msgstr ""
+"பகுதிகளின் கலவையால் வரையறுக்கப்பட்ட கொள்கலனுக்கான குறைந்தபட்ச அகலம். இந்த மதிப்பு "
+"செயல்படுத்தப்படவில்லை."
 
 #: src/bin/ui/property/property_group.c:4904
 msgid ""
 "The minimum height for the container defined by the composition of the "
 "parts. This value is not enforced."
 msgstr ""
+"பகுதிகளின் கலவையால் வரையறுக்கப்பட்ட கொள்கலனுக்கான குறைந்தபட்ச உயரம். இந்த மதிப்பு "
+"செயல்படுத்தப்படவில்லை."
 
 #: src/bin/ui/property/property_group.c:4910
 msgid ""
 "The maximum width for the container defined by the composition of the parts. "
 "This value is not enforced."
 msgstr ""
+"பகுதிகளின் கலவையால் வரையறுக்கப்பட்ட கொள்கலனுக்கான அதிகபட்ச அகலம். இந்த மதிப்பு "
+"செயல்படுத்தப்படவில்லை."
 
 #: src/bin/ui/property/property_group.c:4913
 msgid ""
 "The maximum height for the container defined by the composition of the "
 "parts. This value is not enforced."
 msgstr ""
+"பகுதிகளின் கலவையால் வரையறுக்கப்பட்ட கொள்கலனுக்கான அதிகபட்ச உயரம். இந்த மதிப்பு "
+"செயல்படுத்தப்படவில்லை."
 
 #: src/bin/ui/property/property_group.c:4931
 msgid ""
@@ -1781,6 +1799,9 @@ msgid ""
 "of the theme, by programs and in some cases by the application. It must be "
 "unique within the group."
 msgstr ""
+"பகுதி பெயர் கருப்பொருளின் உறவினர் <bt> பொருத்துதல் அமைப்பில், நிரல்கள் மற்றும் சில "
+"சந்தர்ப்பங்களில் பயன்பாட்டின் மூலம் பயன்படுத்தப்படுகிறது. இது குழுவிற்குள் தனித்துவமாக இருக்"
+"க வேண்டும்."
 
 #: src/bin/ui/property/property_group.c:4942
 msgid ""
@@ -1792,18 +1813,29 @@ msgid ""
 "well being scaled, and others do not, so the designer gets to choose what "
 "works best."
 msgstr ""
+"பகுதி அதன் அளவை EDJE அளவிடுதல் காரணியுடன் அளவிடுகிறதா என்பதைக் குறிப்பிடுகிறது. "
+"இயல்பாக, அளவு முடக்கப்பட்டுள்ளது மற்றும் இயல்புநிலை அளவிலான காரணி 1.0 ஆகும் - அதாவது "
+"அளவிடுதல் இல்லை. எழுத்துரு அளவு மற்றும் பகுதியின் குறைந்தபட்ச மற்றும் அதிகபட்ச அளவு போன்"
+"ற பண்புகளை அளவிட இது பயன்படுத்தப்படுகிறது. இலக்கு சாதனத்தின் டிபிஐ அடிப்படையில் "
+"அளவிடவும் இது பயன்படுத்தப்படலாம். தேர்ந்தெடுக்கப்பட்டதற்கான காரணம் என்னவென்றால், சில விசயங்கள்"
+" நன்றாக அளவிடப்படுகின்றன, மற்றவை அவ்வாறு செய்யாது, எனவே வடிவமைப்பாளர் சிறப்பாகச் "
+"செயல்படுவதைத் தேர்வு செய்கிறார்."
 
 #: src/bin/ui/property/property_group.c:4956
 msgid ""
 "Specifies whether the part emits signals. Disabling it prevents the part "
 "from emitting any type of signal at all."
 msgstr ""
+"பகுதி சமிக்ஞைகளை வெளியிடுகிறதா என்பதைக் குறிப்பிடுகிறது. அதை முடக்குவது பகுதியை எந்"
+"த வகையான சமிக்ஞையையும் வெளியிடுவதைத் தடுக்கிறது."
 
 #: src/bin/ui/property/property_group.c:4964
 msgid ""
 "Specifies whether a part echoes a mouse event to other parts below the "
 "pointer."
 msgstr ""
+"சுட்டிக்காட்டி கீழே உள்ள மற்ற பகுதிகளுக்கு ஒரு பகுதி ஒரு சுட்டி நிகழ்வை எதிரொலிக்கிறதா "
+"என்பதைக் குறிப்பிடுகிறது."
 
 #: src/bin/ui/property/property_group.c:4970
 msgid ""
@@ -1811,12 +1843,17 @@ msgid ""
 "container. The overflowing content is not displayed. Note that the part "
 "being clipped to canbe a rectangle or image part."
 msgstr ""
+"மற்றொரு பகுதியின் கொள்கலனுடன் ஒத்துப்போகும் பகுதியின் பகுதியை மட்டுமே வழங்குகிறது. "
+"நிரம்பி வழியும் உள்ளடக்கம் காட்டப்படாது. ஒரு செவ்வகம் அல்லது படப் பகுதியை நிர்வகிக்க பகுதி"
+" கிளிப் செய்யப்படுகிறது என்பதை நினைவில் கொள்க."
 
 #: src/bin/ui/property/property_group.c:4978
 msgid ""
 "Specifies whether events with the given flags must be ignored. These events "
 "do not have their signals emitted to the parts."
 msgstr ""
+"கொடுக்கப்பட்ட கொடிகளுடன் நிகழ்வுகள் புறக்கணிக்கப்பட வேண்டுமா என்பதைக் குறிப்பிடுகிறது. இந்"
+"த நிகழ்வுகள் அவற்றின் சமிக்ஞைகளை பகுதிகளுக்கு வெளிப்படுத்தவில்லை."
 
 #: src/bin/ui/property/property_group.c:4986
 msgid ""
@@ -1826,6 +1863,11 @@ msgid ""
 "signals emitted, even outside the object, until    the button is  released.  "
 "* NOGRAB, the effect is limited to the part's container."
 msgstr ""
+"பகுதிக்கு சுட்டி சுட்டிக்காட்டி நடத்தை அமைக்கிறது. இயல்புநிலை மதிப்பு ஆட்டோகிராப் ஆகும். "
+"பின்வரும் முறைகள் கிடைக்கின்றன: * ஆட்டோகிராப், பகுதி சொடுக்கு செய்து பொத்தானை அழுத்தும் "
+"போது, பொத்தானை வெளியிடும் வரை, பொருளுக்கு வெளியே கூட உமிழப்படும் அனைத்து எதிர்கால "
+"சுட்டி சமிக்ஞைகளின் மூலமும் இந்த பகுதி. * நோகிராப், இதன் விளைவு பகுதியின் கொள்கலனுக்கு "
+"மட்டுமே."
 
 #: src/bin/ui/property/property_group.c:4997
 msgid ""
@@ -1834,18 +1876,26 @@ msgid ""
 "autoloaded and swallowed on this part.  * For TEXTBLOCK parts, it's the name "
 "of a group is used for    selection display under the text."
 msgstr ""
+"இந்த அளவுருவின் பொருள் பகுதியின் வகையைப் பொறுத்து மாறுபடும். * குழு பகுதிகளுக்கு, இது"
+" EDJE கோப்பில் உள்ள மற்றொரு குழுவின் பெயர், இது இந்த பகுதியில் தன்னியக்க ஏற்றப்பட்டு "
+"விழுங்கப்படுகிறது. * டெக்ச்ட்ப்ளாக் பகுதிகளுக்கு, இது ஒரு குழுவின் பெயர் உரையின் கீழ் "
+"தேர்வு காட்சிக்கு பயன்படுத்தப்படுகிறது."
 
 #: src/bin/ui/property/property_group.c:5015
 msgid ""
 "Enables or disables dragging along the X axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
 msgstr ""
+"ஃச் அச்சில் இழுவை செயல்படுத்துகிறது அல்லது முடக்குகிறது. இயக்கப்பட்டால், 1 தொடக்க புள்ளியை"
+" 0.0 ஆகவும், -1 ஐ 1.0 ஆகவும் அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5018
 msgid ""
 "Enables or disables dragging along the Y axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
 msgstr ""
+"ஒய் அச்சில் இழுப்பதை செயல்படுத்துகிறது அல்லது முடக்குகிறது. இயக்கப்பட்டால், 1 தொடக்க "
+"புள்ளியை 0.0 ஆகவும், -1 ஐ 1.0 ஆகவும் அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5024
 #: src/bin/ui/property/property_group.c:5029
@@ -1854,6 +1904,10 @@ msgid ""
 "it, causing the part to jump from position to position. If the step is set "
 "to 0, it is calculated as the width of the confined part divided by count."
 msgstr ""
+"இந்த அளவுரு எந்தவொரு முழு எண்ணையும் எடுத்து இயக்கத்தை அதன் மூலம் வகுக்கக்கூடிய "
+"மதிப்புகளுக்கு கட்டுப்படுத்துகிறது, இதனால் அந்த பகுதி நிலையிலிருந்து நிலைக்குச் செல்ல "
+"காரணமாகிறது. படி 0 என அமைக்கப்பட்டால், அது வரையறுக்கப்பட்ட பகுதியின் அகலமாக "
+"கணக்கிடப்படுகிறது."
 
 #: src/bin/ui/property/property_group.c:5042
 msgid ""
@@ -1861,18 +1915,25 @@ msgid ""
 "container. When you use the confine option, do not forget to set a minimum "
 "size for the part, or the movable part does not show up."
 msgstr ""
+"அமைக்கப்பட்டால், நகரக்கூடிய பகுதியின் இயக்கத்தை மற்றொரு பகுதியின் கொள்கலனுக்கு "
+"கட்டுப்படுத்துகிறது. நீங்கள் வரையறுக்கப்பட்ட விருப்பத்தைப் பயன்படுத்தும்போது, பகுதிக்கு "
+"குறைந்தபட்ச அளவை அமைக்க மறக்காதீர்கள், அல்லது நகரக்கூடிய பகுதி காண்பிக்கப்படாது."
 
 #: src/bin/ui/property/property_group.c:5050
 msgid ""
 "When set, the movement of the dragged part can only start when it gets moved "
 "enough to be outside of the threshold part."
 msgstr ""
+"அமைக்கும்போது, இழுத்துச் செல்லப்பட்ட பகுதியின் இயக்கம் வாசல் பகுதிக்கு வெளியே இருக்க "
+"போதுமானதாக இருக்கும்போது மட்டுமே தொடங்க முடியும்."
 
 #: src/bin/ui/property/property_group.c:5057
 msgid ""
 "Causes the part to forward the drag events to another part, thus ignoring "
 "them for itself."
 msgstr ""
+"இழுவை நிகழ்வுகளை வேறொரு பகுதிக்கு அனுப்புவதற்கு இந்த பகுதி காரணமாகிறது, இதனால் "
+"அவற்றைப் புறக்கணிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5071
 msgid ""
@@ -1881,45 +1942,56 @@ msgid ""
 "\"clicked\" or \"invisible\". All state declarations are also coupled with "
 "an index number between 0.0 and 1.0."
 msgstr ""
+"கொடுக்கப்பட்ட பகுதிக்குள் ஒரு விளக்கத்தை அடையாளம் காண பயன்படுத்தப்படும் பெயர். \"சொடுக்கு\""
+" அல்லது \"கண்ணுக்கு தெரியாத\" போன்ற ஒரே பகுதியின் வெவ்வேறு நிலைகளை அறிவிக்க பல "
+"விளக்கங்கள் பயன்படுத்தப்படுகின்றன. அனைத்து மாநில அறிவிப்புகளும் 0.0 முதல் 1.0 வரை "
+"குறியீட்டு எண்ணுடன் இணைக்கப்பட்டுள்ளன."
 
 #: src/bin/ui/property/property_group.c:5080
 msgid ""
 "Takes a boolean state specifying whether the part is visible or not. "
 "Invisible parts do not emit signals."
 msgstr ""
+"பகுதி காணப்படுகிறதா இல்லையா என்பதைக் குறிப்பிடும் ஒரு பூலியன் நிலையை எடுக்கும். "
+"கண்ணுக்கு தெரியாத பாகங்கள் சமிக்ஞைகளை வெளியிடுவதில்லை."
 
 #: src/bin/ui/property/property_group.c:5087
 msgid ""
 "Causes the part to use another part content as the content of this part."
 msgstr ""
+"இந்த பகுதியின் உள்ளடக்கமாக மற்றொரு பகுதி உள்ளடக்கத்தை பகுதி பயன்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5101
 msgid "Sets the minimum width for this state."
-msgstr ""
+msgstr "இந்த நிலைக்கு குறைந்தபட்ச அகலத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5103
 msgid "Sets the minimum height for this state."
-msgstr ""
+msgstr "இந்த நிலைக்கு குறைந்தபட்ச உயரத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5108
 msgid "Sets the maximum width for this state."
-msgstr ""
+msgstr "இந்த நிலைக்கு அதிகபட்ச அகலத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5110
 msgid "Sets the maximum height for this state."
-msgstr ""
+msgstr "இந்த நிலைக்கு அதிகபட்ச உயரத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5115
 msgid ""
 "A width multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
 msgstr ""
+"குறைந்தபட்ச அளவு கணக்கீட்டின் போது மட்டுமே குறைந்தபட்ச அளவு எதுவாக இருந்தாலும் ஒரு அகல "
+"பெருக்கி வலுக்கட்டாயமாகப் பயன்படுத்தப்படுகிறது."
 
 #: src/bin/ui/property/property_group.c:5118
 msgid ""
 "A height multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
 msgstr ""
+"குறைந்தபட்ச அளவு கணக்கீட்டின் போது மட்டுமே குறைந்தபட்ச அளவு எதுவாக இருந்தாலும் ஒரு உயர "
+"பெருக்கி வலுக்கட்டாயமாகப் பயன்படுத்தப்படுகிறது."
 
 #: src/bin/ui/property/property_group.c:5124
 msgid ""
@@ -1927,6 +1999,9 @@ msgid ""
 "size in width. ON for enabled OFF for disabled. When enabled, the routine "
 "does not try and expand or contract the part."
 msgstr ""
+"இந்த பகுதி அகலத்தில் அளவை மாற்றாது என்று குறைந்தபட்ச அளவு கணக்கீட்டு வழக்கத்தை சொல்கிறது. "
+"முடக்கப்பட்டதாக இயக்கப்பட்டது. இயக்கப்பட்டால், வழக்கம் பகுதியை முயற்சித்து விரிவுபடுத்தவோ "
+"அல்லது சுருக்கவோ செய்யாது."
 
 #: src/bin/ui/property/property_group.c:5129
 msgid ""
@@ -1934,10 +2009,14 @@ msgid ""
 "size in height. ON for enabled OFF for disabled. When enabled, the routine "
 "does not try and expand or contract the part."
 msgstr ""
+"இந்த பகுதி உயரத்தில் அளவை மாற்றாது என்று குறைந்தபட்ச அளவு கணக்கீட்டு வழக்கத்தை சொல்கிறது. "
+"முடக்கப்பட்டதாக இயக்கப்பட்டது. இயக்கப்பட்டால், வழக்கம் பகுதியை முயற்சித்து விரிவுபடுத்தவோ "
+"அல்லது சுருக்கவோ செய்யாது."
 
 #: src/bin/ui/property/property_group.c:5137
 msgid "Sets the scope of the \"aspect\" property to a given dimension."
 msgstr ""
+"கொடுக்கப்பட்ட பரிமாணத்திற்கு \"நற்பொருத்தம்\" சொத்தின் நோக்கத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5142
 msgid ""
@@ -1945,6 +2024,9 @@ msgid ""
 "The aspect property forces the width to height ratio to be kept from the "
 "minimum."
 msgstr ""
+"பொதுவாக அகலம் மற்றும் உயரத்தை எந்த மதிப்புகளுக்கும் சுயாதீனமாக மாற்றியமைக்க முடியும். "
+"நற்பொருத்தம் சொத்து அகலத்தை உயர விகிதத்திற்கு குறைந்தபட்சத்திலிருந்து வைக்க "
+"கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5146
 msgid ""
@@ -1952,24 +2034,30 @@ msgid ""
 "The aspect property forces the width to height ratio to be kept to the "
 "maximum."
 msgstr ""
+"பொதுவாக அகலம் மற்றும் உயரத்தை எந்த மதிப்புகளுக்கும் சுயாதீனமாக மாற்றியமைக்க முடியும். அம்"
+"ச சொத்து அகலத்தை உயர விகிதத்திற்கு அதிகபட்சமாக வைக்க கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5160
 msgid "Enables or disables mapping for the part."
-msgstr ""
+msgstr "பகுதிக்கு மேப்பிங்கை இயக்குகிறது அல்லது முடக்குகிறது."
 
 #: src/bin/ui/property/property_group.c:5165
 msgid "Enables or disables perspective when rotating."
-msgstr ""
+msgstr "சுழலும் போது முன்னோக்கை செயல்படுத்துகிறது அல்லது முடக்குகிறது."
 
 #: src/bin/ui/property/property_group.c:5170
 msgid ""
 "Enables or disables smooth map rendering. This can be linear interpolation, "
 "anisotropic filtering, or anything the engine decides is \"smooth\"."
 msgstr ""
+"மென்மையான வரைபட வழங்குதல் செயல்படுத்துகிறது அல்லது முடக்குகிறது. இது நேரியல் "
+"இடைக்கணிப்பு, அனிசோட்ரோபிக் வடிகட்டுதல் அல்லது இயந்திரம் தீர்மானிக்கும் எதையும் "
+"\"மென்மையானது\"."
 
 #: src/bin/ui/property/property_group.c:5177
 msgid "Enables or disables the alpha channel when rendering the map."
 msgstr ""
+"வரைபடத்தை வழங்கும்போது ஆல்பா சேனலை செயல்படுத்துகிறது அல்லது முடக்குகிறது."
 
 #: src/bin/ui/property/property_group.c:5182
 msgid ""
@@ -1977,6 +2065,9 @@ msgid ""
 "normally faces the camera is facing away after being rotated). This means "
 "that the object is hidden when \"backface culled\""
 msgstr ""
+"பேக்ஃபேச் குறட்டை இயக்குகிறது அல்லது முடக்குகிறது (பொதுவாக கேமராவை எதிர்கொள்ளும் "
+"சுழலும் பகுதி சுழற்றப்பட்ட பிறகு எதிர்கொள்ளும் போது). இதன் பொருள் \"பேக்ஃபேச் குறைக்க\" "
+"போது பொருள் மறைக்கப்படுகிறது"
 
 #: src/bin/ui/property/property_group.c:5190
 msgid ""
@@ -1984,76 +2075,95 @@ msgid ""
 "\"3d look\". The perspective point must have a perspective section that "
 "provides the zplane and focal properties."
 msgstr ""
+"ஒரு பகுதி A \"3D தோற்றத்தை\" வழங்குவதற்கான \"முன்னோக்கு புள்ளியாக\" பயன்படுத்தப்படும் "
+"பகுதியை அமைக்கிறது. முன்னோக்கு புள்ளி ZPLANE மற்றும் குவிய பண்புகளை வழங்கும் ஒரு "
+"முன்னோக்கு பகுதியைக் கொண்டிருக்க வேண்டும்."
 
 #: src/bin/ui/property/property_group.c:5198
 msgid ""
 "Sets the part that is used as the \"light\" for calculating the brightness "
 "(based on how directly the part's surface is facing the light source point)"
 msgstr ""
+"பிரகாசத்தைக் கணக்கிடுவதற்கு \"ஒளி\" ஆகப் பயன்படுத்தப்படும் பகுதியை அமைக்கிறது (பகுதியின்"
+" மேற்பரப்பு ஒளி மூல புள்ளியை எவ்வாறு எதிர்கொள்கிறது என்பதை அடிப்படையாகக் கொண்டு)"
 
 #: src/bin/ui/property/property_group.c:5205
 msgid "Sets the distance from the focal z plane (zplane) and the camera."
 msgstr ""
+"ஃபோகல் சட் வானூர்தி (ZPLANE) மற்றும் கேமராவிலிருந்து தூரத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5210
 msgid "Sets the z value that is not scaled."
-msgstr ""
+msgstr "அளவிடப்படாத சட் மதிப்பை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5215
 msgid ""
 "Sets the part that is used as the center of rotation when rotating the part "
 "with this description."
 msgstr ""
+"இந்த விளக்கத்துடன் பகுதியை சுழற்றும்போது சுழற்சியின் மையமாகப் பயன்படுத்தப்படும் பகுதியை "
+"அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5221
 msgid ""
 "Rotation (in degrees) around the X axis of the part considering the center "
 "set."
 msgstr ""
+"மையத் தொகுப்பைக் கருத்தில் கொண்டு பகுதியின் ஃச் அச்சில் சுழற்சி (டிகிரிகளில்)."
 
 #: src/bin/ui/property/property_group.c:5226
 msgid ""
 "Rotation (in degrees) around the Y axis of the part considering the center "
 "set."
 msgstr ""
+"மையத் தொகுப்பைக் கருத்தில் கொண்டு பகுதியின் ஒய் அச்சில் சுழற்சி (டிகிரிகளில்)."
 
 #: src/bin/ui/property/property_group.c:5231
 msgid ""
 "Rotation (in degrees) around the Z axis of the part considering the center "
 "set."
 msgstr ""
+"மையத் தொகுப்பைக் கருத்தில் கொண்டு பகுதியின் சட் அச்சில் சுழற்சி (டிகிரிகளில்)."
 
 #: src/bin/ui/property/property_group.c:5236
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-top "
 "point of a part."
 msgstr ""
+"வரைபடத்தில் ஒரு வெர்டெக்சின் நிறத்தை அமைக்கிறது. இந்த கட்டுப்பாடு ஒரு பகுதியின் இடது-மேல்"
+" புள்ளியை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5239
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-top "
 "point of a part."
 msgstr ""
+"வரைபடத்தில் ஒரு வெர்டெக்சின் நிறத்தை அமைக்கிறது. இந்த கட்டுப்பாடு ஒரு பகுதியின் வலது மேல்"
+" புள்ளியை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5245
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-bottom "
 "point of a part."
 msgstr ""
+"வரைபடத்தில் ஒரு வெர்டெக்சின் நிறத்தை அமைக்கிறது. இந்த கட்டுப்பாடு ஒரு பகுதியின் இடது கீழ் "
+"புள்ளியை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5248
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-bottom "
 "point of a part."
 msgstr ""
+"வரைபடத்தில் ஒரு வெர்டெக்சின் நிறத்தை அமைக்கிறது. இந்த கட்டுப்பாடு ஒரு பகுதியின் வலது கீழ் "
+"புள்ளியை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5256
 msgid "Causes Edje to draw the selected effect."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட விளைவை எட்சே வரைய காரணமாகிறது."
 
 #: src/bin/ui/property/property_group.c:5262
 msgid "Shadow directions."
-msgstr ""
+msgstr "நிழல் திசைகள்."
 
 #: src/bin/ui/property/property_group.c:5270
 msgid ""
@@ -2063,6 +2173,11 @@ msgid ""
 "the Edje object has to explicitly begin and end selection modes, and the "
 "selection itself is draggable at both ends."
 msgstr ""
+"உரைநடை பகுதிக்கான தேர்வு பயன்முறையை பின்வருவனவற்றில் ஒன்றிற்கு அமைக்கிறது: இயல்புநிலை "
+"தேர்வு முறை எந்த டெச்க்டாப்பிலும் நீங்கள் எதிர்பார்க்கிறீர்கள். சுட்டி, இழுத்து, முடிவுக்கு "
+"வெளியீடு. வெளிப்படையான பயன்முறையில் EDJE பொருளைக் கட்டுப்படுத்தும் பயன்பாடு "
+"தேவைப்படுகிறது, தேர்வு முறைகளை வெளிப்படையாகத் தொடங்க வேண்டும் மற்றும் முடிக்க வேண்டும், "
+"மேலும் தேர்வு இரண்டு முனைகளிலும் இழுக்கக்கூடியது."
 
 #: src/bin/ui/property/property_group.c:5281
 msgid ""
@@ -2073,6 +2188,12 @@ msgid ""
 "text is not selectable, but it can be edited and pasted, and all text "
 "characters are replaced with *s."
 msgstr ""
+"உரைநடை பகுதிக்கான திருத்து பயன்முறையை பின்வருவனவற்றில் ஒன்றிற்கு அமைக்கிறது: <br>* "
+"எதுவுமில்லை <br>* எளிய <br>* திருத்தக்கூடிய <br>* கடவுச்சொல் <br> EDJE பொருளில் "
+"விசைப்பலகை இருந்தால் அது பகுதியைத் திருத்தக்கூடியதாக இருக்கும் கவனம் மற்றும் பகுதி EDJE "
+"கவனம் செலுத்துகிறது (அல்லது கவனம் செலுத்துவதைப் பொருட்படுத்தாமல் தேர்ந்தெடுக்கக்கூடியது). "
+"கடவுச்சொல் பயன்முறையில், உரை தேர்ந்தெடுக்கப்படவில்லை, ஆனால் அதைத் திருத்தி ஒட்டலாம், மேலும் "
+"அனைத்து உரை எழுத்துக்களும் *கள் மூலம் மாற்றப்படுகின்றன."
 
 #: src/bin/ui/property/property_group.c:5296
 msgid ""
@@ -2082,47 +2203,61 @@ msgid ""
 "line before the current character, just like many other GUI toolkits handle "
 "it."
 msgstr ""
+"உரைநடை பகுதிக்கு கர்சர் பயன்முறையை பின்வருவனவற்றில் அமைக்கிறது: கர்சர் பயன்முறையின் கீழ் "
+"கர்சர் சுட்டிக்காட்டப்பட்ட எழுத்துக்கு கீழே ஈர்க்கிறது. இது இயல்புநிலை பயன்முறை. கர்சர் "
+"பயன்முறைக்கு முன், கர்சர் தற்போதைய எழுத்துக்கு முன் செங்குத்து கோட்டாக வரையப்படுகிறது, பல "
+"GUI கருவித்தொகுப்புகள் அதைக் கையாளுகின்றன."
 
 #: src/bin/ui/property/property_group.c:5306
 msgid ""
 "It causes a textblock that is editable to allow multiple lines for editing."
 msgstr ""
+"இது திருத்துவதற்கு பல வரிகளை அனுமதிக்க திருத்தக்கூடிய ஒரு உரைதாரத்தை ஏற்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5312
 msgid ""
 "Used for the group to be loaded and the selection display under the selected "
 "text."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் தேர்ந்தெடுக்கப்பட்ட உரையின் கீழ் தேர்வு "
+"காட்சி."
 
 #: src/bin/ui/property/property_group.c:5319
 msgid ""
 "Used for the group to be loaded and the selection display over the selected "
 "text."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் தேர்ந்தெடுக்கப்பட்ட உரையின் மீது தேர்வு "
+"காட்சி."
 
 #: src/bin/ui/property/property_group.c:5326
 msgid ""
 "Used for the group to be loaded and the cursor display under the cursor "
 "position."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் கர்சர் நிலையின் கீழ் கர்சர் காட்சி."
 
 #: src/bin/ui/property/property_group.c:5333
 msgid ""
 "Used for the group to be loaded and the cursor display over the cursor "
 "position."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் கர்சர் நிலைக்கு மேல் கர்சர் காட்சி."
 
 #: src/bin/ui/property/property_group.c:5340
 msgid ""
 "Used for the group to be loaded and the anchors display under the anchor "
 "position."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் நங்கூரங்கள் நங்கூர நிலையின் கீழ் "
+"காண்பிக்கப்படும்."
 
 #: src/bin/ui/property/property_group.c:5347
 msgid ""
 "Used for the group to be loaded and the anchor display over the anchor "
 "position."
 msgstr ""
+"குழுவை ஏற்றுவதற்கு பயன்படுத்தப்படுகிறது மற்றும் நங்கூரம் நங்கூரம் நிலைக்கு மேல் காட்சி."
 
 #: src/bin/ui/property/property_group.c:5361
 msgid ""
@@ -2132,6 +2267,9 @@ msgid ""
 "while 1.0 stands for right and bottom edges of the object on horizonal axis. "
 "The default value is 0.5."
 msgstr ""
+"காட்டப்படும் பொருளின் அளவு அதன் கொள்கலனை விட சிறியதாக (அல்லது பெரியது) இருக்கும்போது, "
+"இந்த சொத்து அதன் கொள்கலனுக்குள் ஃச் அச்சில் ஒப்பீட்டளவில் நகரும். . இயல்புநிலை மதிப்பு 0.5 "
+"ஆகும்."
 
 #: src/bin/ui/property/property_group.c:5369
 msgid ""
@@ -2141,11 +2279,16 @@ msgid ""
 "while 1.0 stands for right and bottom edges of the object on vertical axis. "
 "The default value is 0.5."
 msgstr ""
+"காட்டப்படும் பொருளின் அளவு அதன் கொள்கலனை விட சிறியதாக (அல்லது பெரியது) இருக்கும்போது, "
+"இந்த சொத்து அதன் கொள்கலனுக்குள் ஒய் அச்சுடன் ஒப்பீட்டளவில் நகரும். 0.0 என்பது பொருளின் இடது "
+"மற்றும் மேல் விளிம்புகள் கொள்கலனின் அந்தந்தவற்றைத் தொடும், அதே நேரத்தில் 1.0 என்பது செங்குத்து"
+" அச்சில் பொருளின் வலது மற்றும் கீழ் விளிம்புகளுக்கு நிற்கிறது. இயல்புநிலை மதிப்பு 0.5 "
+"ஆகும்."
 
 #: src/bin/ui/property/property_group.c:5379
 #: src/bin/ui/property/property_group.c:5557
 msgid "elm/image/icon/start-point"
-msgstr ""
+msgstr "எல்ம்/படம்/ஐகான்/ச்டார்ட்-பாயிண்ட்"
 
 #: src/bin/ui/property/property_group.c:5385
 msgid ""
@@ -2153,6 +2296,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"இடது-அப் மூலையை மற்றொரு பகுதியின் கொள்கலனின் ஃச் அச்சுடன் ஒப்பீட்டளவில் நிலைநிறுத்துகிறது"
+". \"உறவினர்\" இன் முதல் அளவுருவை பாதிக்கிறது. எவரையும் அமைப்பது மரபணு பகுதிகளுக்கு "
+"இந்த மதிப்பை அழுத்தவில்லை."
 
 #: src/bin/ui/property/property_group.c:5392
 msgid ""
@@ -2160,13 +2306,16 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"இடது-அப் மூலையை மற்றொரு பகுதியின் கொள்கலனின் ஒய் அச்சுடன் ஒப்பீட்டளவில் நிலைநிறுத்துகிறது"
+". \"உறவினர்\" இன் முதல் அளவுருவை பாதிக்கிறது. எந்தவொரு அமைப்பையும் மரபுரிமையாக "
+"பகுதிகளுக்கு இந்த மதிப்பை அமைக்கவில்லை."
 
 #: src/bin/ui/property/property_group.c:5398
 #: src/bin/ui/property/property_group.c:5441
 #: src/bin/ui/property/property_group.c:5562
 #: src/bin/ui/property/property_group.c:5585
 msgid "elm/image/icon/align"
-msgstr ""
+msgstr "எல்ம்/படம்/ஐகான்/சீரமை"
 
 #: src/bin/ui/property/property_group.c:5400
 msgid ""
@@ -2174,6 +2323,9 @@ msgid ""
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the X axis."
 msgstr ""
+"இடது மூலையை உறவினரின் கொள்கலனுக்குள் ஒரு உறவினர் நிலைக்கு நகர்த்துகிறது \""
+"\" ஒரு பகுதியை \". ஃச் அச்சின் 0.0 (0%, தொடக்க) முதல் 1.0 (100%, முடிவு) வரை "
+"மதிப்புகள்."
 
 #: src/bin/ui/property/property_group.c:5404
 msgid ""
@@ -2181,30 +2333,37 @@ msgid ""
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the Y axis."
 msgstr ""
+"இடது மூலையை உறவினரின் கொள்கலனுக்குள் ஒரு உறவினர் நிலைக்கு நகர்த்துகிறது \""
+"\" ஒரு பகுதியை \". ஒய் அச்சின் 0.0 (0%, தொடக்க) முதல் 1.0 (100%, முடிவு) வரை "
+"மதிப்புகள்."
 
 #: src/bin/ui/property/property_group.c:5410
 #: src/bin/ui/property/property_group.c:5453
 #: src/bin/ui/property/property_group.c:5572
 #: src/bin/ui/property/property_group.c:5595
 msgid "elm/image/icon/offset"
-msgstr ""
+msgstr "எல்ம்/படம்/ஐகான்/ஆஃப்செட்"
 
 #: src/bin/ui/property/property_group.c:5412
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the X "
 "axis."
 msgstr ""
+"ஃச் அச்சில் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கான இடது-அப் மூலையில் நிலையை "
+"பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5415
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the Y "
 "axis."
 msgstr ""
+"ஒய் அச்சுடன் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கான இடது-அப் மூலையில் நிலையை "
+"பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5420
 #: src/bin/ui/property/property_group.c:5580
 msgid "elm/image/icon/end-point"
-msgstr ""
+msgstr "எல்ம்/படம்/ஐகான்/எண்ட்-பாயிண்ட்"
 
 #: src/bin/ui/property/property_group.c:5426
 msgid ""
@@ -2212,6 +2371,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"வலது-கீழ் மூலையை மற்றொரு பகுதியின் கொள்கலனின் ஃச் அச்சுடன் ஒப்பீட்டளவில் நிலைநிறுத்துகிறது"
+". \"உறவினர்\" இன் முதல் அளவுருவை பாதிக்கிறது. எந்தவொரு அமைப்பையும் மரபுரிமையாக "
+"பகுதிகளுக்கு இந்த மதிப்பை அமைக்கவில்லை."
 
 #: src/bin/ui/property/property_group.c:5434
 msgid ""
@@ -2219,6 +2381,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"வலது-கீழ் மூலையை மற்றொரு பகுதியின் கொள்கலனின் ஒய் அச்சுடன் ஒப்பீட்டளவில் நிலைநிறுத்துகிறது"
+". \"உறவினர்\" இன் முதல் அளவுருவை பாதிக்கிறது. எந்தவொரு அமைப்பையும் மரபுரிமையாக "
+"பகுதிகளுக்கு இந்த மதிப்பை அமைக்கவில்லை."
 
 #: src/bin/ui/property/property_group.c:5443
 msgid ""
@@ -2226,6 +2391,8 @@ msgid ""
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the X axis."
 msgstr ""
+"வலது-கீழ் மூலையை உறவினரின் கொள்கலனுக்குள் ஒரு உறவினர் நிலைக்கு நகர்த்துகிறது. ஃச் அச்சின் "
+"0.0 (0%, தொடக்க) முதல் 1.0 (100%, முடிவு) வரை மதிப்புகள்."
 
 #: src/bin/ui/property/property_group.c:5447
 msgid ""
@@ -2233,28 +2400,36 @@ msgid ""
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the Y axis."
 msgstr ""
+"வலது-கீழ் மூலையை உறவினரின் கொள்கலனுக்குள் ஒரு உறவினர் நிலைக்கு நகர்த்துகிறது. ஒய் அச்சின் "
+"0.0 (0%, தொடக்க) முதல் 1.0 (100%, முடிவு) வரை மதிப்புகள்."
 
 #: src/bin/ui/property/property_group.c:5455
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the X axis."
 msgstr ""
+"ஃச் அச்சில் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கான வலது-கீழ் மூலையில் நிலையை "
+"பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5458
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the Y axis."
 msgstr ""
+"ஒய் அச்சுடன் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கான வலது-கீழ் மூலையில் நிலையை "
+"பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5473
 msgid "Name of vector to be used."
-msgstr ""
+msgstr "பயன்படுத்த வேண்டிய திசையன் பெயர்."
 
 #: src/bin/ui/property/property_group.c:5487
 msgid ""
 "Name of image to be used. In an animation, this is the first and last image "
 "displayed."
 msgstr ""
+"பயன்படுத்த வேண்டிய படத்தின் பெயர். ஒரு அனிமேசனில், இது காண்பிக்கப்படும் முதல் மற்றும் கடைசி"
+" படம்."
 
 #: src/bin/ui/property/property_group.c:5493
 msgid ""
@@ -2263,6 +2438,9 @@ msgid ""
 "listed, during the transition to the state they are declared in. The \"normal"
 "\" image is the final state."
 msgstr ""
+"அனிமேசன் வளையத்தில் பயன்படுத்தப்பட வேண்டிய படங்களின் பெயர்கள். உங்களிடம் எதுவும் இல்லை, 1, "
+"அல்லது பல இருபது அறிவிப்புகள் இருக்க முடியாது. படங்கள் அவை பட்டியலிடப்பட்ட வரிசையில், "
+"அவை அறிவிக்கப்பட்ட நிலைக்கு மாற்றத்தின் போது காட்டப்படும். \"சாதாரண\" படம் இறுதி நிலை."
 
 #: src/bin/ui/property/property_group.c:5502
 #: src/bin/ui/property/property_group.c:5506
@@ -2273,6 +2451,9 @@ msgid ""
 "fixed size border, from the side inwards, preventing the corners from being "
 "changed on a resize."
 msgstr ""
+"அமைக்கப்பட்டால், படத்தின் ஒவ்வொரு பக்கத்தின் பரப்பளவு (பிக்சல்களில்) ஒரு நிலையான அளவு "
+"எல்லையாக, பக்கவாட்டில் இருந்து உள்நோக்கி காட்டப்படும், இது ஒரு மறுஅளவிடத்தில் மூலைகளை "
+"மாற்றுவதைத் தடுக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5524
 msgid ""
@@ -2280,6 +2461,9 @@ msgid ""
 "covered by the defined border) is displayed or not or assumed to be solid "
 "(without alpha)."
 msgstr ""
+"எல்லை அமைக்கப்பட்டால், மீதமுள்ள படத்தை (வரையறுக்கப்பட்ட எல்லையால் மூடப்படவில்லை) "
+"காட்டப்பட்டாலும் இல்லாவிட்டால் அல்லது திடமானதாகக் கருதப்படுகிறதா (ஆல்பா இல்லாமல்) இந்த "
+"மதிப்பு EDJE ஐச் சொல்கிறது."
 
 #: src/bin/ui/property/property_group.c:5540
 msgid ""
@@ -2289,58 +2473,74 @@ msgid ""
 "accordingly params value \"relative\" and \"offset\" from \"origin\" and "
 "\"size\" blocks."
 msgstr ""
+"பட நிரப்பு வகையை அமைக்கிறது. இது இயல்புநிலை வகை. <br> * ஓடு - படம் அதற்கேற்ப "
+"குலுங்குகிறது."
 
 #: src/bin/ui/property/property_group.c:5552
 msgid ""
 "The smooth property takes a boolean value to decide if the image is smoothed "
 "on scaling or not."
 msgstr ""
+"மென்மையான சொத்து ஒரு பூலியன் மதிப்பை எடுக்கும், படம் அளவிடுதலில் மென்மையாக்கப்பட்டதா "
+"இல்லையா என்பதை தீர்மானிக்க."
 
 #: src/bin/ui/property/property_group.c:5564
 msgid ""
 "Sets the left-up corner X coordinate relative to the displayed element's "
 "content."
 msgstr ""
+"காட்டப்பட்ட உறுப்பின் உள்ளடக்கத்துடன் ஒப்பிடும்போது இடது-அப் மூலையில் ஃச் ஒருங்கிணைப்பை "
+"அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5567
 msgid ""
 "Sets the left-up corner Y coordinate relative to the displayed element's "
 "content."
 msgstr ""
+"காட்டப்பட்ட உறுப்பின் உள்ளடக்கத்துடன் ஒப்பிடும்போது இடது-அப் மூலையில் ஒய் ஒருங்கிணைப்பை "
+"அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5574
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the X axis."
 msgstr ""
+"ஃச் அச்சில் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கு இடது-அப் மூலையை பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5576
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the Y axis."
 msgstr ""
+"ஒய் அச்சில் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கு இடது-அப் மூலையை பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5587
 msgid ""
 "Sets the right-bottom corner X coordinate relative to the displayed "
 "element's content."
 msgstr ""
+"காட்டப்பட்ட உறுப்பின் உள்ளடக்கத்துடன் ஒப்பிடும்போது வலது-கீழ் மூலையில் ஃச் ஒருங்கிணைப்பை "
+"அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5590
 msgid ""
 "Sets the right-bottom corner Y coordinate relative to the displayed "
 "element's content."
 msgstr ""
+"காட்டப்பட்ட உறுப்பின் உள்ளடக்கத்துடன் தொடர்புடைய வலது-கீழ் மூலையில் ஒய் ஒருங்கிணைப்பை "
+"அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5597
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the X "
 "axis."
 msgstr ""
+"ஃச் அச்சில் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கு வலது-கீழ் மூலையை பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5600
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the Y "
 "axis."
 msgstr ""
+"ஒய் அச்சுடன் ஒரு குறிப்பிட்ட எண்ணிக்கையிலான பிக்சல்களுக்கு வலது-கீழ் மூலையை பாதிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5615
 msgid ""
@@ -2348,101 +2548,126 @@ msgid ""
 "be overridden by the \"color\", \"color2\" and \"color3\" properties set "
 "below."
 msgstr ""
+"பகுதி தேர்ந்தெடுக்கப்பட்ட வண்ண வகுப்பின் வண்ண மதிப்புகளைப் பயன்படுத்துகிறது. இந்த மதிப்புகள் "
+"கீழே அமைக்கப்பட்ட \"கலர்\", \"கலர் 2\" மற்றும் \"கலர் 3\" பண்புகளால் மீறப்படலாம்."
 
 #: src/bin/ui/property/property_group.c:5622
 msgid "Sets the main color."
-msgstr ""
+msgstr "முக்கிய வண்ணத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5628
 msgid "Sets the text outline color."
-msgstr ""
+msgstr "உரை அவுட்லைன் வண்ணத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5634
 msgid "Sets the text shadow color."
-msgstr ""
+msgstr "உரை நிழல் நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5648
 msgid ""
 "Sets the default content of a text part. Normally the application is the one "
 "changing its value."
 msgstr ""
+"உரை பகுதியின் இயல்புநிலை உள்ளடக்கத்தை அமைக்கிறது. பொதுவாக பயன்பாடு அதன் மதிப்பை "
+"மாற்றுவதாகும்."
 
 #: src/bin/ui/property/property_group.c:5654
 msgid ""
 "Changes the position on the X axis of the point of balance inside the "
 "container."
-msgstr ""
+msgstr "கொள்கலனுக்குள் சமநிலையின் புள்ளியின் ஃச் அச்சில் நிலையை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5657
 msgid ""
 "Changes the position on the Y axis of the point of balance inside the "
 "container."
-msgstr ""
+msgstr "கொள்கலனுக்குள் சமநிலையின் புள்ளியின் ஒய் அச்சில் நிலையை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5663
 msgid ""
 "When this parameter is enabled, it forces the minimum width of the container "
 "to be equal to the minimum size of the text."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், இது கொள்கலனின் குறைந்தபட்ச அகலத்தை உரையின் குறைந்தபட்ச அளவிற்கு"
+" சமமாக இருக்கும்படி கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5667
 msgid ""
 "When this parameter is enabled, it forces the minimum height of the "
 "container to be equal to the minimum size of the text."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், இது கொள்கலனின் குறைந்தபட்ச உயரத்தை உரையின் குறைந்தபட்ச அளவிற்கு"
+" சமமாக இருக்க கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5674
 msgid ""
 "When this parameter is enabled, it forces the maximum width of the container "
 "to be equal to the maximum size of the text."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், இது கொள்கலனின் அதிகபட்ச அகலத்தை உரையின் அதிகபட்ச அளவிற்கு "
+"சமமாக இருக்கும்படி கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5678
 msgid ""
 "When this parameter is enabled, it forces the maximum height of the "
 "container to be equal to the maximum size of the text."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், இது கொள்கலனின் அதிகபட்ச உயரத்தை உரையின் அதிகபட்ச அளவிற்கு "
+"சமமாக இருக்கும்படி கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5688
 msgid ""
 "This sets the font family to one of the aliases. Can be overrided by the "
 "application."
 msgstr ""
+"இது எழுத்துரு குடும்பத்தை மாற்றுப்பெயருக்கு அமைக்கிறது. பயன்பாட்டால் மீறலாம்."
 
 #: src/bin/ui/property/property_group.c:5695
 msgid ""
 "Sets the default font size in points for the text part. Can be overrided by "
 "the application."
 msgstr ""
+"உரை பகுதிக்கான புள்ளிகளில் இயல்புநிலை எழுத்துரு அளவை அமைக்கிறது. பயன்பாட்டால் "
+"மீறப்படலாம்."
 
 #: src/bin/ui/property/property_group.c:5702
 msgid ""
 "When this parameter is enabled, Edje resizes the text width to fit in it's "
 "container."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், எட்சே உரை அகலத்தை அதன் கொள்கலனில் பொருத்துவதற்கு "
+"மறுஅளவிடுகிறது."
 
 #: src/bin/ui/property/property_group.c:5705
 msgid ""
 "When this parameter is enabled, Edje resizes the text height to fit in it's "
 "container."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், எட்சே அதன் கொள்கலனில் பொருந்தும் வகையில் உரை உயரத்தை "
+"மறுஅளவிடுகிறது."
 
 #: src/bin/ui/property/property_group.c:5712
 msgid ""
 "Causes the part to use the text properties (such as font and size) of "
 "another part and update them as they change."
 msgstr ""
+"மற்றொரு பகுதியின் உரை பண்புகளை (எழுத்துரு மற்றும் அளவு போன்றவை) பயன்படுத்தவும், அவை "
+"மாறும்போது அவற்றை புதுப்பிக்கவும் காரணமாகிறது."
 
 #: src/bin/ui/property/property_group.c:5720
 msgid ""
 "Causes the part to display the text content of another part and update them "
 "as they change."
 msgstr ""
+"மற்றொரு பகுதியின் உரை உள்ளடக்கத்தைக் காண்பிப்பதற்கும் அவை மாறும்போது அவற்றைப் "
+"புதுப்பிப்பதற்கும் இந்த பகுதி காரணமாகிறது."
 
 #: src/bin/ui/property/property_group.c:5727
 msgid ""
 "This parameter enables or disables the ability to apply ellipsis to the text."
 msgstr ""
+"இந்த அளவுரு உரைக்கு நீள்வட்டத்தைப் பயன்படுத்தும் திறனை செயல்படுத்துகிறது அல்லது "
+"முடக்குகிறது."
 
 #: src/bin/ui/property/property_group.c:5730
 msgid ""
@@ -2450,159 +2675,174 @@ msgid ""
 "the last section of the string to be cut out in case of a resize that is "
 "smaller than the text itself. The default value is 0.0. "
 msgstr ""
+"உரையை 0.0 முதல் 1.0 வரை உறவினர் புள்ளியில் சமப்படுத்தப் பயன்படுகிறது, இந்த புள்ளி உரையை"
+" விட சிறியதாக இருக்கும் ஒரு மறுஅளவிடுதலின் போது வெட்டப்பட வேண்டிய சரத்தின் கடைசி "
+"பகுதியாகும். இயல்புநிலை மதிப்பு 0.0 ஆகும். "
 
 #: src/bin/ui/property/property_group.c:5742
 msgid ""
 "Causes the part to use the default style and tags with the specified name. "
 msgstr ""
+"குறிப்பிட்ட பெயருடன் இயல்புநிலை பாணி மற்றும் குறிச்சொற்களைப் பயன்படுத்துவதற்கு பகுதி "
+"காரணமாகிறது. "
 
 #: src/bin/ui/property/property_group.c:5757
 msgid ""
 "Changes the position of the point of balance by the X axis inside the "
 "container."
 msgstr ""
+"கொள்கலனுக்குள் உள்ள ஃச் அச்சு மூலம் சமநிலை புள்ளியின் நிலையை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5760
 msgid ""
 "Changes the position of the point of balance by the Y axis inside the "
 "container."
-msgstr ""
+msgstr "கொள்கலனுக்குள் உள்ள ஒய் அச்சால் சமநிலை புள்ளியின் நிலையை மாற்றுகிறது."
 
 #: src/bin/ui/property/property_group.c:5766
 msgid "Sets the space between cells by the X axis in pixels."
-msgstr ""
+msgstr "பிக்சல்களில் ஃச் அச்சால் கலங்களுக்கு இடையில் இடத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5768
 msgid "Sets the space between cells by the Y axis in pixels."
-msgstr ""
+msgstr "பிக்சல்களில் ஒய் அச்சால் உயிரணுக்களுக்கு இடையில் இடத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5773
 msgid ""
 "When this parameter is enabled, it forces the minimum horizonal size of the "
 "box/table to be equal to the minimum horizonal size of the items."
 msgstr ""
+"இந்த அளவுரு இயக்கப்பட்டால், இது பெட்டியின் குறைந்தபட்ச கிடைமட்ட அளவை/அட்டவணையில் "
+"உருப்படிகளின் குறைந்தபட்ச கிடைமட்ட அளவிற்கு சமமாக இருக்கும்படி கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5777
 msgid ""
 "When this parameters is enabled, it forces the minimum vertical size of the "
 "box/table to be equal to the minimum vertical size of the items."
 msgstr ""
+"இந்த அளவுருக்கள் இயக்கப்பட்டால், இது பெட்டியின் குறைந்தபட்ச செங்குத்து அளவை/அட்டவணையின் "
+"குறைந்தபட்ச செங்குத்து அளவிற்கு சமமாக இருக்கும்படி கட்டாயப்படுத்துகிறது."
 
 #: src/bin/ui/property/property_group.c:5785
 msgid "Sets the homogeneous mode for the table."
-msgstr ""
+msgstr "அட்டவணைக்கான ஒரேவிதமான பயன்முறையை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5799
 msgid "Sets the name of the object using the evas_object_name_set() function."
 msgstr ""
+"EVAS_OBJECT_NAME_SET () செயல்பாட்டைப் பயன்படுத்தி பொருளின் பெயரை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5804
 msgid "Sets the group this object is made from."
-msgstr ""
+msgstr "இந்த பொருள் தயாரிக்கப்பட்ட குழுவை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5809
 msgid "Sets the minimum size hints of width for this object."
-msgstr ""
+msgstr "இந்த பொருளின் அகலத்தின் குறைந்தபட்ச அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5811
 msgid "Sets the minimum size hints of height for this object."
-msgstr ""
+msgstr "இந்த பொருளின் உயரத்தின் குறைந்தபட்ச அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5816
 msgid "Sets the maximum size hints of width for this object."
-msgstr ""
+msgstr "இந்த பொருளின் அகலத்தின் அதிகபட்ச அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5818
 msgid "Sets the maximum size hints of height for this object."
-msgstr ""
+msgstr "இந்த பொருளின் உயரத்தின் அதிகபட்ச அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5823
 msgid "Sets the prederred size hints of width for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கு அகலத்தின் விருப்பமான அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5825
 msgid "Sets the prederred size hints of height for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கு உயரத்தின் விருப்பமான அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5830
 msgid "Sets the alignment size hints for this object by X axis."
-msgstr ""
+msgstr "இந்த பொருளின் சீரமைப்பு அளவு குறிப்புகளை ஃச் அச்சு மூலம் அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5832
 msgid "Sets the alignment size hints for this object by Y axis."
-msgstr ""
+msgstr "ஒய் அச்சு மூலம் இந்த பொருளுக்கான சீரமைப்பு அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5837
 msgid "Sets the weight size hints for this object by X axis."
-msgstr ""
+msgstr "இந்த பொருளின் எடை அளவு குறிப்புகளை ஃச் அச்சு மூலம் அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5839
 msgid "Sets the weight size hints for this object by Y axis."
-msgstr ""
+msgstr "ஒய் அச்சு மூலம் இந்த பொருளுக்கான எடை அளவு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5844
 msgid "Sets the aspect control hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான அம்சக் கட்டுப்பாட்டு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5849
 msgid "Sets the aspect width hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான அம்ச அகல குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5851
 msgid "Sets the aspect height hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான அம்ச உயர குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5856
 msgid ""
 "Replicates the item in a rectangle with a given amount of rows starting from "
 "the defined position of this item."
 msgstr ""
+"இந்த உருப்படியின் வரையறுக்கப்பட்ட நிலையிலிருந்து தொடங்கி ஒரு குறிப்பிட்ட அளவு வரிசைகளைக்"
+" கொண்ட ஒரு செவ்வகத்தில் உருப்படியை பிரதிபலிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5860
 msgid ""
 "Replicates the item in a rectangle with a given amount of columns starting "
 "from the defined position of this item."
 msgstr ""
+"இந்த உருப்படியின் வரையறுக்கப்பட்ட நிலையிலிருந்து தொடங்கி ஒரு குறிப்பிட்ட அளவு "
+"நெடுவரிசைகளுடன் ஒரு செவ்வகத்தில் உருப்படியை பிரதிபலிக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5867
 msgid "Sets the left padding hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கு இடது திணிப்பு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5869
 msgid "Sets the right padding hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான சரியான திணிப்பு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5873
 msgid "Sets the top padding hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான மேல் திணிப்பு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5875
 msgid "Sets the bottom padding hints for this object."
-msgstr ""
+msgstr "இந்த பொருளுக்கான கீழ் திணிப்பு குறிப்புகளை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5881
 msgid "Sets how many rows this item uses."
-msgstr ""
+msgstr "இந்த உருப்படி எத்தனை வரிசைகளைப் பயன்படுத்துகிறது என்பதை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5883
 msgid "Sets how many columns this item uses"
-msgstr ""
+msgstr "இந்த உருப்படி எத்தனை நெடுவரிசைகளைப் பயன்படுத்துகிறது என்பதை அமைக்கிறது"
 
 #: src/bin/ui/property/property_group.c:5889
 msgid "Sets the row position this item has in the table."
-msgstr ""
+msgstr "இந்த உருப்படி அட்டவணையில் உள்ள வரிசை நிலையை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5891
 msgid "Sets the column position this item has in the table."
-msgstr ""
+msgstr "இந்த உருப்படி அட்டவணையில் வைத்திருக்கும் நெடுவரிசை நிலையை அமைக்கிறது."
 
 #: src/bin/ui/property/property_group.c:5904
 msgid "Symbolic name of program as a unique identifier."
-msgstr ""
+msgstr "ஒரு தனித்துவமான அடையாளங்காட்டியாக நிரலின் குறியீட்டு பெயர்."
 
 #: src/bin/ui/property/property_group.c:5914
 msgid "Action to be performed by the program."
-msgstr ""
+msgstr "திட்டத்தால் செய்யப்பட வேண்டிய செயல்."
 
 #: src/bin/ui/property/property_group.c:5919
 msgid ""
@@ -2619,6 +2859,14 @@ msgid ""
 "if wheel scrolled up and -1 if down;<br>drag,start; drag; drag,stop;"
 "<br>focus,part,in; focus,part,out.<bd>"
 msgstr ""
+"நிரலை இயக்கும் சமிக்ஞையை குறிப்பிடுகிறது. பெறப்பட்ட சமிக்ஞை குறிப்பிட்ட மூலத்துடன் இயங்க "
+"வேண்டும். சமிக்ஞைகள் உலகளாவிய செய்யப்படலாம், ஆனால் ஒரு நிரலுக்கு 1 சமிக்ஞை முக்கிய சொல் "
+"மட்டுமே பயன்படுத்தப்படலாம், எடுத்துக்காட்டாக: \"சுட்டி, சொடுக்கு செய்யப்பட்டது,\"; . பிடி"
+", ஆஃப்; <br> சுட்டி, இல்; சுட்டி, அவுட்; சுட்டி, அழுத்தியது, இல்; சுட்டி, அழுத்தியது, "
+"வெளியே; <br> சுட்டி, கீழே, என்: எங்கே என் - மவுச் பொத்தான் எண்; . சுட்டி, சக்கரம், என், "
+"எம்: எங்கே என் - திசை (இயல்பாகவே 0), எம் - 1 சக்கரம் உருட்டினால் மற்றும் -1 கீழே இருந்தால்;"
+" <br> இழுத்து, தொடங்கு; இழுத்தல்; இழுக்கவும், நிறுத்தவும்; <br> கவனம், பகுதி, இல்; கவனம்"
+", பகுதி, வெளியே. <bd>"
 
 #: src/bin/ui/property/property_group.c:5941
 msgid ""
@@ -2626,14 +2874,19 @@ msgid ""
 "keyword per program can be used. For example: \"button-*\"; (Signals from "
 "any part or program named \"button-*\" are accepted)."
 msgstr ""
+"ஏற்றுக்கொள்ளப்பட்ட சமிக்ஞையின் சான்று. ஆதாரங்கள் உலகளாவிய செய்யப்படலாம், ஆனால் ஒரு நிரலுக்கு"
+" 1 மூல முக்கிய சொல் மட்டுமே பயன்படுத்த முடியும். எடுத்துக்காட்டாக: \"பொத்தான்-*\"; ("
+"\"பொத்தான்-*\" என்ற பெயரிடப்பட்ட எந்த பகுதி அல்லது நிரலிலிருந்து சமிக்ஞைகள் "
+"ஏற்றுக்கொள்ளப்படுகின்றன)."
 
 #: src/bin/ui/property/property_group.c:5949
 msgid "Wait 'from' seconds before executing the program."
-msgstr ""
+msgstr "நிரலை இயக்குவதற்கு முன் 'வினாடிகளில் இருந்து' காத்திருங்கள்."
 
 #: src/bin/ui/property/property_group.c:5951
 msgid "Add a number of seconds (from 0 to 'range') to the total waiting time."
 msgstr ""
+"மொத்த காத்திருப்பு நேரத்திற்கு பல வினாடிகள் (0 முதல் 'வரம்பு' வரை) சேர்க்கவும்."
 
 #: src/bin/ui/property/property_group.c:5956
 #: src/bin/ui/property/property_group.c:5963
@@ -2642,39 +2895,47 @@ msgid ""
 "[state]. Only 1 filter per program can be used. If [state] is not given, the "
 "source of the event is used instead."
 msgstr ""
+"பகுதி [பகுதி] [மாநிலம்] என்று பெயரிடப்பட்டிருந்தால் மட்டுமே ஏற்றுக்கொள்ள வேண்டிய வடிகட்டி"
+" சமிக்ஞைகள். ஒரு நிரலுக்கு 1 வடிகட்டி மட்டுமே பயன்படுத்த முடியும். [நிலை] "
+"கொடுக்கப்படாவிட்டால், அதற்கு பதிலாக நிகழ்வின் மூலத்தைப் பயன்படுத்தப்படுகிறது."
 
 #: src/bin/ui/property/property_group.c:5977
 msgid "Switch the part state from the current to the given."
-msgstr ""
+msgstr "பகுதி நிலையை மின்னோட்டத்திலிருந்து கொடுக்கப்பட்டதாக மாற்றவும்."
 
 #: src/bin/ui/property/property_group.c:5983
 msgid "State index"
-msgstr ""
+msgstr "மாநில அட்டவணை"
 
 #: src/bin/ui/property/property_group.c:5989
 msgid ""
 "Name of the signal to be emitted to the application on execution of this "
 "program."
 msgstr ""
+"இந்த திட்டத்தின் செயல்படுத்தல் குறித்த பயன்பாட்டிற்கு வெளியிடப்பட வேண்டிய சமிக்ஞையின் பெயர்."
 
 #: src/bin/ui/property/property_group.c:5996
 msgid ""
 "Name of the signal source to be emitted to the application on the execution "
 "of this program."
 msgstr ""
+"இந்த திட்டத்தின் செயல்படுத்தல் குறித்த பயன்பாட்டிற்கு வெளியேற்றப்பட வேண்டிய சமிக்ஞை மூலத்தின் "
+"பெயர்."
 
 #: src/bin/ui/property/property_group.c:6016
 msgid "Defines how transitions occur using the STATE_SET action."
 msgstr ""
+"State_set செயலைப் பயன்படுத்தி மாற்றங்கள் எவ்வாறு நிகழ்கின்றன என்பதை வரையறுக்கிறது."
 
 #: src/bin/ui/property/property_group.c:6021
 msgid "Causes the object to move from its current position."
-msgstr ""
+msgstr "பொருள் அதன் தற்போதைய நிலையில் இருந்து நகரும்."
 
 #: src/bin/ui/property/property_group.c:6026
 msgid ""
 "A double specifying the number of seconds in which to preform the transition."
 msgstr ""
+"மாற்றத்தை முன்கூட்டியே வடிவமைக்கும் விநாடிகளின் எண்ணிக்கையை இரட்டிப்பாக்குகிறது."
 
 #: src/bin/ui/property/property_group.c:6033
 msgid ""
@@ -2683,57 +2944,68 @@ msgid ""
 "counterparts, where 0.0 is equal to linear. Numbers higher than 1 make the "
 "curve angles steeper with a more pronounced curve point."
 msgstr ""
+"வளைவின் \"காரணி\" தீர்மானிக்க Act_fac, decel_fac மற்றும் sin_fac ஆகியவை கூடுதல் "
+"விருப்ப மதிப்பு தேவை. 1.0 என்பது அவற்றின் காரணி அல்லாத சகாக்களுக்கு சமம், அங்கு 0.0 "
+"நேர்கோட்டுக்கு சமம். 1 ஐ விட அதிகமான எண்கள் வளைவு கோணங்களை அதிக வெளிப்படும் வளைவு "
+"புள்ளியுடன் செங்குத்தாக ஆக்குகின்றன."
 
 #: src/bin/ui/property/property_group.c:6044
 msgid ""
 "Initial gradient start (0.0 is horizontal, 1.0 is diagonal (linear), 2.0 is "
 "twice the gradient of linear)."
 msgstr ""
+"ஆரம்ப சாய்வு தொடக்கமானது (0.0 கிடைமட்டமானது, 1.0 மூலைவிட்ட (நேரியல்), 2.0 என்பது "
+"நேரியல் சாய்வு இரு மடங்கு)."
 
 #: src/bin/ui/property/property_group.c:6051
 msgid ""
 "Determining how much the bounce decays, with 0.0 giving linear decay per "
 "bounce, and higher values giving much more decay."
 msgstr ""
+"பவுன்ச் எவ்வளவு சிதைகிறது என்பதைத் தீர்மானித்தல், 0.0 ஒரு பவுன்ச் நேரியல் சிதைவைக் "
+"கொடுக்கும், மேலும் அதிக மதிப்புகள் அதிக சிதைவைக் கொடுக்கும்."
 
 #: src/bin/ui/property/property_group.c:6059
 msgid "Number of bounces (rounded down to the nearest integer value)"
-msgstr ""
+msgstr "பவுன்ச் எண்ணிக்கை (அருகிலுள்ள முழு எண் மதிப்புக்கு வட்டமானது)"
 
 #: src/bin/ui/property/property_group.c:6065
 msgid "Number of spring \"swings\"."
-msgstr ""
+msgstr "வசந்த \"ஊசலாட்டங்களின்\" எண்ணிக்கை."
 
 #: src/bin/ui/property/property_group.c:6091
 msgid "Name of sample to be played"
-msgstr ""
+msgstr "விளையாட வேண்டிய மாதிரியின் பெயர்"
 
 #: src/bin/ui/property/property_group.c:6097
 msgid "Name of tone to be played"
-msgstr ""
+msgstr "விளையாட வேண்டிய தொனியின் பெயர்"
 
 #: src/bin/ui/property/property_group.c:6103
 msgid ""
 "PLAY_SAMPLE (optional) channel can be one of: EFFECT/FX, BACKGROUND/BG ,"
 "MUSIC/MUS, FOREGROUND/FG, INTERFACE/UI, INPUT, ALERT"
 msgstr ""
+"Play_sample (விரும்பினால்) சேனல் ஒன்றாகும்: விளைவு/FX, பின்னணி/பி.சி, இசை/மச், "
+"முன்புறம்/எஃப்சி, இடைமுகம்/யுஐ, உள்ளீடு, எச்சரிக்கை"
 
 #: src/bin/ui/property/property_group.c:6111
 msgid "Range of tone playing from 0.1 to 10 seconds."
-msgstr ""
+msgstr "0.1 முதல் 10 வினாடிகள் வரை விளையாடும் தொனி வரம்பு."
 
 #: src/bin/ui/property/property_group.c:6117
 msgid "Range of sample playing speed is from 0 to 100."
-msgstr ""
+msgstr "மாதிரி விளையாட்டு வேகத்தின் வரம்பு 0 முதல் 100 வரை."
 
 #: src/bin/ui/property/property_group.c:6137
 #: src/bin/ui/property/property_group.c:6143
 msgid "Defines a new parameter. The value is the string specified next to it."
 msgstr ""
+"புதிய அளவுருவை வரையறுக்கிறது. மதிப்பு என்பது அதற்கு அடுத்ததாக குறிப்பிடப்பட்டுள்ள சரம்."
 
 #: src/bin/ui/property/property_color.c:193
 msgid "Provides a descriptive name for the effect of the color class"
-msgstr ""
+msgstr "வண்ண வகுப்பின் விளைவுக்கு விளக்கமான பெயரை வழங்குகிறது"
 
 #: src/bin/ui/property/property_textblock.c:1151
 msgid ""
@@ -2741,26 +3013,35 @@ msgid ""
 "lang=hi\" or \"Serif:style=Bold\".Warning! All font names shouldn't contain "
 "spaces.Font name \"Times New Roman\" should be written as \"TimesNewRoman\"!"
 msgstr ""
+"எழுத்துரு விளக்கம் fontConfig வடிவத்தில். எடுத்துக்காட்டாக, "
+"\"சான்ச்: பாணி = இத்தாலிக்: லாங் = ஆய்\" அல்லது \"செரிஃப்: பாணி = தைரியமான\". எல்லா "
+"எழுத்துரு பெயர்களும் இடைவெளிகளைக் கொண்டிருக்கக்கூடாது. \"டைம்ச் புதிய ரோமன்\" என்ற "
+"பெயரில் \"டைம்செவ்மான்\" என்று எழுதப்பட வேண்டும்!"
 
 #: src/bin/ui/property/property_textblock.c:1159
 msgid ""
 "Overrides the weight defined in \"font\". For example, the value \"Bold\" is "
 "the same as font value \"style=Bold\"."
 msgstr ""
+"\"எழுத்துரு\" இல் வரையறுக்கப்பட்ட எடையை மீறுகிறது. எடுத்துக்காட்டாக, \"தைரியமான\" "
+"மதிப்பு எழுத்துரு மதிப்பு \"பாணி = தைரியமான\" போன்றது."
 
 #: src/bin/ui/property/property_textblock.c:1166
 msgid ""
 "Overrides the width defined in \"font\". For example, the value \"Condensed"
 "\" is the same as font value \"style=Condensed\"."
 msgstr ""
+"\"எழுத்துரு\" இல் வரையறுக்கப்பட்ட அகலத்தை மீறுகிறது. எடுத்துக்காட்டாக, \"மின்தேக்கி\" "
+"மதிப்பு எழுத்துரு மதிப்பு \"பாணி = மின்தேக்கி\" போன்றது."
 
 #: src/bin/ui/property/property_textblock.c:1173
 msgid "Text color. Color can be chosen using the color selector UI tool."
 msgstr ""
+"உரை நிறம். வண்ண தேர்வாளர் இடைமுகம் கருவியைப் பயன்படுத்தி வண்ணத்தைத் தேர்வு செய்யலாம்."
 
 #: src/bin/ui/property/property_textblock.c:1179
 msgid "The font size in points."
-msgstr ""
+msgstr "புள்ளிகளில் எழுத்துரு அளவு."
 
 #: src/bin/ui/property/property_textblock.c:1191
 msgid ""
@@ -2769,6 +3050,9 @@ msgid ""
 "for \"center\"<br>  * left  - Aligns the text left.<br> * right  - Aligns "
 "the text right.<br>"
 msgstr ""
+"உரையின் கிடைமட்ட சீரமைப்பை அமைக்கிறது. <br> * ஆட்டோ - எல்.டி.ஆர்/ஆர்.டி.எல் அமைப்புகளை "
+"மதிக்கிறது. உரையை இடதுபுறமாக சீரமைக்கிறது. <br> * வலது - உரையை வலதுபுறமாக "
+"சீரமைக்கிறது. <br>"
 
 #: src/bin/ui/property/property_textblock.c:1201
 msgid ""
@@ -2777,14 +3061,17 @@ msgid ""
 "Alias for \"center\"<br> * bottom  - Puts the text at the bottom of the line."
 "<br> * baseline - Baseline<br> * base - Alias for \"baseline\""
 msgstr ""
+"உரையின் செங்குத்து சீரமைப்பை அமைக்கிறது. <br> * மேல் - உரையை வரியின் மேற்புறத்தில் "
+"வைக்கிறது. * கீழே - உரையை வரியின் அடிப்பகுதியில் வைக்கிறது. <br> * அடிப்படை - "
+"அடிப்படை <br> * அடிப்படை - \"அடிப்படை\" என்பதற்கான மாற்றுப்பெயர்"
 
 #: src/bin/ui/property/property_textblock.c:1212
 msgid "Sets the left margin of the text in pixel."
-msgstr ""
+msgstr "உரையின் இடது விளிம்பை பிக்சலில் அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1214
 msgid "Sets the right margin of the text in pixel."
-msgstr ""
+msgstr "உரையின் சரியான விளிம்பை பிக்சலில் அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1219
 msgid ""
@@ -2794,455 +3081,468 @@ msgid ""
 "if possible, if not, wrap at words if possible,<br>                 if not, "
 "at any character."
 msgstr ""
+"உரையின் மடக்கு கொள்கையை அமைக்கிறது. <br> * சொல் - சொல் எல்லைகளில் மட்டுமே கோடுகளை "
+"மூடுகிறது. ."
 
 #: src/bin/ui/property/property_textblock.c:1236
 msgid ""
 "Sets the size of the tab character. The value must be a number greater than "
 "1."
 msgstr ""
+"தாவல் எழுத்தின் அளவை அமைக்கிறது. மதிப்பு 1 ஐ விட அதிகமான எண்ணாக இருக்க வேண்டும்."
 
 #: src/bin/ui/property/property_textblock.c:1242
 msgid "Sets the size of line of text."
-msgstr ""
+msgstr "உரையின் வரியின் அளவை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1247
 msgid "Enables or disables the background color."
-msgstr ""
+msgstr "பின்னணி நிறத்தை இயக்குகிறது அல்லது முடக்குகிறது."
 
 #: src/bin/ui/property/property_textblock.c:1249
 msgid "Sets a background color for text."
-msgstr ""
+msgstr "உரைக்கு பின்னணி நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1254
 msgid ""
 "Sets if the text is being used for passwords. Enabling this causes all "
 "characters to be substituted for '*'."
 msgstr ""
+"கடவுச்சொற்களுக்கு உரை பயன்படுத்தப்பட்டால் அமைக்கிறது. இதை செயல்படுத்துவது அனைத்து "
+"எழுத்துக்களும் '*' க்கு மாற்றாக இருக்கும்."
 
 #: src/bin/ui/property/property_textblock.c:1260
 msgid "Enables or disables the ellipsis feature for text."
-msgstr ""
+msgstr "உரைக்கான நீள்வட்ட அம்சத்தை இயக்குகிறது அல்லது முடக்குகிறது."
 
 #: src/bin/ui/property/property_textblock.c:1262
 msgid ""
 "Sets the ellipsis mode. A value of 0 means ellipsizing the leftmost portion "
 "of the text first, 1 on the other hand the rightmost portion."
 msgstr ""
+"நீள்வட்ட பயன்முறையை அமைக்கிறது. 0 இன் மதிப்பு என்பது உரையின் இடது பகுதியை முதலில் "
+"அகற்றுவதாகும், 1 மறுபுறம் வலதுபுற பகுதி."
 
 #: src/bin/ui/property/property_textblock.c:1269
 msgid ""
 "A floating point value indicating the wanted size of the line relative to "
 "the calculated size."
 msgstr ""
+"கணக்கிடப்பட்ட அளவோடு தொடர்புடைய வரியின் விரும்பிய அளவைக் குறிக்கும் மிதக்கும் புள்ளி "
+"மதிப்பு."
 
 #: src/bin/ui/property/property_textblock.c:1282
 msgid "Sets the style of the text."
-msgstr ""
+msgstr "உரையின் பாணியை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1287
 msgid "Sets the color of the text shadow."
-msgstr ""
+msgstr "உரை நிழலின் நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1293
 msgid "Sets the shadow direction"
-msgstr ""
+msgstr "நிழல் திசையை அமைக்கிறது"
 
 #: src/bin/ui/property/property_textblock.c:1299
 msgid "Sets the outer shadow glow color."
-msgstr ""
+msgstr "வெளிப்புற நிழல் பளபளப்பான நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1305
 msgid "Sets the inner shadow glow color."
-msgstr ""
+msgstr "உள் நிழல் பளபளப்பான நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1318
 msgid "Sets if the text is striked through."
-msgstr ""
+msgstr "உரை மூலம் தாக்கப்பட்டால் அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1320
 msgid "Sets the color of the text that is striked through."
-msgstr ""
+msgstr "மூலம் தாக்கப்பட்ட உரையின் நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1325
 msgid "Sets if and how a text is underlined."
-msgstr ""
+msgstr "ஒரு உரை எவ்வாறு அடிக்கோடிட்டுக் காட்டப்படுகிறது என்பதை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1331
 msgid "Sets the color of the underline."
-msgstr ""
+msgstr "அடித்தளத்தின் நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1337
 msgid ""
 "Sets the color of the second line of the underline when using the \"double\" "
 "underline mode."
 msgstr ""
+"\"இரட்டை\" அடிக்கோடிட்ட பயன்முறையைப் பயன்படுத்தும் போது அடிக்குறிப்பின் இரண்டாவது வரியின் "
+"நிறத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1344
 msgid "Sets the width of the underline dash."
-msgstr ""
+msgstr "அடிக்கோடிட்டுக் காட்டின் அகலத்தை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1346
 msgid "Sets the gap of the underline dash."
-msgstr ""
+msgstr "அடிக்கோடிட்டுக் காட்டின் இடைவெளியை அமைக்கிறது."
 
 #: src/bin/ui/property/property_textblock.c:1352
 msgid "Sets the color of dashed underline."
-msgstr ""
+msgstr "கோடுள்ள அடிக்கோடிட்டுக் காட்டப்பட்ட வண்ணத்தை அமைக்கிறது."
 
 #: src/bin/ui/tab_home_open.c:61
 msgid "Project open"
-msgstr ""
+msgstr "திட்ட திறந்த"
 
 #: src/bin/ui/tab_home_open.c:117 src/bin/ui/tab_home_open.c:279
 #: src/bin/main.c:153
 msgid "Given project is dameged. Do you want to recover project?"
 msgstr ""
+"கொடுக்கப்பட்ட திட்டம் சேதமடைந்துள்ளது. திட்டத்தை மீட்டெடுக்க விரும்புகிறீர்களா?"
 
 #: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:286
 msgid "The given file is locked by another application"
-msgstr ""
+msgstr "கொடுக்கப்பட்ட கோப்பு மற்றொரு பயன்பாட்டால் பூட்டப்பட்டுள்ளது"
 
 #: src/bin/ui/tab_home_open.c:188
 msgid "Confirm clear recent list"
-msgstr ""
+msgstr "தெளிவான அண்மைக் கால பட்டியலை உறுதிப்படுத்தவும்"
 
 #: src/bin/ui/tab_home_open.c:189
 msgid "Are you sure you want to clear list of recently opened projects?<br>"
 msgstr ""
+"அண்மைக் காலத்தில் திறக்கப்பட்ட திட்டங்களின் பட்டியலை அழிக்க விரும்புகிறீர்களா? <br>"
 
 #: src/bin/ui/tab_home_open.c:220
 msgid "Open recent"
-msgstr ""
+msgstr "அண்மைக் கால திறப்பு"
 
 #: src/bin/ui/tab_home_open.c:223
 msgid "Clear list"
-msgstr ""
+msgstr "தெளிவான பட்டியல்"
 
 #: src/bin/ui/tab_home_open.c:242
 msgid "Open"
-msgstr ""
+msgstr "திற"
 
 #: src/bin/ui/tabs.c:1220
 msgid "Project info"
-msgstr ""
+msgstr "திட்ட செய்தி"
 
 #: src/bin/ui/workspace/workspace.c:526
 msgid "100"
-msgstr ""
+msgstr "100"
 
 #: src/bin/ui/workspace/workspace.c:528
 msgid "100%"
-msgstr ""
+msgstr "100%"
 
 #: src/bin/ui/workspace/workspace.c:755
 #, c-format
 msgid "Part '%s' width: %d"
-msgstr ""
+msgstr "பகுதி ' %s' அகலம்: %d"
 
 #: src/bin/ui/workspace/workspace.c:760
 #, c-format
 msgid "Part '%s' heigth: %d"
-msgstr ""
+msgstr "பகுதி ' %s' எய்ட்: %d"
 
 #: src/bin/ui/workspace/workspace.c:775
 #, c-format
 msgid "Part '%s' object area width: %d"
-msgstr ""
+msgstr "பகுதி ' %s' பொருள் பகுதி அகலம்: %d"
 
 #: src/bin/ui/workspace/workspace.c:780
 #, c-format
 msgid "Part '%s' object area heigth: %d"
-msgstr ""
+msgstr "பகுதி ' %s' பொருள் பகுதி எய்ட்: %d"
 
 #: src/bin/ui/workspace/workspace.c:790 src/bin/ui/workspace/workspace.c:800
 #: src/bin/ui/workspace/workspace.c:810 src/bin/ui/workspace/workspace.c:820
 #, c-format
 msgid "Part '%s'"
-msgstr ""
+msgstr "பகுதி '%s'"
 
 #: src/bin/ui/workspace/workspace.c:1065
 msgid "Absolute scale"
-msgstr ""
+msgstr "முழுமையான அளவு"
 
 #: src/bin/ui/workspace/workspace.c:1067
 msgid "Relative scale"
-msgstr ""
+msgstr "உறவினர் அளவு"
 
 #: src/bin/ui/workspace/workspace.c:1069
 msgid "Both scales"
-msgstr ""
+msgstr "இரண்டு செதில்களும்"
 
 #: src/bin/ui/workspace/workspace.c:1075
 msgid "Markers"
-msgstr ""
+msgstr "குறிப்பான்கள்"
 
 #: src/bin/ui/workspace/workspace.c:1418
 #, c-format
 msgid "max size changed from [%dx%d] to [%dx%d]"
-msgstr ""
+msgstr "அதிகபட்ச அளவு [%dx%d] இலிருந்து [%dx%d] ஆக மாற்றப்பட்டது]"
 
 #: src/bin/ui/workspace/workspace.c:1438
 #, c-format
 msgid "align changed from [%fx%f] to [%fx%f]"
-msgstr ""
+msgstr "சீரமை [%fx%f] இலிருந்து [%fx%f க்கு மாற்றப்பட்டது"
 
 #: src/bin/ui/workspace/workspace.c:1523
 msgid "Library"
-msgstr ""
+msgstr "நூலகம்"
 
 #: src/bin/ui/workspace/workspace.c:2241
 msgid "Project is changed"
-msgstr ""
+msgstr "திட்டம் மாற்றப்பட்டுள்ளது"
 
 #: src/bin/ui/workspace/workspace.c:2243
 msgid "Reload"
-msgstr ""
+msgstr "ஏற்றவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:107
 msgid "State set"
-msgstr ""
+msgstr "மாநில தொகுப்பு"
 
 #: src/bin/ui/workspace/group_navigator.c:108
 msgid "Signal emit"
-msgstr ""
+msgstr "சமிக்ஞை உமிழ்வு"
 
 #: src/bin/ui/workspace/group_navigator.c:109
 msgid "Drag value set"
-msgstr ""
+msgstr "இழுவை மதிப்பு தொகுப்பு"
 
 #: src/bin/ui/workspace/group_navigator.c:110
 msgid "Drag value step"
-msgstr ""
+msgstr "இழுவை மதிப்பு படி"
 
 #: src/bin/ui/workspace/group_navigator.c:111
 msgid "Drag value page"
-msgstr ""
+msgstr "இழுவை மதிப்பு பக்கம்"
 
 #: src/bin/ui/workspace/group_navigator.c:112
 msgid "Play sample"
-msgstr ""
+msgstr "மாதிரி விளையாடுங்கள்"
 
 #: src/bin/ui/workspace/group_navigator.c:113
 msgid "Play tone"
-msgstr ""
+msgstr "தொனி விளையாடுங்கள்"
 
 #: src/bin/ui/workspace/group_navigator.c:114
 msgid "Action stop"
-msgstr ""
+msgstr "செயல் நிறுத்தம்"
 
 #: src/bin/ui/workspace/group_navigator.c:191
 msgid "items"
-msgstr ""
+msgstr "உருப்படிகள்"
 
 #: src/bin/ui/workspace/group_navigator.c:208
 msgid "Parts"
-msgstr ""
+msgstr "பாகங்கள்"
 
 #: src/bin/ui/workspace/group_navigator.c:210
 msgid "Programs"
-msgstr ""
+msgstr "திட்டங்கள்"
 
 #: src/bin/ui/workspace/group_navigator.c:212
 msgid "Data items"
-msgstr ""
+msgstr "தரவு உருப்படிகள்"
 
 #: src/bin/ui/workspace/group_navigator.c:915
 #: src/bin/ui/workspace/group_navigator.c:1557
 msgid "Select the name of the source group."
-msgstr ""
+msgstr "மூலக் குழுவின் பெயரைத் தேர்ந்தெடுக்கவும்."
 
 #: src/bin/ui/workspace/group_navigator.c:975
 #, c-format
 msgid "copied new part \"%s\" from \"%s\""
-msgstr ""
+msgstr "\"%s\" இலிருந்து புதிய பகுதியை \"%s\" நகலெடுத்தது"
 
 #: src/bin/ui/workspace/group_navigator.c:987
 #, c-format
 msgid "added new part \"%s\""
-msgstr ""
+msgstr "புதிய பகுதி \"%s\" சேர்க்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:1125
 msgid "Part name"
-msgstr ""
+msgstr "பகுதி பெயர்"
 
 #: src/bin/ui/workspace/group_navigator.c:1128
 msgid "Enter the name of the new part"
-msgstr ""
+msgstr "புதிய பகுதியின் பெயரை உள்ளிடவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1135
 msgid "Part type"
-msgstr ""
+msgstr "பகுதி வகை"
 
 #: src/bin/ui/workspace/group_navigator.c:1153
 msgid "Part copy"
-msgstr ""
+msgstr "பகுதி நகல்"
 
 #: src/bin/ui/workspace/group_navigator.c:1194
 #, c-format
 msgid "Add New Part to Group \"%s\""
-msgstr ""
+msgstr "குழுவில் \"%s\" க்கு புதிய பகுதியைச் சேர்க்கவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1242
 #, c-format
 msgid "added new data item \"%s\""
-msgstr ""
+msgstr "புதிய தரவு உருப்படி \"%s\" சேர்க்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:1257
 msgid "Data item name"
-msgstr ""
+msgstr "தரவு உருப்படி பெயர்"
 
 #: src/bin/ui/workspace/group_navigator.c:1260
 msgid "Enter the name of the new group_data"
-msgstr ""
+msgstr "புதிய குழு_டேட்டாவின் பெயரை உள்ளிடவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1285
 #, c-format
 msgid "Add New Data Item to Group \"%s\""
-msgstr ""
+msgstr "\"%s\" குழுவில் புதிய தரவு உருப்படியைச் சேர்க்கவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1321
 #, c-format
 msgid "added new state \"%s\" %.2f"
-msgstr ""
+msgstr "புதிய மாநில \" %s\" %.2f சேர்க்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:1332
 #, c-format
 msgid "added new state \"%s\" %.2f as copy of \"%s\" %.2f"
-msgstr ""
+msgstr "\" %s\" %.2f இன் நகலாகப் புதிய நிலை \"%s\" %.2f ஐ சேர்க்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:1396
 msgid "State name"
-msgstr ""
+msgstr "மாநில பெயர்"
 
 #: src/bin/ui/workspace/group_navigator.c:1401
 msgid "Enter the name of the new state"
-msgstr ""
+msgstr "புதிய மாநிலத்தின் பெயரை உள்ளிடவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1405
 msgid "Value"
-msgstr ""
+msgstr "மதிப்பு"
 
 #: src/bin/ui/workspace/group_navigator.c:1409
 msgid "Available values: 0.0 - 1.0"
-msgstr ""
+msgstr "கிடைக்கும் மதிப்புகள்: 0.0 - 1.0"
 
 #: src/bin/ui/workspace/group_navigator.c:1414
 msgid "Duplicate state"
-msgstr ""
+msgstr "நகல் நிலை"
 
 #: src/bin/ui/workspace/group_navigator.c:1459
 #, c-format
 msgid "Add New State to Part \"%s\""
-msgstr ""
+msgstr "\"%s\" என்ற பகுதிக்கு புதிய நிலையைச் சேர்க்கவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1487
 #, c-format
 msgid "added new item \"%s\" to part \"%s\""
-msgstr ""
+msgstr "\"%s\" என்ற புதிய உருப்படி \"%s\" ஐச் சேர்த்தது"
 
 #: src/bin/ui/workspace/group_navigator.c:1551
 msgid "Enter the name of the new item"
-msgstr ""
+msgstr "புதிய உருப்படியின் பெயரை உள்ளிடவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1555
 msgid "Source group"
-msgstr ""
+msgstr "மூல குழு"
 
 #: src/bin/ui/workspace/group_navigator.c:1596
 #, c-format
 msgid "Add New Item to Part \"%s\""
-msgstr ""
+msgstr "புதிய உருப்படியை \"%s\" என்ற பகுதிக்குச் சேர்க்கவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1658
 #, c-format
 msgid "added new program \"%s\""
-msgstr ""
+msgstr "புதிய நிரலை \"%s\" சேர்க்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:1677
 msgid "Program name"
-msgstr ""
+msgstr "நிரல் பெயர்"
 
 #: src/bin/ui/workspace/group_navigator.c:1683
 msgid "Enter the name of the new program"
-msgstr ""
+msgstr "புதிய திட்டத்தின் பெயரை உள்ளிடவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1687
 msgid "Action type"
-msgstr ""
+msgstr "செயல் வகை"
 
 #: src/bin/ui/workspace/group_navigator.c:1721
 msgid "Add New Program"
-msgstr ""
+msgstr "புதிய நிரலைச் சேர்க்கவும்"
 
 #: src/bin/ui/workspace/group_navigator.c:1771
 #, c-format
 msgid "deleted program \"%s\""
-msgstr ""
+msgstr "நீக்கப்பட்ட நிரல் \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1845
 #, c-format
 msgid "deleted group_data \"%s\""
-msgstr ""
+msgstr "நீக்கப்பட்ட குழு_டேட்டா \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1915
 #, c-format
 msgid "deleted part \"%s\""
-msgstr ""
+msgstr "நீக்கப்பட்ட பகுதி \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:2085
 #, c-format
 msgid "deleted state \"%s\" %.2f"
-msgstr ""
+msgstr "நீக்கப்பட்ட நிலை \" %s\" %.2f"
 
 #: src/bin/ui/workspace/group_navigator.c:2151
 #, c-format
 msgid "deleted item \"%s\""
-msgstr ""
+msgstr "நீக்கப்பட்ட உருப்படி \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:2275
 #, c-format
 msgid "part \"%s\" placed below part \"%s\" in the stack"
-msgstr ""
+msgstr "பகுதி \"%s\" அடுக்கில் \"%s\" க்கு கீழே வைக்கப்பட்டுள்ளது"
 
 #: src/bin/ui/workspace/group_navigator.c:2277
 #, c-format
 msgid "part \"%s\" restacked to the top of the stack"
-msgstr ""
+msgstr "பகுதி \"%s\" அடுக்கின் மேற்புறத்தில் திரும்பப் பெறப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:2346
 #, c-format
 msgid "part item \"%s\" restacked BELOW"
-msgstr ""
+msgstr "பகுதி உருப்படி \"%s\" கீழே மீட்டெடுக்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:2355
 #, c-format
 msgid "part item \"%s\" restacked ABOVE"
-msgstr ""
+msgstr "பகுதி உருப்படி \"%s\" மேலே மீட்டெடுக்கப்பட்டது"
 
 #: src/bin/ui/workspace/group_navigator.c:2615
 msgid "Part"
-msgstr ""
+msgstr "பகுதி"
 
 #: src/bin/ui/workspace/group_navigator.c:2621
 msgid "State"
-msgstr ""
+msgstr "மாநிலம்"
 
 #: src/bin/ui/workspace/group_navigator.c:2625
 msgid "Item"
-msgstr ""
+msgstr "உருப்படி"
 
 #: src/bin/ui/workspace/group_navigator.c:2633
 msgid "Program"
-msgstr ""
+msgstr "திட்டம்"
 
 #: src/bin/ui/workspace/group_navigator.c:2639
 msgid "Data item"
-msgstr ""
+msgstr "தரவு உருப்படி"
 
 #: src/bin/main.c:45
 #, c-format
 msgid "ERROR: "
-msgstr ""
+msgstr "பிழை: "
 
 #: src/bin/main.c:47
 #, c-format
@@ -3250,14 +3550,16 @@ msgid ""
 "\n"
 "ERROR: invalid options found. See --help.\n"
 msgstr ""
+"\n"
+"பிழை: தவறான விருப்பங்கள் காணப்படுகின்றன. பார்க்க -உதவி.\n"
 
 #: src/bin/main.c:65
 msgid "Name for new project"
-msgstr ""
+msgstr "புதிய திட்டத்திற்கான பெயர்"
 
 #: src/bin/main.c:66
 msgid "Path to project directory"
-msgstr ""
+msgstr "திட்ட கோப்பகத்திற்கான பாதை"
 
 #: src/bin/main.c:67
 msgid ""
@@ -3265,6 +3567,9 @@ msgid ""
 "file will be write by this path on every save. If file missed will be "
 "created, if file exist, changed groups will be add."
 msgstr ""
+"EDJ கோப்பு பாதை ஏற்றுமதி. பாதையில் EDJ கோப்பு பெயர் இருக்க வேண்டும். ஒவ்வொரு "
+"சேமிப்பிலும் EDJ கோப்பு இந்த பாதையால் எழுதப்படும். கோப்பு தவறவிட்டால், கோப்பு இருந்தால், "
+"மாற்றப்பட்ட குழுக்கள் சேர்க்கப்படும்."
 
 #: src/bin/main.c:68
 msgid ""
@@ -3272,121 +3577,127 @@ msgid ""
 "source code of changed groups. If folder is missed it will be created, if "
 "folder exist new source code will be add."
 msgstr ""
+"EDC கோப்பு பாதை ஏற்றுமதி. அது பாதை கோப்புறையாக இருக்க வேண்டும். ஒவ்வொரு சேமிப்பிலும் "
+"மாற்றப்பட்ட குழுக்களின் மூலக் குறியீட்டை உருவாக்கும். கோப்புறை தவறவிட்டால் அது "
+"உருவாக்கப்படும், கோப்புறை இருந்தால் புதிய மூலக் குறியீடு சேர்க்கப்படும்."
 
 #: src/bin/main.c:260
 msgid "Only one file should be specified."
-msgstr ""
+msgstr "ஒரு கோப்பு மட்டுமே குறிப்பிடப்பட வேண்டும்."
 
 #: src/bin/main.c:304
 msgid "--export-edj value have not extension '.edj'. Wrong value."
-msgstr ""
+msgstr "-எக்ச்போர்ட்-எட்சே மதிப்பு நீட்டிப்பு இல்லை '.edj'. தவறான மதிப்பு."
 
 #: src/bin/main.c:309
 msgid "--reopen is given but file specified."
-msgstr ""
+msgstr "-ரோபன் கொடுக்கப்பட்டுள்ளது, ஆனால் கோப்பு குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:311
 msgid "--reopen is given but --name specified."
-msgstr ""
+msgstr "-ரோபன் கொடுக்கப்பட்டுள்ளது, ஆனால்-பெயர் குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:313
 msgid "--repoen is given but --path specified."
-msgstr ""
+msgstr "-ரெபோன் கொடுக்கப்பட்டுள்ளது, ஆனால்-பாதை குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:315
 msgid "--reopen is given but --id specified."
-msgstr ""
+msgstr "--reopen கொடுக்கப்பட்டுள்ளது ஆனால்-குறிப்பிட்டது."
 
 #: src/bin/main.c:317
 msgid "--reopen is given but --sd specified."
-msgstr ""
+msgstr "-ரோபன் கொடுக்கப்பட்டுள்ளது, ஆனால்--எச்டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:319
 msgid "--reopen is given but --fd specified."
-msgstr ""
+msgstr "-ரோபன் கொடுக்கப்பட்டுள்ளது ஆனால்--எஃப்.டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:321
 msgid "--reopen is given but --dd specified."
-msgstr ""
+msgstr "-ரோபன் கொடுக்கப்பட்டுள்ளது ஆனால்--டிடி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:323 src/bin/main.c:361 src/bin/main.c:414
 msgid "widgets can be added only to new project."
-msgstr ""
+msgstr "விட்செட்களை புதிய திட்டத்திற்கு மட்டுமே சேர்க்க முடியும்."
 
 #: src/bin/main.c:327
 msgid "There are no previously opened projects yet."
-msgstr ""
+msgstr "முன்னர் திறந்த திட்டங்கள் எதுவும் இல்லை."
 
 #: src/bin/main.c:342
 #, c-format
 msgid "File '%s' doesn't exists."
-msgstr ""
+msgstr "'%s' கோப்பு இல்லை."
 
 #: src/bin/main.c:344
 #, c-format
 msgid "'%s' is a directory."
-msgstr ""
+msgstr "'%s' என்பது ஒரு அடைவு."
 
 #: src/bin/main.c:349
 msgid "*.pro file is given but --name specified."
-msgstr ""
+msgstr "*.பிரோ கோப்பு கொடுக்கப்பட்டுள்ளது, ஆனால் -பெயர் குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:351
 msgid "*.pro file is given but --path specified."
-msgstr ""
+msgstr "*.பிரோ கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் -பாதை குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:353
 msgid "*.pro file is given but --id specified."
-msgstr ""
+msgstr "*.பிரோ கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் -ஐடி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:355
 msgid "*.pro file is given but --sd specified."
-msgstr ""
+msgstr "*.pro கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -எச்டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:357
 msgid "*.pro file is given but --fd specified."
 msgstr ""
+"*.பிரோ கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -எஃப்.டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:359
 msgid "*.pro file is given but --dd specified."
-msgstr ""
+msgstr "*.pro கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -dd குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:374
 msgid "*.edj file is given but --id specified."
-msgstr ""
+msgstr "*.edj கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் -ஐடி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:376
 msgid "*.edj file is given but --sd specified."
-msgstr ""
+msgstr "*.edj கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -sd குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:378
 msgid "*.edj file is given but --fd specified."
 msgstr ""
+"*.edj கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -எஃப்.டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:380
 msgid "*.edj file is given but --dd specified."
-msgstr ""
+msgstr "*.edj கோப்பு கொடுக்கப்பட்டுள்ளது ஆனால் - -dd குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:393
 msgid "Wrong file extension."
-msgstr ""
+msgstr "தவறான கோப்பு நீட்டிப்பு."
 
 #: src/bin/main.c:398
 msgid "no file or --name are given but --path specified."
 msgstr ""
+"கோப்பு அல்லது -பெயர் கொடுக்கப்படவில்லை ஆனால் -பாதை குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:400
 msgid "no file is given but --id specified."
-msgstr ""
+msgstr "கோப்பு எதுவும் கொடுக்கப்படவில்லை, ஆனால் -ஐடி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:402
 msgid "no file is given but --sd specified."
-msgstr ""
+msgstr "எந்த கோப்பும் கொடுக்கப்படவில்லை, ஆனால் - -எச்.டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:404
 msgid "no file is given but --fd specified."
-msgstr ""
+msgstr "எந்த கோப்பும் கொடுக்கப்படவில்லை ஆனால் - -எஃப்.டி குறிப்பிடப்பட்டுள்ளது."
 
 #: src/bin/main.c:406
 msgid "no file is given but --dd specified."
-msgstr ""
+msgstr "எந்த கோப்பும் கொடுக்கப்படவில்லை ஆனால் - -டிடி குறிப்பிடப்பட்டுள்ளது."
