@@ -8,24 +8,26 @@ msgstr ""
 "Project-Id-Version: eflete 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: 2014-02-25 12:51+0200\n"
-"Last-Translator: a.kroitor <an.kroitor@samsung.com>\n"
-"Language-Team: Ukrainian\n"
-"Language: uk\n"
+"PO-Revision-Date: 2025-02-01 00:10+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic2005a@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/eflete/eflete/"
+"uk/>\n"
+"Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/bin/common/common_macro.h:63
 msgid "Last saved: %d %b %Y %H:%M"
-msgstr ""
+msgstr "Востаннє збережено: %d %b %Y %H:%M"
 
 #: src/bin/main.c:47
 #, c-format
 msgid "ERROR: "
-msgstr ""
+msgstr "ПОМИЛКА: "
 
 #: src/bin/main.c:49
 #, c-format
@@ -33,16 +35,16 @@ msgid ""
 "\n"
 "ERROR: invalid options found. See --help.\n"
 msgstr ""
+"\n"
+"ПОМИЛКА: знайдено недійсні параметри. Дивіться --допомога.\n"
 
 #: src/bin/main.c:67
-#, fuzzy
 msgid "Name for new project"
-msgstr "Новий проект"
+msgstr "Назва для нового проекту"
 
 #: src/bin/main.c:68
-#, fuzzy
 msgid "Path to project directory"
-msgstr "Зберегти проект"
+msgstr "Шлях до каталогу проекту"
 
 #: src/bin/main.c:69
 msgid ""
@@ -50,6 +52,9 @@ msgid ""
 "file will be write by this path on every save. If file missed will be "
 "created, if file exist, changed groups will be add."
 msgstr ""
+"Експортувати шлях до файлу edj. Шлях має містити назву файлу edj. Файл edj "
+"буде записуватись цим шляхом під час кожного збереження. Якщо файл буде "
+"створено, якщо файл існує, буде додано змінені групи."
 
 #: src/bin/main.c:70
 msgid ""
@@ -57,6 +62,9 @@ msgid ""
 "source code of changed groups. If folder is missed it will be created, if "
 "folder exist new source code will be add."
 msgstr ""
+"Експортувати шлях до файлу edc. Це має бути папка шляху. Під час кожного "
+"збереження буде створено вихідний код змінених груп. Якщо папка пропущена, "
+"вона буде створена, якщо папка існує, буде додано новий вихідний код."
 
 #: src/bin/main.c:100 src/bin/main.c:155 src/bin/ui/menu.c:272
 #: src/bin/ui/tab_home_open.c:117 src/bin/ui/tab_home_open.c:124
@@ -68,421 +76,436 @@ msgstr "Відкрити проект"
 #: src/bin/main.c:155 src/bin/ui/tab_home_open.c:117
 #: src/bin/ui/tab_home_open.c:279
 msgid "Given project is dameged. Do you want to recover project?"
-msgstr ""
+msgstr "Даний проект пошкоджений. Ви хочете відновити проект?"
 
 #: src/bin/main.c:264
 msgid "Only one file should be specified."
-msgstr ""
+msgstr "Потрібно вказати лише один файл."
 
 #: src/bin/main.c:308
 msgid "--export-edj value have not extension '.edj'. Wrong value."
-msgstr ""
+msgstr "--Значення export-edj не має розширення \".edj\". Неправильне значення."
 
 #: src/bin/main.c:313
 msgid "--reopen is given but file specified."
-msgstr ""
+msgstr "--повторно відкрити, але вказано файл."
 
 #: src/bin/main.c:315
 msgid "--reopen is given but --name specified."
-msgstr ""
+msgstr "--reopen задано, але вказано --name."
 
 #: src/bin/main.c:317
 msgid "--repoen is given but --path specified."
-msgstr ""
+msgstr "--repoen задано, але вказано --path."
 
 #: src/bin/main.c:319
 msgid "--reopen is given but --id specified."
-msgstr ""
+msgstr "--reopen задано, але вказано --id."
 
 #: src/bin/main.c:321
 msgid "--reopen is given but --sd specified."
-msgstr ""
+msgstr "--повторно відкрити, але вказано --sd."
 
 #: src/bin/main.c:323
 msgid "--reopen is given but --fd specified."
-msgstr ""
+msgstr "--повторно відкрити, але вказано --fd."
 
 #: src/bin/main.c:325
 msgid "--reopen is given but --dd specified."
-msgstr ""
+msgstr "--повторно відкрити, але вказано --dd."
 
 #: src/bin/main.c:327 src/bin/main.c:365 src/bin/main.c:418
 msgid "widgets can be added only to new project."
-msgstr ""
+msgstr "віджети можна додавати лише до нового проекту."
 
 #: src/bin/main.c:331
 msgid "There are no previously opened projects yet."
-msgstr ""
+msgstr "Раніше відкритих проектів ще немає."
 
 #: src/bin/main.c:346
 #, c-format
 msgid "File '%s' doesn't exists."
-msgstr ""
+msgstr "Файл \"%s\" не існує."
 
 #: src/bin/main.c:348
 #, c-format
 msgid "'%s' is a directory."
-msgstr ""
+msgstr "'%s - це каталог."
 
 #: src/bin/main.c:353
 msgid "*.pro file is given but --name specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --name."
 
 #: src/bin/main.c:355
 msgid "*.pro file is given but --path specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --path."
 
 #: src/bin/main.c:357
 msgid "*.pro file is given but --id specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --id."
 
 #: src/bin/main.c:359
 msgid "*.pro file is given but --sd specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --sd."
 
 #: src/bin/main.c:361
 msgid "*.pro file is given but --fd specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --fd."
 
 #: src/bin/main.c:363
 msgid "*.pro file is given but --dd specified."
-msgstr ""
+msgstr "*.задано файл pro, але вказано --dd."
 
 #: src/bin/main.c:378
 msgid "*.edj file is given but --id specified."
-msgstr ""
+msgstr "*.файл edj задано, але вказано --id."
 
 #: src/bin/main.c:380
 msgid "*.edj file is given but --sd specified."
-msgstr ""
+msgstr "*.файл edj задано, але вказано --sd."
 
 #: src/bin/main.c:382
 msgid "*.edj file is given but --fd specified."
-msgstr ""
+msgstr "*.файл edj задано, але вказано --fd."
 
 #: src/bin/main.c:384
 msgid "*.edj file is given but --dd specified."
-msgstr ""
+msgstr "*Надано файл .edj, але вказано --dd."
 
 #: src/bin/main.c:397
 msgid "Wrong file extension."
-msgstr ""
+msgstr "Неправильне розширення файлу."
 
 #: src/bin/main.c:402
 msgid "no file or --name are given but --path specified."
-msgstr ""
+msgstr "не вказано файл або --name, але вказано --path."
 
 #: src/bin/main.c:404
 msgid "no file is given but --id specified."
-msgstr ""
+msgstr "файл не надано, але вказано --id."
 
 #: src/bin/main.c:406
 msgid "no file is given but --sd specified."
-msgstr ""
+msgstr "файл не надано, але вказано --sd."
 
 #: src/bin/main.c:408
 msgid "no file is given but --fd specified."
-msgstr ""
+msgstr "файл не надано, але вказано --fd."
 
 #: src/bin/main.c:410
 msgid "no file is given but --dd specified."
-msgstr ""
+msgstr "файл не надано, але вказано --dd."
 
 #: src/bin/project_manager/project_manager2.c:1403
 #, c-format
 msgid "Export to file '%s' successfull"
-msgstr ""
+msgstr "Експорт у файл \"%s\" успішно виконано"
 
 #: src/bin/ui/colorclass_manager.c:95
 msgid "Color class name: "
 msgstr "Назва класу кольорів"
 
 #: src/bin/ui/colorclass_manager.c:99
-#, fuzzy
 msgid "Type new color class name here"
-msgstr "Назва класу кольорів"
+msgstr "Введіть тут нову назву класу кольорів"
 
 #: src/bin/ui/colorclass_manager.c:149 src/bin/ui/project_navigator.c:556
 msgid "Create a new layout"
-msgstr ""
+msgstr "Створіть новий макет"
 
 #: src/bin/ui/colorclass_manager.c:182
-#, fuzzy, c-format
+#, c-format
 msgid "Colorclass is used in:"
-msgstr "Редактор класів кольорів"
+msgstr "Колірний клас використовується в:"
 
 #: src/bin/ui/colorclass_manager.c:186
 #, c-format
 msgid "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"
-msgstr ""
+msgstr "<br>група: %s<br>частина: %s<br>стан: \"%s\" %2.1f"
 
 #: src/bin/ui/colorclass_manager.c:257 src/bin/ui/image_manager.c:936
 #: src/bin/ui/popup.c:1176 src/bin/ui/sound_manager.c:654
 #: src/bin/ui/style_manager.c:483
 msgid "Search"
-msgstr ""
+msgstr "Пошук"
 
 #: src/bin/ui/colorclass_manager.c:444 src/bin/ui/menu.c:324
-#, fuzzy
 msgid "Color class manager"
-msgstr "Назва класу кольорів"
+msgstr "Менеджер класу кольору"
 
 #: src/bin/ui/colorclass_manager.c:456 src/bin/ui/image_manager.c:1083
 #: src/bin/ui/sound_manager.c:587 src/bin/ui/style_manager.c:875
-#, fuzzy
 msgid "Preview"
-msgstr "Демонстрація"
+msgstr "Попередній перегляд"
 
 #: src/bin/ui/colorclass_manager.c:457
-#, fuzzy
 msgid "Color classes list"
-msgstr "Класи кольорів"
+msgstr "Список класів кольорів"
 
 #: src/bin/ui/colorclass_manager.c:513
 msgid "The quick brown fox jumps over the lazy dog"
-msgstr ""
+msgstr "Швидка бура лисиця перестрибує ледачого пса"
 
 #: src/bin/ui/colorclass_manager.c:543
 msgid "Failed initialize colorclasses manager"
-msgstr ""
+msgstr "Не вдалося ініціалізувати менеджер класів кольорів"
 
 #: src/bin/ui/image_manager.c:255
 msgid "Unable to add a folder"
-msgstr ""
+msgstr "Не вдалося додати папку"
 
 #: src/bin/ui/image_manager.c:274
 msgid "Add new image into set"
-msgstr ""
+msgstr "Додати нове зображення в набір"
 
 #: src/bin/ui/image_manager.c:657
 msgid "File not exist"
-msgstr ""
+msgstr "Файл не існує"
 
 #: src/bin/ui/image_manager.c:662 src/bin/ui/sound_manager.c:237
 msgid "Unable to add folder"
-msgstr ""
+msgstr "Не вдалося додати папку"
 
 #: src/bin/ui/image_manager.c:675
 msgid "File exist"
-msgstr ""
+msgstr "Файл існує"
 
 #: src/bin/ui/image_manager.c:708
 msgid "Choose image"
-msgstr ""
+msgstr "Виберіть зображення"
 
 #: src/bin/ui/image_manager.c:810
 msgid "Image set name:"
-msgstr ""
+msgstr "Назва набору зображень:"
 
 #: src/bin/ui/image_manager.c:815
 msgid "Type a new image set name"
-msgstr ""
+msgstr "Введіть назву нового набору зображень"
 
 #: src/bin/ui/image_manager.c:838
 msgid "Create a new image set"
-msgstr ""
+msgstr "Створіть новий набір зображень"
 
 #: src/bin/ui/image_manager.c:965 src/bin/ui/image_manager.c:1173
 msgid "Image"
 msgstr "Зображення"
 
 #: src/bin/ui/image_manager.c:987
-#, fuzzy
 msgid "Image Set"
-msgstr "Зображення"
+msgstr "Набір зображень"
 
 #: src/bin/ui/image_manager.c:1006
 msgid "Vectors"
-msgstr ""
+msgstr "Вектори"
 
 #: src/bin/ui/image_manager.c:1065 src/bin/ui/menu.c:321
 msgid "Image manager"
-msgstr ""
+msgstr "Менеджер зображень"
 
 #: src/bin/ui/image_manager.c:1084
-#, fuzzy
 msgid "Image Gallery"
-msgstr "Зображення"
+msgstr "Галерея зображень"
 
 #: src/bin/ui/image_manager.c:1174
-#, fuzzy
 msgid "Image set"
-msgstr "Зображення"
+msgstr "Набір зображень"
 
 #: src/bin/ui/live_view/demo.c:35 src/bin/ui/live_view/demo.c:48
 msgid "Widget live view isn't implemented yet. Using fallback to layout"
 msgstr ""
+"Віджет live view ще не реалізовано. Використання резервного варіанта макета"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:190
 msgid "Click to show vertical ctxpopup with icons and labels (3 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з піктограмами та "
+"мітками (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:192
 msgid "Click to show vertical ctxpopup with icons and labels (30 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з іконками та "
+"мітками (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:194
 msgid "Click to show vertical ctxpopup with icons and no labels (3 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з піктограмами та "
+"без міток (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:196
 msgid "Click to show vertical ctxpopup with icons and no labels (30 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з піктограмами та "
+"без міток (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:198
 msgid "Click to show vertical ctxpopup with labels and no icons (3 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з мітками та без "
+"значків (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:200
 msgid "Click to show vertical ctxpopup with labels and no icons (30 items)"
 msgstr ""
+"Натисніть, щоб показати вертикальне спливаюче вікно ctx з мітками та без "
+"значків (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:202
 msgid "Click to show horizontal ctxpopup with icons and labels (3 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з піктограмами та "
+"мітками (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:204
 msgid "Click to show horizontal ctxpopup with icons and labels (30 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з піктограмами та "
+"мітками (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:206
 msgid "Click to show horizontal ctxpopup with icons and no labels (3 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з піктограмами та "
+"без міток (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:208
 msgid "Click to show horizontal ctxpopup with icons and no labels (30 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з піктограмами та "
+"без міток (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:210
 msgid "Click to show horizontal ctxpopup with labels and no icons (3 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з мітками та без "
+"значків (3 елементи)"
 
 #: src/bin/ui/live_view/elementary/live_ctxpopup.c:212
 msgid "Click to show horizontal ctxpopup with labels and no icons (30 items)"
 msgstr ""
+"Натисніть, щоб показати горизонтальне спливаюче вікно ctx з мітками та без "
+"значків (30 елементів)"
 
 #: src/bin/ui/live_view/elementary/live_custom_layout.c:30
 #, c-format
 msgid "Could not load group '%s' from mapped file '%s'."
-msgstr ""
+msgstr "Не вдалося завантажити групу \"%s\" із зіставленого файлу \"%s\"."
 
 #: src/bin/ui/live_view/elementary/live_label.c:30
 msgid "Some long text for our label, that islong but not too long."
-msgstr ""
+msgstr "Довгий текст для нашої етикетки, він довгий, але не надто довгий."
 
 #: src/bin/ui/live_view/elementary/live_list.c:120
 #: src/bin/ui/live_view/elementary/live_widget_common.c:308
 msgid "No icons"
-msgstr ""
+msgstr "Без значків"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:114
 msgid "Eflete"
-msgstr ""
+msgstr "Eflete"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:115
 msgid "Multi-"
-msgstr ""
+msgstr "Мульти-"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:116
 msgid "-button-"
-msgstr ""
+msgstr "-кнопку-"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:117
-#, fuzzy
 msgid "-entry"
-msgstr "Розділити шари"
+msgstr "-запис"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:118
 msgid "Check"
-msgstr ""
+msgstr "Перевірте"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:119
 msgid "this"
-msgstr ""
+msgstr "це"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:120
-#, fuzzy
 msgid "out"
-msgstr "Про програму"
+msgstr "поза"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:121
 msgid "!"
-msgstr ""
+msgstr "!"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:143
 msgid "Text1"
-msgstr ""
+msgstr "Текст1"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:144
 msgid "Tap and enter for adding buttons"
-msgstr ""
+msgstr "Натисніть і введіть, щоб додати кнопки"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:40
 #: src/bin/ui/live_view/elementary/live_naviframe.c:54
 #: src/bin/ui/live_view/elementary/live_widget_common.c:88
 #: src/bin/ui/live_view/elementary/live_widget_common.c:102
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:45
 #: src/bin/ui/live_view/elementary/live_widget_common.c:93
 msgid "Page Next"
-msgstr ""
+msgstr "Сторінка наступна"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:59
 #: src/bin/ui/live_view/elementary/live_widget_common.c:107
 msgid "Page Prev"
-msgstr ""
+msgstr "Попередня сторінка"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:90
 #: src/bin/ui/live_view/elementary/live_widget_common.c:360
 msgid "Prev page"
-msgstr ""
+msgstr "Попередня сторінка"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:95
 #: src/bin/ui/live_view/elementary/live_widget_common.c:365
 msgid "Next page"
-msgstr ""
+msgstr "Наступна сторінка"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:184
 #: src/bin/ui/live_view/elementary/live_widget_common.c:354
 msgid "Page 1"
-msgstr ""
+msgstr "Сторінка 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:185
 #: src/bin/ui/live_view/elementary/live_widget_common.c:355
 msgid "Subtitle 1"
-msgstr ""
+msgstr "Підзаголовок 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:186
 #: src/bin/ui/live_view/elementary/live_widget_common.c:356
 msgid "Main Page"
-msgstr ""
+msgstr "Головна сторінка"
 
 #: src/bin/ui/live_view/elementary/live_notify.c:162
 msgid "Press to show Notify"
-msgstr ""
+msgstr "Натисніть, щоб показати повідомлення"
 
 #: src/bin/ui/live_view/elementary/live_spinner.c:30
 #, c-format
 msgid "%1.1f units"
-msgstr ""
+msgstr "%1.1f одиниць"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:53
 #: src/bin/ui/live_view/elementary/live_widget_common.c:286
-#, fuzzy
 msgid "Object"
-msgstr "Новий проект"
+msgstr "Об'єкт"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:57
 #: src/bin/ui/live_view/elementary/live_widget_common.c:290
 msgid "Enabled"
-msgstr ""
+msgstr "Увімкнено"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:59
 #: src/bin/ui/live_view/elementary/live_widget_common.c:292
 msgid "Disabled"
-msgstr ""
+msgstr "Вимкнено"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:60
 #: src/bin/ui/live_view/elementary/live_widget_common.c:69
@@ -500,24 +523,23 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_widget_common.c:333
 #: src/bin/ui/live_view/elementary/live_widget_common.c:345
 msgid "User Text"
-msgstr ""
+msgstr "Текст користувача"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:222
 msgid "Left"
-msgstr ""
+msgstr "Ліворуч"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:227
 msgid "Right"
-msgstr ""
+msgstr "Праворуч"
 
 #: src/bin/ui/main_window.c:211 src/bin/ui/project_close.c:227
 msgid "Last saved: none"
-msgstr ""
+msgstr "Останнє збереження: немає"
 
 #: src/bin/ui/main_window.c:212 src/bin/ui/project_close.c:228
-#, fuzzy
 msgid "Project path: none"
-msgstr "Назва програми: "
+msgstr "Шлях проекту: немає"
 
 #: src/bin/ui/main_window.c:321 src/bin/ui/menu.c:329
 msgid "About"
@@ -525,7 +547,7 @@ msgstr "Про програму"
 
 #: src/bin/ui/main_window.c:342
 msgid "About Component Designer"
-msgstr ""
+msgstr "Про Component Designer"
 
 #: src/bin/ui/main_window.c:357
 msgid ""
@@ -548,18 +570,40 @@ msgid ""
 "b> - switch to prev tab<br><br>Popups:<br><b>Enter</b> - OK<br><b>ESC</b> - "
 "cancel<br>"
 msgstr ""
+"Глобально:<br><b>F1</b> - показати список ярликів (це діалогове "
+"вікно)<br><b>F2</b> - звичайний режим<br><b>F3</b> - режим коду< br><b>F4</"
+"b> - демонстраційний режим<br><b>F7</b> - відкрити менеджер "
+"зображень<br><b>F8</b> - відкрити менеджер звуку<br><b>F9 </b> - відкрити "
+"менеджер стилів<br><b>F10</b> - відкрити менеджер класів кольорів<br><b>F11</"
+"b> - відкрити менеджер сценаріїв<br><b>ctrl + q</b> - вийти<br><br>Робоча "
+"область:<br><b>ctrl + s </b> - зберегти<br><b>ctrl + z</b> - "
+"скасувати<br><b>ctrl + y</b> - повторити<br><b>ctrl + n</b> - додати новий "
+"група<br><b>q</b> - додати нову частину<br><b>w</b> - додати новий "
+"стан<br><b>e</b> - додати новий елемент<br>< b>r</b> - додати нову "
+"програму<br><b>t</b> - додати новий елемент даних<br><b>del</b> - видалити "
+"вибрану частину/стан/елемент/програму/дані item<br><b>s</b> - вибрати "
+"наступний стан активного частина<br><b>z</b> - вибрати попередню "
+"частину<br><b>x</b> - вибрати наступну частину<br><b>ESC</b> - скасувати "
+"вибір<br><b> o</b> - показати/сховати область об'єкта<br><b>ctrl + wheel_up</"
+"b> / <b>KP_ADD</b> - збільшити<br><b>ctrl + wheel_down</b> / <b>KP_SUB</b> - "
+"масштаб out<br><b>KP_DIV</b> - встановити масштаб на 100%<br><br>Tabs:"
+"<br><b>ctrl + w</b> - закрити вкладку<br><b>ctrl + num</b> - перейти до "
+"вкладки 1-10<br><b>tab</b> / <b>ctrl + pg_down</b> - перейти до наступної "
+"вкладки<br><b>shift + tab</ b> / <b>ctrl + pg_up</b> - перейти на попередню "
+"вкладку<br><br>Спливаючі вікна:<br><b>Enter</b> - OK<br><b>ESC</b> - "
+"скасувати<br>"
 
 #: src/bin/ui/main_window.c:416 src/bin/ui/main_window.c:653
 msgid "Help: shortcuts"
-msgstr ""
+msgstr "Довідка: ярлики"
 
 #: src/bin/ui/main_window.c:444
 msgid "Sequence already binded."
-msgstr ""
+msgstr "Послідовність уже прив’язана."
 
 #: src/bin/ui/main_window.c:461
 msgid "Please press key sequence"
-msgstr ""
+msgstr "Натисніть послідовність клавіш"
 
 #: src/bin/ui/menu.c:269
 msgid "File"
@@ -572,15 +616,13 @@ msgstr "Новий проект"
 
 #: src/bin/ui/menu.c:273 src/bin/ui/tab_home_import_edj.c:507
 #: src/bin/ui/tab_home_import_edj.c:635 src/bin/ui/tabs.c:1215
-#, fuzzy
 msgid "Import edj-file"
-msgstr "Відкрити edj-файл"
+msgstr "Імпорт edj-файлу"
 
 #: src/bin/ui/menu.c:274 src/bin/ui/tab_home_import_edc.c:477
 #: src/bin/ui/tabs.c:1217
-#, fuzzy
 msgid "Import edc-file"
-msgstr "Відкрити edc-файл"
+msgstr "Імпорт edc-файлу"
 
 #: src/bin/ui/menu.c:277 src/bin/ui/popup.c:169 src/bin/ui/script_manager.c:221
 #: src/bin/ui/tab_home_info.c:107
@@ -588,78 +630,72 @@ msgid "Save"
 msgstr "Зберегти"
 
 #: src/bin/ui/menu.c:279
-#, fuzzy
 msgid "Export as edc"
-msgstr "Експорт в edc..."
+msgstr "Експортувати як edc"
 
 #: src/bin/ui/menu.c:280
 msgid "Group"
-msgstr ""
+msgstr "Група"
 
 #: src/bin/ui/menu.c:281
-#, fuzzy
 msgid "Project"
-msgstr "Новий проект"
+msgstr "Демонструвати"
 
 #: src/bin/ui/menu.c:282
-#, fuzzy
 msgid "Export as edj"
-msgstr "Експорт в edc..."
+msgstr "Експортувати як edj"
 
 #: src/bin/ui/menu.c:283
 msgid "Develop"
-msgstr ""
+msgstr "Розробник"
 
 #: src/bin/ui/menu.c:284
 msgid "Release"
-msgstr ""
+msgstr "Звільнення"
 
 #: src/bin/ui/menu.c:286
-#, fuzzy
 msgid "Close project"
-msgstr "Закрити проект %s"
+msgstr "Закрити проект"
 
 #: src/bin/ui/menu.c:289
 msgid "Quit"
-msgstr ""
+msgstr "Вийти"
 
 #: src/bin/ui/menu.c:291
-#, fuzzy
 msgid "Edit"
-msgstr "Редактори"
+msgstr "Редагувати"
 
 #: src/bin/ui/menu.c:292 src/bin/ui/workspace/workspace.c:1059
 msgid "Undo"
-msgstr ""
+msgstr "Відмініти"
 
 #: src/bin/ui/menu.c:293 src/bin/ui/workspace/workspace.c:1060
 msgid "Redo"
-msgstr ""
+msgstr "Повторити"
 
 #: src/bin/ui/menu.c:295
 msgid "Add group"
-msgstr ""
+msgstr "Додати групу"
 
 #: src/bin/ui/menu.c:297
 msgid "Add part"
-msgstr ""
+msgstr "Додайте частину"
 
 #: src/bin/ui/menu.c:298
 msgid "Add state"
-msgstr ""
+msgstr "Додати стан"
 
 #: src/bin/ui/menu.c:299
 msgid "Add item"
-msgstr ""
+msgstr "Додати товар"
 
 #: src/bin/ui/menu.c:300
-#, fuzzy
 msgid "Add program"
-msgstr "Нова програма"
+msgstr "Додати програму"
 
 #: src/bin/ui/menu.c:301
 msgid "Add data item"
-msgstr ""
+msgstr "Додати елемент даних"
 
 #: src/bin/ui/menu.c:304
 msgid "View"
@@ -675,49 +711,43 @@ msgstr "Зменшити"
 
 #: src/bin/ui/menu.c:307
 msgid "Reset zoom"
-msgstr ""
+msgstr "Скинути масштаб"
 
 #: src/bin/ui/menu.c:308
 msgid "Zoom to fit in Workspace"
-msgstr ""
+msgstr "Збільште, щоб вмістити в робочу область"
 
 #: src/bin/ui/menu.c:309
-#, fuzzy
 msgid "Resize to fill workspace"
-msgstr "Робоча область"
+msgstr "Змініть розмір, щоб заповнити робочу область"
 
 #: src/bin/ui/menu.c:312
-#, fuzzy
 msgid "Show object area"
-msgstr "Показати/приховати горизонтальну лінійку"
+msgstr "Показати область об'єкта"
 
 #: src/bin/ui/menu.c:314 src/bin/ui/workspace/workspace.c:1062
-#, fuzzy
 msgid "Show rulers"
-msgstr "Показати/приховати вертикальну лінійку"
+msgstr "Показати лінійки"
 
 #: src/bin/ui/menu.c:316
 msgid "Window"
-msgstr ""
+msgstr "Вікно"
 
 #: src/bin/ui/menu.c:318 src/bin/ui/tabs.c:1225
 msgid "Home"
-msgstr ""
+msgstr "Додому"
 
 #: src/bin/ui/menu.c:322 src/bin/ui/sound_manager.c:569
-#, fuzzy
 msgid "Sound manager"
-msgstr "Редактор програм"
+msgstr "Звуковий менеджер"
 
 #: src/bin/ui/menu.c:323
-#, fuzzy
 msgid "Textblock styles manager"
-msgstr "Новий стиль "
+msgstr "Менеджер стилів текстових блоків"
 
 #: src/bin/ui/menu.c:325 src/bin/ui/script_manager.c:160
-#, fuzzy
 msgid "Script manager"
-msgstr "Редактор програм"
+msgstr "Менеджер сценаріїв"
 
 #: src/bin/ui/menu.c:327
 msgid "Help"
@@ -725,17 +755,17 @@ msgstr "Допомога"
 
 #: src/bin/ui/menu.c:328
 msgid "Shortcuts"
-msgstr ""
+msgstr "Ярлики"
 
 #: src/bin/ui/modal_window/modal_window.c:49
 msgid "Title will be deleted"
-msgstr ""
+msgstr "Заголовок буде видалено"
 
 #: src/bin/ui/modal_window/modal_window.c:55
 #: src/bin/ui/modal_window/modal_window.c:207 src/bin/ui/popup.c:168
 #: src/bin/ui/popup.c:1125 src/bin/ui/popup.c:1300
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: src/bin/ui/modal_window/modal_window.c:203 src/bin/ui/popup.c:172
 msgid "Cancel"
@@ -743,7 +773,7 @@ msgstr "Скасувати"
 
 #: src/bin/ui/popup.c:170
 msgid "Replace"
-msgstr ""
+msgstr "Замінити"
 
 #: src/bin/ui/popup.c:171
 msgid "Don't save"
@@ -751,28 +781,24 @@ msgstr "Не зберігати"
 
 #: src/bin/ui/popup.c:173
 msgid "Reset"
-msgstr ""
+msgstr "Скинути"
 
 #: src/bin/ui/popup.c:1338
-#, fuzzy
 msgid "<font_size=14>Import edc-file error"
-msgstr "Відкрити edc-файл"
+msgstr "<font_size=14>Помилка імпорту файлу edc"
 
 #: src/bin/ui/project_close.c:48 src/bin/ui/project_close.c:86
 #: src/bin/ui/project_export.c:224
-#, fuzzy
 msgid "Export source code"
-msgstr "Експорт в edc..."
+msgstr "Експорт вихідного коду"
 
 #: src/bin/ui/project_close.c:72 src/bin/ui/project_export.c:53
-#, fuzzy
 msgid "Export develop edj"
-msgstr "Експорт в edc..."
+msgstr "Експорт розробити edj"
 
 #: src/bin/ui/project_close.c:108
-#, fuzzy
 msgid "Project save"
-msgstr "Новий проект"
+msgstr "Зберегти проект"
 
 #: src/bin/ui/project_close.c:196
 #, c-format
@@ -781,42 +807,39 @@ msgstr "Закрити проект %s"
 
 #: src/bin/ui/project_close.c:198
 msgid "Do you want to save changes?"
-msgstr ""
+msgstr "Ви хочете зберегти зміни?"
 
 #: src/bin/ui/project_close.c:214
-#, fuzzy
 msgid "Project close"
-msgstr "Новий проект"
+msgstr "Проект закрито"
 
 #: src/bin/ui/project_common.c:40
 #, c-format
 msgid "Haven't permision to overwrite '%s' in '%s'"
-msgstr ""
+msgstr "Немає дозволу перезаписувати \"%s\" у \"%s\""
 
 #: src/bin/ui/project_common.c:98
 #, c-format
 msgid "Haven't permision to write '%s'"
-msgstr ""
+msgstr "Немає дозволу на запис \"%s\""
 
 #: src/bin/ui/project_common.c:157
-#, fuzzy, c-format
+#, c-format
 msgid "Project '%s' is opened."
-msgstr "Новий проект"
+msgstr "Проект \"%s\" відкрито."
 
 #: src/bin/ui/project_common.c:192
-#, fuzzy
 msgid "Project progress"
-msgstr "Новий проект"
+msgstr "Прогрес проекту"
 
 #: src/bin/ui/project_export.c:94 src/bin/ui/project_export.c:175
 msgid "Please type in actual .edj file"
-msgstr ""
+msgstr "Введіть фактичний файл .edj"
 
 #: src/bin/ui/project_export.c:95 src/bin/ui/project_export.c:109
 #: src/bin/ui/project_export.c:176 src/bin/ui/project_export.c:266
-#, fuzzy
 msgid "Export to develop edj-file"
-msgstr "Експорт в edc..."
+msgstr "Експорт для розробки edj-файлу"
 
 #: src/bin/ui/project_export.c:102 src/bin/ui/project_export.c:183
 #, c-format
@@ -824,28 +847,26 @@ msgid ""
 "<font_size=16>A project file '%s' already exist.Do you want to replace it?</"
 "font_size>"
 msgstr ""
+"<font_size=16>Файл проекту «%s» уже існує. Бажаєте його замінити?</font_size>"
 
 #: src/bin/ui/project_export.c:145
-#, fuzzy
 msgid "Export release edj"
-msgstr "Експорт в edc..."
+msgstr "Експорт випуску edj"
 
 #: src/bin/ui/project_export.c:187
-#, fuzzy
 msgid "Export to release edj-file"
-msgstr "Експорт в edc..."
+msgstr "Експортувати в edj-файл випуску"
 
 #: src/bin/ui/project_export.c:256
 #, c-format
 msgid ""
 "<font_size=16>A project folder '%s' already exist.Do you want to replace it?"
 "</font_size>"
-msgstr ""
+msgstr "<font_size=16>Папка проекту «%s» уже існує. Замінити її?</font_size>"
 
 #: src/bin/ui/project_export.c:301
-#, fuzzy
 msgid "Export source edc"
-msgstr "Експорт в edc..."
+msgstr "Експорт джерела edc"
 
 #: src/bin/ui/project_export.c:337
 #, c-format
@@ -853,28 +874,29 @@ msgid ""
 "<font_size=16>A project file '%s/%s' already exist.Do you want to replace it?"
 "</font_size>"
 msgstr ""
+"<font_size=16>Файл проекту «%s/%s» уже існує. Бажаєте його "
+"замінити?</font_size>"
 
 #: src/bin/ui/project_export.c:343
-#, fuzzy
 msgid "Export group source code"
-msgstr "Експорт в edc..."
+msgstr "Експорт вихідного коду групи"
 
 #: src/bin/ui/project_navigator.c:418
 msgid "Alias of"
-msgstr ""
+msgstr "Псевдонім"
 
 #: src/bin/ui/project_navigator.c:420 src/bin/ui/project_navigator.c:478
 msgid "Copy of"
-msgstr ""
+msgstr "Копія"
 
 #: src/bin/ui/project_navigator.c:468 src/bin/ui/property/property_image.c:439
 #: src/bin/ui/workspace/group_navigator.c:1554
 msgid "Name"
-msgstr ""
+msgstr "Ім'я"
 
 #: src/bin/ui/project_navigator.c:485
 msgid "Alias"
-msgstr ""
+msgstr "Псевдонім"
 
 #: src/bin/ui/project_navigator.c:495 src/bin/ui/project_navigator.c:508
 #: src/bin/ui/project_navigator.c:911 src/bin/ui/project_navigator.c:946
@@ -887,84 +909,94 @@ msgstr ""
 #: src/bin/ui/workspace/group_navigator.c:1425
 #: src/bin/ui/workspace/group_navigator.c:1428
 msgid "None"
-msgstr ""
+msgstr "Жодного"
 
 #: src/bin/ui/project_navigator.c:603
 #, c-format
 msgid "Can't remove layout \"%s\""
-msgstr ""
+msgstr "Не вдається видалити макет \"%s\""
 
 #: src/bin/ui/project_navigator.c:604 src/bin/ui/property/property_group.c:3782
 msgid "Error"
-msgstr ""
+msgstr "Помилка"
 
 #: src/bin/ui/project_navigator.c:648 src/bin/ui/project_navigator.c:755
 #: src/bin/ui/project_navigator.c:777 src/bin/ui/project_navigator.c:790
 msgid "Warning: Delete layout"
-msgstr ""
+msgstr "Попередження: видалити макет"
 
 #: src/bin/ui/project_navigator.c:649 src/bin/ui/project_navigator.c:778
 msgid ""
 "Can't delete the opened layout. Please, close the layout tab before delete "
 "it."
 msgstr ""
+"Неможливо видалити відкритий макет. Будь ласка, закрийте вкладку макета "
+"перед видаленням."
 
 #: src/bin/ui/project_navigator.c:756
 msgid ""
 "Can't delete one of those opened layouts. Please, close the layout tab "
 "before delete it."
 msgstr ""
+"Неможливо видалити один із відкритих макетів. Будь ласка, закрийте вкладку "
+"макета перед видаленням."
 
 #: src/bin/ui/project_navigator.c:763
 msgid "Confirm delete layouts"
-msgstr ""
+msgstr "Підтвердити видалення макетів"
 
 #: src/bin/ui/project_navigator.c:764
 msgid ""
 "Are you sure you want to delete the selected layouts?<br>All aliases will be "
 "delete too."
 msgstr ""
+"Ви впевнені, що бажаєте видалити вибрані макети?<br>Усі псевдоніми також "
+"буде видалено."
 
 #: src/bin/ui/project_navigator.c:791
 msgid ""
 "One or few of the aliases of this group are opened.Please, close the alias "
 "tab/tabs before delete it."
 msgstr ""
+"Відкрито один або декілька псевдонімів цієї групи. Будь ласка, закрийте "
+"вкладку/вкладки псевдоніма, перш ніж видалити його."
 
 #: src/bin/ui/project_navigator.c:798
 msgid "Confirm delete layout"
-msgstr ""
+msgstr "Підтвердити видалення макета"
 
 #: src/bin/ui/project_navigator.c:799
 msgid ""
 "Are you sure you want to delete the selected layout?<br>All aliases will be "
 "delete too."
 msgstr ""
+"Ви впевнені, що бажаєте видалити вибраний макет?<br>Усі псевдоніми також "
+"буде видалено."
 
 #: src/bin/ui/property/property_color.c:193
 msgid "Provides a descriptive name for the effect of the color class"
-msgstr ""
+msgstr "Надає описову назву для ефекту класу кольорів"
 
 #: src/bin/ui/property/property_dummy.c:174
 msgid "default 0.0"
-msgstr ""
+msgstr "за замовчуванням 0.0"
 
 #: src/bin/ui/property/property_dummy.c:208
 msgid "Item 1"
-msgstr ""
+msgstr "Пункт 1"
 
 #: src/bin/ui/property/property_dummy.c:209
 #: src/bin/ui/property/property_dummy.c:216
 #: src/bin/ui/property/property_group.c:5385
 #: src/bin/ui/property/property_group.c:5563
 msgid "elm/image/icon/start-point"
-msgstr ""
+msgstr "elm/image/icon/start-point"
 
 #: src/bin/ui/property/property_dummy.c:211
 #: src/bin/ui/property/property_dummy.c:290
 #: src/bin/ui/property/property_dummy.c:294
 msgid "Item 2"
-msgstr ""
+msgstr "Пункт 2"
 
 #: src/bin/ui/property/property_dummy.c:213
 #: src/bin/ui/property/property_dummy.c:219
@@ -973,56 +1005,54 @@ msgstr ""
 #: src/bin/ui/property/property_group.c:5426
 #: src/bin/ui/property/property_group.c:5586
 msgid "elm/image/icon/end-point"
-msgstr ""
+msgstr "elm/image/icon/end-point"
 
 #: src/bin/ui/property/property_dummy.c:215
 msgid "Item 2_1"
-msgstr ""
+msgstr "Пункт 2_1"
 
 #: src/bin/ui/property/property_dummy.c:218
 msgid "Item 2_2"
-msgstr ""
+msgstr "Пункт 2_2"
 
 #: src/bin/ui/property/property_dummy.c:221
 msgid "Item 3"
-msgstr ""
+msgstr "Пункт 3"
 
 #: src/bin/ui/property/property_dummy.c:226
 msgid "Item 3_1 with dynamic subitems"
-msgstr ""
+msgstr "Пункт 3_1 з динамічними підпунктами"
 
 #: src/bin/ui/property/property_dummy.c:230
 msgid "Item 3_2"
-msgstr ""
+msgstr "Пункт 3_2"
 
 #: src/bin/ui/property/property_dummy.c:234
 msgid "Item 4"
-msgstr ""
+msgstr "Пункт 4"
 
 #: src/bin/ui/property/property_dummy.c:235
-#, fuzzy
 msgid "entry"
-msgstr "Розділити шари"
+msgstr "запис"
 
 #: src/bin/ui/property/property_dummy.c:243
 msgid "Item 5"
-msgstr ""
+msgstr "Пункт 5"
 
 #: src/bin/ui/property/property_dummy.c:244
 msgid "comb"
-msgstr ""
+msgstr "гребінець"
 
 #: src/bin/ui/property/property_dummy.c:251
 msgid "Item 6"
-msgstr ""
+msgstr "Пункт 6"
 
 #: src/bin/ui/property/property_dummy.c:252
 #: src/bin/ui/property/property_dummy.c:261
 #: src/bin/ui/property/property_dummy.c:266
 #: src/bin/ui/property/property_dummy.c:317
-#, fuzzy
 msgid "min"
-msgstr "Збільшити"
+msgstr "хв"
 
 #: src/bin/ui/property/property_dummy.c:254
 #: src/bin/ui/property/property_dummy.c:257
@@ -1038,1029 +1068,1041 @@ msgstr "Збільшити"
 #: src/bin/ui/property/property_image.c:507
 #: src/bin/ui/property/property_image.c:508
 msgid "px"
-msgstr ""
+msgstr "пк"
 
 #: src/bin/ui/property/property_dummy.c:255
 #: src/bin/ui/property/property_dummy.c:269
 #: src/bin/ui/property/property_dummy.c:320
 msgid "max"
-msgstr ""
+msgstr "макс"
 
 #: src/bin/ui/property/property_dummy.c:259
 msgid "Item 7"
-msgstr ""
+msgstr "Пункт 7"
 
 #: src/bin/ui/property/property_dummy.c:265
 msgid "Item 8"
-msgstr ""
+msgstr "Пункт 8"
 
 #: src/bin/ui/property/property_dummy.c:273
 msgid "Item 9"
-msgstr ""
+msgstr "Пункт 9"
 
 #: src/bin/ui/property/property_dummy.c:280
 msgid "Item 10"
-msgstr ""
+msgstr "Пункт 10"
 
 #: src/bin/ui/property/property_dummy.c:286
 #: src/bin/ui/workspace/group_navigator.c:2629
 msgid "State"
-msgstr ""
+msgstr "Держава"
 
 #: src/bin/ui/property/property_dummy.c:305
 #: src/bin/ui/property/property_dummy.c:315
 #: src/bin/ui/workspace/group_navigator.c:2633
 msgid "Item"
-msgstr ""
+msgstr "Пункт"
 
 #: src/bin/ui/property/property_dummy.c:306
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: src/bin/ui/property/property_dummy.c:309
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/bin/ui/property/property_dummy.c:318
 msgid "p1"
-msgstr ""
+msgstr "p1"
 
 #: src/bin/ui/property/property_dummy.c:321
 msgid "p2"
-msgstr ""
+msgstr "p2"
 
 #: src/bin/ui/property/property_group.c:1190
-#, fuzzy
 msgid "< Style manager >"
-msgstr "Новий стиль "
+msgstr "< Менеджер стилів >"
 
 #: src/bin/ui/property/property_group.c:1279
-#, fuzzy
 msgid "< Sound manager >"
-msgstr "Редактор програм"
+msgstr "< Менеджер звуку >"
 
 #: src/bin/ui/property/property_group.c:1529
-#, fuzzy
 msgid "< Color class manager >"
-msgstr "Назва класу кольорів"
+msgstr "< Менеджер класів кольорів >"
 
 #: src/bin/ui/property/property_group.c:1673
 msgid ""
 "Specifies a program to run after the current<br>program completes. The "
 "source and signal parameters<br>of a program run as an \"after\" are ignored."
 msgstr ""
+"Визначає програму для запуску після завершення поточної<br>програми. "
+"Параметри джерела та сигналу<br>програми, що виконується як \"після\", "
+"ігноруються."
 
 #: src/bin/ui/property/property_group.c:1772
 msgid "Program or part on which the specified action acts."
-msgstr ""
+msgstr "Програма або частина, на яку діє зазначена дія."
 
 #: src/bin/ui/property/property_group.c:2710
 #, c-format
 msgid "group name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву групи змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2714
 #, c-format
 msgid "state name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву штату змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2718
 #, c-format
 msgid "program name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2725
 #, c-format
 msgid "part item's name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву частини елемента змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2729
 #, c-format
 msgid "image changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "зображення змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2739
 #, c-format
 msgid "vector changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "вектор змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2744
 #, c-format
 msgid "changed \"%d\" tween images"
-msgstr ""
+msgstr "змінено \"%d\" між зображеннями"
 
 #: src/bin/ui/property/property_group.c:2747
 #, c-format
 msgid "group.min_w changed from %d to %d"
-msgstr ""
+msgstr "group.min_w змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2751
 #, c-format
 msgid "group.min_h changed from %d to %d"
-msgstr ""
+msgstr "group.min_h змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2755
 #, c-format
 msgid "group.max_w changed from %d to %d"
-msgstr ""
+msgstr "group.max_w змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2759
 #, c-format
 msgid "group.max_h changed from %d to %d"
-msgstr ""
+msgstr "group.max_h змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2763
 #, c-format
 msgid "part name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву частини змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2767
 #, c-format
 msgid "data item name changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "назву елемента даних змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2771
 #, c-format
 msgid "data item value changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "значення елемента даних змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2781
 #, c-format
 msgid "part scale %s"
-msgstr ""
+msgstr "масштаб частини %s"
 
 #: src/bin/ui/property/property_group.c:2784
 #, c-format
 msgid "mouse events %s"
-msgstr ""
+msgstr "події миші %s"
 
 #: src/bin/ui/property/property_group.c:2787
 #, c-format
 msgid "repeat events %s"
-msgstr ""
+msgstr "повторення подій %s"
 
 #: src/bin/ui/property/property_group.c:2790
 #, c-format
 msgid "clip to changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "кліп змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2794
 #, c-format
 msgid "proxy source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело проксі змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2798
 #, c-format
 msgid "ignore_flags changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "ignore_flags змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2803
 #, c-format
 msgid "pointer mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "режим покажчика змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2808
 #, c-format
 msgid "select mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "режим вибору змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2813
 #, c-format
 msgid "entry mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "режим входу змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2818
 #, c-format
 msgid "cursor mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "режим курсору змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2823
 #, c-format
 msgid "fill type changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "тип заливки змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2828
 #, c-format
 msgid "text effect changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "текстовий ефект змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2833
 #, c-format
 msgid "shadow direction changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "напрямок тіні змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2839
 #, c-format
 msgid "dragable enable x changed from %d to %d"
-msgstr ""
+msgstr "можливість перетягування x змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2843
 #, c-format
 msgid "dragable enable y changed from %d to %d"
-msgstr ""
+msgstr "можливість перетягування y змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2847
 #, c-format
 msgid "dragable step x changed from %d to %d"
-msgstr ""
+msgstr "перетягуваний крок x змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2851
 #, c-format
 msgid "dragable step y changed from %d to %d"
-msgstr ""
+msgstr "перетягуваний крок y змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2855
 #, c-format
 msgid "dragable count x changed from %d to %d"
-msgstr ""
+msgstr "кількість перетягнутих змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2859
 #, c-format
 msgid "dragable count y changed from %d to %d"
-msgstr ""
+msgstr "кількість можливостей перетягування y змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2863
 #, c-format
 msgid "dragable confine changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "межу перетягування змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2867
 #, c-format
 msgid "dragable threshold changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "порогове значення перетягування змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2871
 #, c-format
 msgid "dragable event changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "перетягувану подію змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2875
 #, c-format
 msgid "source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2879
 #, c-format
 msgid "selection under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "вибір під змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2883
 #, c-format
 msgid "cursor under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "курсор під змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2887
 #, c-format
 msgid "anchors under changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "прив'язки під змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2891
 #, c-format
 msgid "selection over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "виділення змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2895
 #, c-format
 msgid "cursor over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "курсор змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2899
 #, c-format
 msgid "anchors over changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "прив'язки змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2903
 #, c-format
 msgid "text source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело тексту змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2907
 #, c-format
 msgid "text text_source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "текст text_source змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2911
 #, c-format
 msgid "text style changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "стиль тексту змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2915
 #, c-format
 msgid "multiline %s"
-msgstr ""
+msgstr "багаторядковий %s"
 
 #: src/bin/ui/property/property_group.c:2918
 #, c-format
 msgid "state visible %s"
-msgstr ""
+msgstr "видимий стан %s"
 
 #: src/bin/ui/property/property_group.c:2921
 #, c-format
 msgid "fill smooth %s"
-msgstr ""
+msgstr "заповнити гладкою %s"
 
 #: src/bin/ui/property/property_group.c:2924
 #, c-format
 msgid "state min_w changed from %d to %d"
-msgstr ""
+msgstr "стан min_w змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2928
 #, c-format
 msgid "state min_h changed from %d to %d"
-msgstr ""
+msgstr "стан min_h змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2932
 #, c-format
 msgid "state minmul_w changed from %d to %d"
-msgstr ""
+msgstr "стан minmul_w змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2936
 #, c-format
 msgid "state minmul_h changed from %d to %d"
-msgstr ""
+msgstr "стан minmul_h змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2940
 #, c-format
 msgid "state fixed_w %s"
-msgstr ""
+msgstr "стан fixed_w %s"
 
 #: src/bin/ui/property/property_group.c:2943
 #, c-format
 msgid "state fixed_h %s"
-msgstr ""
+msgstr "стан fixed_h %s"
 
 #: src/bin/ui/property/property_group.c:2946
 #, c-format
 msgid "state max_w changed from %d to %d"
-msgstr ""
+msgstr "стан max_w змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2950
 #, c-format
 msgid "state max_h changed from %d to %d"
-msgstr ""
+msgstr "стан max_h змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2954
 #, c-format
 msgid "state aspect_min changed from %.2f to %.2f"
-msgstr ""
+msgstr "стан aspect_min змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2958
 #, c-format
 msgid "state aspect_max changed from %.2f to %.2f"
-msgstr ""
+msgstr "стан aspect_max змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2962
 #, c-format
 msgid "aspect preference changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "налаштування формату змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2967
 #, c-format
 msgid "align x changed from %.2f to %.2f"
-msgstr ""
+msgstr "align x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2971
 #, c-format
 msgid "align y changed from %.2f to %.2f"
-msgstr ""
+msgstr "align y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2975
 #, c-format
 msgid "rel1 to_x changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "rel1 to_x змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2979
 #, c-format
 msgid "rel1 to_y changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "rel1 to_y змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:2983
 #, c-format
 msgid "rel1 relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "rel1 відносний x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2987
 #, c-format
 msgid "rel1 relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "rel1 відносно y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:2991
 #, c-format
 msgid "rel1 offset x changed from %d to %d"
-msgstr ""
+msgstr "rel1 offset x змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2995
 #, c-format
 msgid "rel1 offset y changed from %d to %d"
-msgstr ""
+msgstr "rel1 offset y змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:2999
 #, c-format
 msgid "rel2 to_x changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "rel2 to_x змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3003
 #, c-format
 msgid "rel2 to_y changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "rel2 to_y змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3007
 #, c-format
 msgid "rel2 relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "rel2 відносний x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3011
 #, c-format
 msgid "rel2 relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "rel2 відносно y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3015
 #, c-format
 msgid "rel2 offset x changed from %d to %d"
-msgstr ""
+msgstr "rel2 offset x змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3019
 #, c-format
 msgid "rel2 offset y changed from %d to %d"
-msgstr ""
+msgstr "rel2 offset y змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3023
 #, c-format
 msgid "image left border changed from %d to %d"
-msgstr ""
+msgstr "ліва межа зображення змінена з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3028
 #, c-format
 msgid "image right border changed from %d to %d"
-msgstr ""
+msgstr "права межа зображення змінена з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3033
 #, c-format
 msgid "image top border changed from %d to %d"
-msgstr ""
+msgstr "верхню межу зображення змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3038
 #, c-format
 msgid "image bottom border changed from %d to %d"
-msgstr ""
+msgstr "нижня межа зображення змінена з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3043
 #, c-format
 msgid "border fill changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "заливку рамки змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3048
 #, c-format
 msgid "fill origin relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "відносне джерело заповнення x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3052
 #, c-format
 msgid "fill origin relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "джерело заповнення відносно y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3056
 #, c-format
 msgid "fill size relative x changed from %.2f to %.2f"
-msgstr ""
+msgstr "відносний розмір заповнення x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3060
 #, c-format
 msgid "fill size relative y changed from %.2f to %.2f"
-msgstr ""
+msgstr "розмір заповнення відносно y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3064
 #, c-format
 msgid "fill origin offset x changed from %.2f to %.2f"
-msgstr ""
+msgstr "зсув початкового заповнення x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3068
 #, c-format
 msgid "fill origin offset y changed from %.2f to %.2f"
-msgstr ""
+msgstr "зсув початкового заповнення y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3072
 #, c-format
 msgid "fill size offset x changed from %.2f to %.2f"
-msgstr ""
+msgstr "зміщення розміру заливки x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3076
 #, c-format
 msgid "fill size offset y changed from %.2f to %.2f"
-msgstr ""
+msgstr "зміщення розміру заливки y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3080
 #, c-format
 msgid "color class changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "клас кольору змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3084
 #, c-format
 msgid "color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3092
 #, c-format
 msgid "outline color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір контуру змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3100
 #, c-format
 msgid "shadow color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір тіні змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3108
 #, c-format
 msgid "text changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "текст змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3112
 #, c-format
 msgid "font changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "шрифт змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3116
 #, c-format
 msgid "text min_x %s"
-msgstr ""
+msgstr "текст min_x %s"
 
 #: src/bin/ui/property/property_group.c:3119
 #, c-format
 msgid "text min_y %s"
-msgstr ""
+msgstr "текст min_y %s"
 
 #: src/bin/ui/property/property_group.c:3122
 #, c-format
 msgid "text max_x %s"
-msgstr ""
+msgstr "текст max_x %s"
 
 #: src/bin/ui/property/property_group.c:3125
 #, c-format
 msgid "text max_y %s"
-msgstr ""
+msgstr "текст max_y %s"
 
 #: src/bin/ui/property/property_group.c:3128
 #, c-format
 msgid "text fit_x %s"
-msgstr ""
+msgstr "текст fit_x %s"
 
 #: src/bin/ui/property/property_group.c:3131
-#, fuzzy, c-format
+#, c-format
 msgid "text fit_y %s"
-msgstr "Новий стиль "
+msgstr "текст fit_y %s"
 
 #: src/bin/ui/property/property_group.c:3134
 #, c-format
 msgid "program current %s"
-msgstr ""
+msgstr "поточна програма %s"
 
 #: src/bin/ui/property/property_group.c:3137
 #, c-format
 msgid "text align x changed from %.2f to %.2f"
-msgstr ""
+msgstr "вирівнювання тексту x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3141
 #, c-format
 msgid "text align y changed from %.2f to %.2f"
-msgstr ""
+msgstr "вирівнювання тексту y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3145
 #, c-format
 msgid "text size changed from %d to %d"
-msgstr ""
+msgstr "розмір тексту змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3149
 #, c-format
 msgid "text elipsis changed from %.2f to %.2f"
-msgstr ""
+msgstr "еліпсис тексту змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3153
 #, c-format
 msgid "text elipsis %s"
-msgstr ""
+msgstr "еліпсис тексту %s"
 
 #: src/bin/ui/property/property_group.c:3156
 #, c-format
 msgid "program signal changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "програмний сигнал змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3160
 #, c-format
 msgid "program emit signal changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "програмний вихідний сигнал змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3164
 #, c-format
 msgid "program emit source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело випромінювання програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3168
 #, c-format
 msgid "program state changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "стан програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3172
 #, c-format
 msgid "program source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3176
 #, c-format
 msgid "program in.from changed from %.2f to %.2f"
-msgstr ""
+msgstr "програму in.fr змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3180
 #, c-format
 msgid "program in.range changed from %.2f to %.2f"
-msgstr ""
+msgstr "програму in.range змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3184
 #, c-format
 msgid "program's transition time changed from %.2f to %.2f"
-msgstr ""
+msgstr "час переходу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3188
 #, c-format
 msgid "program's transition factor changed from %.2f to %.2f"
-msgstr ""
+msgstr "коефіцієнт переходу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3192
 #, c-format
 msgid "program's transition gradient changed from %.2f to %.2f"
-msgstr ""
+msgstr "градієнт переходу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3196
 #, c-format
 msgid "program's transition decay changed from %.2f to %.2f"
-msgstr ""
+msgstr "затухання переходу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3200
 #, c-format
 msgid "program's transition bounces changed from %.2f to %.2f"
-msgstr ""
+msgstr "відскоки переходу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3204
 #, c-format
 msgid "program's transition swings changed from %.2f to %.2f"
-msgstr ""
+msgstr "коливання переходів програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3208
 #, c-format
 msgid "program's transition bezier_x1 changed from %.2f to %.2f"
-msgstr ""
+msgstr "перехід програми bezier_x1 змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3212
 #, c-format
 msgid "program's transition bezier_y1 changed from %.2f to %.2f"
-msgstr ""
+msgstr "перехід програми bezier_y1 змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3216
 #, c-format
 msgid "program's transition bezier_x2 changed from %.2f to %.2f"
-msgstr ""
+msgstr "перехід програми bezier_x2 змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3220
 #, c-format
 msgid "program's transition bezier_y2 changed from %.2f to %.2f"
-msgstr ""
+msgstr "перехід програми bezier_y2 змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3224
 #, c-format
 msgid "program's tone duration changed from %.2f to %.2f"
-msgstr ""
+msgstr "тривалість звукового сигналу програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3228
 #, c-format
 msgid "program's sample changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "зразок програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3240
 #, c-format
 msgid "program's tone changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "тон програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3244
 #, c-format
 msgid "program's channel changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "канал програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3248
 #, c-format
 msgid "program's sample speed changed from %.2f to %.2f"
-msgstr ""
+msgstr "швидкість вибірки програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3252
 #, c-format
 msgid "program drag value x changed from %.2f to %.2f"
-msgstr ""
+msgstr "Значення перетягування програми x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3256
 #, c-format
 msgid "program drag value y changed from %.2f to %.2f"
-msgstr ""
+msgstr "значення перетягування програми y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3260
 #, c-format
 msgid "program value changed from %.2f to %.2f"
-msgstr ""
+msgstr "значення програми змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3264
 #, c-format
 msgid "filter part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "частину фільтра змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3268
 #, c-format
 msgid "filter state changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "стан фільтра змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3272
 #, c-format
 msgid "container's align_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "align_x контейнера змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3276
 #, c-format
 msgid "container's align_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "align_y контейнера змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3280
 #, c-format
 msgid "container's padding_x changed from %d to %d"
-msgstr ""
+msgstr "padding_x контейнера змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3284
 #, c-format
 msgid "container's padding_y changed from %d to %d"
-msgstr ""
+msgstr "padding_y контейнера змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3288
 #, c-format
 msgid "container's min_x %s"
-msgstr ""
+msgstr "min_x %s контейнера"
 
 #: src/bin/ui/property/property_group.c:3291
 #, c-format
 msgid "container's min_y %s"
-msgstr ""
+msgstr "min_y контейнера %s"
 
 #: src/bin/ui/property/property_group.c:3294
 #, c-format
 msgid "table homogeneous changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "однорідність таблиці змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3300
 #, c-format
 msgid "item's source changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "джерело елемента змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3304
 #, c-format
 msgid "part item's min_w changed from %d to %d"
-msgstr ""
+msgstr "min_w елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3308
 #, c-format
 msgid "part item's min_h changed from %d to %d"
-msgstr ""
+msgstr "min_h елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3312
 #, c-format
 msgid "part item's max_w changed from %d to %d"
-msgstr ""
+msgstr "max_w елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3316
 #, c-format
 msgid "part item's max_h changed from %d to %d"
-msgstr ""
+msgstr "max_h елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3320
 #, c-format
 msgid "part item's prefer_w changed from %d to %d"
-msgstr ""
+msgstr "prefer_w елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3324
 #, c-format
 msgid "part item's prefer_h changed from %d to %d"
-msgstr ""
+msgstr "prefer_h елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3328
 #, c-format
 msgid "part item's weight_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "weight_x елемента частини змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3332
 #, c-format
 msgid "part item's weight_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "weight_y елемента частини змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3336
 #, c-format
 msgid "part item's align_x changed from %.2f to %.2f"
-msgstr ""
+msgstr "align_x елемента частини змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3340
 #, c-format
 msgid "part item's align_y changed from %.2f to %.2f"
-msgstr ""
+msgstr "align_y елемента частини змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3344
 #, c-format
 msgid "part item's aspect mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "формат елемента частини змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3349
 #, c-format
 msgid "program's transition type changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "тип переходу програми змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3354
 #, c-format
 msgid "part item's aspect_w changed from %d to %d"
-msgstr ""
+msgstr "aspect_w елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3358
 #, c-format
 msgid "part item's aspect_h changed from %d to %d"
-msgstr ""
+msgstr "aspect_h елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3362
 #, c-format
 msgid "part item's spread by rows changed from %d to %d"
-msgstr ""
+msgstr "розподіл елемента частини за рядками змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3366
 #, c-format
 msgid "part item's spread by columns changed from %d to %d"
-msgstr ""
+msgstr "розподіл елемента частини за стовпцями змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3370
 #, c-format
 msgid "part item's span by columns changed from %hu to %hu"
-msgstr ""
+msgstr "діапазон елемента частини за стовпцями змінено з %hu на %hu"
 
 #: src/bin/ui/property/property_group.c:3374
 #, c-format
 msgid "part item's span by rows changed from %hu to %hu"
-msgstr ""
+msgstr "діапазон елемента частини за рядками змінено з %hu на %hu"
 
 #: src/bin/ui/property/property_group.c:3378
 #, c-format
 msgid "part item's column position changed from %hu to %hu"
-msgstr ""
+msgstr "положення стовпця елемента частини змінено з %hu на %hu"
 
 #: src/bin/ui/property/property_group.c:3382
 #, c-format
 msgid "part item's row position changed from %hu to %hu"
-msgstr ""
+msgstr "позицію рядка елемента частини змінено з %hu на %hu"
 
 #: src/bin/ui/property/property_group.c:3386
 #, c-format
 msgid "part item's left padding changed from %d to %d"
-msgstr ""
+msgstr "лівий відступ елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3391
 #, c-format
 msgid "part item's right padding changed from %d to %d"
-msgstr ""
+msgstr "правий відступ елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3396
 #, c-format
 msgid "part item's top padding changed from %d to %d"
-msgstr ""
+msgstr "верхній відступ елемента частини змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3401
 #, c-format
 msgid "part item's bottom padding changed from %d to %d"
-msgstr ""
+msgstr "відступ нижньої частини елемента змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3406
 #, c-format
 msgid "map's perspective part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "перспективну частину карти змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3410
 #, c-format
 msgid "map's light part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "світлу частину карти змінено з \"%s\" на \"%s\""
 
 #: src/bin/ui/property/property_group.c:3414
 #, c-format
 msgid "map %s"
-msgstr ""
+msgstr "карта %s"
 
 #: src/bin/ui/property/property_group.c:3417
 #, c-format
 msgid "map perspective %s"
-msgstr ""
+msgstr "перспектива карти %s"
 
 #: src/bin/ui/property/property_group.c:3420
 #, c-format
 msgid "map smooth %s"
-msgstr ""
+msgstr "зіставляти гладку %s"
 
 #: src/bin/ui/property/property_group.c:3423
 #, c-format
 msgid "map alpha %s"
-msgstr ""
+msgstr "карта альфа %s"
 
 #: src/bin/ui/property/property_group.c:3426
 #, c-format
 msgid "map backface cull %s"
-msgstr ""
+msgstr "відображення задньої поверхні карти %s"
 
 #: src/bin/ui/property/property_group.c:3429
 #, c-format
 msgid "perspective focal changed from %d to %d"
-msgstr ""
+msgstr "фокус перспективи змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3433
 #, c-format
 msgid "perspective zplane changed from %d to %d"
-msgstr ""
+msgstr "площину перспективи змінено з %d на %d"
 
 #: src/bin/ui/property/property_group.c:3437
 #, c-format
 msgid "map's rotation center part changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "центр повороту карти змінено з \"%s\" на \"%s\".\""
 
 #: src/bin/ui/property/property_group.c:3441
 #, c-format
 msgid "map rotation x changed from %.2f to %.2f"
-msgstr ""
+msgstr "обертання карти x змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3446
 #, c-format
 msgid "map rotation y changed from %.2f to %.2f"
-msgstr ""
+msgstr "поворот карти y змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3451
 #, c-format
 msgid "map rotation z changed from %.2f to %.2f"
-msgstr ""
+msgstr "обертання карти z змінено з %.2f на %.2f"
 
 #: src/bin/ui/property/property_group.c:3456
 #, c-format
 msgid "point color '1' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір точки '1' змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3464
 #, c-format
 msgid "point color '2' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір точки '2' змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3472
 #, c-format
 msgid "point color '3' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір точки '3' змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3480
 #, c-format
 msgid "point color '4' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]"
-msgstr ""
+msgstr "колір точки '4' змінено з [%d,%d,%d,%d] на [%d,%d,%d,%d]"
 
 #: src/bin/ui/property/property_group.c:3779
 msgid ""
 "Circular dependency alarm! Selected group somehow related to current group."
 msgstr ""
+"Тривога циклічної залежності! Вибрана група якось пов’язана з поточною "
+"групою."
 
 #: src/bin/ui/property/property_group.c:4806
 msgid "turned on"
-msgstr ""
+msgstr "включений"
 
 #: src/bin/ui/property/property_group.c:4806
 msgid "turned off"
-msgstr ""
+msgstr "вимкнено"
 
 #: src/bin/ui/property/property_group.c:4900
 msgid ""
 "The name to be used by the application to load the resulting Edje object and "
 "to identify the group to swallow in a GROUP part."
 msgstr ""
+"Ім’я, яке використовуватиметься програмою для завантаження результуючого об’"
+"єкта Edje та ідентифікації групи для проковтування в частині GROUP."
 
 #: src/bin/ui/property/property_group.c:4907
 msgid ""
 "The minimum width for the container defined by the composition of the parts. "
 "This value is not enforced."
 msgstr ""
+"Мінімальна ширина для контейнера визначається складом частин. Це значення не "
+"застосовується."
 
 #: src/bin/ui/property/property_group.c:4910
 msgid ""
 "The minimum height for the container defined by the composition of the "
 "parts. This value is not enforced."
 msgstr ""
+"Мінімальна висота для контейнера визначається складом частин. Це значення не "
+"застосовується."
 
 #: src/bin/ui/property/property_group.c:4916
 msgid ""
 "The maximum width for the container defined by the composition of the parts. "
 "This value is not enforced."
 msgstr ""
+"Максимальна ширина для контейнера визначається складом частин. Це значення "
+"не застосовується."
 
 #: src/bin/ui/property/property_group.c:4919
 msgid ""
 "The maximum height for the container defined by the composition of the "
 "parts. This value is not enforced."
 msgstr ""
+"Максимальна висота для контейнера визначається складом частин. Це значення "
+"не застосовується."
 
 #: src/bin/ui/property/property_group.c:4937
 msgid ""
@@ -2068,6 +2110,9 @@ msgid ""
 "of the theme, by programs and in some cases by the application. It must be "
 "unique within the group."
 msgstr ""
+"Назва частини використовується як посилання у системі "
+"відносного<bt>позиціонування теми, програмами та в деяких випадках "
+"програмою. Він має бути унікальним у групі."
 
 #: src/bin/ui/property/property_group.c:4948
 msgid ""
@@ -2079,18 +2124,29 @@ msgid ""
 "well being scaled, and others do not, so the designer gets to choose what "
 "works best."
 msgstr ""
+"Визначає, чи масштабується частина за допомогою коефіцієнта масштабування "
+"Edje. За замовчуванням масштаб вимкнено, а коефіцієнт масштабування за "
+"замовчуванням становить 1,0 – це означає відсутність масштабування. Це "
+"використовується для масштабування властивостей, таких як розмір шрифту, "
+"мінімальний і максимальний розміри частини. Його також можна використовувати "
+"для масштабування на основі DPI цільового пристрою. Причина вибірковості "
+"полягає в тому, що деякі речі добре працюють, будучи масштабованими, а інші –"
+" ні, тому дизайнер може вибрати те, що працює найкраще."
 
 #: src/bin/ui/property/property_group.c:4962
 msgid ""
 "Specifies whether the part emits signals. Disabling it prevents the part "
 "from emitting any type of signal at all."
 msgstr ""
+"Визначає, чи частина видає сигнали. Якщо його вимкнути, частина взагалі не "
+"буде видавати будь-який тип сигналу."
 
 #: src/bin/ui/property/property_group.c:4970
 msgid ""
 "Specifies whether a part echoes a mouse event to other parts below the "
 "pointer."
 msgstr ""
+"Визначає, чи частина повторює подію миші на інші частини під вказівником."
 
 #: src/bin/ui/property/property_group.c:4976
 msgid ""
@@ -2098,12 +2154,17 @@ msgid ""
 "container. The overflowing content is not displayed. Note that the part "
 "being clipped to canbe a rectangle or image part."
 msgstr ""
+"Відтворює лише область частини, яка збігається з контейнером іншої частини. "
+"Переповнений вміст не відображається. Зауважте, що частина, яку обрізають, "
+"може бути прямокутником або частиною зображення."
 
 #: src/bin/ui/property/property_group.c:4984
 msgid ""
 "Specifies whether events with the given flags must be ignored. These events "
 "do not have their signals emitted to the parts."
 msgstr ""
+"Визначає, чи мають ігноруватися події з заданими прапорцями. Ці події не "
+"мають своїх сигналів, випромінюваних до частин."
 
 #: src/bin/ui/property/property_group.c:4992
 msgid ""
@@ -2113,6 +2174,11 @@ msgid ""
 "signals emitted, even outside the object, until    the button is  released.  "
 "* NOGRAB, the effect is limited to the part's container."
 msgstr ""
+"Встановлює поведінку вказівника миші для частини. Значенням за замовчуванням "
+"є AUTOGRAB. Доступні наступні режими: * AUTOGRAB, коли клацнути частину, а "
+"кнопку залишити натиснутою, частина є джерелом усіх майбутніх сигналів миші, "
+"що випромінюються, навіть за межами об’єкта, доки кнопку не буде відпущено.  "
+"* NOGRAB, ефект обмежений контейнером частини."
 
 #: src/bin/ui/property/property_group.c:5003
 msgid ""
@@ -2121,18 +2187,26 @@ msgid ""
 "autoloaded and swallowed on this part.  * For TEXTBLOCK parts, it's the name "
 "of a group is used for    selection display under the text."
 msgstr ""
+"Значення цього параметра залежить від типу деталі.  * Для частин GROUP це "
+"назва іншої групи у файлі Edje, яка автоматично завантажується та "
+"проковтується цією частиною.  * Для частин TEXTBLOCK для відображення "
+"виділення під текстом використовується назва групи."
 
 #: src/bin/ui/property/property_group.c:5021
 msgid ""
 "Enables or disables dragging along the X axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
 msgstr ""
+"Вмикає або вимикає перетягування вздовж осі X. Якщо ввімкнено, 1 встановлює "
+"початкову точку на 0,0, а -1 на 1,0."
 
 #: src/bin/ui/property/property_group.c:5024
 msgid ""
 "Enables or disables dragging along the Y axis. When enabled, 1 sets the "
 "starting point at 0.0 and -1 at 1.0."
 msgstr ""
+"Вмикає або вимикає перетягування вздовж осі Y. Якщо ввімкнено, 1 встановлює "
+"початкову точку 0,0, а -1 — 1,0."
 
 #: src/bin/ui/property/property_group.c:5030
 #: src/bin/ui/property/property_group.c:5035
@@ -2141,6 +2215,10 @@ msgid ""
 "it, causing the part to jump from position to position. If the step is set "
 "to 0, it is calculated as the width of the confined part divided by count."
 msgstr ""
+"Цей параметр приймає будь-яке ціле число та обмежує переміщення значеннями, "
+"які діляться на нього, змушуючи частину стрибати з позиції на позицію. Якщо "
+"для кроку встановлено значення 0, він обчислюється як ширина обмеженої "
+"частини, поділена на кількість."
 
 #: src/bin/ui/property/property_group.c:5048
 msgid ""
@@ -2148,18 +2226,25 @@ msgid ""
 "container. When you use the confine option, do not forget to set a minimum "
 "size for the part, or the movable part does not show up."
 msgstr ""
+"Якщо встановлено, обмежує рух рухомої частини контейнером іншої частини. "
+"Коли ви використовуєте опцію confine, не забудьте встановити мінімальний "
+"розмір для частини, інакше рухома частина не відображатиметься."
 
 #: src/bin/ui/property/property_group.c:5056
 msgid ""
 "When set, the movement of the dragged part can only start when it gets moved "
 "enough to be outside of the threshold part."
 msgstr ""
+"Якщо встановлено, рух перетягуваної частини може початися лише тоді, коли "
+"вона переміститься настільки, що перебуває за межами порогової частини."
 
 #: src/bin/ui/property/property_group.c:5063
 msgid ""
 "Causes the part to forward the drag events to another part, thus ignoring "
 "them for itself."
 msgstr ""
+"Примушує частину пересилати події перетягування іншій частині, таким чином "
+"ігноруючи їх для себе."
 
 #: src/bin/ui/property/property_group.c:5077
 msgid ""
@@ -2168,45 +2253,56 @@ msgid ""
 "\"clicked\" or \"invisible\". All state declarations are also coupled with "
 "an index number between 0.0 and 1.0."
 msgstr ""
+"Ім'я, яке використовується для ідентифікації опису всередині заданої "
+"частини. Кілька описів використовуються для оголошення різних станів однієї "
+"частини, наприклад «клацання» або «невидимість». Усі декларації стану також "
+"поєднуються з номером індексу від 0,0 до 1,0."
 
 #: src/bin/ui/property/property_group.c:5086
 msgid ""
 "Takes a boolean state specifying whether the part is visible or not. "
 "Invisible parts do not emit signals."
 msgstr ""
+"Приймає логічний стан, який визначає, чи є частина видимою чи ні. Невидимі "
+"частини не випромінюють сигнали."
 
 #: src/bin/ui/property/property_group.c:5093
 msgid ""
 "Causes the part to use another part content as the content of this part."
 msgstr ""
+"Примушує частину використовувати вміст іншої частини як вміст цієї частини."
 
 #: src/bin/ui/property/property_group.c:5107
 msgid "Sets the minimum width for this state."
-msgstr ""
+msgstr "Встановлює мінімальну ширину для цього стану."
 
 #: src/bin/ui/property/property_group.c:5109
 msgid "Sets the minimum height for this state."
-msgstr ""
+msgstr "Встановлює мінімальну висоту для цього стану."
 
 #: src/bin/ui/property/property_group.c:5114
 msgid "Sets the maximum width for this state."
-msgstr ""
+msgstr "Встановлює максимальну ширину для цього стану."
 
 #: src/bin/ui/property/property_group.c:5116
 msgid "Sets the maximum height for this state."
-msgstr ""
+msgstr "Встановлює максимальну висоту для цього стану."
 
 #: src/bin/ui/property/property_group.c:5121
 msgid ""
 "A width multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
 msgstr ""
+"Множник ширини, примусово застосований до будь-якого мінімального розміру "
+"лише під час обчислення мінімального розміру."
 
 #: src/bin/ui/property/property_group.c:5124
 msgid ""
 "A height multiplier forcibly applied to whatever the minimum size is only "
 "during minimum size calculation."
 msgstr ""
+"Множник висоти, примусово застосований до будь-якого мінімального розміру "
+"лише під час обчислення мінімального розміру."
 
 #: src/bin/ui/property/property_group.c:5130
 msgid ""
@@ -2214,6 +2310,9 @@ msgid ""
 "size in width. ON for enabled OFF for disabled. When enabled, the routine "
 "does not try and expand or contract the part."
 msgstr ""
+"Повідомляє програмі обчислення мінімального розміру, що ця частина не змінює "
+"розмір по ширині. УВІМКНЕНО для увімкненого ВИМКНЕНО для вимкненого. Якщо "
+"ввімкнено, підпрограма не намагається розгорнути або стиснути частину."
 
 #: src/bin/ui/property/property_group.c:5135
 msgid ""
@@ -2221,10 +2320,13 @@ msgid ""
 "size in height. ON for enabled OFF for disabled. When enabled, the routine "
 "does not try and expand or contract the part."
 msgstr ""
+"Повідомляє програмі обчислення мінімального розміру, що ця частина не змінює "
+"розмір у висоті. УВІМКНЕНО для увімкненого ВИМКНЕНО для вимкненого. Якщо "
+"ввімкнено, підпрограма не намагається розгорнути або стиснути частину."
 
 #: src/bin/ui/property/property_group.c:5143
 msgid "Sets the scope of the \"aspect\" property to a given dimension."
-msgstr ""
+msgstr "Встановлює область дії властивості \"aspect\" на заданий розмір."
 
 #: src/bin/ui/property/property_group.c:5148
 msgid ""
@@ -2232,6 +2334,8 @@ msgid ""
 "The aspect property forces the width to height ratio to be kept from the "
 "minimum."
 msgstr ""
+"Зазвичай ширину та висоту можна незалежно змінити до будь-яких значень. "
+"Властивість аспекту змушує відношення ширини до висоти бути мінімальним."
 
 #: src/bin/ui/property/property_group.c:5152
 msgid ""
@@ -2239,24 +2343,30 @@ msgid ""
 "The aspect property forces the width to height ratio to be kept to the "
 "maximum."
 msgstr ""
+"Зазвичай ширину та висоту можна незалежно змінити до будь-яких значень. "
+"Властивість аспекту змушує підтримувати максимальне співвідношення ширини до "
+"висоти."
 
 #: src/bin/ui/property/property_group.c:5166
 msgid "Enables or disables mapping for the part."
-msgstr ""
+msgstr "Вмикає або вимикає зіставлення для частини."
 
 #: src/bin/ui/property/property_group.c:5171
 msgid "Enables or disables perspective when rotating."
-msgstr ""
+msgstr "Вмикає або вимикає перспективу під час обертання."
 
 #: src/bin/ui/property/property_group.c:5176
 msgid ""
 "Enables or disables smooth map rendering. This can be linear interpolation, "
 "anisotropic filtering, or anything the engine decides is \"smooth\"."
 msgstr ""
+"Вмикає або вимикає плавне відображення карти. Це може бути лінійна "
+"інтерполяція, анізотропна фільтрація або будь-що, що двигун вирішить як "
+"«гладке»."
 
 #: src/bin/ui/property/property_group.c:5183
 msgid "Enables or disables the alpha channel when rendering the map."
-msgstr ""
+msgstr "Вмикає або вимикає альфа-канал під час візуалізації карти."
 
 #: src/bin/ui/property/property_group.c:5188
 msgid ""
@@ -2264,6 +2374,9 @@ msgid ""
 "normally faces the camera is facing away after being rotated). This means "
 "that the object is hidden when \"backface culled\""
 msgstr ""
+"Вмикає або вимикає видалення задньої поверхні (наприклад, коли повернута "
+"частина, яка зазвичай звернена до камери, повертається вбік після обертання)"
+". Це означає, що об’єкт приховано, коли «тильна грань вилучена»"
 
 #: src/bin/ui/property/property_group.c:5196
 msgid ""
@@ -2271,76 +2384,97 @@ msgid ""
 "\"3d look\". The perspective point must have a perspective section that "
 "provides the zplane and focal properties."
 msgstr ""
+"Встановлює частину, яка використовується як «точка перспективи» для надання "
+"частини «3D вигляду». Точка перспективи повинна мати секцію перспективи, яка "
+"забезпечує властивості zplane і фокусу."
 
 #: src/bin/ui/property/property_group.c:5204
 msgid ""
 "Sets the part that is used as the \"light\" for calculating the brightness "
 "(based on how directly the part's surface is facing the light source point)"
 msgstr ""
+"Встановлює частину, яка використовується як «світло» для обчислення "
+"яскравості (на основі того, наскільки прямо поверхня частини звернена до "
+"точки джерела світла)"
 
 #: src/bin/ui/property/property_group.c:5211
 msgid "Sets the distance from the focal z plane (zplane) and the camera."
-msgstr ""
+msgstr "Встановлює відстань від фокальної площини z (zplane) і камери."
 
 #: src/bin/ui/property/property_group.c:5216
 msgid "Sets the z value that is not scaled."
-msgstr ""
+msgstr "Встановлює значення z, яке не масштабується."
 
 #: src/bin/ui/property/property_group.c:5221
 msgid ""
 "Sets the part that is used as the center of rotation when rotating the part "
 "with this description."
 msgstr ""
+"Встановлює деталь, яка використовується як центр обертання під час обертання "
+"деталі з цим описом."
 
 #: src/bin/ui/property/property_group.c:5227
 msgid ""
 "Rotation (in degrees) around the X axis of the part considering the center "
 "set."
 msgstr ""
+"Обертання (в градусах) навколо осі X деталі з урахуванням центрального "
+"набору."
 
 #: src/bin/ui/property/property_group.c:5232
 msgid ""
 "Rotation (in degrees) around the Y axis of the part considering the center "
 "set."
 msgstr ""
+"Поворот (у градусах) навколо осі Y деталі з урахуванням центрального набору."
 
 #: src/bin/ui/property/property_group.c:5237
 msgid ""
 "Rotation (in degrees) around the Z axis of the part considering the center "
 "set."
 msgstr ""
+"Поворот (у градусах) навколо осі Z деталі з урахуванням центральної "
+"установки."
 
 #: src/bin/ui/property/property_group.c:5242
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-top "
 "point of a part."
 msgstr ""
+"Встановлює колір вершини на карті. Цей елемент керування змінює ліву верхню "
+"точку частини."
 
 #: src/bin/ui/property/property_group.c:5245
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-top "
 "point of a part."
 msgstr ""
+"Встановлює колір вершини на карті. Цей елемент керування змінює праву верхню "
+"точку частини."
 
 #: src/bin/ui/property/property_group.c:5251
 msgid ""
 "Sets the color of a vertex in the map.This control changes the left-bottom "
 "point of a part."
 msgstr ""
+"Встановлює колір вершини на карті. Цей елемент керування змінює ліву нижню "
+"точку частини."
 
 #: src/bin/ui/property/property_group.c:5254
 msgid ""
 "Sets the color of a vertex in the map. This control changes the right-bottom "
 "point of a part."
 msgstr ""
+"Встановлює колір вершини на карті. Цей елемент керування змінює праву нижню "
+"точку деталі."
 
 #: src/bin/ui/property/property_group.c:5262
 msgid "Causes Edje to draw the selected effect."
-msgstr ""
+msgstr "Змушує Edje намалювати вибраний ефект."
 
 #: src/bin/ui/property/property_group.c:5268
 msgid "Shadow directions."
-msgstr ""
+msgstr "Напрямки тіні."
 
 #: src/bin/ui/property/property_group.c:5276
 msgid ""
@@ -2350,6 +2484,12 @@ msgid ""
 "the Edje object has to explicitly begin and end selection modes, and the "
 "selection itself is draggable at both ends."
 msgstr ""
+"Встановлює один із наведених нижче режимів вибору для частини текстового "
+"блоку: Режим вибору ЗА ПРОМОВЧАННЯМ — це те, що ви очікуєте на будь-якому "
+"робочому столі. Натисніть мишу, перетягніть і відпустіть, щоб закінчити. "
+"Режим EXPLICIT вимагає, щоб програма, яка керує об’єктом Edje, явно починала "
+"та завершувала режими виділення, а саме виділення можна перетягувати з обох "
+"кінців."
 
 #: src/bin/ui/property/property_group.c:5287
 msgid ""
@@ -2360,6 +2500,12 @@ msgid ""
 "text is not selectable, but it can be edited and pasted, and all text "
 "characters are replaced with *s."
 msgstr ""
+"Встановлює один із таких режимів редагування для частини текстового "
+"блоку:<br>* НЕМАЄ<br>* ПРОСТИЙ<br>* РЕДАГУВАНИЙ<br>* ПАРОЛЬ<br>Це робить "
+"частину доступною для редагування, якщо об’єкт Edje має клавіатуру фокус, а "
+"частина має фокус Edje (або вибір завжди незалежно від фокусу). У режимі "
+"пароля текст не можна вибрати, але його можна редагувати та вставляти, а всі "
+"символи тексту замінюються на *s."
 
 #: src/bin/ui/property/property_group.c:5302
 msgid ""
@@ -2369,47 +2515,66 @@ msgid ""
 "line before the current character, just like many other GUI toolkits handle "
 "it."
 msgstr ""
+"Встановлює один із наведених нижче режимів курсору для частини текстового "
+"блоку: режим курсору ПІД курсором означає, що курсор малює під символом, на "
+"який вказано. Це режим за замовчуванням. Режим курсору BEFORE означає, що "
+"курсор малюється як вертикальна лінія перед поточним символом, як і багато "
+"інших інструментів GUI."
 
 #: src/bin/ui/property/property_group.c:5312
 msgid ""
 "It causes a textblock that is editable to allow multiple lines for editing."
 msgstr ""
+"Це створює текстовий блок, який можна редагувати, щоб дозволити редагування "
+"кількох рядків."
 
 #: src/bin/ui/property/property_group.c:5318
 msgid ""
 "Used for the group to be loaded and the selection display under the selected "
 "text."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і відображення "
+"виділеного під виділеним текстом."
 
 #: src/bin/ui/property/property_group.c:5325
 msgid ""
 "Used for the group to be loaded and the selection display over the selected "
 "text."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і виділення "
+"відображення над виділеним текстом."
 
 #: src/bin/ui/property/property_group.c:5332
 msgid ""
 "Used for the group to be loaded and the cursor display under the cursor "
 "position."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і відображення курсору "
+"під позицією курсору."
 
 #: src/bin/ui/property/property_group.c:5339
 msgid ""
 "Used for the group to be loaded and the cursor display over the cursor "
 "position."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і відображення курсора "
+"над позицією курсору."
 
 #: src/bin/ui/property/property_group.c:5346
 msgid ""
 "Used for the group to be loaded and the anchors display under the anchor "
 "position."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і прив’язок "
+"відображаються під позицією прив’язки."
 
 #: src/bin/ui/property/property_group.c:5353
 msgid ""
 "Used for the group to be loaded and the anchor display over the anchor "
 "position."
 msgstr ""
+"Використовується для групи, яку потрібно завантажити, і відображення прив’"
+"язки над позицією прив’язки."
 
 #: src/bin/ui/property/property_group.c:5367
 msgid ""
@@ -2419,6 +2584,11 @@ msgid ""
 "while 1.0 stands for right and bottom edges of the object on horizonal axis. "
 "The default value is 0.5."
 msgstr ""
+"Якщо розмір відображуваного об’єкта менший (або більший) за його контейнер, "
+"ця властивість переміщує його відносно вздовж осі X усередині контейнера. "
+"0,0 означає, що лівий і верхній краї об’єкта торкаються відповідних "
+"контейнерів, а 1,0 означає правий і нижній краї об’єкта на горизонтальній "
+"осі. Значення за замовчуванням 0,5."
 
 #: src/bin/ui/property/property_group.c:5375
 msgid ""
@@ -2428,6 +2598,11 @@ msgid ""
 "while 1.0 stands for right and bottom edges of the object on vertical axis. "
 "The default value is 0.5."
 msgstr ""
+"Якщо розмір відображуваного об’єкта менший (або більший) за його контейнер, "
+"ця властивість переміщує його відносно вздовж осі Y усередині контейнера. "
+"0,0 означає, що лівий і верхній краї об’єкта торкаються відповідних "
+"контейнерів, тоді як 1,0 означає правий і нижній краї об’єкта на "
+"вертикальній осі. Значення за замовчуванням 0,5."
 
 #: src/bin/ui/property/property_group.c:5391
 msgid ""
@@ -2435,6 +2610,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"Спричиняє розміщення лівого верхнього кута відносно осі X контейнера іншої "
+"частини. Впливає на перший параметр «відносний». Якщо встановити значення "
+"NONE, це значення скасовується для успадкованих частин."
 
 #: src/bin/ui/property/property_group.c:5398
 msgid ""
@@ -2442,13 +2620,16 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"Розташовує лівий верхній кут відносно осі Y контейнера іншої частини. "
+"Впливає на перший параметр «відносний». Якщо встановити значення NONE, це "
+"значення скасовується для успадкованих частин."
 
 #: src/bin/ui/property/property_group.c:5404
 #: src/bin/ui/property/property_group.c:5447
 #: src/bin/ui/property/property_group.c:5568
 #: src/bin/ui/property/property_group.c:5591
 msgid "elm/image/icon/align"
-msgstr ""
+msgstr "elm/image/icon/align"
 
 #: src/bin/ui/property/property_group.c:5406
 msgid ""
@@ -2456,6 +2637,9 @@ msgid ""
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the X axis."
 msgstr ""
+"Переміщує лівий верхній кут у відносне положення всередині контейнера "
+"відносної частини «до». Значення від 0,0 (0%, початок) до 1,0 (100%, кінець) "
+"осі X."
 
 #: src/bin/ui/property/property_group.c:5410
 msgid ""
@@ -2463,25 +2647,32 @@ msgid ""
 "relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) of "
 "the Y axis."
 msgstr ""
+"Переміщує лівий верхній кут у відносне положення всередині контейнера "
+"відносної частини «до». Значення від 0,0 (0%, початок) до 1,0 (100%, кінець) "
+"осі Y."
 
 #: src/bin/ui/property/property_group.c:5416
 #: src/bin/ui/property/property_group.c:5459
 #: src/bin/ui/property/property_group.c:5578
 #: src/bin/ui/property/property_group.c:5601
 msgid "elm/image/icon/offset"
-msgstr ""
+msgstr "elm/image/icon/offset"
 
 #: src/bin/ui/property/property_group.c:5418
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the X "
 "axis."
 msgstr ""
+"Впливає на положення лівого верхнього кута для фіксованої кількості пікселів "
+"уздовж осі X."
 
 #: src/bin/ui/property/property_group.c:5421
 msgid ""
 "Affects the left-up corner position for a fixed number of pixels along the Y "
 "axis."
 msgstr ""
+"Впливає на положення лівого верхнього кута для фіксованої кількості пікселів "
+"уздовж осі Y."
 
 #: src/bin/ui/property/property_group.c:5432
 msgid ""
@@ -2489,6 +2680,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"Розташовує правий нижній кут відносно осі X контейнера іншої частини. "
+"Впливає на перший параметр «відносний». Якщо встановити значення NONE, це "
+"значення скасовується для успадкованих частин."
 
 #: src/bin/ui/property/property_group.c:5440
 msgid ""
@@ -2496,6 +2690,9 @@ msgid ""
 "another part's container. Affects the first parameter of \"relative\". "
 "Setting to NONE unsets this value for inherited parts."
 msgstr ""
+"Спричиняє розміщення правого нижнього кута відносно осі Y контейнера іншої "
+"частини. Впливає на перший параметр «відносний». Якщо встановити значення "
+"NONE, це значення скасовується для успадкованих частин."
 
 #: src/bin/ui/property/property_group.c:5449
 msgid ""
@@ -2503,6 +2700,9 @@ msgid ""
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the X axis."
 msgstr ""
+"Переміщує правий нижній кут у відносну позицію всередині контейнера "
+"відносної частини «до». Значення від 0,0 (0%, початок) до 1,0 (100%, кінець) "
+"осі X."
 
 #: src/bin/ui/property/property_group.c:5453
 msgid ""
@@ -2510,28 +2710,37 @@ msgid ""
 "the relative \"to\" part. Values from 0.0 (0%, beginning) to 1.0 (100%, end) "
 "of the Y axis."
 msgstr ""
+"Переміщує правий нижній кут у відносну позицію всередині контейнера "
+"відносної частини «до». Значення від 0,0 (0%, початок) до 1,0 (100%, кінець) "
+"осі Y."
 
 #: src/bin/ui/property/property_group.c:5461
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the X axis."
 msgstr ""
+"Впливає на положення правого нижнього кута для фіксованої кількості пікселів "
+"уздовж осі X."
 
 #: src/bin/ui/property/property_group.c:5464
 msgid ""
 "Affects the right-down corner position for a fixed number of pixels along "
 "the Y axis."
 msgstr ""
+"Впливає на положення правого нижнього кута для фіксованої кількості пікселів "
+"уздовж осі Y."
 
 #: src/bin/ui/property/property_group.c:5479
 msgid "Name of vector to be used."
-msgstr ""
+msgstr "Назва вектора, який буде використовуватися."
 
 #: src/bin/ui/property/property_group.c:5493
 msgid ""
 "Name of image to be used. In an animation, this is the first and last image "
 "displayed."
 msgstr ""
+"Назва зображення, яке буде використано. В анімації це перше й останнє "
+"зображення, що відображається."
 
 #: src/bin/ui/property/property_group.c:5499
 msgid ""
@@ -2540,6 +2749,10 @@ msgid ""
 "listed, during the transition to the state they are declared in. The "
 "\"normal\" image is the final state."
 msgstr ""
+"Назви зображень, які будуть використовуватися в циклі анімації. Ви можете не "
+"мати жодного, 1 або кількох оголошень анімації. Зображення відображаються в "
+"тому порядку, в якому вони перераховані, під час переходу до стану, у якому "
+"вони оголошені. «Звичайне» зображення є кінцевим станом."
 
 #: src/bin/ui/property/property_group.c:5508
 #: src/bin/ui/property/property_group.c:5512
@@ -2550,6 +2763,9 @@ msgid ""
 "fixed size border, from the side inwards, preventing the corners from being "
 "changed on a resize."
 msgstr ""
+"Якщо встановлено, область (у пікселях) кожної сторони зображення "
+"відображається як межа фіксованого розміру збоку всередину, що запобігає "
+"зміні кутів під час зміни розміру."
 
 #: src/bin/ui/property/property_group.c:5530
 msgid ""
@@ -2557,6 +2773,9 @@ msgid ""
 "covered by the defined border) is displayed or not or assumed to be solid "
 "(without alpha)."
 msgstr ""
+"Якщо рамку встановлено, це значення повідомляє Edje, чи відображається решта "
+"зображення (не охоплене визначеною рамкою) чи ні, чи вважається суцільним ("
+"без альфа-каналу)."
 
 #: src/bin/ui/property/property_group.c:5546
 msgid ""
@@ -2566,58 +2785,77 @@ msgid ""
 "accordingly params value \"relative\" and \"offset\" from \"origin\" and "
 "\"size\" blocks."
 msgstr ""
+"Встановлює тип заливки зображення.<br>* SCALE - зображення масштабується "
+"відповідно до значення параметрів \"relative\" і \"offset\" від блоків "
+"\"origin\" і \"size\". Це тип за замовчуванням.<br> * TILE - зображення "
+"розміщується відповідно до значення параметрів \"relative\" і \"offset\" від "
+"блоків \"origin\" і \"size\"."
 
 #: src/bin/ui/property/property_group.c:5558
 msgid ""
 "The smooth property takes a boolean value to decide if the image is smoothed "
 "on scaling or not."
 msgstr ""
+"Властивість smooth приймає логічне значення, щоб вирішити, чи згладжується "
+"зображення під час масштабування чи ні."
 
 #: src/bin/ui/property/property_group.c:5570
 msgid ""
 "Sets the left-up corner X coordinate relative to the displayed element's "
 "content."
 msgstr ""
+"Встановлює координату X лівого верхнього кута відносно вмісту "
+"відображуваного елемента."
 
 #: src/bin/ui/property/property_group.c:5573
 msgid ""
 "Sets the left-up corner Y coordinate relative to the displayed element's "
 "content."
 msgstr ""
+"Встановлює координату Y лівого верхнього кута відносно вмісту "
+"відображуваного елемента."
 
 #: src/bin/ui/property/property_group.c:5580
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the X axis."
 msgstr ""
+"Впливає на лівий верхній кут для фіксованої кількості пікселів уздовж осі X."
 
 #: src/bin/ui/property/property_group.c:5582
 msgid ""
 "Affects the left-up corner for a fixed number of pixels along the Y axis."
 msgstr ""
+"Впливає на лівий верхній кут для фіксованої кількості пікселів уздовж осі Y."
 
 #: src/bin/ui/property/property_group.c:5593
 msgid ""
 "Sets the right-bottom corner X coordinate relative to the displayed "
 "element's content."
 msgstr ""
+"Встановлює координату X правого нижнього кута відносно вмісту "
+"відображуваного елемента."
 
 #: src/bin/ui/property/property_group.c:5596
 msgid ""
 "Sets the right-bottom corner Y coordinate relative to the displayed "
 "element's content."
 msgstr ""
+"Встановлює координату Y правого нижнього кута відносно вмісту "
+"відображуваного елемента."
 
 #: src/bin/ui/property/property_group.c:5603
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the X "
 "axis."
 msgstr ""
+"Впливає на правий нижній кут для фіксованої кількості пікселів уздовж осі X."
 
 #: src/bin/ui/property/property_group.c:5606
 msgid ""
 "Affects the right-bottom corner for a fixed number of pixels along the Y "
 "axis."
 msgstr ""
+"Впливає на правий нижній кут для фіксованої кількості пікселів уздовж осі Y."
 
 #: src/bin/ui/property/property_group.c:5621
 msgid ""
@@ -2625,101 +2863,127 @@ msgid ""
 "be overridden by the \"color\", \"color2\" and \"color3\" properties set "
 "below."
 msgstr ""
+"Частина використовує значення кольорів вибраного класу кольорів. Ці значення "
+"можуть бути перевизначені властивостями «колір», «колір2» і «колір3», "
+"наведеними нижче."
 
 #: src/bin/ui/property/property_group.c:5628
 msgid "Sets the main color."
-msgstr ""
+msgstr "Встановлює основний колір."
 
 #: src/bin/ui/property/property_group.c:5634
 msgid "Sets the text outline color."
-msgstr ""
+msgstr "Встановлює колір контуру тексту."
 
 #: src/bin/ui/property/property_group.c:5640
 msgid "Sets the text shadow color."
-msgstr ""
+msgstr "Встановлює колір тіні тексту."
 
 #: src/bin/ui/property/property_group.c:5654
 msgid ""
 "Sets the default content of a text part. Normally the application is the one "
 "changing its value."
 msgstr ""
+"Встановлює стандартний вміст текстової частини. Зазвичай програма змінює "
+"своє значення."
 
 #: src/bin/ui/property/property_group.c:5660
 msgid ""
 "Changes the position on the X axis of the point of balance inside the "
 "container."
-msgstr ""
+msgstr "Змінює положення на осі X точки балансу всередині контейнера."
 
 #: src/bin/ui/property/property_group.c:5663
 msgid ""
 "Changes the position on the Y axis of the point of balance inside the "
 "container."
-msgstr ""
+msgstr "Змінює положення на осі Y точки балансу всередині контейнера."
 
 #: src/bin/ui/property/property_group.c:5669
 msgid ""
 "When this parameter is enabled, it forces the minimum width of the container "
 "to be equal to the minimum size of the text."
 msgstr ""
+"Коли цей параметр увімкнено, мінімальна ширина контейнера дорівнює "
+"мінімальному розміру тексту."
 
 #: src/bin/ui/property/property_group.c:5673
 msgid ""
 "When this parameter is enabled, it forces the minimum height of the "
 "container to be equal to the minimum size of the text."
 msgstr ""
+"Коли цей параметр увімкнено, мінімальна висота контейнера дорівнює "
+"мінімальному розміру тексту."
 
 #: src/bin/ui/property/property_group.c:5680
 msgid ""
 "When this parameter is enabled, it forces the maximum width of the container "
 "to be equal to the maximum size of the text."
 msgstr ""
+"Коли цей параметр увімкнено, максимальна ширина контейнера дорівнює "
+"максимальному розміру тексту."
 
 #: src/bin/ui/property/property_group.c:5684
 msgid ""
 "When this parameter is enabled, it forces the maximum height of the "
 "container to be equal to the maximum size of the text."
 msgstr ""
+"Коли цей параметр увімкнено, максимальна висота контейнера дорівнює "
+"максимальному розміру тексту."
 
 #: src/bin/ui/property/property_group.c:5694
 msgid ""
 "This sets the font family to one of the aliases. Can be overrided by the "
 "application."
 msgstr ""
+"Це встановлює сімейство шрифтів на один із псевдонімів. Може бути "
+"перевизначено програмою."
 
 #: src/bin/ui/property/property_group.c:5701
 msgid ""
 "Sets the default font size in points for the text part. Can be overrided by "
 "the application."
 msgstr ""
+"Встановлює стандартний розмір шрифту в пунктах для текстової частини. Може "
+"бути перевизначено програмою."
 
 #: src/bin/ui/property/property_group.c:5708
 msgid ""
 "When this parameter is enabled, Edje resizes the text width to fit in it's "
 "container."
 msgstr ""
+"Якщо цей параметр увімкнено, Edje змінює ширину тексту відповідно до розміру "
+"контейнера."
 
 #: src/bin/ui/property/property_group.c:5711
 msgid ""
 "When this parameter is enabled, Edje resizes the text height to fit in it's "
 "container."
 msgstr ""
+"Коли цей параметр увімкнено, Edje змінює висоту тексту відповідно до розміру "
+"контейнера."
 
 #: src/bin/ui/property/property_group.c:5718
 msgid ""
 "Causes the part to use the text properties (such as font and size) of "
 "another part and update them as they change."
 msgstr ""
+"Примушує частину використовувати властивості тексту (наприклад, шрифт і "
+"розмір) іншої частини та оновлювати їх у міру їх зміни."
 
 #: src/bin/ui/property/property_group.c:5726
 msgid ""
 "Causes the part to display the text content of another part and update them "
 "as they change."
 msgstr ""
+"Примушує частину відображати текстовий вміст іншої частини та оновлювати їх "
+"у міру їх зміни."
 
 #: src/bin/ui/property/property_group.c:5733
 msgid ""
 "This parameter enables or disables the ability to apply ellipsis to the text."
 msgstr ""
+"Цей параметр вмикає або вимикає можливість застосування до тексту крапок."
 
 #: src/bin/ui/property/property_group.c:5736
 msgid ""
@@ -2727,159 +2991,172 @@ msgid ""
 "the last section of the string to be cut out in case of a resize that is "
 "smaller than the text itself. The default value is 0.0. "
 msgstr ""
+"Використовується для балансування тексту у відносній точці від 0,0 до 1,0, "
+"ця точка є останньою частиною рядка, яку потрібно вирізати у випадку зміни "
+"розміру, меншого за сам текст. Значення за замовчуванням "
 
 #: src/bin/ui/property/property_group.c:5748
 msgid ""
 "Causes the part to use the default style and tags with the specified name. "
 msgstr ""
+"Примушує частину використовувати стиль за замовчуванням і теги з указаною "
+"назвою. "
 
 #: src/bin/ui/property/property_group.c:5763
 msgid ""
 "Changes the position of the point of balance by the X axis inside the "
 "container."
-msgstr ""
+msgstr "Змінює положення точки балансу по осі Х всередині контейнера."
 
 #: src/bin/ui/property/property_group.c:5766
 msgid ""
 "Changes the position of the point of balance by the Y axis inside the "
 "container."
-msgstr ""
+msgstr "Змінює положення точки балансу за віссю Y всередині контейнера."
 
 #: src/bin/ui/property/property_group.c:5772
 msgid "Sets the space between cells by the X axis in pixels."
-msgstr ""
+msgstr "Встановлює відстань між клітинками по осі X у пікселях."
 
 #: src/bin/ui/property/property_group.c:5774
 msgid "Sets the space between cells by the Y axis in pixels."
-msgstr ""
+msgstr "Встановлює відстань між клітинками по осі Y у пікселях."
 
 #: src/bin/ui/property/property_group.c:5779
 msgid ""
 "When this parameter is enabled, it forces the minimum horizonal size of the "
 "box/table to be equal to the minimum horizonal size of the items."
 msgstr ""
+"Коли цей параметр увімкнено, мінімальний горизонтальний розмір коробки/"
+"таблиці дорівнює мінімальному горизонтальному розміру елементів."
 
 #: src/bin/ui/property/property_group.c:5783
 msgid ""
 "When this parameters is enabled, it forces the minimum vertical size of the "
 "box/table to be equal to the minimum vertical size of the items."
 msgstr ""
+"Коли цей параметр увімкнено, мінімальний вертикальний розмір поля/таблиці "
+"дорівнює мінімальному вертикальному розміру елементів."
 
 #: src/bin/ui/property/property_group.c:5791
 msgid "Sets the homogeneous mode for the table."
-msgstr ""
+msgstr "Встановлює однорідний режим для таблиці."
 
 #: src/bin/ui/property/property_group.c:5805
 msgid "Sets the name of the object using the evas_object_name_set() function."
-msgstr ""
+msgstr "Встановлює назву об’єкта за допомогою функції evas_object_name_set()."
 
 #: src/bin/ui/property/property_group.c:5810
 msgid "Sets the group this object is made from."
-msgstr ""
+msgstr "Встановлює групу, з якої створено цей об’єкт."
 
 #: src/bin/ui/property/property_group.c:5815
 msgid "Sets the minimum size hints of width for this object."
-msgstr ""
+msgstr "Встановлює мінімальний розмір підказок ширини для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5817
 msgid "Sets the minimum size hints of height for this object."
-msgstr ""
+msgstr "Встановлює мінімальний розмір підказок висоти для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5822
 msgid "Sets the maximum size hints of width for this object."
-msgstr ""
+msgstr "Встановлює максимальний розмір підказок ширини для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5824
 msgid "Sets the maximum size hints of height for this object."
-msgstr ""
+msgstr "Встановлює максимальний розмір підказок висоти для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5829
 msgid "Sets the prederred size hints of width for this object."
-msgstr ""
+msgstr "Встановлює попередні розміри підказок ширини для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5831
 msgid "Sets the prederred size hints of height for this object."
-msgstr ""
+msgstr "Встановлює попередні підказки розміру висоти для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5836
 msgid "Sets the alignment size hints for this object by X axis."
-msgstr ""
+msgstr "Встановлює підказки розміру вирівнювання для цього об’єкта по осі X."
 
 #: src/bin/ui/property/property_group.c:5838
 msgid "Sets the alignment size hints for this object by Y axis."
-msgstr ""
+msgstr "Встановлює підказки розміру вирівнювання для цього об’єкта за віссю Y."
 
 #: src/bin/ui/property/property_group.c:5843
 msgid "Sets the weight size hints for this object by X axis."
-msgstr ""
+msgstr "Встановлює підказки розміру ваги для цього об’єкта по осі X."
 
 #: src/bin/ui/property/property_group.c:5845
 msgid "Sets the weight size hints for this object by Y axis."
-msgstr ""
+msgstr "Встановлює підказки розміру ваги для цього об’єкта по осі Y."
 
 #: src/bin/ui/property/property_group.c:5850
 msgid "Sets the aspect control hints for this object."
-msgstr ""
+msgstr "Встановлює підказки для керування аспектом для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5855
 msgid "Sets the aspect width hints for this object."
-msgstr ""
+msgstr "Встановлює підказки ширини сторін для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5857
 msgid "Sets the aspect height hints for this object."
-msgstr ""
+msgstr "Встановлює підказки щодо висоти сторін для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5862
 msgid ""
 "Replicates the item in a rectangle with a given amount of rows starting from "
 "the defined position of this item."
 msgstr ""
+"Повторює елемент у прямокутнику із заданою кількістю рядків, починаючи з "
+"визначеної позиції цього елемента."
 
 #: src/bin/ui/property/property_group.c:5866
 msgid ""
 "Replicates the item in a rectangle with a given amount of columns starting "
 "from the defined position of this item."
 msgstr ""
+"Повторює елемент у прямокутнику із заданою кількістю стовпців, починаючи з "
+"визначеної позиції цього елемента."
 
 #: src/bin/ui/property/property_group.c:5873
 msgid "Sets the left padding hints for this object."
-msgstr ""
+msgstr "Встановлює підказки щодо відступу зліва для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5875
 msgid "Sets the right padding hints for this object."
-msgstr ""
+msgstr "Встановлює правильні підказки для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5879
 msgid "Sets the top padding hints for this object."
-msgstr ""
+msgstr "Встановлює верхні підказки для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5881
 msgid "Sets the bottom padding hints for this object."
-msgstr ""
+msgstr "Встановлює нижні підказки для цього об’єкта."
 
 #: src/bin/ui/property/property_group.c:5887
 msgid "Sets how many rows this item uses."
-msgstr ""
+msgstr "Встановлює кількість рядків, які використовує цей елемент."
 
 #: src/bin/ui/property/property_group.c:5889
 msgid "Sets how many columns this item uses"
-msgstr ""
+msgstr "Встановлює, скільки стовпців використовує цей елемент"
 
 #: src/bin/ui/property/property_group.c:5895
 msgid "Sets the row position this item has in the table."
-msgstr ""
+msgstr "Встановлює позицію рядка цього елемента в таблиці."
 
 #: src/bin/ui/property/property_group.c:5897
 msgid "Sets the column position this item has in the table."
-msgstr ""
+msgstr "Встановлює позицію стовпця цього елемента в таблиці."
 
 #: src/bin/ui/property/property_group.c:5910
 msgid "Symbolic name of program as a unique identifier."
-msgstr ""
+msgstr "Символьне ім'я програми як унікальний ідентифікатор."
 
 #: src/bin/ui/property/property_group.c:5920
 msgid "Action to be performed by the program."
-msgstr ""
+msgstr "Дія, яку має виконати програма."
 
 #: src/bin/ui/property/property_group.c:5925
 msgid ""
@@ -2896,6 +3173,20 @@ msgid ""
 "if wheel scrolled up and -1 if down;<br>drag,start; drag; drag,stop;"
 "<br>focus,part,in; focus,part,out.<bd>"
 msgstr ""
+"Визначає сигнал, який змушує програму запускатися. Отриманий сигнал має "
+"відповідати вказаному джерелу для запуску. Сигнали можуть бути об’єднані, "
+"але для кожної програми можна використовувати лише 1 ключове слово сигналу, "
+"наприклад: «миша, клацнуло»; (клацання будь-якої кнопки миші, яка відповідає "
+"джерелу, запускає програму). Edje надає такі глобальні сигнали:<br>hold,on; "
+"hold,off;<br>mouse,in; миша, вихід; миша,натиснута,в; "
+"mouse,pressed,out;<br>mouse,down,N: де N - номер кнопки "
+"миші;<br>mouse,down,N,double: де N - номер кнопки миші;"
+"<br>mouse,down,N,triple : де N - номер кнопки миші;<br>mouse,up,N: де N - "
+"номер кнопки миші;<br>mouse,clicked,N: де N - кнопка миші "
+"число;<br>миша,переміщення;<br>колесо миші,N,M: де N - напрямок (за "
+"замовчуванням 0), M - 1, якщо колесо прокручується вгору, і -1, якщо вниз;"
+"<br>перетягування, початок; перетягнути; перетягнути, зупинити;<br>фокус, "
+"частина, всередині; фокус, частина, вихід.<bd>"
 
 #: src/bin/ui/property/property_group.c:5947
 msgid ""
@@ -2903,14 +3194,20 @@ msgid ""
 "keyword per program can be used. For example: \"button-*\"; (Signals from "
 "any part or program named \"button-*\" are accepted)."
 msgstr ""
+"Джерело прийнятого сигналу. Джерела можуть бути глобалізовані, але для "
+"кожної програми можна використовувати лише 1 ключове слово джерела. "
+"Наприклад: \"кнопка-*\"; (Приймаються сигнали від будь-якої частини чи "
+"програми з назвою \"button-*\")."
 
 #: src/bin/ui/property/property_group.c:5955
 msgid "Wait 'from' seconds before executing the program."
-msgstr ""
+msgstr "Зачекайте кілька секунд перед виконанням програми."
 
 #: src/bin/ui/property/property_group.c:5957
 msgid "Add a number of seconds (from 0 to 'range') to the total waiting time."
 msgstr ""
+"Додайте кількість секунд (від 0 до «діапазону») до загального часу "
+"очікування."
 
 #: src/bin/ui/property/property_group.c:5962
 #: src/bin/ui/property/property_group.c:5969
@@ -2919,39 +3216,46 @@ msgid ""
 "[state]. Only 1 filter per program can be used. If [state] is not given, the "
 "source of the event is used instead."
 msgstr ""
+"Сигнали фільтра приймаються, лише якщо частина [part] перебуває в стані з "
+"назвою [state]. Для кожної програми можна використовувати лише 1 фільтр. "
+"Якщо [стан] не вказано, замість нього використовується джерело події."
 
 #: src/bin/ui/property/property_group.c:5983
 msgid "Switch the part state from the current to the given."
-msgstr ""
+msgstr "Переключити стан частини з поточного на заданий."
 
 #: src/bin/ui/property/property_group.c:5989
 msgid "State index"
-msgstr ""
+msgstr "Державний індекс"
 
 #: src/bin/ui/property/property_group.c:5995
 msgid ""
 "Name of the signal to be emitted to the application on execution of this "
 "program."
-msgstr ""
+msgstr "Ім'я сигналу, який буде видано додатку під час виконання цієї програми."
 
 #: src/bin/ui/property/property_group.c:6002
 msgid ""
 "Name of the signal source to be emitted to the application on the execution "
 "of this program."
 msgstr ""
+"Ім'я джерела сигналу, який буде передано додатку під час виконання цієї "
+"програми."
 
 #: src/bin/ui/property/property_group.c:6022
 msgid "Defines how transitions occur using the STATE_SET action."
-msgstr ""
+msgstr "Визначає, як відбуваються переходи за допомогою дії STATE_SET."
 
 #: src/bin/ui/property/property_group.c:6027
 msgid "Causes the object to move from its current position."
-msgstr ""
+msgstr "Змушує об’єкт переміститися з поточного положення."
 
 #: src/bin/ui/property/property_group.c:6032
 msgid ""
 "A double specifying the number of seconds in which to preform the transition."
 msgstr ""
+"Подвійне значення, яке вказує кількість секунд, протягом яких потрібно "
+"виконати перехід."
 
 #: src/bin/ui/property/property_group.c:6039
 msgid ""
@@ -2960,189 +3264,196 @@ msgid ""
 "counterparts, where 0.0 is equal to linear. Numbers higher than 1 make the "
 "curve angles steeper with a more pronounced curve point."
 msgstr ""
+"ACCEL_FAC, DECEL_FAC і SIN_FAC потребують додаткового необов’язкового "
+"значення для визначення «фактора» кривизни. 1,0 те саме, що й їхні "
+"нефакторні відповідники, де 0,0 дорівнює лінійному. Числа, вищі за 1, "
+"роблять кути кривої крутішими з більш вираженою точкою кривої."
 
 #: src/bin/ui/property/property_group.c:6050
 msgid ""
 "Initial gradient start (0.0 is horizontal, 1.0 is diagonal (linear), 2.0 is "
 "twice the gradient of linear)."
 msgstr ""
+"Початковий градієнт (0,0 — горизонтальний, 1,0 — діагональний (лінійний), "
+"2,0 — подвійний градієнт, ніж лінійний)."
 
 #: src/bin/ui/property/property_group.c:6057
 msgid ""
 "Determining how much the bounce decays, with 0.0 giving linear decay per "
 "bounce, and higher values giving much more decay."
 msgstr ""
+"Визначення ступеня затухання відскоку, де 0,0 дає лінійне загасання за "
+"відскок, а вищі значення дають набагато більше загасання."
 
 #: src/bin/ui/property/property_group.c:6065
 msgid "Number of bounces (rounded down to the nearest integer value)"
-msgstr ""
+msgstr "Кількість відмов (з округленням до найближчого цілого значення)"
 
 #: src/bin/ui/property/property_group.c:6071
 msgid "Number of spring \"swings\"."
-msgstr ""
+msgstr "Кількість пружинних «гойдалок»."
 
 #: src/bin/ui/property/property_group.c:6097
 msgid "Name of sample to be played"
-msgstr ""
+msgstr "Назва зразка для відтворення"
 
 #: src/bin/ui/property/property_group.c:6103
 msgid "Name of tone to be played"
-msgstr ""
+msgstr "Назва тону для відтворення"
 
 #: src/bin/ui/property/property_group.c:6109
 msgid ""
 "PLAY_SAMPLE (optional) channel can be one of: EFFECT/FX, BACKGROUND/BG ,"
 "MUSIC/MUS, FOREGROUND/FG, INTERFACE/UI, INPUT, ALERT"
 msgstr ""
+"Канал PLAY_SAMPLE (необов’язковий) може бути одним із: EFFECT/FX, BACKGROUND/"
+"BG, MUSIC/MUS, FOREGROUND/FG, INTERFACE/UI, INPUT, ALERT"
 
 #: src/bin/ui/property/property_group.c:6117
 msgid "Range of tone playing from 0.1 to 10 seconds."
-msgstr ""
+msgstr "Діапазон відтворення тону від 0,1 до 10 секунд."
 
 #: src/bin/ui/property/property_group.c:6123
 msgid "Range of sample playing speed is from 0 to 100."
-msgstr ""
+msgstr "Діапазон швидкості відтворення семплів від 0 до 100."
 
 #: src/bin/ui/property/property_group.c:6143
 #: src/bin/ui/property/property_group.c:6149
 msgid "Defines a new parameter. The value is the string specified next to it."
-msgstr ""
+msgstr "Визначає новий параметр. Значенням є рядок, указаний поруч із ним."
 
 #: src/bin/ui/property/property_image.c:65
 msgid "Set of images"
-msgstr ""
+msgstr "Набір зображень"
 
 #: src/bin/ui/property/property_image.c:72
 #: src/bin/ui/property/property_image.c:92
 msgid "Unknown"
-msgstr ""
+msgstr "Невідомий"
 
 #: src/bin/ui/property/property_image.c:77
-#, fuzzy, c-format
+#, c-format
 msgid "PNG image (%s)"
-msgstr "Зображення"
+msgstr "PNG зображення (%s)"
 
 #: src/bin/ui/property/property_image.c:79
-#, fuzzy, c-format
+#, c-format
 msgid "GIF image (%s)"
-msgstr "Зображення"
+msgstr "Зображення GIF (%s)"
 
 #: src/bin/ui/property/property_image.c:84
-#, fuzzy, c-format
+#, c-format
 msgid "JPEG image (%s)"
-msgstr "Зображення"
+msgstr "Зображення JPEG (%s)"
 
 #: src/bin/ui/property/property_image.c:86
-#, fuzzy, c-format
+#, c-format
 msgid "BMP image (%s)"
-msgstr "Зображення"
+msgstr "Зображення BMP (%s)"
 
 #: src/bin/ui/property/property_image.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "TIFF image (%s)"
-msgstr "Зображення"
+msgstr "Зображення TIFF (%s)"
 
 #: src/bin/ui/property/property_image.c:432
 msgid "Item info"
-msgstr ""
+msgstr "Інформація про товар"
 
 #: src/bin/ui/property/property_image.c:444
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: src/bin/ui/property/property_image.c:449
-#, fuzzy
 msgid "Image info"
-msgstr "Зображення"
+msgstr "Інформація про зображення"
 
 #: src/bin/ui/property/property_image.c:456
 msgid "Location"
-msgstr ""
+msgstr "Розташування"
 
 #: src/bin/ui/property/property_image.c:461
 msgid "Image compression"
-msgstr ""
+msgstr "Стиснення зображення"
 
 #: src/bin/ui/property/property_image.c:466
-#, fuzzy
 msgid "Image quality"
-msgstr "Зображення"
+msgstr "Якість зображення"
 
 #: src/bin/ui/property/property_image.c:471
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: src/bin/ui/property/property_image.c:476
 msgid "Height"
-msgstr ""
+msgstr "Висота"
 
 #: src/bin/ui/property/property_image.c:481
 msgid "Set image info"
-msgstr ""
+msgstr "Встановити інформацію про зображення"
 
 #: src/bin/ui/property/property_image.c:488
 msgid "Border"
-msgstr ""
+msgstr "Кордон"
 
 #: src/bin/ui/property/property_image.c:489
 msgid "left:"
-msgstr ""
+msgstr "зліва:"
 
 #: src/bin/ui/property/property_image.c:490
 msgid "right:"
-msgstr ""
+msgstr "направо:"
 
 #: src/bin/ui/property/property_image.c:495
 msgid "top:"
-msgstr ""
+msgstr "зверху:"
 
 #: src/bin/ui/property/property_image.c:496
 msgid "bottom:"
-msgstr ""
+msgstr "знизу:"
 
 #: src/bin/ui/property/property_image.c:500
 msgid "Minimum size"
-msgstr ""
+msgstr "Мінімальний розмір"
 
 #: src/bin/ui/property/property_image.c:501
 #: src/bin/ui/property/property_image.c:507
 msgid "width:"
-msgstr ""
+msgstr "ширина:"
 
 #: src/bin/ui/property/property_image.c:502
 #: src/bin/ui/property/property_image.c:508
 msgid "height:"
-msgstr ""
+msgstr "висота:"
 
 #: src/bin/ui/property/property_image.c:506
 msgid "Maximum size"
-msgstr ""
+msgstr "Максимальний розмір"
 
 #: src/bin/ui/property/property_image.c:512
-#, fuzzy
 msgid "Border scale"
-msgstr "Абсолютна шкала"
+msgstr "Гранична шкала"
 
 #: src/bin/ui/property/property_sound.c:38
 msgid "RAW"
-msgstr ""
+msgstr "RAW"
 
 #: src/bin/ui/property/property_sound.c:39
 msgid "COMP"
-msgstr ""
+msgstr "COMP"
 
 #: src/bin/ui/property/property_sound.c:40
 msgid "LOSSY"
-msgstr ""
+msgstr "ВТРАТНО"
 
 #: src/bin/ui/property/property_sound.c:41
 msgid "AS_IS"
-msgstr ""
+msgstr "AS_IS"
 
 #: src/bin/ui/property/property_sound.c:111
 #, c-format
 msgid "%s Format Sound"
-msgstr ""
+msgstr "%s Формат звуку"
 
 #: src/bin/ui/property/property_textblock.c:1151
 msgid ""
@@ -3150,26 +3461,35 @@ msgid ""
 "lang=hi\" or \"Serif:style=Bold\".Warning! All font names shouldn't contain "
 "spaces.Font name \"Times New Roman\" should be written as \"TimesNewRoman\"!"
 msgstr ""
+"Опис шрифту у форматі fontconfig. Наприклад, «Sans:style=Italic:lang=hi» або "
+"«Serif:style=Bold». Увага! Усі назви шрифтів не повинні містити пробілів. "
+"Назву шрифту \"Times New Roman\" слід писати як \"TimesNewRoman\"!"
 
 #: src/bin/ui/property/property_textblock.c:1159
 msgid ""
 "Overrides the weight defined in \"font\". For example, the value \"Bold\" is "
 "the same as font value \"style=Bold\"."
 msgstr ""
+"Замінює вагу, визначену в \"font\". Наприклад, значення «Bold» збігається зі "
+"значенням шрифту «style=Bold»."
 
 #: src/bin/ui/property/property_textblock.c:1166
 msgid ""
 "Overrides the width defined in \"font\". For example, the value "
 "\"Condensed\" is the same as font value \"style=Condensed\"."
 msgstr ""
+"Перевизначає ширину, визначену в \"font\". Наприклад, значення «Condensed» "
+"збігається зі значенням шрифту «style=Condensed»."
 
 #: src/bin/ui/property/property_textblock.c:1173
 msgid "Text color. Color can be chosen using the color selector UI tool."
 msgstr ""
+"Колір тексту. Колір можна вибрати за допомогою інструмента інтерфейсу "
+"користувача вибору кольору."
 
 #: src/bin/ui/property/property_textblock.c:1179
 msgid "The font size in points."
-msgstr ""
+msgstr "Розмір шрифту в пунктах."
 
 #: src/bin/ui/property/property_textblock.c:1191
 msgid ""
@@ -3178,6 +3498,10 @@ msgid ""
 "for \"center\"<br>  * left  - Aligns the text left.<br> * right  - Aligns "
 "the text right.<br>"
 msgstr ""
+"Встановлює горизонтальне вирівнювання тексту.<br> * auto - з урахуванням "
+"налаштувань LTR/RTL.<br> * center - центрує текст у рядку.<br> * middle - "
+"псевдонім для \"center\"<br> * left - Вирівнює текст по лівому краю.<br> * "
+"по правому краю – вирівнює текст по правому краю.<br>"
 
 #: src/bin/ui/property/property_textblock.c:1201
 msgid ""
@@ -3186,14 +3510,18 @@ msgid ""
 "Alias for \"center\"<br> * bottom  - Puts the text at the bottom of the line."
 "<br> * baseline - Baseline<br> * base - Alias for \"baseline\""
 msgstr ""
+"Встановлює вертикальне вирівнювання тексту.<br> * top - розміщує текст у "
+"верхній частині рядка.<br> * center - центрує текст у рядку.<br> * middle - "
+"псевдонім для \"center\"<br> * bottom - Розміщує текст унизу рядка.<br> * "
+"baseline - Baseline<br> * base - Псевдонім для \"baseline\""
 
 #: src/bin/ui/property/property_textblock.c:1212
 msgid "Sets the left margin of the text in pixel."
-msgstr ""
+msgstr "Встановлює ліве поле тексту в пікселях."
 
 #: src/bin/ui/property/property_textblock.c:1214
 msgid "Sets the right margin of the text in pixel."
-msgstr ""
+msgstr "Встановлює праве поле тексту в пікселях."
 
 #: src/bin/ui/property/property_textblock.c:1219
 msgid ""
@@ -3203,286 +3531,290 @@ msgid ""
 "if possible, if not, wrap at words if possible,<br>                 if not, "
 "at any character."
 msgstr ""
+"Встановлює політику переносу тексту.<br> * word – переносить рядки лише на "
+"межі слів.<br> * char – переносить будь-який символ.<br> * mixed – "
+"переносить слова, якщо можливо, якщо ні, будь-який символ .<br> * "
+"розстановка переносів - Розставляйте переноси, якщо можливо, якщо ні, "
+"перенесіть слова, якщо можливо,<br> якщо ні, будь-який символ."
 
 #: src/bin/ui/property/property_textblock.c:1236
 msgid ""
 "Sets the size of the tab character. The value must be a number greater than "
 "1."
 msgstr ""
+"Встановлює розмір символу табуляції. Значення має бути числом, більшим за 1."
 
 #: src/bin/ui/property/property_textblock.c:1242
 msgid "Sets the size of line of text."
-msgstr ""
+msgstr "Встановлює розмір рядка тексту."
 
 #: src/bin/ui/property/property_textblock.c:1247
 msgid "Enables or disables the background color."
-msgstr ""
+msgstr "Вмикає або вимикає фоновий колір."
 
 #: src/bin/ui/property/property_textblock.c:1249
 msgid "Sets a background color for text."
-msgstr ""
+msgstr "Встановлює колір фону для тексту."
 
 #: src/bin/ui/property/property_textblock.c:1254
 msgid ""
 "Sets if the text is being used for passwords. Enabling this causes all "
 "characters to be substituted for '*'."
 msgstr ""
+"Встановлює, чи використовується текст для паролів. Якщо ввімкнути це, усі "
+"символи замінюватимуться на «*»."
 
 #: src/bin/ui/property/property_textblock.c:1260
 msgid "Enables or disables the ellipsis feature for text."
-msgstr ""
+msgstr "Вмикає або вимикає функцію еліпса для тексту."
 
 #: src/bin/ui/property/property_textblock.c:1262
 msgid ""
 "Sets the ellipsis mode. A value of 0 means ellipsizing the leftmost portion "
 "of the text first, 1 on the other hand the rightmost portion."
 msgstr ""
+"Встановлює режим еліпса. Значення 0 означає спершу еліпсування крайньої "
+"лівої частини тексту, а 1 – крайньої правої частини."
 
 #: src/bin/ui/property/property_textblock.c:1269
 msgid ""
 "A floating point value indicating the wanted size of the line relative to "
 "the calculated size."
 msgstr ""
+"Значення з плаваючою комою, що вказує бажаний розмір лінії відносно "
+"обчисленого розміру."
 
 #: src/bin/ui/property/property_textblock.c:1282
 msgid "Sets the style of the text."
-msgstr ""
+msgstr "Задає стиль тексту."
 
 #: src/bin/ui/property/property_textblock.c:1287
 msgid "Sets the color of the text shadow."
-msgstr ""
+msgstr "Встановлює колір тіні тексту."
 
 #: src/bin/ui/property/property_textblock.c:1293
 msgid "Sets the shadow direction"
-msgstr ""
+msgstr "Встановлює напрямок тіні"
 
 #: src/bin/ui/property/property_textblock.c:1299
 msgid "Sets the outer shadow glow color."
-msgstr ""
+msgstr "Встановлює колір світіння зовнішньої тіні."
 
 #: src/bin/ui/property/property_textblock.c:1305
 msgid "Sets the inner shadow glow color."
-msgstr ""
+msgstr "Встановлює колір світіння внутрішньої тіні."
 
 #: src/bin/ui/property/property_textblock.c:1318
 msgid "Sets if the text is striked through."
-msgstr ""
+msgstr "Встановлює, чи буде текст закреслений."
 
 #: src/bin/ui/property/property_textblock.c:1320
 msgid "Sets the color of the text that is striked through."
-msgstr ""
+msgstr "Встановлює колір закресленого тексту."
 
 #: src/bin/ui/property/property_textblock.c:1325
 msgid "Sets if and how a text is underlined."
-msgstr ""
+msgstr "Встановлює, чи підкреслюється текст і як."
 
 #: src/bin/ui/property/property_textblock.c:1331
 msgid "Sets the color of the underline."
-msgstr ""
+msgstr "Встановлює колір підкреслення."
 
 #: src/bin/ui/property/property_textblock.c:1337
 msgid ""
 "Sets the color of the second line of the underline when using the \"double\" "
 "underline mode."
 msgstr ""
+"Встановлює колір другого рядка підкреслення при використанні режиму "
+"«подвійного» підкреслення."
 
 #: src/bin/ui/property/property_textblock.c:1344
 msgid "Sets the width of the underline dash."
-msgstr ""
+msgstr "Встановлює ширину тире підкреслення."
 
 #: src/bin/ui/property/property_textblock.c:1346
 msgid "Sets the gap of the underline dash."
-msgstr ""
+msgstr "Встановлює проміжок між рискою підкреслення."
 
 #: src/bin/ui/property/property_textblock.c:1352
 msgid "Sets the color of dashed underline."
-msgstr ""
+msgstr "Встановлює колір пунктирного підкреслення."
 
 #: src/bin/ui/script_manager.c:131
 msgid "ERROR!"
-msgstr ""
+msgstr "ПОМИЛКА!"
 
 #: src/bin/ui/script_manager.c:135
 msgid "SUCCESS!"
-msgstr ""
+msgstr "УСПІХ!"
 
 #: src/bin/ui/script_manager.c:209
 #, c-format
 msgid "Group: %s"
-msgstr ""
+msgstr "Група: %s"
 
 #: src/bin/ui/script_manager.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "Program: %s"
-msgstr "Назва програми: "
+msgstr "Програма: %s"
 
 #: src/bin/ui/sound_manager.c:127
 msgid "UNKNOWN"
-msgstr ""
+msgstr "НЕВІДОМО"
 
 #: src/bin/ui/sound_manager.c:177
-#, fuzzy
 msgid "Sound Samples"
-msgstr "Редактор програм"
+msgstr "Звукові зразки"
 
 #: src/bin/ui/sound_manager.c:190
-#, fuzzy
 msgid "Sound Tones"
-msgstr "Редактор програм"
+msgstr "Звукові тони"
 
 #: src/bin/ui/sound_manager.c:232
 #, c-format
 msgid "File '%s' is not exist"
-msgstr ""
+msgstr "Файл \"%s\" не існує"
 
 #: src/bin/ui/sound_manager.c:251
 #, c-format
 msgid "Sample '%s' is already added to project"
-msgstr ""
+msgstr "Зразок \"%s\" уже додано до проекту"
 
 #: src/bin/ui/sound_manager.c:264
 #, c-format
 msgid "File '%s' exist"
-msgstr ""
+msgstr "Файл \"%s\" існує"
 
 #: src/bin/ui/sound_manager.c:315
 msgid "Choose a sound"
-msgstr ""
+msgstr "Виберіть звук"
 
 #: src/bin/ui/sound_manager.c:381
-#, fuzzy
 msgid "Tone name:"
-msgstr "Назва програми: "
+msgstr "Назва звуку:"
 
 #: src/bin/ui/sound_manager.c:385
 msgid "Type a new tone name"
-msgstr ""
+msgstr "Введіть нову назву звуку"
 
 #: src/bin/ui/sound_manager.c:391
 msgid "Frequency:"
-msgstr ""
+msgstr "Частота:"
 
 #: src/bin/ui/sound_manager.c:397
 msgid "Type a frequency (20 - 20000)"
-msgstr ""
+msgstr "Введіть частоту (20 - 20000)"
 
 #: src/bin/ui/sound_manager.c:437
 msgid "Create a new tone"
-msgstr ""
+msgstr "Створіть новий тон"
 
 #: src/bin/ui/sound_manager.c:588
-#, fuzzy
 msgid "Sound Gallery"
-msgstr "Редактор програм"
+msgstr "Галерея звуків"
 
 #: src/bin/ui/sound_manager.c:648
 msgid "Sample"
-msgstr ""
+msgstr "Зразок"
 
 #: src/bin/ui/sound_manager.c:649
 msgid "Tone"
-msgstr ""
+msgstr "Тон"
 
 #: src/bin/ui/style_manager.c:197
-#, fuzzy
 msgid "Style name:"
-msgstr "Стилі"
+msgstr "Назва стилю:"
 
 #: src/bin/ui/style_manager.c:202
 msgid "Type a new style name"
-msgstr ""
+msgstr "Введіть нову назву стилю"
 
 #: src/bin/ui/style_manager.c:229 src/bin/ui/style_manager.c:320
 msgid "Failed to add tag value. Tag will be deleted"
-msgstr ""
+msgstr "Не вдалося додати значення тегу. Тег"
 
 #: src/bin/ui/style_manager.c:261
 msgid "Add textblock style"
-msgstr ""
+msgstr "Додайте стиль текстового блоку"
 
 #: src/bin/ui/style_manager.c:274
 msgid "Type a new tag name."
-msgstr ""
+msgstr "Введіть нову назву тегу."
 
 #: src/bin/ui/style_manager.c:367
 #, c-format
 msgid "Add tag for style: %s"
-msgstr ""
+msgstr "Додати тег для стилю: %s"
 
 #: src/bin/ui/style_manager.c:859
 msgid "Textblock style manager"
-msgstr ""
+msgstr "Менеджер стилів текстових блоків"
 
 #: src/bin/ui/style_manager.c:876
-#, fuzzy
 msgid "Textblock styles list"
-msgstr "Новий стиль "
+msgstr "Список стилів текстових блоків"
 
 #: src/bin/ui/style_manager.c:938
-#, fuzzy
 msgid "Style"
-msgstr "Стилі"
+msgstr "Стиль"
 
 #: src/bin/ui/style_manager.c:939
 msgid "Tag"
-msgstr ""
+msgstr "Тег"
 
 #: src/bin/ui/tab_home_common.c:33
 msgid "Version of file:"
-msgstr ""
+msgstr "Версія файлу:"
 
 #: src/bin/ui/tab_home_common.c:37
 msgid "Authors:"
-msgstr ""
+msgstr "Автори:"
 
 #: src/bin/ui/tab_home_common.c:41
 msgid "Licenses:"
-msgstr ""
+msgstr "Ліцензії:"
 
 #: src/bin/ui/tab_home_common.c:45
 msgid "Comment:"
-msgstr ""
+msgstr "Коментар:"
 
 #: src/bin/ui/tab_home_common.c:48 src/bin/ui/tab_home_import_edc.c:385
 #: src/bin/ui/tab_home_import_edj.c:416 src/bin/ui/tab_home_new.c:450
 msgid "Created with Eflete!"
-msgstr ""
+msgstr "Створено за допомогою Eflete!"
 
 #: src/bin/ui/tab_home_common.c:69
 msgid "Meta data save"
-msgstr ""
+msgstr "Збереження метаданих"
 
 #: src/bin/ui/tab_home_import_edc.c:189 src/bin/ui/tab_home_import_edc.c:554
 msgid "Images directories:"
-msgstr ""
+msgstr "Каталоги зображень:"
 
 #: src/bin/ui/tab_home_import_edc.c:197
 msgid "Fonts directories:"
-msgstr ""
+msgstr "Каталоги шрифтів:"
 
 #: src/bin/ui/tab_home_import_edc.c:205
-#, fuzzy
 msgid "Sounds directories:"
-msgstr "Редактор програм"
+msgstr "Каталоги звуків:"
 
 #: src/bin/ui/tab_home_import_edc.c:223 src/bin/ui/tab_home_import_edc.c:614
 msgid "Data directories:"
-msgstr ""
+msgstr "Каталоги даних:"
 
 #: src/bin/ui/tab_home_import_edc.c:409 src/bin/ui/tab_home_new.c:503
-#, fuzzy
 msgid "Import edc"
-msgstr "Відкрити edc-файл"
+msgstr "Імпорт edc"
 
 #: src/bin/ui/tab_home_import_edc.c:461
-#, fuzzy
 msgid "Import EDC-file"
-msgstr "Відкрити edj-файл"
+msgstr "Імпорт EDC-файлу"
 
 #: src/bin/ui/tab_home_import_edc.c:461 src/bin/ui/tab_home_import_edj.c:493
 #: src/bin/ui/tab_home_open.c:124 src/bin/ui/tab_home_open.c:286
 msgid "The given file is locked by another application"
-msgstr ""
+msgstr "Даний файл заблоковано іншою програмою"
 
 #: src/bin/ui/tab_home_import_edc.c:467 src/bin/ui/tab_home_new.c:559
 #, c-format
@@ -3491,46 +3823,43 @@ msgid ""
 "replace it?</font_size><br>The project folder '%s' already exist in '%s'. "
 "Replacing it will overwrite<b>all</b> contents."
 msgstr ""
+"<font_size=16>Тека проекту під назвою «%s» уже існує. Бажаєте її замінити?</"
+"font_size><br>Тека проекту «%s» уже існує в «%s». Його заміна призведе до "
+"перезапису<b>весь</b> вмісту."
 
 #: src/bin/ui/tab_home_import_edc.c:514
 msgid "Import"
-msgstr ""
+msgstr "Імпорт"
 
 #: src/bin/ui/tab_home_import_edc.c:526 src/bin/ui/tab_home_import_edj.c:580
 #: src/bin/ui/tab_home_new.c:638
-#, fuzzy
 msgid "Project name:"
-msgstr "Новий проект"
+msgstr "Назва проекту:"
 
 #: src/bin/ui/tab_home_import_edc.c:533 src/bin/ui/tab_home_import_edj.c:586
 #: src/bin/ui/tab_home_new.c:644
-#, fuzzy
 msgid "Path to project:"
-msgstr "Зберегти проект"
+msgstr "Шлях до проекту:"
 
 #: src/bin/ui/tab_home_import_edc.c:540
-#, fuzzy
 msgid "Path to edc-file:"
-msgstr "Відкрити edc-файл"
+msgstr "Шлях до edc-файлу:"
 
 #: src/bin/ui/tab_home_import_edc.c:568
 msgid "Font directories:"
-msgstr ""
+msgstr "Каталоги шрифтів:"
 
 #: src/bin/ui/tab_home_import_edc.c:582
-#, fuzzy
 msgid "Sound directories:"
-msgstr "Редактор програм"
+msgstr "Звукові довідники:"
 
 #: src/bin/ui/tab_home_import_edj.c:439
-#, fuzzy
 msgid "Import edj"
-msgstr "Відкрити edj-файл"
+msgstr "Імпорт edj"
 
 #: src/bin/ui/tab_home_import_edj.c:493
-#, fuzzy
 msgid "Import EDJ-file"
-msgstr "Відкрити edj-файл"
+msgstr "Імпорт EDJ-файлу"
 
 #: src/bin/ui/tab_home_import_edj.c:499
 #, c-format
@@ -3539,355 +3868,348 @@ msgid ""
 "Do you want to replace it?<br>Replacing it will overwrite <b>all</b> "
 "contents.</wrap>"
 msgstr ""
+"<wrap=word>Папка проекту під назвою <b>'%s'</b> уже існує в <b>'%s'</b>. "
+"Бажаєте її замінити?<br>Заміна перезапише < b>весь</b> вміст.</wrap>"
 
 #: src/bin/ui/tab_home_import_edj.c:574 src/bin/ui/tab_home_new.c:632
 msgid "Create"
-msgstr ""
+msgstr "Створити"
 
 #: src/bin/ui/tab_home_import_edj.c:593
-#, fuzzy
 msgid "Path to edj-file:"
-msgstr "Відкрити edj-файл"
+msgstr "Шлях до edj-файлу:"
 
 #: src/bin/ui/tab_home_import_edj.c:608 src/bin/ui/tab_home_new.c:656
 msgid "Widgets:"
-msgstr ""
+msgstr "Віджети:"
 
 #: src/bin/ui/tab_home_import_edj.c:816 src/bin/ui/tab_home_new.c:726
 msgid "Following widgets were not found and ignored: "
-msgstr ""
+msgstr "Наступні віджети не знайдено та проігноровано: "
 
 #: src/bin/ui/tab_home_new.c:232
 msgid "Scroller<br>"
-msgstr ""
+msgstr "Прокручування<br>"
 
 #: src/bin/ui/tab_home_new.c:240
 msgid "Photocam<br>"
-msgstr ""
+msgstr "Фотокамера<br>"
 
 #: src/bin/ui/tab_home_new.c:247
 msgid "Genlist<br>"
-msgstr ""
+msgstr "Genlist<br>"
 
 #: src/bin/ui/tab_home_new.c:256
 msgid "Notify<br>"
-msgstr ""
+msgstr "Повідомити<br>"
 
 #: src/bin/ui/tab_home_new.c:263
 msgid "Button<br>"
-msgstr ""
+msgstr "Кнопка<br>"
 
 #: src/bin/ui/tab_home_new.c:270
 msgid "List<br>"
-msgstr ""
+msgstr "Список<br>"
 
 #: src/bin/ui/tab_home_new.c:277
 msgid "Label<br>"
-msgstr ""
+msgstr "Мітка<br>"
 
 #: src/bin/ui/tab_home_open.c:61
-#, fuzzy
 msgid "Project open"
-msgstr "Новий проект"
+msgstr "Проект відкритий"
 
 #: src/bin/ui/tab_home_open.c:188
 msgid "Confirm clear recent list"
-msgstr ""
+msgstr "Підтвердьте очищення нещодавнього списку"
 
 #: src/bin/ui/tab_home_open.c:189
 msgid "Are you sure you want to clear list of recently opened projects?<br>"
 msgstr ""
+"Ви впевнені, що бажаєте очистити список нещодавно відкритих проектів?<br>"
 
 #: src/bin/ui/tab_home_open.c:220
-#, fuzzy
 msgid "Open recent"
-msgstr "Відкрити проект"
+msgstr "Відкрити останні"
 
 #: src/bin/ui/tab_home_open.c:223
 msgid "Clear list"
-msgstr ""
+msgstr "Очистити список"
 
 #: src/bin/ui/tab_home_open.c:242
 msgid "Open"
-msgstr ""
+msgstr "Відчинено"
 
 #: src/bin/ui/tabs.c:1219
-#, fuzzy
 msgid "Project info"
-msgstr "Новий проект"
+msgstr "Інформація про проект"
 
 #: src/bin/ui/workspace/group_navigator.c:115
 msgid "State set"
-msgstr ""
+msgstr "Державний набір"
 
 #: src/bin/ui/workspace/group_navigator.c:116
 msgid "Signal emit"
-msgstr ""
+msgstr "Випромінювати сигнал"
 
 #: src/bin/ui/workspace/group_navigator.c:117
 msgid "Drag value set"
-msgstr ""
+msgstr "Набір значень перетягування"
 
 #: src/bin/ui/workspace/group_navigator.c:118
 msgid "Drag value step"
-msgstr ""
+msgstr "Крок значення перетягування"
 
 #: src/bin/ui/workspace/group_navigator.c:119
 msgid "Drag value page"
-msgstr ""
+msgstr "Перетягніть сторінку значення"
 
 #: src/bin/ui/workspace/group_navigator.c:120
 msgid "Play sample"
-msgstr ""
+msgstr "Відтворити зразок"
 
 #: src/bin/ui/workspace/group_navigator.c:121
 msgid "Play tone"
-msgstr ""
+msgstr "Грати мелодію"
 
 #: src/bin/ui/workspace/group_navigator.c:122
 msgid "Action stop"
-msgstr ""
+msgstr "Зупинка дії"
 
 #: src/bin/ui/workspace/group_navigator.c:199
 msgid "items"
-msgstr ""
+msgstr "елементи"
 
 #: src/bin/ui/workspace/group_navigator.c:216
 msgid "Parts"
-msgstr ""
+msgstr "Запчастини"
 
 #: src/bin/ui/workspace/group_navigator.c:218
-#, fuzzy
 msgid "Programs"
-msgstr "Назва програми: "
+msgstr "Програми"
 
 #: src/bin/ui/workspace/group_navigator.c:220
 msgid "Data items"
-msgstr ""
+msgstr "Елементи даних"
 
 #: src/bin/ui/workspace/group_navigator.c:923
 #: src/bin/ui/workspace/group_navigator.c:1565
 msgid "Select the name of the source group."
-msgstr ""
+msgstr "Виберіть назву вихідної групи."
 
 #: src/bin/ui/workspace/group_navigator.c:983
 #, c-format
 msgid "copied new part \"%s\" from \"%s\""
-msgstr ""
+msgstr "скопійовано нову частину \"%s\" з \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:995
 #, c-format
 msgid "added new part \"%s\""
-msgstr ""
+msgstr "додано нову частину \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1133
-#, fuzzy
 msgid "Part name"
-msgstr "Назва програми: "
+msgstr "Назва частини"
 
 #: src/bin/ui/workspace/group_navigator.c:1136
 msgid "Enter the name of the new part"
-msgstr ""
+msgstr "Введіть назву нової частини"
 
 #: src/bin/ui/workspace/group_navigator.c:1143
 msgid "Part type"
-msgstr ""
+msgstr "Тип деталі"
 
 #: src/bin/ui/workspace/group_navigator.c:1161
 msgid "Part copy"
-msgstr ""
+msgstr "Копія частини"
 
 #: src/bin/ui/workspace/group_navigator.c:1202
 #, c-format
 msgid "Add New Part to Group \"%s\""
-msgstr ""
+msgstr "Додати нову частину до групи \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1250
 #, c-format
 msgid "added new data item \"%s\""
-msgstr ""
+msgstr "додано новий елемент даних \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1265
 msgid "Data item name"
-msgstr ""
+msgstr "Назва елемента даних"
 
 #: src/bin/ui/workspace/group_navigator.c:1268
 msgid "Enter the name of the new group_data"
-msgstr ""
+msgstr "Введіть назву нового group_data"
 
 #: src/bin/ui/workspace/group_navigator.c:1293
 #, c-format
 msgid "Add New Data Item to Group \"%s\""
-msgstr ""
+msgstr "Додати новий елемент даних до групи \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1329
 #, c-format
 msgid "added new state \"%s\" %.2f"
-msgstr ""
+msgstr "додано новий стан \"%s\" %.2f"
 
 #: src/bin/ui/workspace/group_navigator.c:1340
 #, c-format
 msgid "added new state \"%s\" %.2f as copy of \"%s\" %.2f"
-msgstr ""
+msgstr "додано новий стан \"%s\" %.2f як копію \"%s\" %.2f"
 
 #: src/bin/ui/workspace/group_navigator.c:1404
-#, fuzzy
 msgid "State name"
-msgstr "Розділити шари"
+msgstr "Назва штату"
 
 #: src/bin/ui/workspace/group_navigator.c:1409
 msgid "Enter the name of the new state"
-msgstr ""
+msgstr "Введіть назву нового штату"
 
 #: src/bin/ui/workspace/group_navigator.c:1413
 msgid "Value"
-msgstr ""
+msgstr "Значення"
 
 #: src/bin/ui/workspace/group_navigator.c:1417
 msgid "Available values: 0.0 - 1.0"
-msgstr ""
+msgstr "Доступні значення: 0,0 - 1,0"
 
 #: src/bin/ui/workspace/group_navigator.c:1422
 msgid "Duplicate state"
-msgstr ""
+msgstr "Дубльований стан"
 
 #: src/bin/ui/workspace/group_navigator.c:1467
 #, c-format
 msgid "Add New State to Part \"%s\""
-msgstr ""
+msgstr "Додати новий стан до частини \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1495
 #, c-format
 msgid "added new item \"%s\" to part \"%s\""
-msgstr ""
+msgstr "додано новий елемент \"%s\" до частини \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1559
 msgid "Enter the name of the new item"
-msgstr ""
+msgstr "Введіть назву нового елемента"
 
 #: src/bin/ui/workspace/group_navigator.c:1563
 msgid "Source group"
-msgstr ""
+msgstr "Вихідна група"
 
 #: src/bin/ui/workspace/group_navigator.c:1604
 #, c-format
 msgid "Add New Item to Part \"%s\""
-msgstr ""
+msgstr "Додати новий елемент до частини \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1666
-#, fuzzy, c-format
+#, c-format
 msgid "added new program \"%s\""
-msgstr "Нова програма"
+msgstr "додано нову програму \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1685
-#, fuzzy
 msgid "Program name"
-msgstr "Назва програми: "
+msgstr "Назва програми"
 
 #: src/bin/ui/workspace/group_navigator.c:1691
 msgid "Enter the name of the new program"
-msgstr ""
+msgstr "Введіть назву нової програми"
 
 #: src/bin/ui/workspace/group_navigator.c:1695
 msgid "Action type"
-msgstr ""
+msgstr "Тип дії"
 
 #: src/bin/ui/workspace/group_navigator.c:1729
-#, fuzzy
 msgid "Add New Program"
-msgstr "Нова програма"
+msgstr "Додати нову програму"
 
 #: src/bin/ui/workspace/group_navigator.c:1779
 #, c-format
 msgid "deleted program \"%s\""
-msgstr ""
+msgstr "видалена програма \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1853
 #, c-format
 msgid "deleted group_data \"%s\""
-msgstr ""
+msgstr "видалено group_data \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1923
 #, c-format
 msgid "deleted part \"%s\""
-msgstr ""
+msgstr "видалена частина \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:2093
 #, c-format
 msgid "deleted state \"%s\" %.2f"
-msgstr ""
+msgstr "видалений стан \"%s\" %.2f"
 
 #: src/bin/ui/workspace/group_navigator.c:2159
 #, c-format
 msgid "deleted item \"%s\""
-msgstr ""
+msgstr "видалений елемент \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:2283
 #, c-format
 msgid "part \"%s\" placed below part \"%s\" in the stack"
-msgstr ""
+msgstr "частина \"%s\" розміщена під частиною \"%s\" у стеку"
 
 #: src/bin/ui/workspace/group_navigator.c:2285
 #, c-format
 msgid "part \"%s\" restacked to the top of the stack"
-msgstr ""
+msgstr "частина \"%s\" повторно складена на вершину стека"
 
 #: src/bin/ui/workspace/group_navigator.c:2354
 #, c-format
 msgid "part item \"%s\" restacked BELOW"
-msgstr ""
+msgstr "частина елемента \"%s\" повторно складено НИЖЧЕ"
 
 #: src/bin/ui/workspace/group_navigator.c:2363
 #, c-format
 msgid "part item \"%s\" restacked ABOVE"
-msgstr ""
+msgstr "частина елемента \"%s\" переукладено ВИЩЕ"
 
 #: src/bin/ui/workspace/group_navigator.c:2623
 msgid "Part"
-msgstr ""
+msgstr "Частина"
 
 #: src/bin/ui/workspace/group_navigator.c:2641
-#, fuzzy
 msgid "Program"
-msgstr "Назва програми: "
+msgstr "Програма"
 
 #: src/bin/ui/workspace/group_navigator.c:2647
 msgid "Data item"
-msgstr ""
+msgstr "Елемент даних"
 
 #: src/bin/ui/workspace/workspace.c:525
 msgid "100"
-msgstr ""
+msgstr "100"
 
 #: src/bin/ui/workspace/workspace.c:527
 msgid "100%"
-msgstr ""
+msgstr "100%"
 
 #: src/bin/ui/workspace/workspace.c:758
 #, c-format
 msgid "Part '%s' width: %d"
-msgstr ""
+msgstr "Ширина частини \"%s\": %d"
 
 #: src/bin/ui/workspace/workspace.c:763
 #, c-format
 msgid "Part '%s' heigth: %d"
-msgstr ""
+msgstr "Висота частини \"%s\": %d"
 
 #: src/bin/ui/workspace/workspace.c:778
 #, c-format
 msgid "Part '%s' object area width: %d"
-msgstr ""
+msgstr "Ширина області об’єкта частини «%s»: %d"
 
 #: src/bin/ui/workspace/workspace.c:783
 #, c-format
 msgid "Part '%s' object area heigth: %d"
-msgstr ""
+msgstr "Висота області об’єкта частини «%s»: %d"
 
 #: src/bin/ui/workspace/workspace.c:793 src/bin/ui/workspace/workspace.c:803
 #: src/bin/ui/workspace/workspace.c:813 src/bin/ui/workspace/workspace.c:823
 #, c-format
 msgid "Part '%s'"
-msgstr ""
+msgstr "Частина '%s'"
 
 #: src/bin/ui/workspace/workspace.c:1068
 msgid "Absolute scale"
@@ -3898,36 +4220,34 @@ msgid "Relative scale"
 msgstr "Відносна шкала"
 
 #: src/bin/ui/workspace/workspace.c:1072
-#, fuzzy
 msgid "Both scales"
-msgstr "Абсолютна шкала"
+msgstr "Обидві ваги"
 
 #: src/bin/ui/workspace/workspace.c:1078
 msgid "Markers"
-msgstr ""
+msgstr "Маркери"
 
 #: src/bin/ui/workspace/workspace.c:1422
 #, c-format
 msgid "max size changed from [%dx%d] to [%dx%d]"
-msgstr ""
+msgstr "максимальний розмір змінено з [%dx%d] на [%dx%d]"
 
 #: src/bin/ui/workspace/workspace.c:1442
 #, c-format
 msgid "align changed from [%fx%f] to [%fx%f]"
-msgstr ""
+msgstr "вирівнювання змінено з [%fx%f] на [%fx%f]"
 
 #: src/bin/ui/workspace/workspace.c:1527
 msgid "Library"
-msgstr ""
+msgstr "Бібліотека"
 
 #: src/bin/ui/workspace/workspace.c:2245
-#, fuzzy
 msgid "Project is changed"
-msgstr "Назва програми: "
+msgstr "Проект змінено"
 
 #: src/bin/ui/workspace/workspace.c:2247
 msgid "Reload"
-msgstr ""
+msgstr "Перезавантажити"
 
 #, fuzzy
 #~ msgid "Export edj file path"

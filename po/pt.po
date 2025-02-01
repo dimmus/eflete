@@ -7,22 +7,25 @@ msgstr ""
 "Project-Id-Version: eflete\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-01-22 15:02+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/eflete/eflete/"
+"pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/bin/common/common_macro.h:63
 msgid "Last saved: %d %b %Y %H:%M"
-msgstr ""
+msgstr "Última vez guardado: %d %b %Y %H:%M"
 
 #: src/bin/main.c:47
 #, c-format
 msgid "ERROR: "
-msgstr ""
+msgstr "ERRO: "
 
 #: src/bin/main.c:49
 #, c-format
@@ -30,14 +33,16 @@ msgid ""
 "\n"
 "ERROR: invalid options found. See --help.\n"
 msgstr ""
+"\n"
+"ERRO: opções inválidas encontradas. Ver --help.\n"
 
 #: src/bin/main.c:67
 msgid "Name for new project"
-msgstr ""
+msgstr "Nome para o novo projeto"
 
 #: src/bin/main.c:68
 msgid "Path to project directory"
-msgstr ""
+msgstr "Caminho para o diretório do projeto"
 
 #: src/bin/main.c:69
 msgid ""
@@ -58,7 +63,7 @@ msgstr ""
 #: src/bin/ui/tab_home_open.c:279 src/bin/ui/tab_home_open.c:286
 #: src/bin/ui/tabs.c:1211
 msgid "Open project"
-msgstr ""
+msgstr "Abrir projeto"
 
 #: src/bin/main.c:155 src/bin/ui/tab_home_open.c:117
 #: src/bin/ui/tab_home_open.c:279
