@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: 2015-03-30 11:57+0000\n"
-"Last-Translator: JoanColl <Unknown>\n"
-"Language-Team: Catalan <ca@li.org>\n"
+"PO-Revision-Date: 2025-03-10 20:02+0000\n"
+"Last-Translator: leo-jmateo <jmateo.sanchez@tinet.cat>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/eflete/eflete/ca/"
+">\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 "X-Launchpad-Export-Date: 2015-03-31 05:34+0000\n"
-"X-Generator: Launchpad (build 17413)\n"
 
 #: src/bin/common/common_macro.h:63
 msgid "Last saved: %d %b %Y %H:%M"
@@ -819,9 +821,9 @@ msgid "Haven't permision to write '%s'"
 msgstr ""
 
 #: src/bin/ui/project_common.c:157
-#, fuzzy, c-format
+#, c-format
 msgid "Project '%s' is opened."
-msgstr "No hi ha cap projecte obert"
+msgstr "El projecte ‘%s’ està obert."
 
 #: src/bin/ui/project_common.c:192
 #, fuzzy
@@ -912,9 +914,9 @@ msgid "None"
 msgstr "Cap"
 
 #: src/bin/ui/project_navigator.c:603
-#, fuzzy, c-format
+#, c-format
 msgid "Can't remove layout \"%s\""
-msgstr "No es pot eliminar la darrera disposició"
+msgstr "No es pot eliminar el disseny “%s”."
 
 #: src/bin/ui/project_navigator.c:604 src/bin/ui/property/property_group.c:3782
 msgid "Error"
@@ -1176,14 +1178,14 @@ msgid "image changed from \"%s\" to \"%s\""
 msgstr ""
 
 #: src/bin/ui/property/property_group.c:2739
-#, fuzzy, c-format
+#, c-format
 msgid "vector changed from \"%s\" to \"%s\""
-msgstr "Afegeix una nova part al grup \"%s\""
+msgstr "El vector ha canviat de “%s” a “%s”."
 
 #: src/bin/ui/property/property_group.c:2744
-#, fuzzy, c-format
+#, c-format
 msgid "changed \"%d\" tween images"
-msgstr "Editor imatge: seleccioneu imatges intermèdies"
+msgstr "Canviat “%d” entre imatges."
 
 #: src/bin/ui/property/property_group.c:2747
 #, c-format
@@ -1226,14 +1228,14 @@ msgid "part scale %s"
 msgstr ""
 
 #: src/bin/ui/property/property_group.c:2784
-#, fuzzy, c-format
+#, c-format
 msgid "mouse events %s"
-msgstr "esdeveniments de ratolí"
+msgstr "Esdeveniments del ratolí %s"
 
 #: src/bin/ui/property/property_group.c:2787
-#, fuzzy, c-format
+#, c-format
 msgid "repeat events %s"
-msgstr "esdeveniments futurs"
+msgstr "Repetir esdeveniments %s"
 
 #: src/bin/ui/property/property_group.c:2790
 #, c-format
@@ -1381,19 +1383,19 @@ msgid "text style changed from \"%s\" to \"%s\""
 msgstr ""
 
 #: src/bin/ui/property/property_group.c:2915
-#, fuzzy, c-format
+#, c-format
 msgid "multiline %s"
-msgstr "multilínia"
+msgstr "Múltiples línies %s"
 
 #: src/bin/ui/property/property_group.c:2918
-#, fuzzy, c-format
+#, c-format
 msgid "state visible %s"
-msgstr "valor estat"
+msgstr "Estat visible %s"
 
 #: src/bin/ui/property/property_group.c:2921
-#, fuzzy, c-format
+#, c-format
 msgid "fill smooth %s"
-msgstr "suavitza"
+msgstr "Omplir suau %s"
 
 #: src/bin/ui/property/property_group.c:2924
 #, c-format
@@ -1641,14 +1643,14 @@ msgid "text fit_x %s"
 msgstr ""
 
 #: src/bin/ui/property/property_group.c:3131
-#, fuzzy, c-format
+#, c-format
 msgid "text fit_y %s"
-msgstr "estil de text"
+msgstr "text ajustat a l’altura %s"
 
 #: src/bin/ui/property/property_group.c:3134
-#, fuzzy, c-format
+#, c-format
 msgid "program current %s"
-msgstr "de l'actual"
+msgstr "Programa actual %s"
 
 #: src/bin/ui/property/property_group.c:3137
 #, c-format
@@ -1991,9 +1993,9 @@ msgid "map perspective %s"
 msgstr ""
 
 #: src/bin/ui/property/property_group.c:3420
-#, fuzzy, c-format
+#, c-format
 msgid "map smooth %s"
-msgstr "suavitza"
+msgstr "Mapa suau %s"
 
 #: src/bin/ui/property/property_group.c:3423
 #, c-format
@@ -3316,9 +3318,9 @@ msgid "AS_IS"
 msgstr ""
 
 #: src/bin/ui/property/property_sound.c:111
-#, fuzzy, c-format
+#, c-format
 msgid "%s Format Sound"
-msgstr "%s Formata so (.%s)"
+msgstr "%s Format de so"
 
 #: src/bin/ui/property/property_textblock.c:1151
 msgid ""
@@ -3494,14 +3496,14 @@ msgid "SUCCESS!"
 msgstr ""
 
 #: src/bin/ui/script_manager.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "Group: %s"
-msgstr "Grup"
+msgstr "Grup: %s"
 
 #: src/bin/ui/script_manager.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "Program: %s"
-msgstr "Nom del programa:"
+msgstr "Nom del programa: %s"
 
 #: src/bin/ui/sound_manager.c:127
 msgid "UNKNOWN"
@@ -3518,19 +3520,19 @@ msgid "Sound Tones"
 msgstr "<b>Tons so</b>"
 
 #: src/bin/ui/sound_manager.c:232
-#, fuzzy, c-format
+#, c-format
 msgid "File '%s' is not exist"
-msgstr "El fitxer no existeix"
+msgstr "El fitxer '%s' no existeix"
 
 #: src/bin/ui/sound_manager.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Sample '%s' is already added to project"
-msgstr "La mostra ja ha estat afegida."
+msgstr "L’exemple ‘%s’ ja s’ha afegit al projecte."
 
 #: src/bin/ui/sound_manager.c:264
-#, fuzzy, c-format
+#, c-format
 msgid "File '%s' exist"
-msgstr "El fitxer no existeix"
+msgstr "El fitxer '%s' existeix"
 
 #: src/bin/ui/sound_manager.c:315
 msgid "Choose a sound"
@@ -3871,9 +3873,9 @@ msgid "Select the name of the source group."
 msgstr "Entreu el nom del projecte"
 
 #: src/bin/ui/workspace/group_navigator.c:983
-#, fuzzy, c-format
+#, c-format
 msgid "copied new part \"%s\" from \"%s\""
-msgstr "Afegeix una nova part al grup \"%s\""
+msgstr "S’ha copiat la nova part “%s” de “%s”."
 
 #: src/bin/ui/workspace/group_navigator.c:995
 #, fuzzy, c-format
@@ -3926,9 +3928,9 @@ msgid "Add New Data Item to Group \"%s\""
 msgstr "Afegeix una nova part al grup \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1329
-#, fuzzy, c-format
+#, c-format
 msgid "added new state \"%s\" %.2f"
-msgstr "Afegeix un nou estat a la part \"%s\""
+msgstr "S’ha afegit un nou estat “%s” %.2f"
 
 #: src/bin/ui/workspace/group_navigator.c:1340
 #, c-format
@@ -3966,9 +3968,9 @@ msgid "Add New State to Part \"%s\""
 msgstr "Afegeix un nou estat a la part \"%s\""
 
 #: src/bin/ui/workspace/group_navigator.c:1495
-#, fuzzy, c-format
+#, c-format
 msgid "added new item \"%s\" to part \"%s\""
-msgstr "Afegeix un nou estat a la part \"%s\""
+msgstr "S’ha afegit un nou element “%s” a la part “%s”."
 
 #: src/bin/ui/workspace/group_navigator.c:1559
 #, fuzzy
