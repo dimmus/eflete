@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: eflete 1.19.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-03 12:58+0500\n"
-"PO-Revision-Date: 2023-11-02 16:19+0500\n"
-"Last-Translator: Dmitri Chudinov <dmitri.chudinov@gmail.com>\n"
+"PO-Revision-Date: 2025-05-28 11:01+0000\n"
+"Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/eflete/eflete/ru/"
 ">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: src/bin/common/common_macro.h:63
 msgid "Last saved: %d %b %Y %H:%M"
@@ -27,7 +27,7 @@ msgstr ""
 #: src/bin/main.c:47
 #, c-format
 msgid "ERROR: "
-msgstr ""
+msgstr "ОШИБКА: "
 
 #: src/bin/main.c:49
 #, c-format
@@ -38,11 +38,11 @@ msgstr ""
 
 #: src/bin/main.c:67
 msgid "Name for new project"
-msgstr ""
+msgstr "Название нового проекта"
 
 #: src/bin/main.c:68
 msgid "Path to project directory"
-msgstr ""
+msgstr "Путь к папке проекта"
 
 #: src/bin/main.c:69
 msgid ""
@@ -50,6 +50,9 @@ msgid ""
 "file will be write by this path on every save. If file missed will be "
 "created, if file exist, changed groups will be add."
 msgstr ""
+"Экспорт файлов edj. Путь должен содержать имя файла edj. Файл edj будет "
+"писать по этому пути на каждом сохранении. Если будет создан пропущенный "
+"файл, в случае наличия файла будут добавлены измененные группы."
 
 #: src/bin/main.c:70
 msgid ""
@@ -63,7 +66,7 @@ msgstr ""
 #: src/bin/ui/tab_home_open.c:279 src/bin/ui/tab_home_open.c:286
 #: src/bin/ui/tabs.c:1211
 msgid "Open project"
-msgstr ""
+msgstr "Открыть проект"
 
 #: src/bin/main.c:155 src/bin/ui/tab_home_open.c:117
 #: src/bin/ui/tab_home_open.c:279
@@ -72,7 +75,7 @@ msgstr ""
 
 #: src/bin/main.c:264
 msgid "Only one file should be specified."
-msgstr ""
+msgstr "Следует указать только один файл."
 
 #: src/bin/main.c:308
 msgid "--export-edj value have not extension '.edj'. Wrong value."
@@ -122,7 +125,7 @@ msgstr ""
 #: src/bin/main.c:348
 #, c-format
 msgid "'%s' is a directory."
-msgstr ""
+msgstr "«%s» - это папка."
 
 #: src/bin/main.c:353
 msgid "*.pro file is given but --name specified."
@@ -138,35 +141,35 @@ msgstr ""
 
 #: src/bin/main.c:359
 msgid "*.pro file is given but --sd specified."
-msgstr ""
+msgstr "дан *.pro файл, но --sd указано."
 
 #: src/bin/main.c:361
 msgid "*.pro file is given but --fd specified."
-msgstr ""
+msgstr "дан *.pro файл, но --fd указано."
 
 #: src/bin/main.c:363
 msgid "*.pro file is given but --dd specified."
-msgstr ""
+msgstr "дан *.pro файл, но --dd указано."
 
 #: src/bin/main.c:378
 msgid "*.edj file is given but --id specified."
-msgstr ""
+msgstr "дан *.edj файл, но --id указано."
 
 #: src/bin/main.c:380
 msgid "*.edj file is given but --sd specified."
-msgstr ""
+msgstr "дан *.edj файл, но --sd указано."
 
 #: src/bin/main.c:382
 msgid "*.edj file is given but --fd specified."
-msgstr ""
+msgstr "дан *.edj файл, но --fd указано."
 
 #: src/bin/main.c:384
 msgid "*.edj file is given but --dd specified."
-msgstr ""
+msgstr "дан *.edj файл, но --dd указано."
 
 #: src/bin/main.c:397
 msgid "Wrong file extension."
-msgstr ""
+msgstr "Неправильное расширение файла."
 
 #: src/bin/main.c:402
 msgid "no file or --name are given but --path specified."
@@ -219,7 +222,7 @@ msgstr ""
 #: src/bin/ui/popup.c:1176 src/bin/ui/sound_manager.c:654
 #: src/bin/ui/style_manager.c:483
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #: src/bin/ui/colorclass_manager.c:444 src/bin/ui/menu.c:324
 msgid "Color class manager"
@@ -228,15 +231,15 @@ msgstr ""
 #: src/bin/ui/colorclass_manager.c:456 src/bin/ui/image_manager.c:1083
 #: src/bin/ui/sound_manager.c:587 src/bin/ui/style_manager.c:875
 msgid "Preview"
-msgstr ""
+msgstr "Предпросмотр"
 
 #: src/bin/ui/colorclass_manager.c:457
 msgid "Color classes list"
-msgstr ""
+msgstr "Список классов цветов"
 
 #: src/bin/ui/colorclass_manager.c:513
 msgid "The quick brown fox jumps over the lazy dog"
-msgstr ""
+msgstr "Съешь ещё этих мягких французских булок, да выпей чаю"
 
 #: src/bin/ui/colorclass_manager.c:543
 msgid "Failed initialize colorclasses manager"
@@ -244,27 +247,27 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:255
 msgid "Unable to add a folder"
-msgstr ""
+msgstr "Невозможно добавить папку"
 
 #: src/bin/ui/image_manager.c:274
 msgid "Add new image into set"
-msgstr ""
+msgstr "Добавить новое изображение в набор"
 
 #: src/bin/ui/image_manager.c:657
 msgid "File not exist"
-msgstr ""
+msgstr "Файла не существует"
 
 #: src/bin/ui/image_manager.c:662 src/bin/ui/sound_manager.c:237
 msgid "Unable to add folder"
-msgstr ""
+msgstr "Невозможно добавить папку"
 
 #: src/bin/ui/image_manager.c:675
 msgid "File exist"
-msgstr ""
+msgstr "Файл существует"
 
 #: src/bin/ui/image_manager.c:708
 msgid "Choose image"
-msgstr ""
+msgstr "Выберите изображение"
 
 #: src/bin/ui/image_manager.c:810
 msgid "Image set name:"
@@ -276,31 +279,31 @@ msgstr ""
 
 #: src/bin/ui/image_manager.c:838
 msgid "Create a new image set"
-msgstr ""
+msgstr "Создание нового набора изображений"
 
 #: src/bin/ui/image_manager.c:965 src/bin/ui/image_manager.c:1173
 msgid "Image"
-msgstr ""
+msgstr "Изображение"
 
 #: src/bin/ui/image_manager.c:987
 msgid "Image Set"
-msgstr ""
+msgstr "Набор изображений"
 
 #: src/bin/ui/image_manager.c:1006
 msgid "Vectors"
-msgstr ""
+msgstr "Векторы"
 
 #: src/bin/ui/image_manager.c:1065 src/bin/ui/menu.c:321
 msgid "Image manager"
-msgstr ""
+msgstr "Менеджер изображений"
 
 #: src/bin/ui/image_manager.c:1084
 msgid "Image Gallery"
-msgstr ""
+msgstr "Галерея изображений"
 
 #: src/bin/ui/image_manager.c:1174
 msgid "Image set"
-msgstr ""
+msgstr "Набор изображений"
 
 #: src/bin/ui/live_view/demo.c:35 src/bin/ui/live_view/demo.c:48
 msgid "Widget live view isn't implemented yet. Using fallback to layout"
@@ -366,23 +369,23 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_list.c:120
 #: src/bin/ui/live_view/elementary/live_widget_common.c:308
 msgid "No icons"
-msgstr ""
+msgstr "Без значков"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:114
 msgid "Eflete"
-msgstr ""
+msgstr "Eflete"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:115
 msgid "Multi-"
-msgstr ""
+msgstr "Мульти-"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:116
 msgid "-button-"
-msgstr ""
+msgstr "-кнопку-"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:117
 msgid "-entry"
-msgstr ""
+msgstr "-запись"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:118
 msgid "Check"
@@ -398,11 +401,11 @@ msgstr ""
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:121
 msgid "!"
-msgstr ""
+msgstr "!"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:143
 msgid "Text1"
-msgstr ""
+msgstr "Текст1"
 
 #: src/bin/ui/live_view/elementary/live_multibuttonentry.c:144
 msgid "Tap and enter for adding buttons"
@@ -413,7 +416,7 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_widget_common.c:88
 #: src/bin/ui/live_view/elementary/live_widget_common.c:102
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:45
 #: src/bin/ui/live_view/elementary/live_widget_common.c:93
@@ -438,17 +441,17 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_naviframe.c:184
 #: src/bin/ui/live_view/elementary/live_widget_common.c:354
 msgid "Page 1"
-msgstr ""
+msgstr "Страница 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:185
 #: src/bin/ui/live_view/elementary/live_widget_common.c:355
 msgid "Subtitle 1"
-msgstr ""
+msgstr "Подзаголовок 1"
 
 #: src/bin/ui/live_view/elementary/live_naviframe.c:186
 #: src/bin/ui/live_view/elementary/live_widget_common.c:356
 msgid "Main Page"
-msgstr ""
+msgstr "Главная страница"
 
 #: src/bin/ui/live_view/elementary/live_notify.c:162
 msgid "Press to show Notify"
@@ -457,22 +460,22 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_spinner.c:30
 #, c-format
 msgid "%1.1f units"
-msgstr ""
+msgstr "%1.1f единиц"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:53
 #: src/bin/ui/live_view/elementary/live_widget_common.c:286
 msgid "Object"
-msgstr ""
+msgstr "Объект"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:57
 #: src/bin/ui/live_view/elementary/live_widget_common.c:290
 msgid "Enabled"
-msgstr ""
+msgstr "Включено"
 
 #: src/bin/ui/live_view/elementary/live_toolbar.c:59
 #: src/bin/ui/live_view/elementary/live_widget_common.c:292
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:60
 #: src/bin/ui/live_view/elementary/live_widget_common.c:69
@@ -490,15 +493,15 @@ msgstr ""
 #: src/bin/ui/live_view/elementary/live_widget_common.c:333
 #: src/bin/ui/live_view/elementary/live_widget_common.c:345
 msgid "User Text"
-msgstr ""
+msgstr "Пользовательский текст"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:222
 msgid "Left"
-msgstr ""
+msgstr "Лево"
 
 #: src/bin/ui/live_view/elementary/live_widget_common.c:227
 msgid "Right"
-msgstr ""
+msgstr "Право"
 
 #: src/bin/ui/main_window.c:211 src/bin/ui/project_close.c:227
 msgid "Last saved: none"
@@ -506,15 +509,15 @@ msgstr ""
 
 #: src/bin/ui/main_window.c:212 src/bin/ui/project_close.c:228
 msgid "Project path: none"
-msgstr ""
+msgstr "Путь проекта: нету"
 
 #: src/bin/ui/main_window.c:321 src/bin/ui/menu.c:329
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
 #: src/bin/ui/main_window.c:342
 msgid "About Component Designer"
-msgstr ""
+msgstr "Про Component Designer"
 
 #: src/bin/ui/main_window.c:357
 msgid ""
@@ -540,7 +543,7 @@ msgstr ""
 
 #: src/bin/ui/main_window.c:416 src/bin/ui/main_window.c:653
 msgid "Help: shortcuts"
-msgstr ""
+msgstr "Помощь: горячие клавиши"
 
 #: src/bin/ui/main_window.c:444
 msgid "Sequence already binded."
@@ -552,111 +555,111 @@ msgstr ""
 
 #: src/bin/ui/menu.c:269
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: src/bin/ui/menu.c:271 src/bin/ui/tab_home_new.c:569
 #: src/bin/ui/tab_home_new.c:686 src/bin/ui/tabs.c:1213
 msgid "New project"
-msgstr ""
+msgstr "Новый проект"
 
 #: src/bin/ui/menu.c:273 src/bin/ui/tab_home_import_edj.c:507
 #: src/bin/ui/tab_home_import_edj.c:635 src/bin/ui/tabs.c:1215
 msgid "Import edj-file"
-msgstr ""
+msgstr "Импорт edj-файла"
 
 #: src/bin/ui/menu.c:274 src/bin/ui/tab_home_import_edc.c:477
 #: src/bin/ui/tabs.c:1217
 msgid "Import edc-file"
-msgstr ""
+msgstr "Импорт edc-файла"
 
 #: src/bin/ui/menu.c:277 src/bin/ui/popup.c:169 src/bin/ui/script_manager.c:221
 #: src/bin/ui/tab_home_info.c:107
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: src/bin/ui/menu.c:279
 msgid "Export as edc"
-msgstr ""
+msgstr "Экспорт как edc"
 
 #: src/bin/ui/menu.c:280
 msgid "Group"
-msgstr ""
+msgstr "Группа"
 
 #: src/bin/ui/menu.c:281
 msgid "Project"
-msgstr ""
+msgstr "Проект"
 
 #: src/bin/ui/menu.c:282
 msgid "Export as edj"
-msgstr ""
+msgstr "Экспорт как edj"
 
 #: src/bin/ui/menu.c:283
 msgid "Develop"
-msgstr ""
+msgstr "Разработка"
 
 #: src/bin/ui/menu.c:284
 msgid "Release"
-msgstr ""
+msgstr "Выпуск"
 
 #: src/bin/ui/menu.c:286
 msgid "Close project"
-msgstr ""
+msgstr "Закрыть проект"
 
 #: src/bin/ui/menu.c:289
 msgid "Quit"
-msgstr ""
+msgstr "Выйти"
 
 #: src/bin/ui/menu.c:291
 msgid "Edit"
-msgstr ""
+msgstr "Изменить"
 
 #: src/bin/ui/menu.c:292 src/bin/ui/workspace/workspace.c:1059
 msgid "Undo"
-msgstr ""
+msgstr "Отменить"
 
 #: src/bin/ui/menu.c:293 src/bin/ui/workspace/workspace.c:1060
 msgid "Redo"
-msgstr ""
+msgstr "Повторить"
 
 #: src/bin/ui/menu.c:295
 msgid "Add group"
-msgstr ""
+msgstr "Добавить группу"
 
 #: src/bin/ui/menu.c:297
 msgid "Add part"
-msgstr ""
+msgstr "Добавить часть"
 
 #: src/bin/ui/menu.c:298
 msgid "Add state"
-msgstr ""
+msgstr "Добавить состояние"
 
 #: src/bin/ui/menu.c:299
 msgid "Add item"
-msgstr ""
+msgstr "Добавить пункт"
 
 #: src/bin/ui/menu.c:300
 msgid "Add program"
-msgstr ""
+msgstr "Добавить программу"
 
 #: src/bin/ui/menu.c:301
 msgid "Add data item"
-msgstr ""
+msgstr "Добавить элемент данных"
 
 #: src/bin/ui/menu.c:304
 msgid "View"
-msgstr ""
+msgstr "Вид"
 
 #: src/bin/ui/menu.c:305
 msgid "Zoom in"
-msgstr ""
+msgstr "Приблизить"
 
 #: src/bin/ui/menu.c:306
 msgid "Zoom out"
-msgstr ""
+msgstr "Отдалить"
 
 #: src/bin/ui/menu.c:307
 msgid "Reset zoom"
-msgstr ""
+msgstr "Сбросить увеличение"
 
 #: src/bin/ui/menu.c:308
 msgid "Zoom to fit in Workspace"
@@ -881,7 +884,7 @@ msgstr ""
 
 #: src/bin/ui/project_navigator.c:763
 msgid "Confirm delete layouts"
-msgstr ""
+msgstr "Подтвердить удаление макетов"
 
 #: src/bin/ui/project_navigator.c:764
 msgid ""
@@ -911,11 +914,11 @@ msgstr ""
 
 #: src/bin/ui/property/property_dummy.c:174
 msgid "default 0.0"
-msgstr ""
+msgstr "по умолчанию 0,0"
 
 #: src/bin/ui/property/property_dummy.c:208
 msgid "Item 1"
-msgstr ""
+msgstr "Пункт 1"
 
 #: src/bin/ui/property/property_dummy.c:209
 #: src/bin/ui/property/property_dummy.c:216
@@ -928,7 +931,7 @@ msgstr ""
 #: src/bin/ui/property/property_dummy.c:290
 #: src/bin/ui/property/property_dummy.c:294
 msgid "Item 2"
-msgstr ""
+msgstr "Пункт 2"
 
 #: src/bin/ui/property/property_dummy.c:213
 #: src/bin/ui/property/property_dummy.c:219
@@ -941,35 +944,35 @@ msgstr ""
 
 #: src/bin/ui/property/property_dummy.c:215
 msgid "Item 2_1"
-msgstr ""
+msgstr "Пункт 2_1"
 
 #: src/bin/ui/property/property_dummy.c:218
 msgid "Item 2_2"
-msgstr ""
+msgstr "Пункт 2_2"
 
 #: src/bin/ui/property/property_dummy.c:221
 msgid "Item 3"
-msgstr ""
+msgstr "Пункт 3"
 
 #: src/bin/ui/property/property_dummy.c:226
 msgid "Item 3_1 with dynamic subitems"
-msgstr ""
+msgstr "Пункт 3_1 с динамическими подпунктами"
 
 #: src/bin/ui/property/property_dummy.c:230
 msgid "Item 3_2"
-msgstr ""
+msgstr "Пункт 3_2"
 
 #: src/bin/ui/property/property_dummy.c:234
 msgid "Item 4"
-msgstr ""
+msgstr "Пункт 4"
 
 #: src/bin/ui/property/property_dummy.c:235
 msgid "entry"
-msgstr ""
+msgstr "запись"
 
 #: src/bin/ui/property/property_dummy.c:243
 msgid "Item 5"
-msgstr ""
+msgstr "Пункт 5"
 
 #: src/bin/ui/property/property_dummy.c:244
 msgid "comb"
@@ -977,14 +980,14 @@ msgstr ""
 
 #: src/bin/ui/property/property_dummy.c:251
 msgid "Item 6"
-msgstr ""
+msgstr "Пункт 6"
 
 #: src/bin/ui/property/property_dummy.c:252
 #: src/bin/ui/property/property_dummy.c:261
 #: src/bin/ui/property/property_dummy.c:266
 #: src/bin/ui/property/property_dummy.c:317
 msgid "min"
-msgstr ""
+msgstr "мин"
 
 #: src/bin/ui/property/property_dummy.c:254
 #: src/bin/ui/property/property_dummy.c:257
@@ -1000,40 +1003,40 @@ msgstr ""
 #: src/bin/ui/property/property_image.c:507
 #: src/bin/ui/property/property_image.c:508
 msgid "px"
-msgstr ""
+msgstr "пикс"
 
 #: src/bin/ui/property/property_dummy.c:255
 #: src/bin/ui/property/property_dummy.c:269
 #: src/bin/ui/property/property_dummy.c:320
 msgid "max"
-msgstr ""
+msgstr "макс"
 
 #: src/bin/ui/property/property_dummy.c:259
 msgid "Item 7"
-msgstr ""
+msgstr "Пункт 7"
 
 #: src/bin/ui/property/property_dummy.c:265
 msgid "Item 8"
-msgstr ""
+msgstr "Пункт 8"
 
 #: src/bin/ui/property/property_dummy.c:273
 msgid "Item 9"
-msgstr ""
+msgstr "Пункт 9"
 
 #: src/bin/ui/property/property_dummy.c:280
 msgid "Item 10"
-msgstr ""
+msgstr "Пункт 10"
 
 #: src/bin/ui/property/property_dummy.c:286
 #: src/bin/ui/workspace/group_navigator.c:2629
 msgid "State"
-msgstr ""
+msgstr "Состояние"
 
 #: src/bin/ui/property/property_dummy.c:305
 #: src/bin/ui/property/property_dummy.c:315
 #: src/bin/ui/workspace/group_navigator.c:2633
 msgid "Item"
-msgstr ""
+msgstr "Пункт"
 
 #: src/bin/ui/property/property_dummy.c:306
 msgid "x"
@@ -1049,15 +1052,15 @@ msgstr ""
 
 #: src/bin/ui/property/property_dummy.c:321
 msgid "p2"
-msgstr ""
+msgstr "p2"
 
 #: src/bin/ui/property/property_group.c:1190
 msgid "< Style manager >"
-msgstr ""
+msgstr "< Менеджер стилей >"
 
 #: src/bin/ui/property/property_group.c:1279
 msgid "< Sound manager >"
-msgstr ""
+msgstr "< Менеджер звуков >"
 
 #: src/bin/ui/property/property_group.c:1529
 msgid "< Color class manager >"
@@ -1191,7 +1194,7 @@ msgstr ""
 #: src/bin/ui/property/property_group.c:2818
 #, c-format
 msgid "cursor mode changed from \"%s\" to \"%s\""
-msgstr ""
+msgstr "режим курсора изменился с «%s» на «%s»"
 
 #: src/bin/ui/property/property_group.c:2823
 #, c-format
